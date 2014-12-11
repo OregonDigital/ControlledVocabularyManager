@@ -6,8 +6,7 @@ Local Development Setup
 
 **Requires Ruby 2.0**
 
-	``` git clone https://github.com/OregonDigital/ControlledVocabularyManager.git
-```
+	git clone https://github.com/OregonDigital/ControlledVocabularyManager.git
 	cd ControlledVocabularyManager
 	bundle install
 	rake db:create && rake db:migrate
@@ -26,7 +25,7 @@ Requires [Git](http://www.git-scm.com/),
 [Vagrant](http://www.vagrantup.com/).  Also requires 2 gigs of RAM to be
 available for the VM which vagrant creates.
 
-``` git clone https://github.com/OregonDigital/ControlledVocabularyManager.git ```
+`git clone https://github.com/OregonDigital/ControlledVocabularyManager.git`
 
 Tell vagrant to download and start the virtual machine:
 
