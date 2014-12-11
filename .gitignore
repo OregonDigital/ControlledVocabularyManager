@@ -14,3 +14,12 @@
 # Ignore all logfiles and tempfiles.
 /log/*.log
 /tmp
+
+# Ignore vagrant
+/.vagrant
+
+# Ignore jetty
+jetty
+
+# Ignore marmotta
+marmotta

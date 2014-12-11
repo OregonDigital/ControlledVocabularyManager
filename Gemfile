@@ -42,6 +42,7 @@ group :development, :test do
   # Test Coverage
   gem 'simplecov'
   gem 'capybara-screenshot'
+  gem 'jettywrapper'
 end
 
 group :test do
