@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/OregonDigital/ControlledVocabularyManager.png?label=ready&title=Ready)](https://waffle.io/OregonDigital/ControlledVocabularyManager)
 Controlled Vocabulary Manager
 =============================
 [![Circle CI](https://circleci.com/gh/OregonDigital/ControlledVocabularyManager.svg?style=svg)](https://circleci.com/gh/OregonDigital/ControlledVocabularyManager)
