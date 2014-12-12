@@ -1,5 +1,6 @@
 Controlled Vocabulary Manager
 =============================
+[![Circle CI](https://circleci.com/gh/OregonDigital/ControlledVocabularyManager.svg?style=svg)](https://circleci.com/gh/OregonDigital/ControlledVocabularyManager)
 
 Local Development Setup
 -----
