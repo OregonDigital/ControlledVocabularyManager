@@ -46,9 +46,13 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.6)
     arel (5.0.1.20140414130214)
+    autoprefixer-rails (4.0.2.1)
+      execjs
     awesome_print (1.2.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-sass (3.3.1.0)
+      sass (~> 3.2)
     builder (3.2.2)
     byebug (2.7.0)
       columnize (~> 0.3)
@@ -269,7 +273,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  autoprefixer-rails
   awesome_print
+  bootstrap-sass (~> 3.3.1)
   capistrano (~> 2.0)
   capybara-screenshot
   coffee-rails (~> 4.0.0)
