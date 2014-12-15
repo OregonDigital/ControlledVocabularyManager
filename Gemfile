@@ -32,6 +32,10 @@ gem 'spring',        group: :development
 # Use unicorn as the app server
 gem 'unicorn'
 
+# Active Triples for RDF resources.
+gem 'active-triples'
+gem 'rdf-marmotta'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'
