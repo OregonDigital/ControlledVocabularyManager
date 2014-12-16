@@ -7,8 +7,8 @@ RSpec.describe HomeController do
       before do
         get 'index'
       end
-      it "should not be found" do
-        expect(response).to be_not_found
+      it "should redirect to oauth" do
+        expect(response).to be_github_oauth_redirect
       end
     end
   end
