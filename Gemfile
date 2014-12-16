@@ -33,7 +33,7 @@ gem 'spring',        group: :development
 gem 'unicorn'
 
 # Active Triples for RDF resources.
-gem 'active-triples'
+gem 'active-triples', :github => "ActiveTriples/ActiveTriples", :branch => "master"
 gem 'rdf-marmotta'
 
 group :development do
@@ -50,6 +50,7 @@ group :development, :test do
   gem 'simplecov'
   gem 'capybara-screenshot'
   gem 'jettywrapper'
+  gem 'timecop'
 end
 
 group :test do
