@@ -6,3 +6,4 @@ dependencies:
     - "bundle exec rake jetty:clean"
     - cd jetty && java -Djetty.port=8983 -Dsolr.solr.home=/home/ubuntu/ControlledVocabularyManager/jetty/solr -XX:MaxPermSize=128m -Xmx256m -Dmarmotta.home=/home/ubuntu/ControlledVocabularyManager/marmotta -jar start.jar:
         background: true
+    - sleep 10
