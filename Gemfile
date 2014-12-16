@@ -36,6 +36,8 @@ gem 'unicorn'
 gem 'active-triples', :github => "ActiveTriples/ActiveTriples", :branch => "master"
 gem 'rdf-marmotta'
 
+gem 'warden-github-rails'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'
@@ -50,7 +52,6 @@ group :development, :test do
   gem 'simplecov'
   gem 'capybara-screenshot'
   gem 'jettywrapper'
-  gem 'timecop'
 end
 
 group :test do
