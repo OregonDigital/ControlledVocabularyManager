@@ -1,4 +1,16 @@
 GIT
+  remote: git://github.com/ActiveTriples/ActiveTriples.git
+  revision: bcf866b74af4307d5701dc573d32ac1b3be0c298
+  branch: master
+  specs:
+    active-triples (0.5.0)
+      activemodel (>= 3.0.0)
+      activesupport (>= 3.0.0)
+      deprecation (~> 0.1)
+      linkeddata (~> 1.1)
+      rdf (~> 1.1)
+
+GIT
   remote: git://github.com/terrellt/jazz_hands.git
   revision: d5829e6119671b2ff5fe6098846764084f2ab562
   specs:
@@ -31,12 +43,6 @@ GEM
       activesupport (= 4.1.7)
       builder (~> 3.1)
       erubis (~> 2.7.0)
-    active-triples (0.5.0)
-      activemodel (>= 3.0.0)
-      activesupport (>= 3.0.0)
-      deprecation (~> 0.1)
-      linkeddata (~> 1.1)
-      rdf (~> 1.1)
     activemodel (4.1.7)
       activesupport (= 4.1.7)
       builder (~> 3.1)
@@ -367,7 +373,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active-triples
+  active-triples!
   autoprefixer-rails
   awesome_print
   bootstrap-sass (~> 3.3.1)
