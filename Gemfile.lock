@@ -11,6 +11,12 @@ GIT
       rdf (~> 1.1)
 
 GIT
+  remote: git://github.com/mspanc/warden-rspec-rails.git
+  revision: ffab9b77c8a51eaacd4724707a197686a44002a1
+  specs:
+    warden-rspec-rails (0.1.0)
+
+GIT
   remote: git://github.com/terrellt/jazz_hands.git
   revision: d5829e6119671b2ff5fe6098846764084f2ab562
   specs:
@@ -110,6 +116,9 @@ GEM
     diff-lcs (1.2.5)
     diffy (3.0.7)
     docile (1.1.5)
+    dotenv (1.0.2)
+    dotenv-rails (1.0.2)
+      dotenv (= 1.0.2)
     ebnf (0.3.6)
       haml (~> 4.0)
       rdf (~> 1.1)
@@ -397,6 +406,7 @@ DEPENDENCIES
   capybara-screenshot
   coffee-rails (~> 4.0.0)
   database_cleaner
+  dotenv-rails
   factory_girl_rails
   formulaic
   jazz_hands!
@@ -419,4 +429,5 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   unicorn
   warden-github-rails
+  warden-rspec-rails!
   webmock

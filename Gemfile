@@ -52,6 +52,8 @@ group :development, :test do
   gem 'simplecov'
   gem 'capybara-screenshot'
   gem 'jettywrapper'
+  gem 'dotenv-rails'
+  gem 'warden-rspec-rails', :github => "mspanc/warden-rspec-rails"
 end
 
 group :test do
