@@ -84,5 +84,29 @@ RSpec.describe ControlledVocabulary do
         end
       end
     end
+
+    describe ".base_uri" do
+      it "should be set to opaquenamespace.org" do
+        expect(resource.class.base_uri).to eq "http://opaquenamespace.org/ns/"
+      end
+    end
+
+    describe "#id" do
+      context "with no id" do
+        let(:resource) { ControlledVocabulary.new }
+        it "should be nil" do
+          expect(resource.id).to be_nil
+        end
+      end
+      context "with an id" do
+        let(:resource) { ControlledVocabulary.new("bla/bla") }
+        before do
+          resource.persist!
+        end
+        it "should be just the id" do
+          expect(resource.id).to eq "bla/bla"
+        end
+      end
+    end
   end
 end
