@@ -8,12 +8,18 @@ class ControlledVocabulary < ActiveTriples::Resource
   before_persist :set_issued, :if => :new_record?
   before_persist :set_modified, :if => :valid?
 
+  validate :not_blank_node
+
   def id
     return nil if rdf_subject.node?
     rdf_subject.to_s.gsub(self.class.base_uri,"")
   end
 
   private
+
+  def not_blank_node
+    errors.add(:rdf_subject, "can not be a blank node") if node?
+  end
 
   def set_issued
     self.issued = RDF::Literal::Date.new(Time.now)
