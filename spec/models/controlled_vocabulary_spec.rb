@@ -106,9 +106,6 @@ RSpec.describe ControlledVocabulary do
         it "should be just the id" do
           expect(resource.id).to eq "bla/bla"
         end
-        it "is usable as a path helper argument" do
-          expect(controlled_vocabulary_path(resource)).to eq "/ns/bla/bla"
-        end
       end
     end
   end
