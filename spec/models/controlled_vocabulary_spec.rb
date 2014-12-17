@@ -22,6 +22,20 @@ RSpec.describe ControlledVocabulary do
     end
   end
 
+  describe "validations" do
+    context "when not given a uri" do
+      let(:uri) { nil }
+      it "should be invalid" do
+        expect(resource).not_to be_valid
+      end
+    end
+    context "when given a URI" do
+      it "should be valid" do
+        expect(resource).to be_valid
+      end
+    end
+  end
+
   describe "#issued" do
     before do
       stub_repository
