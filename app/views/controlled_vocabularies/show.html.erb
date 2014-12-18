@@ -1,0 +1,13 @@
+
+<h2><%= @vocab.id %></h2>
+<h4><%= @vocab.base_uri + @vocab.id %></h4>
+
+<p><strong>Label:</strong> <%= @vocab.label.join(', ') %></p>
+
+<p><strong>Comment:</strong> <%= @vocab.comment.join(', ') %></p>
+
+<p><strong>Issued:</strong> <%= @vocab.issued.join(', ') %></p>
+
+<p><strong>Modified:</strong> <%= @vocab.modified.join(', ') %></p>
+
+<p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
