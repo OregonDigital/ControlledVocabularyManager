@@ -7,46 +7,43 @@ RSpec.describe ControlledVocabulariesController do
   describe '#show' do
     before do
       stub_repository
+      allow(resource).to receive(:dump)
+      allow(ControlledVocabulary).to receive(:new).and_return(resource)
     end
 
     context "when the resource exists" do
+      let(:format) {}
       before do
         resource.persist!
+        get :show, :id => resource.id, :format => format
       end
       
       context "format html" do
-        before do
-          get :show, :id => resource.id
-        end
         it "should render html" do
           expect(response.content_type).to eq("text/html")
         end
       end
 
       context "format n-triples" do
-        before do
-          get :show, :id => resource.id, :format => :nt
-        end
+        let(:format) {:nt}
         it "should render n-triples" do
           expect(response.content_type).to eq("application/n-triples")
+          expect(resource).to have_received(:dump).with(:ntriples)
         end
       end
 
       context "format json-ld" do
-        before do
-          get :show, :id => resource.id, :format => :jsonld
-        end
+        let(:format) {:jsonld}
         it "should render json-ld" do
           expect(response.content_type).to eq("application/ld+json")
+          expect(resource).to have_received(:dump).with(:jsonld, {:standard_prefixes => true})
         end
       end
     end
 
     context "when the resource does not exist" do
-      let(:uri2) { "http://opaquenamespace.org/ns/nothing" }
-      let(:resource2) { ControlledVocabulary.new(uri2) }
       before do
-        get :show, :id => resource2.id
+        get :show, :id => "nothing"
       end
 
       it "should return a 404" do
