@@ -7,6 +7,6 @@ Rails.application.routes.draw do
 
   get '/ns/*id', :to => "controlled_vocabularies#show", :as => "controlled_vocabulary"
 
-  resources :vocabularies, :only => :new
+  resources :vocabularies, :only => [:new, :create]
 
 end

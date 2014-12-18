@@ -1,0 +1,8 @@
+<label class="control-label" for="vocabulary_"><%= attribute.to_s.humanize %></label>
+
+<%= form.input :comment, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
+  <%= form.input_field attribute, :as => :array, :class => "form-control" %>
+  <span class="input-group-btn">
+    <button class="btn btn-success" type="button">+</button>
+  </span>
+<% end %>
