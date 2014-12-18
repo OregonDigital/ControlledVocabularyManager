@@ -1,6 +1,7 @@
+require 'json/ld'
+
 class ControlledVocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
-  require 'json/ld'
 
   def show
     respond_to do |format|
