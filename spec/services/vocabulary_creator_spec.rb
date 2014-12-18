@@ -15,6 +15,13 @@ RSpec.describe VocabularyCreator do
   before do
     stub_repository
   end
+
+  describe "#call" do
+    it "should call vocabulary" do
+      expect_any_instance_of(VocabularyCreator).to receive(:vocabulary).at_least(1).times.and_call_original
+      subject
+    end
+  end
   
   describe ".call.vocabulary" do
     let(:result) { subject.vocabulary }

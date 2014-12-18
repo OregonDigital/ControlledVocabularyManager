@@ -1,7 +1,8 @@
-<%= simple_form_for(vocabulary) do |f| %>
+<%= simple_form_for(vocabulary, :url => vocabularies_path, :method => method) do |f| %>
   <%= f.error_notification %>
 
   <div class="form-inputs">
+    <%= f.input :id, :label => "ID" %>
     <%= render :partial => "form_attribute", :locals => {:vocabulary => vocabulary, :attribute => :label, :form => f} %>
     <%= render :partial => "form_attribute", :locals => {:vocabulary => vocabulary, :attribute => :comment, :form => f} %>
   </div>

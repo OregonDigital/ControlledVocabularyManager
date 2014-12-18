@@ -1,6 +1,8 @@
 class VocabularyCreator
   def self.call(params)
-    new(params)
+    instance = new(params)
+    instance.vocabulary # Run to populate the result
+    instance
   end
 
   attr_accessor :params, :result
@@ -12,6 +14,11 @@ class VocabularyCreator
   def vocabulary
     populate_vocabulary if @vocabulary.nil?
     @vocabulary
+  end
+
+  def result
+    vocabulary if @vocabulary.nil?
+    @result
   end
 
   private
