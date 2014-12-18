@@ -11,4 +11,7 @@ RSpec.describe "vocabularies/new" do
       expect(rendered).to have_selector "input[name='vocabulary[#{attribute}][]']"
     end
   end
+  it "posts to /vocabularies" do
+    expect(rendered).to have_selector("form[action='/vocabularies'][method='post']")
+  end
 end
