@@ -38,6 +38,8 @@ gem 'rdf-marmotta'
 
 gem 'warden-github-rails'
 
+gem 'simple_form'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'
