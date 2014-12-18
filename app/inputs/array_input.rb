@@ -1,5 +1,5 @@
 class ArrayInput < SimpleForm::Inputs::StringInput
-  def input
+  def input(wrapper_options)
     input_html_options[:type] ||= input_type
 
     return text_field(nil).html_safe if attributes_array.empty?
