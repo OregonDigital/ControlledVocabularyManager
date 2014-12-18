@@ -39,6 +39,9 @@ RSpec.describe "vocabularies/new" do
         expect(rendered).to have_selector("form[action='/vocabularies'][method='post']")
         expect(rendered).not_to have_selector("input[name='_method'][value='post']")
       end
+      it "should say create vocabulary" do
+        expect(rendered).to have_button("Create Vocabulary")
+      end
     end
   end
 end
