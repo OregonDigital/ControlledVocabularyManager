@@ -26,35 +26,53 @@ RSpec.describe VocabulariesController do
         :comment => ["Test2"]
       }
     end
-    let(:vocabulary_creator_core) { instance_double("VocabularyCreator") }
-    let(:vocabulary_creator) do
-      allow(vocabulary_creator_core).to receive(:result).and_return(create_result)
-      allow(vocabulary_creator_core).to receive(:vocabulary).and_return(vocabulary)
-      vocabulary_creator_core
-    end
-    let(:create_result) { true }
     let(:vocabulary) { instance_double("Vocabulary") }
     let(:result) { post 'create', :vocabulary => vocabulary_params }
+    let(:responder_class) {class_double("VocabulariesController::CreateResponder").as_stubbed_const}
+    let(:responder) {instance_double("VocabulariesController::CreateResponder")}
     before do
-      allow(VocabularyCreator).to receive(:call).and_return(vocabulary_creator)
+      expect(VocabulariesController::CreateResponder).to receive(:new).with(controller).and_return(responder)
+      allow(VocabularyCreator).to receive(:call)
+      allow(controller).to receive(:render)
       result
     end
     it "should call vocabulary creator" do
-      expect(VocabularyCreator).to have_received(:call).with(vocabulary_params)
+      expect(VocabularyCreator).to have_received(:call).with(vocabulary_params, responder)
     end
-    context "and vocabulary creator returns false" do
-      let(:create_result) { false }
-      it "should assign @vocabulary" do
-        assigned = assigns(:vocabulary)
-        expect(assigned).to eq vocabulary
+  end
+
+  describe "Create Responder" do
+    subject { VocabulariesController::CreateResponder.new(controller) }
+    let(:vocabulary) { Vocabulary.new }
+    let(:result) { post 'create', :vocabulary => {} }
+    describe "#success" do
+      before do
+        allow(VocabularyCreator).to receive(:call) do
+          subject.success(vocabulary)
+        end
+        allow(vocabulary).to receive(:id).and_return("1")
+        allow(vocabulary).to receive(:persisted?).and_return(true)
+        result
       end
-      it "should render new" do
-        expect(result).to render_template("new")
-      end
-    end
-    context "and vocabulary creator returns true" do
       it "should redirect" do
-        expect(response).to be_redirect
+        expect(response).to redirect_to "/ns/1"
+      end
+    end
+    describe "#failure" do
+      before do
+        allow(VocabularyCreator).to receive(:call) do
+          subject.failure(vocabulary)
+        end
+        allow(vocabulary).to receive(:id).and_return("1")
+        allow(vocabulary).to receive(:persisted?).and_return(true)
+      end
+      it "render new" do
+        result
+        expect(response).to render_template "new"
+      end
+      it "assigns @vocabulary" do
+        result
+        expect(assigns(:vocabulary)).to eq vocabulary
       end
     end
   end

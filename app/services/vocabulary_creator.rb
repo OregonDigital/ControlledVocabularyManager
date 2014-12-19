@@ -1,33 +1,47 @@
 class VocabularyCreator
-  def self.call(params)
-    instance = new(params)
-    instance.vocabulary # Run to populate the result
-    instance
+  def self.call(params, callbacks)
+    new(params, callbacks).perform
   end
 
-  attr_accessor :params, :result
-  def initialize(params)
+  attr_accessor :params, :result, :callbacks
+  def initialize(params, callbacks=[])
     @params = params
     @result = false
+    @callbacks = Array.wrap(callbacks)
   end
 
-  def vocabulary
-    populate_vocabulary if @vocabulary.nil?
-    @vocabulary
-  end
-
-  def result
-    vocabulary if @vocabulary.nil?
-    @result
+  def perform
+    check_existence
+    set_attributes
+    persist_vocabulary
+    notify_callbacks
   end
 
   private
 
-  def populate_vocabulary
-    @vocabulary = Vocabulary.new(params.delete(:id))
-    check_existence
-    set_attributes
-    persist_vocabulary
+  def notify_callbacks
+   return notify_success if result
+   notify_failure
+  end
+
+  def notify_success
+    callbacks.each do |callback|
+      callback.send(:success, vocabulary)
+    end
+  end
+
+  def notify_failure
+    callbacks.each do |callback|
+      callback.send(:failure, vocabulary)
+    end
+  end
+
+  def vocabulary
+    @vocabulary ||= Vocabulary.new(params.delete(:id))
+  end
+
+  def result
+    @result
   end
 
   def check_existence

@@ -11,62 +11,75 @@ RSpec.describe VocabularyCreator do
   let(:id) { "Creator" }
   let(:label) { ["Test Label"] }
   let(:comment) { ["Test Comment"] }
-  subject { VocabularyCreator.call(params) }
+  let(:callback) { double("callback") }
+  let(:vocabulary) { instance_double("Vocabulary") }
+  let(:persisted) { false }
+  let(:persist_success) { true }
+  let(:error_double) { double("errors") }
+  subject { VocabularyCreator.call(params, callback) }
   before do
     stub_repository
+    allow(class_double("Vocabulary").as_stubbed_const).to receive(:new).and_return(vocabulary)
+    allow(vocabulary).to receive(:persisted?).and_return(persisted)
+    allow(vocabulary).to receive(:errors).and_return(error_double)
+    allow(vocabulary).to receive(:persist!).and_return(persist_success)
+    allow(vocabulary).to receive(:attributes=)
+    allow(error_double).to receive(:empty?).and_return(true)
   end
 
-  describe "#call" do
-    it "should call vocabulary" do
-      expect_any_instance_of(VocabularyCreator).to receive(:vocabulary).at_least(1).times.and_call_original
-      subject
-    end
-  end
-  
-  describe ".call.vocabulary" do
-    let(:result) { subject.vocabulary }
+  describe ".call" do
+    let(:result) { subject }
     context "when given good parameters" do
-      it "should return a Vocabulary" do
-        expect(result).to be_kind_of Vocabulary
+      before do
+        allow(callback).to receive(:success)
       end
-      it "should have a good id" do
-        expect(result.rdf_subject.to_s).to eq "http://opaquenamespace.org/ns/Creator"
+      it "should call #success on the callback" do
+        expect(callback).to receive(:success).with(vocabulary)
+        subject
+      end
+      it "should instantiate a vocab with an ID" do
+        expect(Vocabulary).to receive(:new).with(id)
+        subject
       end
       it "should set attributes" do
-        expect(result.label).to eq label
-        expect(result.comment).to eq comment
+        expect(vocabulary).to receive(:attributes=).with(params.except(:id))
+        subject
       end
-      it "should be persisted" do
-        expect(result).to be_persisted
-      end
-      it "should have a true result" do
-        result
-        expect(subject.result).to eq true
+      it "should persist" do
+        expect(vocabulary).to receive(:persist!)
+        subject
       end
     end
     context "when given an already existing vocabulary" do
+      let(:persisted) { true }
       before do
-        Vocabulary.new(id).persist!
+        allow(error_double).to receive(:add)
+        allow(error_double).to receive(:empty?).and_return(false)
+        allow(callback).to receive(:failure)
       end
       it "should have errors" do
-        expect(result.errors).not_to be_empty
+        allow(vocabulary).to receive(:errors).and_return(error_double)
+        expect(error_double).to receive(:add)
+        expect(error_double).to receive(:empty?).and_return(false)
+        subject
       end
-      it "should have a false result" do
-        result
-        expect(subject.result).to eq false
+      it "should notify callbacks of failure" do
+        expect(callback).to receive(:failure).with(vocabulary)
+        subject
       end
     end
     context "when given bad parameters" do
-      let(:id) {nil}
-      it "should not be valid" do
-        expect(result).not_to be_valid
+      before do
+        expect(error_double).to receive(:empty?).and_return(false)
+        allow(callback).to receive(:failure)
       end
       it "should not be persisted" do
-        expect(result).not_to be_persisted
+        expect(vocabulary).not_to receive(:persist!)
+        subject
       end
-      it "should have a false result" do
-        result
-        expect(subject.result).to eq false
+      it "should notify callbacks of failure" do
+        expect(callback).to receive(:failure).with(vocabulary)
+        subject
       end
     end
   end

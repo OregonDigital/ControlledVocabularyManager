@@ -5,11 +5,16 @@ class VocabulariesController < ApplicationController
   end
 
   def create
-    creator = VocabularyCreator.call(params[:vocabulary])
-    if creator.result
-      redirect_to controlled_vocabulary_path(creator.vocabulary)
-    else
-      @vocabulary = creator.vocabulary
+    VocabularyCreator.call(params[:vocabulary], CreateResponder.new(self))
+  end
+
+  class CreateResponder < SimpleDelegator
+    def success(vocabulary)
+      redirect_to controlled_vocabulary_path(vocabulary)
+    end
+
+    def failure(vocabulary)
+      __getobj__.instance_variable_set(:@vocabulary, vocabulary)
       render :new
     end
   end
