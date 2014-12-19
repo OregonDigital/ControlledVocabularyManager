@@ -12,6 +12,7 @@ class TermCreator
   end
 
   def perform
+    set_attributes
     check_term_validity
     check_vocabulary_persistence
     check_term_persistence
@@ -23,6 +24,10 @@ class TermCreator
 
   def term
     @term ||= Term.new("#{vocabulary.id}/#{params.delete(:id)}")
+  end
+
+  def set_attributes
+    term.attributes = params
   end
 
   def check_term_validity

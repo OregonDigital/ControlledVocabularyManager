@@ -30,6 +30,7 @@ RSpec.describe TermCreator do
     allow(term).to receive(:persisted?).and_return(term_persisted)
     allow(term).to receive(:errors).and_return(errors)
     allow(term).to receive(:valid?).and_return(term_valid)
+    allow(term).to receive(:attributes=)
     allow(errors).to receive(:empty?).and_return(error_empty)
   end
 
@@ -51,6 +52,10 @@ RSpec.describe TermCreator do
       end
       it "should call success on callback" do
         expect(callback).to receive(:success).with(term, vocabulary)
+        subject.perform
+      end
+      it "should set attributes" do
+        expect(term).to receive(:attributes=).with(params.except(:id))
         subject.perform
       end
       it "should persist the term" do
