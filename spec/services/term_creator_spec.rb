@@ -46,11 +46,11 @@ RSpec.describe TermCreator do
   describe "#perform" do
     context "when given valid parameters" do
       before do
-        allow(callback).to receive(:success).with(term)
+        allow(callback).to receive(:success).with(term, vocabulary)
         allow(term).to receive(:persist!)
       end
       it "should call success on callback" do
-        expect(callback).to receive(:success).with(term)
+        expect(callback).to receive(:success).with(term, vocabulary)
         subject.perform
       end
       it "should persist the term" do
@@ -62,11 +62,11 @@ RSpec.describe TermCreator do
   context "when something has gone wrong" do
     let(:error_empty) { false }
     before do
-      allow(callback).to receive(:failure).with(term)
+      allow(callback).to receive(:failure).with(term, vocabulary)
     end
     context "when term has errors" do
       it "should call failure on callback" do
-        expect(callback).to receive(:failure).with(term)
+        expect(callback).to receive(:failure).with(term, vocabulary)
         subject.perform
       end
       it "should not call persist!" do

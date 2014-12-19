@@ -89,4 +89,66 @@ RSpec.describe TermsController do
       end
     end
   end
+
+  describe "POST create" do
+    let(:vocabulary) { instance_double("Vocabulary") }
+    let(:vocabulary_id) { "bla/bla" }
+    let(:term) { instance_double("Term") }
+    let(:term_id) { "bla/bla/test" }
+    let(:params) do
+      {
+        :vocabulary_id => vocabulary_id,
+        :term => {
+          :id => "test",
+          :comment => ["Test"],
+          :label => ["Label"]
+        }
+      }
+    end
+    let(:create_responder) { instance_double(TermsController::CreateResponder) }
+    before do
+      allow(Vocabulary).to receive(:new).with(vocabulary_id).and_return(vocabulary)
+      allow(TermCreator).to receive(:call) do
+        controller.render :nothing => true
+      end
+    end
+    it "should call TermCreator" do
+      expect(TermsController::CreateResponder).to receive(:new).with(controller).and_return(create_responder)
+      expect(TermCreator).to receive(:call).with(params[:term], vocabulary, [create_responder])
+      post :create, params
+    end
+    describe "CreateResponder" do
+      let(:term) { Term.new }
+      describe "#success" do
+        before do
+          allow(TermCreator).to receive(:call) do
+            TermsController::CreateResponder.new(controller).success(term, vocabulary)
+          end
+          allow(term).to receive(:persisted?).and_return(true)
+          allow(term).to receive(:id).and_return(term_id)
+          post :create, params
+        end
+        it "should redirect to the term" do
+          expect(response).to redirect_to("/ns/#{term_id}")
+        end
+      end
+      describe "#failure" do
+        before do
+          allow(TermCreator).to receive(:call) do
+            TermsController::CreateResponder.new(controller).failure(term, vocabulary)
+          end
+          post :create, params
+        end
+        it "should render new template" do
+          expect(response).to render_template("new")
+        end
+        it "should assign @vocabulary" do
+          expect(assigns(:vocabulary)).to eq vocabulary
+        end
+        it "should assign @term" do
+          expect(assigns(:term)).to eq term
+        end
+      end
+    end
+  end
 end

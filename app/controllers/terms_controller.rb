@@ -16,7 +16,24 @@ class TermsController < ApplicationController
     @term = Term.new
   end
 
+  def create
+    TermCreator.call(params[:term], vocabulary, [CreateResponder.new(self)])
+  end
+
   private
+
+  class CreateResponder < SimpleDelegator
+
+    def success(term, _)
+      redirect_to term_path(term)
+    end
+
+    def failure(term, vocabulary)
+      __getobj__.instance_variable_set(:@term, term)
+      render "new"
+    end
+
+  end
 
   def load_term
     @term = Term.new(params[:id])

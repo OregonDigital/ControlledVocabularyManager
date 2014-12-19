@@ -44,9 +44,9 @@ class TermCreator
   def notify_callbacks
     callbacks.each do |callback|
       if term.errors.empty?
-        callback.success(term)
+        callback.success(term, vocabulary)
       else
-        callback.failure(term)
+        callback.failure(term, vocabulary)
       end
     end
   end
