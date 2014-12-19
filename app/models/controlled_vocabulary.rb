@@ -18,7 +18,7 @@ class ControlledVocabulary < ActiveTriples::Resource
   private
 
   def not_blank_node
-    errors.add(:rdf_subject, "can not be a blank node") if node?
+    errors.add(:id, "can not be blank") if node?
   end
 
   def set_issued
