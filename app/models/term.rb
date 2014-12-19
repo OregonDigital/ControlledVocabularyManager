@@ -1,4 +1,4 @@
-class ControlledVocabulary < ActiveTriples::Resource
+class Term < ActiveTriples::Resource
   configure :repository => :default
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
   property :comment, :predicate => RDF::RDFS.comment

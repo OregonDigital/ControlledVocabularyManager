@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe ControlledVocabulary do
+RSpec.describe Term do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  let(:resource) { ControlledVocabulary.new(uri) }
+  let(:resource) { Term.new(uri) }
   it "should be an AT::Resource" do
-    expect(ControlledVocabulary < ActiveTriples::Resource).to be true
+    expect(Term < ActiveTriples::Resource).to be true
   end
   it "should instantiate" do
-    expect{ControlledVocabulary.new}.not_to raise_error
+    expect{Term.new}.not_to raise_error
   end
   it "should have the default repository configured" do
     expect(described_class.repository).to eq :default
@@ -18,7 +18,7 @@ RSpec.describe ControlledVocabulary do
       resource.persist!
     end
     it "should be retrievable" do
-      expect(ControlledVocabulary.new(uri)).not_to be_empty
+      expect(Term.new(uri)).not_to be_empty
     end
   end
 
@@ -107,13 +107,13 @@ RSpec.describe ControlledVocabulary do
 
     describe "#id" do
       context "with no id" do
-        let(:resource) { ControlledVocabulary.new }
+        let(:resource) { Term.new }
         it "should be nil" do
           expect(resource.id).to be_nil
         end
       end
       context "with an id" do
-        let(:resource) { ControlledVocabulary.new("bla/bla") }
+        let(:resource) { Term.new("bla/bla") }
         before do
           resource.persist!
         end
