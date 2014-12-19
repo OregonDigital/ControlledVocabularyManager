@@ -2,6 +2,7 @@ require 'json/ld'
 
 class TermsController < ApplicationController
   before_filter :load_term, :only => :show
+  before_filter :find_vocabulary, :only => :new
 
   def show
     respond_to do |format|
@@ -11,7 +12,28 @@ class TermsController < ApplicationController
     end
   end
 
+  def new
+    @term = Term.new
+  end
+
+  def create
+    TermCreator.call(params[:term], vocabulary, [CreateResponder.new(self)])
+  end
+
   private
+
+  class CreateResponder < SimpleDelegator
+
+    def success(term, _)
+      redirect_to term_path(term)
+    end
+
+    def failure(term, vocabulary)
+      __getobj__.instance_variable_set(:@term, term)
+      render "new"
+    end
+
+  end
 
   def load_term
     @term = Term.new(params[:id])
@@ -23,5 +45,13 @@ class TermsController < ApplicationController
       format.html { render :file => "#{Rails.root}/public/404", :layout => true, :status => 404 }
       format.all { render nothing: true, status: 404 }
     end
+  end
+
+  def find_vocabulary
+    raise ActionController::RoutingError.new("Term not found") unless vocabulary.persisted?
+  end
+  
+  def vocabulary
+    @vocabulary ||= Vocabulary.new(params[:vocabulary_id])
   end
 end
