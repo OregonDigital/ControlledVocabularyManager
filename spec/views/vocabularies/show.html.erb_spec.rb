@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "controlled_vocabularies/show" do
+RSpec.describe "vocabularies/show" do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { ControlledVocabulary.new(uri) }
 
