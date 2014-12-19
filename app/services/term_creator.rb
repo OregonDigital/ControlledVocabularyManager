@@ -16,6 +16,7 @@ class TermCreator
     check_term_validity
     check_vocabulary_persistence
     check_term_persistence
+    check_nonempty_id
     persist_term
     notify_callbacks
   end
@@ -23,11 +24,15 @@ class TermCreator
   private
 
   def term
-    @term ||= Term.new("#{vocabulary.id}/#{params.delete(:id)}")
+    @term ||= Term.new("#{vocabulary.id}/#{term_id}")
   end
 
   def set_attributes
     term.attributes = params
+  end
+
+  def term_id
+    @term_id ||= params.delete(:id)
   end
 
   def check_term_validity
@@ -36,6 +41,10 @@ class TermCreator
 
   def persist_term
     term.persist!(:validate => true) if term.errors.empty?
+  end
+
+  def check_nonempty_id
+    term.errors.add(:id, "can not be blank") unless term_id.present?
   end
 
   def check_vocabulary_persistence

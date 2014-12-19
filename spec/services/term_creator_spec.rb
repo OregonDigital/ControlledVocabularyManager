@@ -25,7 +25,7 @@ RSpec.describe TermCreator do
   let(:errors) { double("errors") }
   let(:error_empty) { true } 
   before do
-    allow(Term).to receive(:new).with("bla/bla/testing").and_return(term)
+    allow(Term).to receive(:new).with("#{vocabulary_id}/#{id}").and_return(term)
     allow(vocabulary).to receive(:persisted?).and_return(vocabulary_persisted)
     allow(term).to receive(:persisted?).and_return(term_persisted)
     allow(term).to receive(:errors).and_return(errors)
@@ -76,6 +76,13 @@ RSpec.describe TermCreator do
       end
       it "should not call persist!" do
         expect(term).not_to receive(:persist!)
+        subject.perform
+      end
+    end
+    context "when term id is nil" do
+      let(:id) { nil }
+      it "adds errors to the term" do
+        expect(errors).to receive(:add).with(:id, anything)
         subject.perform
       end
     end
