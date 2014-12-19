@@ -1,4 +1,7 @@
+require 'json/ld'
+
 class VocabulariesController < ApplicationController
+  before_filter :load_vocab, :only => :show
 
   def new
     @vocabulary = Vocabulary.new
@@ -10,7 +13,7 @@ class VocabulariesController < ApplicationController
 
   class CreateResponder < SimpleDelegator
     def success(vocabulary)
-      redirect_to controlled_vocabulary_path(vocabulary)
+      redirect_to term_path(vocabulary)
     end
 
     def failure(vocabulary)
@@ -18,5 +21,4 @@ class VocabulariesController < ApplicationController
       render :new
     end
   end
-
 end

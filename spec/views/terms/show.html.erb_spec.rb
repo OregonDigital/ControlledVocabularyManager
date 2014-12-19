@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe "controlled_vocabularies/show" do
+RSpec.describe "terms/show" do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  let(:resource) { ControlledVocabulary.new(uri) }
+  let(:resource) { Term.new(uri) }
 
   before do
-    assign(:vocab, resource)
-    resource.label = "Blah vocab"
+    assign(:term, resource)
+    resource.label = "Blah term"
     resource.comment = "Blah comment"
     resource.persist!
     allow(resource).to receive(:modified).and_call_original
@@ -14,7 +14,7 @@ RSpec.describe "controlled_vocabularies/show" do
     render
   end
 
-  it "displays the vocab name" do
+  it "displays the term name" do
     expect(rendered).to have_content("bla")
   end
 
@@ -23,7 +23,7 @@ RSpec.describe "controlled_vocabularies/show" do
   end
 
   it "displays the label" do
-    expect(rendered).to have_content("Blah vocab")
+    expect(rendered).to have_content("Blah term")
   end
 
   it "displays a comment" do

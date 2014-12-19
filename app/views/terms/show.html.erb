@@ -1,0 +1,13 @@
+
+<h2><%= @term.id %></h2>
+<h4><%= @term.base_uri + @term.id %></h4>
+
+<p><strong>Label:</strong> <%= @term.label.join(', ') %></p>
+
+<p><strong>Comment:</strong> <%= @term.comment.join(', ') %></p>
+
+<p><strong>Issued:</strong> <%= @term.issued.join(', ') %></p>
+
+<p><strong>Modified:</strong> <%= @term.modified.join(', ') %></p>
+
+<p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>

@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe ControlledVocabulariesController do
+RSpec.describe TermsController do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  let(:resource) { ControlledVocabulary.new(uri) }
+  let(:resource) { Term.new(uri) }
 
   describe '#show' do
     before do
       stub_repository
       allow(resource).to receive(:dump)
-      allow(ControlledVocabulary).to receive(:new).and_return(resource)
+      allow(Term).to receive(:new).and_return(resource)
     end
 
     context "when the resource exists" do
@@ -55,6 +55,4 @@ RSpec.describe ControlledVocabulariesController do
       end
     end
   end
-
-
 end
