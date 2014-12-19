@@ -55,4 +55,38 @@ RSpec.describe TermsController do
       end
     end
   end
+  describe "GET new" do
+    let(:vocabulary_id) { "bla/bla" }
+    let(:vocabulary) { instance_double("Vocabulary") }
+    let(:term) { instance_double("Term") }
+    let(:persisted_status) { true }
+    before do
+      allow(Vocabulary).to receive(:new).with(vocabulary_id).and_return(vocabulary)
+      allow(vocabulary).to receive(:persisted?).and_return(persisted_status)
+      allow(Term).to receive(:new).with(no_args).and_return(term)
+    end
+    def get_new
+      get :new, :vocabulary_id => vocabulary_id
+    end
+    context "when the vocabulary is not persisted" do
+      let(:persisted_status) { false }
+      it "should raise a routing error" do
+        expect{ get_new }.to raise_error ActionController::RoutingError, "Term not found"
+      end
+    end
+    context "when the vocabulary is persisted" do
+      before do
+        get_new
+      end
+      it "should assign @vocabulary" do
+        expect(assigns(:vocabulary)).to eq vocabulary
+      end
+      it "should assign @term" do
+        expect(assigns(:term)).to eq term
+      end
+      it "should render new" do
+        expect(response).to render_template("new")
+      end
+    end
+  end
 end
