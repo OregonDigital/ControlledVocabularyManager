@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
 
-  get '/ns/*id', :to => "controlled_vocabularies#show", :constraints => {:id => /.+/}, :as => "controlled_vocabulary"
+  get '/ns/*id', :to => "controlled_vocabularies#show", :as => "controlled_vocabulary"
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
