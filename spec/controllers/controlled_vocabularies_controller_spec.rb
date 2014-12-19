@@ -17,6 +17,10 @@ RSpec.describe ControlledVocabulariesController do
         resource.persist!
         get :show, :id => resource.id, :format => format
       end
+
+      it "should render the show template" do
+        expect(response).to render_template("show")
+      end
       
       context "format html" do
         it "should render html" do
