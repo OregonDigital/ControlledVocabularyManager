@@ -13,7 +13,7 @@ class VocabulariesController < ApplicationController
 
   class CreateResponder < SimpleDelegator
     def success(vocabulary)
-      redirect_to vocabulary_path(vocabulary)
+      redirect_to term_path(vocabulary)
     end
 
     def failure(vocabulary)

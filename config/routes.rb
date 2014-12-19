@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'home#index'
 
-  get '/ns/*id', :to => "vocabularies#show", :as => "vocabulary"
+  get '/ns/*id', :to => "terms#show", :as => "term"
 
   resources :vocabularies, :only => [:new, :create]
 
