@@ -19,6 +19,18 @@ RSpec.describe VocabulariesController do
     end
   end
 
+  describe "GET 'index'" do
+    before do
+      get :index
+    end
+    it "should be successful" do
+      expect(response).to be_success
+    end
+    it "renders index" do
+      expect(response).to render_template "index"
+    end
+  end
+
   describe "POST create" do
     let(:vocabulary_params) do
       {

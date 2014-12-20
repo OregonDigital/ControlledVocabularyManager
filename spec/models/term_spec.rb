@@ -22,6 +22,22 @@ RSpec.describe Term do
     end
   end
 
+  describe "#vocabulary?" do
+    context "when it is a term" do
+      it "should not be a vocabulary" do
+        expect(resource).not_to be_vocabulary
+      end
+    end
+    context "when it has a vocabulary type" do
+      before do
+        resource.type = Vocabulary.type
+      end
+      it "should be a vocabulary" do
+        expect(resource).to be_vocabulary
+      end
+    end
+  end
+
   describe "validations" do
     context "when not given a uri" do
       let(:uri) { nil }

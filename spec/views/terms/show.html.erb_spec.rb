@@ -14,6 +14,13 @@ RSpec.describe "terms/show" do
     render
   end
 
+  context "when given a vocab" do
+    let(:resource) { Vocabulary.new(uri) }
+    it "should have a link to create a resource" do
+      expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
+    end
+  end
+
   it "displays the term name" do
     expect(rendered).to have_content("bla")
   end
