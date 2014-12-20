@@ -3,6 +3,10 @@ require 'json/ld'
 class VocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
 
+  def index
+
+  end
+
   def new
     @vocabulary = Vocabulary.new
   end

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
 
   get '/ns/*id', :to => "terms#show", :as => "term"
 
-  resources :vocabularies, :only => [:new, :create]
+  resources :vocabularies, :only => [:index, :new, :create]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
   resources :terms, :only => [:create]
 

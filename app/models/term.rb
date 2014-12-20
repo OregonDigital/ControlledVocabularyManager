@@ -15,6 +15,10 @@ class Term < ActiveTriples::Resource
     rdf_subject.to_s.gsub(self.class.base_uri,"")
   end
 
+  def vocabulary?
+    type.include?(Vocabulary.type)
+  end
+
   private
 
   def not_blank_node
