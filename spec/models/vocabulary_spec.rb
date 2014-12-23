@@ -10,4 +10,13 @@ RSpec.describe Vocabulary do
   it "should have a configured type" do
     expect(resource.type).to eq [RDF::URI("http://purl.org/dc/dcam/VocabularyEncodingScheme")]
   end
+
+  describe "contracts" do
+    context "when given Creator" do
+      let(:resource) { Vocabulary.new("Creator") }
+      it "should have a good rdf_subject" do
+        expect(resource.rdf_subject).to eq RDF::URI.new("http://opaquenamespace.org/ns/Creator")
+      end
+    end
+  end
 end

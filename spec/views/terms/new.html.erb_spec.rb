@@ -6,7 +6,7 @@ RSpec.describe "terms/new" do
   let(:term) { Term.new }
   before do
     allow(vocabulary).to receive(:id).and_return(id)
-    allow(vocabulary).to receive(:rdf_subject).and_return("http://opaquenamespace.org/ns/#{id}")
+    allow(vocabulary).to receive(:rdf_subject).and_return(RDF::URI("http://opaquenamespace.org/ns/#{id}"))
     assign(:vocabulary, vocabulary)
     assign(:term, term)
     render
