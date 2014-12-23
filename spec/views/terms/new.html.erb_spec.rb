@@ -32,21 +32,11 @@ RSpec.describe "terms/new" do
   it "should have a create term button" do
     expect(rendered).to have_button("Create Term")
   end
-  # The below tests deals with Terms that may already exist but have errors.
-  context "when term is persisted" do
-    let(:term) do
-      t = Term.new
-      allow(t).to receive(:persisted?).and_return(true)
-      t
-    end
-    it "should have a create term button" do
-      expect(rendered).to have_button("Create Term")
-    end
-    it "should post to /terms" do
-      expect(rendered).to have_selector("form[action='/terms'][method='post']")
-    end
-    it "should not have a _method field" do
-      expect(rendered).not_to have_selector("input[name='_method']")
+
+  context "with a term in the namespace" do
+    let(:term) { Term.new("#{id}/Test") }
+    it "should have a properly populated ID field" do
+      expect(rendered).to have_field("ID", :with => "Test")
     end
   end
 end

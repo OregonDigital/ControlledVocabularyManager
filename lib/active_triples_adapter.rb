@@ -11,7 +11,11 @@ module ActiveTriplesAdapter
     def find(uri)
       result = new(uri)
       result.orig_reload
-      raise ActiveTriples::NotFound if result.statements.to_a.length == 0
+      relevant_triples = result.statements.to_a
+      if type
+        relevant_triples.select!{|x| !(x.predicate == RDF.type && x.object.to_s == type.to_s)}
+      end
+      raise ActiveTriples::NotFound if relevant_triples.length == 0
       result
     end
 

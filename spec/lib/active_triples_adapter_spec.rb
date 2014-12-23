@@ -5,6 +5,8 @@ RSpec.describe ActiveTriplesAdapter do
     class ExampleResource < ActiveTriples::Resource
       include ActiveTriplesAdapter
       configure :repository => :default
+      configure :type => RDF::URI("http://purl.org/dc/dcam/VocabularyEncodingScheme")
+      configure :base_uri => "http://opaquenamespace.org/ns/"
     end
   end
   after do
@@ -12,6 +14,7 @@ RSpec.describe ActiveTriplesAdapter do
   end
   let(:resource) { ExampleResource.new(uri) }
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
+  let(:id) { "bla" }
   let(:repository) { ActiveTriples::Repositories.repositories[:default] }
   before do
     stub_repository
@@ -31,7 +34,7 @@ RSpec.describe ActiveTriplesAdapter do
         expect(resource).not_to be_persisted
       end
       it "should have no triples" do
-        expect(resource.statements.to_a.length).to eq 0
+        expect(resource.statements.to_a.length).to eq 1
       end
     end
     context "and then triples are persisted" do
@@ -46,7 +49,7 @@ RSpec.describe ActiveTriplesAdapter do
   end
 
   describe "#find" do
-    let(:resource) { ExampleResource.find(uri) }
+    let(:resource) { ExampleResource.find(id) }
     context "when there's nothing in the repository" do
       it "should raise an exception" do
         expect{resource}.to raise_error(ActiveTriples::NotFound)
@@ -66,7 +69,7 @@ RSpec.describe ActiveTriplesAdapter do
   end
   
   describe "#exists?" do
-    let(:result) { ExampleResource.exists?(uri) }
+    let(:result) { ExampleResource.exists?(id) }
     context "when there's nothing in the repository" do
       it "should return false" do
         expect(result).to eq false

@@ -70,7 +70,7 @@ RSpec.describe TermsController do
     end
     context "when the vocabulary is not persisted" do
       before do
-        allow(Vocabulary).to receive(:find).with(vocabulary.id).and_raise ActiveTriples::NotFound
+        expect(Vocabulary).to receive(:find).with(vocabulary.id).and_raise ActiveTriples::NotFound
       end
       it "should raise a 404" do
         expect(get_new.code).to eq "404"
