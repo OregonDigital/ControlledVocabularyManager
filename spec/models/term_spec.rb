@@ -22,6 +22,20 @@ RSpec.describe Term do
     end
   end
 
+  describe "#exists?" do
+    let(:result) { Term.exists?("bla") }
+    let(:repository) { ActiveTriples::Repositories.repositories[:default] }
+    context "when it is in the repository" do
+      before do
+        stub_repository
+        repository << RDF::Statement.new(RDF::URI(uri), RDF::DC.title, "bla")
+      end
+      it "should be true" do
+        expect(result).to eq true
+      end
+    end
+  end
+
   describe "#vocabulary?" do
     context "when it is a term" do
       it "should not be a vocabulary" do
