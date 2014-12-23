@@ -117,6 +117,18 @@ RSpec.describe TermsController do
       expect(TermCreator).to receive(:call).with(params[:term], vocabulary, [create_responder])
       post :create, params
     end
+    context "when vocabulary isn't found" do
+      before do
+        allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
+      end
+      it "should return a 404" do
+        expect(post(:create, params).code).to eq "404"
+      end
+      it "doesn't call TermCreator" do
+        expect(TermCreator).not_to receive(:call)
+        post :create, params
+      end
+    end
     describe "CreateResponder" do
       let(:term) { Term.new }
       let(:term_id) { "bla/bla" }

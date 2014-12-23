@@ -14,6 +14,15 @@ module ActiveTriplesAdapter
       raise ActiveTriples::NotFound if result.statements.to_a.length == 0
       result
     end
+
+    def exists?(uri)
+      begin
+        find(uri)
+      rescue ActiveTriples::NotFound
+        return false
+      end
+      true
+    end
   end
 
 end

@@ -64,4 +64,21 @@ RSpec.describe ActiveTriplesAdapter do
       end
     end
   end
+  
+  describe "#exists?" do
+    let(:result) { ExampleResource.exists?(uri) }
+    context "when there's nothing in the repository" do
+      it "should return false" do
+        expect(result).to eq false
+      end
+    end
+    context "when there's something in the repository" do
+      before do
+        repository << RDF::Statement.new(RDF::URI(uri), RDF::DC.title, "bla")
+      end
+      it "should be true" do
+        expect(result).to eq true
+      end
+    end
+  end
 end
