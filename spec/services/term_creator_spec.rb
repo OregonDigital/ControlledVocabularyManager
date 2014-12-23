@@ -12,13 +12,15 @@ RSpec.describe TermCreator do
   let(:id) { "testing" }
   let(:vocabulary) { vocabulary_mock }
   let(:vocabulary_persisted) { true }
-  let(:callback) { instance_double("TermsController") }
+  let(:callback) { instance_double("TermsController::CreateResponder") }
   let(:term) { term_mock }
   let(:term_valid) { true }
   let(:errors) { instance_double("ActiveModel::Errors") }
   let(:error_empty) { true } 
   before do
     allow(Term).to receive(:new).with("#{vocabulary.id}/#{id}").and_return(term)
+    allow(term).to receive(:id).and_return("#{vocabulary.id}/#{id}")
+    allow(Term).to receive(:exists?).with("#{vocabulary.id}/#{id}").and_return(false)
     allow(vocabulary).to receive(:persisted?).and_return(vocabulary_persisted)
     allow(term).to receive(:errors).and_return(errors)
     allow(term).to receive(:valid?).and_return(term_valid)
@@ -87,7 +89,7 @@ RSpec.describe TermCreator do
     end
     context "when the term IS persisted already" do
       before do
-        allow(Term).to receive(:exists?).with(id).and_return(true)
+        allow(Term).to receive(:exists?).with(term.id).and_return(true)
       end
       it "adds errors to the term" do
         expect(errors).to receive(:add).with(:id, anything)

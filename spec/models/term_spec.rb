@@ -18,7 +18,7 @@ RSpec.describe Term do
       resource.persist!
     end
     it "should be retrievable" do
-      expect(Term.new(uri)).not_to be_empty
+      expect(Term.find(uri)).not_to be_empty
     end
   end
 
@@ -86,7 +86,7 @@ RSpec.describe Term do
         expect(resource.issued.first).to eq Date.today
       end
       context "and then re-persisted" do
-        let(:reloaded) { resource.class.new(resource.rdf_subject) }
+        let(:reloaded) { resource.class.find(resource.rdf_subject) }
         let(:before_issued) { reloaded.issued.first }
         before do
           before_issued
