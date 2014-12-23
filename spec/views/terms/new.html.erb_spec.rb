@@ -2,9 +2,11 @@ require 'rails_helper'
 
 RSpec.describe "terms/new" do
   let(:id) { "Creator" }
-  let(:vocabulary) { Vocabulary.new(id) }
+  let(:vocabulary) { vocabulary_mock }
   let(:term) { Term.new }
   before do
+    allow(vocabulary).to receive(:id).and_return(id)
+    allow(vocabulary).to receive(:rdf_subject).and_return("http://opaquenamespace.org/ns/#{id}")
     assign(:vocabulary, vocabulary)
     assign(:term, term)
     render
