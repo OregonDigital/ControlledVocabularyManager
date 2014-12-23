@@ -20,6 +20,14 @@ class Term < ActiveTriples::Resource
     type.include?(Vocabulary.type)
   end
 
+  def add_error(attribute, reason)
+    errors.add(attribute, reason)
+  end
+
+  def empty_errors?
+    errors.empty?
+  end
+
   private
 
   def not_blank_node

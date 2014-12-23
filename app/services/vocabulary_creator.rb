@@ -45,14 +45,14 @@ class VocabularyCreator
   end
 
   def check_existence
-    vocabulary.errors.add(:id, "already exists in the repository") if Vocabulary.exists?(vocabulary.id)
+    vocabulary.add_error(:id, "already exists in the repository") if Vocabulary.exists?(vocabulary.id)
   end
 
   def persist_vocabulary
     # This return is a hack. Checking #valid? clears out errors and re-runs
     # validations, which means the above doesn't work. Need a better way to do
     # this maybe. A decorator with validators maybe?
-    return unless vocabulary.errors.empty?
+    return unless vocabulary.empty_errors?
     @result = vocabulary.persist!(:validate => true)
   end
 
