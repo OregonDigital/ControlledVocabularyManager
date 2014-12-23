@@ -14,6 +14,9 @@ RSpec.describe "vocabularies/new" do
   it "posts to /vocabularies" do
     expect(rendered).to have_selector("form[action='/vocabularies'][method='post']")
   end
+  it "has a create vocabulary button" do
+    expect(rendered).to have_button("Create Vocabulary")
+  end
 
   context "when the vocabulary has errors" do
     let(:vocabulary) do
@@ -26,22 +29,6 @@ RSpec.describe "vocabularies/new" do
       expect(rendered).to have_content("Please review the problems below")
       expect(rendered).to have_content("has problems")
       expect(rendered).to have_content("has more problems")
-    end
-    context "and the vocabulary is not a new record" do
-      let(:vocabulary) do
-        v = Vocabulary.new
-        v.errors.add(:id, "has problems")
-        v.errors.add(:label, "has more problems")
-        allow(v).to receive(:persisted?).and_return(true)
-        v
-      end
-      it "should still post to /vocabularies" do
-        expect(rendered).to have_selector("form[action='/vocabularies'][method='post']")
-        expect(rendered).not_to have_selector("input[name='_method'][value='post']")
-      end
-      it "should say create vocabulary" do
-        expect(rendered).to have_button("Create Vocabulary")
-      end
     end
   end
 end

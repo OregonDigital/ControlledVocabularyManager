@@ -1,11 +1,7 @@
 <h1>Create New Term</h1>
 
 <%= simple_form_for(@term) do |f| %>
-  <%= f.input :id, :wrapper => :vertical_input_group, :label => "ID" do %>
-    <span class="input-group-addon"><%= @vocabulary.rdf_subject.to_s %>/</span>
-    <%= f.input_field :id, :class => "form-control", :value => @term.id.to_s.gsub(/^#{@vocabulary.id}\//,'') %>
-    <%= hidden_field_tag 'vocabulary_id', @vocabulary.id %>
-  <% end %>
+  <%= render "form_id", :f => f %>
   <% %w{label comment}.each do |attribute| %>
     <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => @term, :attribute => attribute, :form => f} %>
   <% end %>
