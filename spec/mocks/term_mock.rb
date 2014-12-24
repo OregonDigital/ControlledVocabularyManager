@@ -6,10 +6,5 @@ module GlobalMocks
     allow(i).to receive(:id).and_return("bla")
     i
   end
-  let(:vocabulary_mock) do
-    i = fake(:vocabulary)
-    stub(i).persisted? { false }
-    stub(i).id { "Creator" }
-    i
-  end
+  let(:vocabulary_mock) { fake(:vocabulary) }
 end

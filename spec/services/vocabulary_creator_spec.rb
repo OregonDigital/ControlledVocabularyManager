@@ -10,8 +10,8 @@ RSpec.describe VocabularyCreator do
   end
   let(:label) { ["Test Label"] }
   let(:comment) { ["Test Comment"] }
-  let(:callback) { fake(:callback) { VocabulariesController::CreateResponder  }}
-  let(:vocabulary) { vocabulary_mock }
+  fake(:callback)
+  fake(:vocabulary)
   let(:persist_success) { true }
   subject { VocabularyCreator.call(params, callback) }
   before do

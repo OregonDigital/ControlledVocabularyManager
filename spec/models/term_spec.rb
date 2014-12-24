@@ -1,10 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe Term do
+  verify_contract(:term)
+  it_behaves_like "a term" do
+    let(:resource_class) { Term }
+  end
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { Term.new(uri) }
   it "should be an AT::Resource" do
-    expect(Term < ActiveTriples::Resource).to be true
+    expect(resource.class.ancestors).to include ActiveTriples::Resource
   end
   it "should instantiate" do
     expect{Term.new}.not_to raise_error
@@ -21,6 +25,7 @@ RSpec.describe Term do
       expect(Term.find(uri)).not_to be_empty
     end
   end
+
 
   describe "#exists?" do
     let(:result) { Term.exists?("bla") }

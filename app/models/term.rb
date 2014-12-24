@@ -11,6 +11,13 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  def initialize(*args)
+    id = args.pop
+    id = id.to_s.gsub(/\/$/,'')
+    args = [id] + args
+    super(*args)
+  end
+
   def id
     return nil if rdf_subject.node?
     rdf_subject.to_s.gsub(self.class.base_uri,"")
