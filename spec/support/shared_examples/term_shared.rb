@@ -153,4 +153,83 @@ RSpec.shared_examples "a term" do
       end
     end
   end
+
+  describe "#issued" do
+    before do
+      Timecop.travel(Time.new(2012,1,1))
+      stub_repository
+    end
+    context "when it's new" do
+      it "should be empty" do
+        expect(resource.issued).to be_empty
+      end
+    end
+    context "when persisted" do
+      before do
+        resource.persist!
+      end
+      it "should be set" do
+        expect(resource.issued).not_to be_empty
+      end
+      it "should be the current day" do
+        expect(resource.issued).to eq [Date.new(2012,1,1)]
+      end
+      context "and then re-persisted" do
+        let(:reloaded) { resource.class.find(resource.rdf_subject) }
+        let(:before_issued) { reloaded.issued}
+        before do
+          before_issued
+          Timecop.travel(Time.new(2012,1,2))
+          reloaded.persist!
+        end
+        it "should not change" do
+          expect(before_issued).to eq reloaded.issued
+        end
+      end
+    end
+
+    describe ".base_uri" do
+      it "should be set to opaquenamespace.org" do
+        expect(resource.class.base_uri).to eq "http://opaquenamespace.org/ns/"
+      end
+    end
+
+    describe "#base_uri" do
+      it "should be set to opaquenamespace.org" do
+        expect(resource.base_uri).to eq "http://opaquenamespace.org/ns/"
+      end
+    end
+
+
+    describe "#modified" do
+      before do
+        Timecop.travel(Time.new(2012,1,1))
+        stub_repository
+      end
+      context "when it's persisted" do
+        before do
+          resource.persist!
+        end
+        it "should be set" do
+          expect(resource.modified).not_to be_empty
+        end
+        it "should be the current day" do
+          expect(resource.modified).to eq [Date.new(2012,1,1)]
+        end
+        context "and then re-persisted" do
+          let(:reloaded) { resource.class.new(resource.rdf_subject) }
+          let(:before_modified) { reloaded.modified.first }
+          before do
+            before_modified
+            Timecop.travel(Time.new(2012,1,2))
+            resource.persist!
+          end
+          it "should change" do
+            expect(before_modified).not_to eq resource.modified.first
+            expect(resource.modified).to eq [Date.new(2012,1,2)]
+          end
+        end
+      end
+    end
+  end
 end

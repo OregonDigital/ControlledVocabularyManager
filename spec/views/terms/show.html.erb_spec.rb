@@ -6,10 +6,10 @@ RSpec.describe "terms/show" do
 
   before do
     assign(:term, resource)
-    stub(resource).label { ["Blah term"] }
-    stub(resource).comment { ["Blah comment"] }
-    stub(resource).issued { ["2014-01-02"] }
-    stub(resource).modified { ["2014-01-03"] }
+    stub(resource).label { ["Test Label"] }
+    stub(resource).comment { ["Test Comment"] }
+    stub(resource).issued { [Date.new(2012,1,1)] }
+    stub(resource).modified { [Date.new(2012,1,2)] }
     stub(resource).base_uri { base_uri }
     render
   end
@@ -28,10 +28,16 @@ RSpec.describe "terms/show" do
   it "displays the full URI" do
     expect(rendered).to have_content("http://opaquenamespace.org/ns/bla") 
   end
-  %w{label comment issued modified}.each do |attribute|
+  %w{label comment}.each do |attribute|
     it "displays #{attribute}" do
       expect(rendered).to have_content(resource.send(attribute).first)
     end
+  end
+  it "displays modified" do
+    expect(rendered).to have_content "2012-01-02"
+  end
+  it "displays issued" do
+    expect(rendered).to have_content "2012-01-01"
   end
 
 end

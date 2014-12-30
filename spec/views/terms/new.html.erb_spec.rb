@@ -34,7 +34,7 @@ RSpec.describe "terms/new" do
   end
 
   context "with a term in the namespace" do
-    let(:term) { Term.new("#{id}/Test") }
+    let(:term) { Term.new("#{vocabulary.id}/Test") }
     it "should have a properly populated ID field" do
       expect(rendered).to have_field("ID", :with => "Test")
     end
