@@ -1,12 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "terms/new" do
-  let(:id) { "Creator" }
-  let(:vocabulary) { vocabulary_mock }
+  fake(:vocabulary)
   let(:term) { Term.new }
   before do
-    allow(vocabulary).to receive(:id).and_return(id)
-    allow(vocabulary).to receive(:rdf_subject).and_return(RDF::URI("http://opaquenamespace.org/ns/#{id}"))
+    stub(vocabulary).rdf_subject { RDF::URI("http://opaquenamespace.org/ns/#{vocabulary.id}") }
     assign(:vocabulary, vocabulary)
     assign(:term, term)
     render
@@ -24,7 +22,7 @@ RSpec.describe "terms/new" do
     expect(rendered).to have_selector("input[name='term[id]']")
   end
   it "should have a vocabulary ID field" do
-    expect(rendered).to have_selector("input[type='hidden'][name='vocabulary_id'][value='#{id}']")
+    expect(rendered).to have_selector("input[type='hidden'][name='vocabulary_id'][value='#{vocabulary.id}']")
   end
   %w{label comment}.each do |attribute|
     it "has inputs for #{attribute}" do
