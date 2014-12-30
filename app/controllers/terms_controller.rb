@@ -1,5 +1,3 @@
-require 'json/ld'
-
 class TermsController < ApplicationController
   before_filter :load_term, :only => :show
   before_filter :vocabulary, :only => :new

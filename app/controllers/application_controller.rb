@@ -5,8 +5,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate
   before_filter :authorize
 
-  private
-  
   def authenticate
     unless github_authenticated?
       github_authenticate!

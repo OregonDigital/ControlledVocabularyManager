@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'vocabulary' # Required because Term gets overriden
 
 RSpec.describe Term do
   verify_contract(:term)

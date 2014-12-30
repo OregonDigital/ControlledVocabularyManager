@@ -33,6 +33,24 @@ RSpec.shared_examples "a term" do
     end
   end
 
+  describe "#dump" do
+    before do
+      resource << RDF::Statement.new(resource.rdf_subject, RDF::DC.creator, "bla")
+    end
+    describe ":ntriples" do
+      let(:result) { resource.dump(:ntriples).split("\n").last }
+      it "should have creator" do
+        expect(result).to eq "<http://opaquenamespace.org/ns/Creator> <http://purl.org/dc/terms/creator> \"bla\" ."
+      end
+    end
+    describe ":jsonld" do
+      let(:result) { JSON.parse(resource.dump(:jsonld, {:standard_prefixes => true})) }
+      it "should work" do
+        expect(result["dc:creator"]).to eq "bla"
+      end
+    end
+  end
+
   describe "#valid?" do
     context "when no errors" do
       it "should be valid" do

@@ -1,5 +1,3 @@
-require 'json/ld'
-
 class VocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
 

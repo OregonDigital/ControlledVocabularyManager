@@ -2,19 +2,17 @@ require 'rails_helper'
 
 RSpec.describe TermsController do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  let(:resource) { term_mock }
+  let(:resource) { fake(:term) }
 
   describe '#show' do
     before do
       stub_repository
-      allow(resource).to receive(:dump)
-      allow(Term).to receive(:find).with("bla").and_return(resource)
+      stub(Term).find(resource.id) { resource }
     end
 
     context "when the resource exists" do
       let(:format) {}
       before do
-        allow(resource).to receive(:persisted?).and_return(true)
         get :show, :id => resource.id, :format => format
       end
 
@@ -32,7 +30,7 @@ RSpec.describe TermsController do
         let(:format) {:nt}
         it "should render n-triples" do
           expect(response.content_type).to eq("application/n-triples")
-          expect(resource).to have_received(:dump).with(:ntriples)
+          expect(resource).to have_received.dump(:ntriples)
         end
       end
 
@@ -40,15 +38,15 @@ RSpec.describe TermsController do
         let(:format) {:jsonld}
         it "should render json-ld" do
           expect(response.content_type).to eq("application/ld+json")
-          expect(resource).to have_received(:dump).with(:jsonld, {:standard_prefixes => true})
+          expect(resource).to have_received.dump(:jsonld, {:standard_prefixes => true})
         end
       end
     end
 
     context "when the resource does not exist" do
       before do
-        allow(Term).to receive(:find).with("nothing").and_raise ActiveTriples::NotFound
-        get :show, :id => "nothing"
+        stub(Term).find(resource.id) { raise ActiveTriples::NotFound }
+        get :show, :id => resource.id
       end
 
       it "should return a 404" do
@@ -57,26 +55,28 @@ RSpec.describe TermsController do
     end
   end
   describe "GET new" do
-    let(:vocabulary) { vocabulary_mock }
+    fake(:vocabulary)
+    fake(:term)
     let(:persisted_status) { true }
-    let(:term) { term_mock }
     before do
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
-      allow(vocabulary).to receive(:persisted?).and_return(persisted_status)
-      allow(Term).to receive(:new).with(no_args).and_return(term)
+      stub(Vocabulary).find(vocabulary.id) { vocabulary }
+      stub(vocabulary).persisted? { persisted_status }
+      # Is this useful?
+      stub(Term).new() { term }
     end
     def get_new
       get :new, :vocabulary_id => vocabulary.id
     end
     context "when the vocabulary is not persisted" do
       before do
-        expect(Vocabulary).to receive(:find).with(vocabulary.id).and_raise ActiveTriples::NotFound
+        stub(Vocabulary).find(vocabulary.id) { raise ActiveTriples::NotFound }
       end
       it "should raise a 404" do
         expect(get_new.code).to eq "404"
       end
     end
     context "when the vocabulary is persisted" do
+      let(:persisted_status) { true }
       before do
         get_new
       end
@@ -93,40 +93,45 @@ RSpec.describe TermsController do
   end
 
   describe "POST create" do
-    let(:vocabulary) { vocabulary_mock }
-    let(:term) { term_mock }
+    fake(:vocabulary)
+    fake(:term)
     let(:params) do
       {
-        :vocabulary_id => vocabulary.id,
+        "vocabulary_id" => vocabulary.id,
         :term => {
-          :id => "test",
-          :comment => ["Test"],
-          :label => ["Label"]
+          "id" => "test",
+          "comment" => ["Test"],
+          "label" => ["Label"]
         }
       }
     end
-    let(:create_responder) { instance_double(TermsController::CreateResponder) }
+    fake(:term_callback)
     before do
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
-      allow(TermCreator).to receive(:call) do
+      stub(Vocabulary).find(vocabulary.id) { vocabulary }
+      fake_class(TermCreator)
+      stub(TermCreator).call(any_args) {
         controller.render :nothing => true
-      end
+      }
     end
-    it "should call TermCreator" do
-      expect(TermsController::CreateResponder).to receive(:new).with(controller).and_return(create_responder)
-      expect(TermCreator).to receive(:call).with(params[:term], vocabulary, [create_responder])
-      post :create, params
-    end
-    context "when vocabulary isn't found" do
+    describe "#create" do
       before do
-        allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
+        stub(TermsController::CreateResponder).new(controller) { term_callback }
       end
-      it "should return a 404" do
-        expect(post(:create, params).code).to eq "404"
-      end
-      it "doesn't call TermCreator" do
-        expect(TermCreator).not_to receive(:call)
+      it "should call TermCreator" do
         post :create, params
+        expect(TermCreator).to have_received.call(params[:term], vocabulary, [term_callback])
+      end
+      context "when vocabulary isn't found" do
+        before do
+          stub(Vocabulary).find(vocabulary.id) { raise ActiveTriples::NotFound }
+          post :create, params
+        end
+        it "should return a 404" do
+          expect(response.code).to eq "404"
+        end
+        it "doesn't call TermCreator" do
+          expect(TermCreator).not_to have_received.call(any_args)
+        end
       end
     end
     describe "CreateResponder" do
@@ -134,11 +139,11 @@ RSpec.describe TermsController do
       let(:term_id) { "bla/bla" }
       describe "#success" do
         before do
-          allow(controller).to receive(:create) do
+          stub(controller).create do
             TermsController::CreateResponder.new(controller).success(term, vocabulary)
           end
-          allow(term).to receive(:persisted?).and_return(true)
-          allow(term).to receive(:id).and_return(term_id)
+          stub(term).persisted? { true }
+          stub(term).id { term_id }
           post :create, params
         end
         it "should redirect to the term" do
@@ -147,7 +152,7 @@ RSpec.describe TermsController do
       end
       describe "#failure" do
         before do
-          allow(controller).to receive(:create) do
+          stub(controller).create do
             TermsController::CreateResponder.new(controller).failure(term, vocabulary)
           end
           post :create, params
