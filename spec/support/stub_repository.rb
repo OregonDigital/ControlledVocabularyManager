@@ -1,3 +1,3 @@
 def stub_repository
-  allow(ActiveTriples::Repositories).to receive(:repositories).and_return({:default => RDF::Repository.new})
+  ActiveTriples::Repositories.add_repository :default, RDF::Repository.new
 end

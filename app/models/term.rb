@@ -1,4 +1,5 @@
 class Term < ActiveTriples::Resource
+  include ActiveTriplesAdapter
   configure :repository => :default
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
   property :comment, :predicate => RDF::RDFS.comment
@@ -10,6 +11,13 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  def initialize(*args)
+    id = args.pop
+    id = id.to_s.gsub(/\/$/,'')
+    args = [id] + args
+    super(*args)
+  end
+
   def id
     return nil if rdf_subject.node?
     rdf_subject.to_s.gsub(self.class.base_uri,"")
@@ -17,6 +25,14 @@ class Term < ActiveTriples::Resource
 
   def vocabulary?
     type.include?(Vocabulary.type)
+  end
+
+  def add_error(attribute, reason)
+    errors.add(attribute, reason)
+  end
+
+  def empty_errors?
+    errors.empty?
   end
 
   private

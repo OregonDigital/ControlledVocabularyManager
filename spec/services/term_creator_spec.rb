@@ -5,99 +5,85 @@ RSpec.describe TermCreator do
   let(:params) do
     {
       :id => id,
-      :creator => ["Creator"],
-      :label => ["Label"]
+      :label => ["Test Label"],
+      :comment => ["Test Comment"]
     }
   end
   let(:id) { "testing" }
-  let(:vocabulary) { instance_double("Vocabulary") }
-  let(:vocabulary) do
-    v = instance_double("Vocabulary")
-    allow(v).to receive(:id).and_return(vocabulary_id)
-    v
-  end
-  let(:vocabulary_id) { "bla/bla" }
-  let(:vocabulary_persisted) { true }
-  let(:callback) { double("callback") }
-  let(:term) { instance_double("Term") }
-  let(:term_persisted) { false }
+  fake(:vocabulary)
+  let(:callback) { fake(:term_callback) }
+  fake(:term)
+  let(:vocabulary_exists) { true }
   let(:term_valid) { true }
-  let(:errors) { double("errors") }
-  let(:error_empty) { true } 
+  let(:term_id) { "#{vocabulary.id}/#{id}".gsub(/\/$/,'') }
+  let(:error_empty) { true }
   before do
-    allow(Term).to receive(:new).with("#{vocabulary_id}/#{id}").and_return(term)
-    allow(vocabulary).to receive(:persisted?).and_return(vocabulary_persisted)
-    allow(term).to receive(:persisted?).and_return(term_persisted)
-    allow(term).to receive(:errors).and_return(errors)
-    allow(term).to receive(:valid?).and_return(term_valid)
-    allow(term).to receive(:attributes=)
-    allow(errors).to receive(:empty?).and_return(error_empty)
+    stub(Term).new(term_id) { term }
+    stub(Term).new(term_id+"/") { term }
+    stub(term).id { term_id }
+    stub(Term).exists?(term_id) { false }
+    stub(vocabulary).persisted? { vocabulary_exists }
+    stub(term).valid?{term_valid}
+    stub(term).empty_errors? { error_empty }
   end
 
   describe "#call" do
     subject { TermCreator.call(params, vocabulary, callback) }
+    fake(:term_creator)
+    before do
+      stub(TermCreator).new(params, vocabulary, callback) { term_creator }
+    end
     it "should initialize and call perform" do
-      i = instance_double("TermCreator")
-      expect(TermCreator).to receive(:new).with(params, vocabulary, callback).and_return(i)
-      expect(i).to receive(:perform)
       subject
+      expect(term_creator).to have_received.perform
     end
   end
 
   describe "#perform" do
+    before do
+      subject.perform
+    end
     context "when given valid parameters" do
-      before do
-        allow(callback).to receive(:success).with(term, vocabulary)
-        allow(term).to receive(:persist!)
-      end
       it "should call success on callback" do
-        expect(callback).to receive(:success).with(term, vocabulary)
-        subject.perform
+        expect(callback).to have_received.success(term, vocabulary)
       end
       it "should set attributes" do
-        expect(term).to receive(:attributes=).with(params.except(:id))
-        subject.perform
+        expect(term).to have_received(:attributes=, params.except(:id))
       end
       it "should persist the term" do
-        expect(term).to receive(:persist!).with(:validate => true)
-        subject.perform
+        expect(term).to have_received.persist!(:validate => true)
       end
     end
-    end
-  context "when something has gone wrong" do
-    let(:error_empty) { false }
-    before do
-      allow(callback).to receive(:failure).with(term, vocabulary)
-    end
-    context "when term has errors" do
-      it "should call failure on callback" do
-        expect(callback).to receive(:failure).with(term, vocabulary)
-        subject.perform
+    context "when something has gone wrong" do
+      let(:error_empty) { false }
+      context "when term has errors" do
+        it "should call failure on callback" do
+          expect(callback).to have_received.failure(term, vocabulary)
+        end
+        it "should not call persist!" do
+          expect(term).not_to have_received(:persist!)
+        end
       end
-      it "should not call persist!" do
-        expect(term).not_to receive(:persist!)
-        subject.perform
+      context "when term id is nil" do
+        let(:id) { nil }
+        it "adds errors to the term" do
+          expect(term).to have_received.add_error(:id, anything)
+        end
       end
-    end
-    context "when term id is nil" do
-      let(:id) { nil }
-      it "adds errors to the term" do
-        expect(errors).to receive(:add).with(:id, anything)
-        subject.perform
+      context "when the vocabulary is not persisted" do
+        let(:vocabulary_exists) { false }
+        it "adds errors to the term" do
+          expect(term).to have_received.add_error(:id, anything)
+        end
       end
-    end
-    context "when the vocabulary is not persisted" do
-      let(:vocabulary_persisted) { false }
-      it "adds errors to the term" do
-        expect(errors).to receive(:add).with(:id, anything)
-        subject.perform
-      end
-    end
-    context "when the term IS persisted already" do
-      let(:term_persisted) { true }
-      it "adds errors to the term" do
-        expect(errors).to receive(:add).with(:id, anything)
-        subject.perform
+      context "when the term IS persisted already" do
+        before do
+          stub(Term).exists?(term.id) { true }
+          subject.perform
+        end
+        it "adds errors to the term" do
+          expect(term).to have_received.add_error(:id, anything)
+        end
       end
     end
   end

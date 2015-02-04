@@ -40,24 +40,24 @@ class TermCreator
   end
 
   def persist_term
-    term.persist!(:validate => true) if term.errors.empty?
+    term.persist!(:validate => true) if term.empty_errors?
   end
 
   def check_nonempty_id
-    term.errors.add(:id, "can not be blank") unless term_id.present?
+    term.add_error(:id, "can not be blank") unless term_id.present?
   end
 
   def check_vocabulary_persistence
-    term.errors.add(:id, "is in a non-existent vocabulary") unless vocabulary.persisted?
+    term.add_error(:id, "is in a non-existent vocabulary") unless vocabulary.persisted?
   end
 
   def check_term_persistence
-    term.errors.add(:id, "already exists in the repository") if term.persisted?
+    term.add_error(:id, "already exists in the repository") if Term.exists?(term.id)
   end
 
   def notify_callbacks
     callbacks.each do |callback|
-      if term.errors.empty?
+      if term.empty_errors?
         callback.success(term, vocabulary)
       else
         callback.failure(term, vocabulary)

@@ -12,8 +12,8 @@ RSpec.describe "routes for Terms" do
       let(:id) {"bla/bla"}
       let(:resource) do
         r = klass.new
-        allow(r).to receive(:id).and_return(id)
-        allow(r).to receive(:persisted?).and_return(true)
+        stub(r).id { id }
+        stub(r).persisted? { true }
         r
       end
       it "should route to its id preserving slashes" do

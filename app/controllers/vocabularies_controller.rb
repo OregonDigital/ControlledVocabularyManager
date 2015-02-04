@@ -1,6 +1,5 @@
-require 'json/ld'
-
 class VocabulariesController < ApplicationController
+  attr_writer :vocabulary
   before_filter :load_vocab, :only => :show
 
   def index
@@ -21,7 +20,7 @@ class VocabulariesController < ApplicationController
     end
 
     def failure(vocabulary)
-      __getobj__.instance_variable_set(:@vocabulary, vocabulary)
+      self.vocabulary = vocabulary
       render :new
     end
   end
