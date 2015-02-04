@@ -1,4 +1,5 @@
 class TermsController < ApplicationController
+  attr_writer :term, :vocabulary
   before_filter :load_term, :only => :show
   before_filter :vocabulary, :only => :new
   rescue_from ActiveTriples::NotFound, :with => :render_404
@@ -28,15 +29,15 @@ class TermsController < ApplicationController
     end
 
     def failure(term, vocabulary)
-      __getobj__.instance_variable_set(:@term, term)
-      __getobj__.instance_variable_set(:@vocabulary, vocabulary)
+      self.term = term
+      self.vocabulary = vocabulary
       render "new"
     end
 
   end
 
   def load_term
-    @term = Term.find(params[:id])
+    self.term = Term.find(params[:id])
   end
 
   def render_404
