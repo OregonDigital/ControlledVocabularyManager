@@ -17,6 +17,15 @@ GIT
     warden-rspec-rails (0.1.0)
 
 GIT
+  remote: git://github.com/ruby-rdf/sparql-client.git
+  revision: c85826b546592b4ce687445c1c4935fcac5d8028
+  branch: develop
+  specs:
+    sparql-client (1.1.3.1)
+      net-http-persistent (~> 2.9)
+      rdf (~> 1.1)
+
+GIT
   remote: git://github.com/terrellt/jazz_hands.git
   revision: d5829e6119671b2ff5fe6098846764084f2ab562
   specs:
@@ -32,6 +41,17 @@ GIT
       pry-remote (>= 0.1.7)
       pry-stack_explorer (~> 0.4.9)
       railties (>= 3.0, < 5.0)
+
+GIT
+  remote: git://github.com/terrellt/rdf-marmotta.git
+  revision: 8452a8f7723996dca2f43450bd01b4bfdf1ca16c
+  branch: feature/UseSparqlRepository
+  specs:
+    rdf-marmotta (0.0.6)
+      nokogiri
+      rake
+      rdf (~> 1.1)
+      rdf-rdfxml (~> 1.1)
 
 GEM
   remote: https://rubygems.org/
@@ -263,11 +283,6 @@ GEM
       rdf (>= 1.1)
     rdf-json (1.1.1)
       rdf (~> 1.1)
-    rdf-marmotta (0.0.4)
-      nokogiri
-      rdf (~> 1.1)
-      rdf-rdfxml (~> 1.1)
-      sparql-client (~> 1.1)
     rdf-microdata (2.0)
       htmlentities (~> 4.3)
       nokogiri (~> 1.6)
@@ -351,9 +366,6 @@ GEM
       rdf-xsd (~> 1.1)
       sparql-client (~> 1.1)
       sxp (~> 0.1)
-    sparql-client (1.1.3.1)
-      net-http-persistent (~> 2.9)
-      rdf (~> 1.1)
     spring (1.2.0)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -423,13 +435,14 @@ DEPENDENCIES
   jquery-rails
   poltergeist
   rails (= 4.1.7)
-  rdf-marmotta
+  rdf-marmotta!
   rspec-rails
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   shoulda-matchers
   simple_form
   simplecov
+  sparql-client!
   spring
   spring-commands-rspec
   sqlite3
