@@ -14,16 +14,16 @@ class ChildNodeFinder
 
   private
 
-  def child_query
-    "select DISTINCT * WHERE
-    {
-      ?s ?p ?o
-      FILTER(STRSTARTS(STR(?s), \"#{vocabulary.rdf_subject}/\")) .
-    }"
+  def children_solutions
+    @children_solutions ||= query.each_solution.to_a
   end
 
-  def children_solutions
-    @children_solutions ||= sparql_client.query(child_query)
+  def query
+    sparql_client.select.where([:s, :p, :o]).filter(query_filter)
+  end
+
+  def query_filter
+    "STRSTARTS(STR(?s), \"#{vocabulary.rdf_subject}/\")"
   end
 
   def children_triples
