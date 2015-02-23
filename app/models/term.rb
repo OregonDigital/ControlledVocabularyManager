@@ -20,6 +20,10 @@ class Term < ActiveTriples::Resource
     type.include?(Vocabulary.type)
   end
 
+  def repository
+    super
+  end
+
   private
 
   def not_blank_node
