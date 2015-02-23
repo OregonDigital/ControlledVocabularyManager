@@ -18,7 +18,21 @@ RSpec.describe Term do
       resource.persist!
     end
     it "should be retrievable" do
-      expect(Term.new(uri)).not_to be_empty
+      expect(Term.find(uri)).not_to be_empty
+    end
+  end
+
+  describe "#exists?" do
+    let(:result) { Term.exists?("bla") }
+    let(:repository) { ActiveTriples::Repositories.repositories[:default] }
+    context "when it is in the repository" do
+      before do
+        stub_repository
+        repository << RDF::Statement.new(RDF::URI(uri), RDF::DC.title, "bla")
+      end
+      it "should be true" do
+        expect(result).to eq true
+      end
     end
   end
 
@@ -72,7 +86,7 @@ RSpec.describe Term do
         expect(resource.issued.first).to eq Date.today
       end
       context "and then re-persisted" do
-        let(:reloaded) { resource.class.new(resource.rdf_subject) }
+        let(:reloaded) { resource.class.find(resource.rdf_subject) }
         let(:before_issued) { reloaded.issued.first }
         before do
           before_issued

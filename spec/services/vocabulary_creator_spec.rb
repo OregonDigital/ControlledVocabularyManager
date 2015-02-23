@@ -12,18 +12,18 @@ RSpec.describe VocabularyCreator do
   let(:label) { ["Test Label"] }
   let(:comment) { ["Test Comment"] }
   let(:callback) { double("callback") }
-  let(:vocabulary) { instance_double("Vocabulary") }
-  let(:persisted) { false }
+  let(:vocabulary) { vocabulary_mock }
   let(:persist_success) { true }
   let(:error_double) { double("errors") }
   subject { VocabularyCreator.call(params, callback) }
   before do
     stub_repository
     allow(class_double("Vocabulary").as_stubbed_const).to receive(:new).and_return(vocabulary)
-    allow(vocabulary).to receive(:persisted?).and_return(persisted)
     allow(vocabulary).to receive(:errors).and_return(error_double)
+    allow(Vocabulary).to receive(:exists?).and_return(false)
     allow(vocabulary).to receive(:persist!).and_return(persist_success)
     allow(vocabulary).to receive(:attributes=)
+    allow(vocabulary).to receive(:id).and_return(id)
     allow(error_double).to receive(:empty?).and_return(true)
   end
 
@@ -51,8 +51,8 @@ RSpec.describe VocabularyCreator do
       end
     end
     context "when given an already existing vocabulary" do
-      let(:persisted) { true }
       before do
+        allow(Vocabulary).to receive(:exists?).with(id).and_return(true)
         allow(error_double).to receive(:add)
         allow(error_double).to receive(:empty?).and_return(false)
         allow(callback).to receive(:failure)

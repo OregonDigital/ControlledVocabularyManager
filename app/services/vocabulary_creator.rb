@@ -45,7 +45,7 @@ class VocabularyCreator
   end
 
   def check_existence
-    vocabulary.errors.add(:id, "already exists in the repository") if vocabulary.persisted?
+    vocabulary.errors.add(:id, "already exists in the repository") if Vocabulary.exists?(vocabulary.id)
   end
 
   def persist_vocabulary

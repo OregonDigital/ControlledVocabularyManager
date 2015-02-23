@@ -34,7 +34,8 @@ gem 'unicorn'
 
 # Active Triples for RDF resources.
 gem 'active-triples', :github => "ActiveTriples/ActiveTriples", :branch => "master"
-gem 'rdf-marmotta'
+gem 'rdf-marmotta', :github => "terrellt/rdf-marmotta", :branch => "feature/UseSparqlRepository"
+gem "sparql-client", :github => "ruby-rdf/sparql-client", :branch => "develop"
 
 gem 'warden-github-rails'
 

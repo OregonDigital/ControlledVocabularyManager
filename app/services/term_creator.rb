@@ -52,7 +52,7 @@ class TermCreator
   end
 
   def check_term_persistence
-    term.errors.add(:id, "already exists in the repository") if term.persisted?
+    term.errors.add(:id, "already exists in the repository") if Term.exists?(term.id)
   end
 
   def notify_callbacks

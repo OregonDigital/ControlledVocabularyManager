@@ -1,8 +1,7 @@
-require 'json/ld'
-
 class TermsController < ApplicationController
   before_filter :load_term, :only => :show
-  before_filter :find_vocabulary, :only => :new
+  before_filter :vocabulary, :only => :new
+  rescue_from ActiveTriples::NotFound, :with => :render_404
 
   def show
     respond_to do |format|
@@ -22,22 +21,8 @@ class TermsController < ApplicationController
 
   private
 
-  class CreateResponder < SimpleDelegator
-
-    def success(term, _)
-      redirect_to term_path(term)
-    end
-
-    def failure(term, vocabulary)
-      __getobj__.instance_variable_set(:@term, term)
-      render "new"
-    end
-
-  end
-
   def load_term
-    @term = Term.new(params[:id])
-    @term.persisted? or render_404
+    @term = Term.find(params[:id])
   end
 
   def render_404
@@ -47,11 +32,7 @@ class TermsController < ApplicationController
     end
   end
 
-  def find_vocabulary
-    raise ActionController::RoutingError.new("Term not found") unless vocabulary.persisted?
-  end
-  
   def vocabulary
-    @vocabulary ||= Vocabulary.new(params[:vocabulary_id])
+    @vocabulary ||= Vocabulary.find(params[:vocabulary_id])
   end
 end
