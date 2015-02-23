@@ -21,10 +21,11 @@ RSpec.describe ChildNodeFinder do
     end
     context "when there are two children" do
       let(:unrelated_term) { Term.new("bla/2") }
+      let(:sorted_result) { result.sort_by(&:rdf_subject) }
       it "should be able to return them" do
         expect(result.length).to eq 2
-        expect(statements_hash(result.first)).to eq statements_hash(term)
-        expect(statements_hash(result.last)).to eq statements_hash(unrelated_term)
+        expect(statements_hash(sorted_result.first)).to eq statements_hash(term)
+        expect(statements_hash(sorted_result.last)).to eq statements_hash(unrelated_term)
       end
     end
   end

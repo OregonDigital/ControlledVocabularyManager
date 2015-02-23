@@ -12,7 +12,6 @@ class ChildNodeFinder
     children_terms
   end
 
-
   private
 
   def child_query
