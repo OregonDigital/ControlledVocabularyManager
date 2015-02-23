@@ -44,7 +44,7 @@ GIT
 
 GIT
   remote: git://github.com/terrellt/rdf-marmotta.git
-  revision: 8452a8f7723996dca2f43450bd01b4bfdf1ca16c
+  revision: a2e58ee36183bd030c6ce5508daf7b86880b56cc
   branch: feature/UseSparqlRepository
   specs:
     rdf-marmotta (0.0.6)
