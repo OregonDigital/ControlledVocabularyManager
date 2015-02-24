@@ -12,3 +12,5 @@
 <p><strong>Modified:</strong> <%= @term.modified.join(', ') %></p>
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
+
+<%= render("vocab_children", :vocabulary => @term) if @term.vocabulary? %>

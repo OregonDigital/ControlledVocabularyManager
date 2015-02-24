@@ -22,7 +22,7 @@ class TermsController < ApplicationController
   private
 
   def load_term
-    @term = Term.find(params[:id])
+    @term = TermFactory.find(params[:id])
   end
 
   def render_404
