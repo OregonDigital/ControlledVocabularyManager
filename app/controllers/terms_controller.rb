@@ -1,5 +1,5 @@
 class TermsController < ApplicationController
-  before_filter :load_term, :only => :show
+  before_filter :load_term, :only => [:show, :edit, :update]
   before_filter :vocabulary, :only => :new
   rescue_from ActiveTriples::NotFound, :with => :render_404
 
@@ -18,6 +18,21 @@ class TermsController < ApplicationController
   def create
     TermCreator.call(term_params, vocabulary, [CreateResponder.new(self)])
   end
+
+  def edit
+  end
+
+  def update
+    @term.label = params[:term][:label]
+    @term.comment = params[:term][:comment]
+
+    if @term.persist! 
+      redirect_to @term
+    else
+      render 'edit'
+    end
+  end
+
 
   private
 
