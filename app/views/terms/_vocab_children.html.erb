@@ -1,0 +1,6 @@
+<h4><%= I18n.t("vocabulary.children_header") %></h4>
+<ul>
+<% vocabulary.children.each do |child| %>
+  <li><%= link_to child.rdf_subject.to_s, term_path(child.id) %> </li>
+<% end %>
+</ul>
