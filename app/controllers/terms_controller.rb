@@ -23,11 +23,10 @@ class TermsController < ApplicationController
   end
 
   def update
-    @term.label = params[:term][:label]
-    @term.comment = params[:term][:comment]
+    @term.attributes = term_params
 
     if @term.persist! 
-      redirect_to @term
+      redirect_to term_path(:id => params[:id])
     else
       render 'edit'
     end
@@ -35,6 +34,10 @@ class TermsController < ApplicationController
 
 
   private
+
+  def term_params
+    params.require(:term).permit(:label => [], :comment => [])
+  end
 
   def load_term
     @term = TermFactory.find(params[:id])

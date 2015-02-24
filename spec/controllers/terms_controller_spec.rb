@@ -190,57 +190,25 @@ RSpec.describe TermsController do
     let(:term) { term_mock }
     let(:params) do
       {
-        :vocabulary_id => vocabulary.id,
         :term => {
-          :id => "test",
+          :id => term.id,
           :comment => ["Test"],
           :label => ["Comment"]
         }
       }
     end
+    let(:persist_success) { true }
 
-    let(:term_label) { "Updated Label" }
-    let(:term_comment) { "Updated Comment" }
-    let(:term_modified) { Date.today.to_s }
-    let(:term_issued) { '2015-02-23' }
-
-    let(:create_responder) { instance_double(TermsController::CreateResponder) }
     before do
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
-      allow(TermCreator).to receive(:call) do
-        controller.render :nothing => true
-      end
-
-      allow(controller).to receive(:create) do
-        TermsController::CreateResponder.new(controller).failure(term, vocabulary)
-      end
-
-      allow(controller).to receive(:update) { term }
-
-      allow(term).to receive(:label).and_return(term_label)
-      allow(term).to receive(:comment).and_return(term_comment)
-      allow(term).to receive(:modified).and_return(term_modified)
-      allow(term).to receive(:issued).and_return(term_issued)
-      post :create, params
+      allow(Term).to receive(:find).with(term.id).and_return(term)
+      allow(term).to receive(:attributes=)
+      allow(term).to receive(:persist!).and_return(persist_success)
+      patch :update, :id => term.id, :term => params[:term]
     end
  
     context "when the fields are edited" do
-      before do
-        params[:term][:label] = "Updated Label"
-        params[:term][:comment] = "Updated Comment"
-        patch :update, :id => vocabulary.id, :term => params
-      end
-      it "should update the label" do
-        expect(term.label).to eq "Updated Label"
-      end
-      it "should update the comment" do
-        expect(term.comment).to eq "Updated Comment"
-      end
-      it "should update the modified date" do
-        expect(term.modified).to eq Date.today.to_s
-      end
-      it "should not change the issued date" do
-        expect(term.issued).not_to eq Date.today.to_s
+      it "should update the properties" do
+        expect(term).to have_received(:attributes=).with(params[:term].except(:id))
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{term.id}")
