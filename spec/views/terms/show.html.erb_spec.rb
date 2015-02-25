@@ -9,13 +9,16 @@ RSpec.describe "terms/show" do
     assign(:term, resource)
     allow(resource).to receive(:fields).and_return([:label, :comment])
     allow(resource).to receive(:get_values).with(anything) { |x| ["#{x}_string"] }
-    render
   end
 
   context "when given a vocab" do
     let(:vocabulary) { Vocabulary.new(uri) }
     let(:resource) { TermWithChildren.new(vocabulary) }
     let(:children) { [] }
+    before do
+      allow(resource).to receive(:children).and_return(children)
+      render
+    end
     it "should have a link to create a resource" do
       expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
     end
@@ -30,6 +33,8 @@ RSpec.describe "terms/show" do
   end
 
   it "should display all fields" do
+    render
+
     resource.fields.each do |field|
       expect(resource).to have_received(:get_values).with(field)
       expect(rendered).to have_content("#{field}_string")
