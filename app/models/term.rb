@@ -24,6 +24,10 @@ class Term < ActiveTriples::Resource
     super
   end
 
+  def editable_fields
+    fields - [:issued, :modified]
+  end
+
   private
 
   def not_blank_node

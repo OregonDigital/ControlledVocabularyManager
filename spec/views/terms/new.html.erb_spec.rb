@@ -24,11 +24,8 @@ RSpec.describe "terms/new" do
   it "should have a vocabulary ID field" do
     expect(rendered).to have_selector("input[type='hidden'][name='vocabulary_id'][value='#{id}']")
   end
-  it "has inputs for all attributes except issued/modified" do
-    bad_fields = [:issued, :modified]
-    fields = term.fields.reject{|x| bad_fields.include?(x)}
-
-    fields.each do |attribute|
+  it "has inputs for all editable fields" do
+    term.editable_fields.each do |attribute|
       expect(rendered).to have_selector "input[name='term[#{attribute}][]']"
     end
   end
