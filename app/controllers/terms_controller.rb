@@ -28,7 +28,7 @@ class TermsController < ApplicationController
     if @term.persist! 
       redirect_to term_path(:id => params[:id])
     else
-      render 'edit'
+      redirect_to edit_term_path(:id => params[:id])
     end
   end
 

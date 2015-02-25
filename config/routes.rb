@@ -6,9 +6,10 @@ Rails.application.routes.draw do
   root 'home#index'
 
   get '/ns/*id', :to => "terms#show", :as => "term"
+  patch '/ns/*id', :to => "terms#update"
 
   resources :vocabularies, :only => [:index, :new, :create]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
-  resources :terms, :only => [:create, :edit, :update]
+  resources :terms, :only => [:create, :edit]
 
 end

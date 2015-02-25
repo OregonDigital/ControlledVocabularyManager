@@ -198,6 +198,7 @@ RSpec.describe TermsController do
       }
     end
     let(:persist_success) { true }
+    let(:persist_failure) { false }
 
     before do
       allow(Term).to receive(:find).with(term.id).and_return(term)
@@ -214,6 +215,18 @@ RSpec.describe TermsController do
         expect(response).to redirect_to("/ns/#{term.id}")
       end
     end
+
+    context "when the fields are edited and the update fails" do
+      before do
+        allow(term).to receive(:persist!).and_return(persist_failure)
+        patch :update, :id => term.id, :term => params[:term]
+      end
+      it "should show the edit form" do
+        expect(response).to redirect_to(edit_term_path(term.id))
+      end
+
+    end
+
   end
 
 end
