@@ -4,21 +4,11 @@
 <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id) if @term.vocabulary? %>
 
 <dl>
-  <dt>Label:</dt>
-  <% @term.label.each do |label| %>
-    <dd><%= label %></dd>
-  <% end %>
-  <dt>Comment:</dt>
-  <% @term.comment.each do |comment| %>
-    <dd><%= comment %></dd>
-  <% end %>
-  <dt>Issued:</dt>
-  <% @term.issued.each do |issued| %>
-    <dd><%= issued %></dd>
-  <% end %>
-  <dt>Modified:</dt>
-  <% @term.modified.each do |modified| %>
-    <dd><%= modified %></dd>
+  <% @term.fields.each do |field| %>
+    <dt><%= field.to_s.humanize %>:</dt>
+    <% @term.get_values(field).each do |value| %>
+      <dd><%= value %></dd>
+    <% end %>
   <% end %>
 </dl>
 

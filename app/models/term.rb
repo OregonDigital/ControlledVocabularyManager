@@ -2,10 +2,10 @@ class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   configure :repository => :default
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
-  property :comment, :predicate => RDF::RDFS.comment
-  property :modified, :predicate => RDF::DC.modified
   property :label, :predicate => RDF::RDFS.label
+  property :comment, :predicate => RDF::RDFS.comment
   property :issued, :predicate => RDF::DC.issued
+  property :modified, :predicate => RDF::DC.modified
   before_persist :set_issued, :if => :new_record?
   before_persist :set_modified, :if => :valid?
 
