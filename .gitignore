@@ -26,6 +26,3 @@ marmotta
 
 # Ignore dotenv
 .env
-
-#Ignore .ruby
-.ruby-version
