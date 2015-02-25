@@ -7,12 +7,8 @@ RSpec.describe "terms/show" do
 
   before do
     assign(:term, resource)
-    resource.label = "Blah term"
-    resource.comment = "Blah comment"
-    resource.persist!
-    allow(resource).to receive(:modified).and_call_original
-    allow(resource).to receive(:children).and_return(children) if children
-
+    allow(resource).to receive(:fields).and_return([:label, :comment])
+    allow(resource).to receive(:get_values).with(anything) { |x| ["#{x}_string"] }
     render
   end
 
@@ -30,6 +26,13 @@ RSpec.describe "terms/show" do
         expect(rendered).to have_content I18n.t("vocabulary.children_header")
         expect(rendered).to have_link child.rdf_subject.to_s
       end
+    end
+  end
+
+  it "should display all fields" do
+    resource.fields.each do |field|
+      expect(resource).to have_received(:get_values).with(field)
+      expect(rendered).to have_content("#{field}_string")
     end
   end
 
