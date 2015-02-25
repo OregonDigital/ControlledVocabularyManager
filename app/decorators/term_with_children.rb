@@ -4,11 +4,6 @@ class TermWithChildren < SimpleDelegator
   end
 
   def full_graph
-    new_graph = RDF::Graph.new
-    new_graph.insert(*statements)
-    children.each do |child|
-      new_graph.insert(*child.statements)
-    end
-    new_graph
+    (children << self).inject(RDF::Graph.new, :<<)
   end
 end
