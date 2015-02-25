@@ -1,10 +1,21 @@
 require 'rails_helper'
 
 RSpec.describe VocabulariesController do
+  let(:logged_in) { true }
+  before do
+    allow(controller).to receive(:authorize).and_return(true) if logged_in
+  end
+
   describe "GET 'new'" do
     let(:result) { get 'new' }
     before do
       result
+    end
+    context "when logged out" do
+      let(:logged_in) { false }
+      it "should require login" do
+        expect(result).to redirect_to login_path
+      end
     end
     it "should be successful" do
       expect(result).to be_success
@@ -42,6 +53,12 @@ RSpec.describe VocabulariesController do
 
       expect(response).to render_template "index"
     end
+    context "when not logged in" do
+      let(:logged_in) { false }
+      it "should not redirect" do
+        expect(response).not_to be_redirect
+      end
+    end
   end
 
   describe "POST create" do
@@ -56,7 +73,7 @@ RSpec.describe VocabulariesController do
     let(:responder_class) {class_double("VocabulariesController::CreateResponder").as_stubbed_const}
     let(:responder) {instance_double("VocabulariesController::CreateResponder")}
     before do
-      expect(VocabulariesController::CreateResponder).to receive(:new).with(controller).and_return(responder)
+      allow(VocabulariesController::CreateResponder).to receive(:new).with(controller).and_return(responder)
       allow(VocabularyCreator).to receive(:call)
       allow(controller).to receive(:render)
       result
@@ -73,6 +90,12 @@ RSpec.describe VocabulariesController do
       end
       it "should not pass them through to VocabularyCreator" do
         expect(VocabularyCreator).to have_received(:call).with({:label => [], :comment => ["Test2"]}, anything)
+      end
+    end
+    context "when logged out" do
+      let(:logged_in) { false }
+      it "should require login" do
+        expect(result).to redirect_to login_path
       end
     end
   end

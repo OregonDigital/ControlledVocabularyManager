@@ -7,7 +7,11 @@
         <ul class="nav navbar-nav">
           <li class="active"><a href="#">Home</a></li>
           <li><%= link_to "Vocabularies", vocabularies_path %></li>
-          <li><a href="#">Log In</a></li>
+          <%- if session[:authorized] == true  %>
+            <li><%= link_to "Logout", '/login/auth' %></li>
+          <%- else -%>
+            <li><%= link_to "Login", '/login/auth' %></li>
+          <%- end -%>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

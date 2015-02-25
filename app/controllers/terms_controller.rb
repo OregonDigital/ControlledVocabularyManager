@@ -2,6 +2,7 @@ class TermsController < ApplicationController
   before_filter :load_term, :only => [:show, :edit, :update]
   before_filter :vocabulary, :only => :new
   rescue_from ActiveTriples::NotFound, :with => :render_404
+  before_filter :authorize, :only => [:new, :create]
 
   def show
     respond_to do |format|
@@ -52,5 +53,12 @@ class TermsController < ApplicationController
 
   def vocabulary
     @vocabulary ||= Vocabulary.find(params[:vocabulary_id])
+  end
+
+  def authorize
+    if session[:authorized] != true
+      session[:user_route] = request.env['PATH_INFO']
+      redirect_to '/login'
+    end
   end
 end
