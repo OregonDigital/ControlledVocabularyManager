@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   root 'home#index'
 
   get '/ns/*id', :to => "terms#show", :as => "term"
+  get '/login'  => 'login#index'
+  get '/login/auth' => 'login#doauth'
 
   resources :vocabularies, :only => [:index, :new, :create]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
