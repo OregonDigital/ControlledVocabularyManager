@@ -3,13 +3,24 @@
 <h4><%= @term.base_uri + @term.id %></h4>
 <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id) if @term.vocabulary? %>
 
-<p><strong>Label:</strong> <%= @term.label.join(', ') %></p>
-
-<p><strong>Comment:</strong> <%= @term.comment.join(', ') %></p>
-
-<p><strong>Issued:</strong> <%= @term.issued.join(', ') %></p>
-
-<p><strong>Modified:</strong> <%= @term.modified.join(', ') %></p>
+<dl>
+  <dt>Label:</dt>
+  <% @term.label.each do |label| %>
+    <dd><%= label %></dd>
+  <% end %>
+  <dt>Comment:</dt>
+  <% @term.comment.each do |comment| %>
+    <dd><%= comment %></dd>
+  <% end %>
+  <dt>Issued:</dt>
+  <% @term.issued.each do |issued| %>
+    <dd><%= issued %></dd>
+  <% end %>
+  <dt>Modified:</dt>
+  <% @term.modified.each do |modified| %>
+    <dd><%= modified %></dd>
+  <% end %>
+</dl>
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
 
