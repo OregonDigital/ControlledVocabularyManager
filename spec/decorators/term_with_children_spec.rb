@@ -24,4 +24,23 @@ RSpec.describe TermWithChildren do
       end
     end
   end
+
+  describe "#full_graph" do
+    context "with no children" do
+      it "should be the resource" do
+        expect(subject.full_graph.statements.to_a).to eq subject.statements.to_a
+      end
+    end
+    context "with children" do
+      let(:child) { Term.new(uri+"/1") }
+      let(:unrelated_term) { Term.new(uri+"q/2") }
+      before do
+        child.persist!
+        unrelated_term.persist!
+      end
+      it "should have terms of itself and its children" do
+        expect(subject.full_graph.count).to eq child.count + subject.count
+      end
+    end
+  end
 end

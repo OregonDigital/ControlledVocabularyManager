@@ -3,12 +3,16 @@ require 'rails_helper'
 RSpec.describe TermsController do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { term_mock }
+  let(:decorated_resource) { TermWithChildren.new(resource) }
 
   describe '#show' do
     before do
       stub_repository
       allow(resource).to receive(:dump)
-      allow(Term).to receive(:find).with("bla").and_return(resource)
+      full_graph = instance_double("RDF::Graph")
+      allow(full_graph).to receive(:dump)
+      allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
+      allow(TermFactory).to receive(:find).with("bla").and_return(decorated_resource)
     end
 
     context "when the resource exists" do
@@ -30,9 +34,9 @@ RSpec.describe TermsController do
 
       context "format n-triples" do
         let(:format) {:nt}
-        it "should render n-triples" do
+        it "should render n-triples of the full graph" do
           expect(response.content_type).to eq("application/n-triples")
-          expect(resource).to have_received(:dump).with(:ntriples)
+          expect(decorated_resource.full_graph).to have_received(:dump).with(:ntriples)
         end
       end
 
@@ -40,14 +44,14 @@ RSpec.describe TermsController do
         let(:format) {:jsonld}
         it "should render json-ld" do
           expect(response.content_type).to eq("application/ld+json")
-          expect(resource).to have_received(:dump).with(:jsonld, {:standard_prefixes => true})
+          expect(decorated_resource.full_graph).to have_received(:dump).with(:jsonld, {:standard_prefixes => true})
         end
       end
     end
 
     context "when the resource does not exist" do
       before do
-        allow(Term).to receive(:find).with("nothing").and_raise ActiveTriples::NotFound
+        allow(TermFactory).to receive(:find).with("nothing").and_raise ActiveTriples::NotFound
         get :show, :id => "nothing"
       end
 
