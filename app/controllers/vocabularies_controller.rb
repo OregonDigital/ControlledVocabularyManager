@@ -2,6 +2,7 @@ class VocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
 
   def index
+    @vocabularies = AllVocabsQuery.call(sparql_client)
   end
 
   def new
@@ -10,5 +11,11 @@ class VocabulariesController < ApplicationController
 
   def create
     VocabularyCreator.call(params[:vocabulary], CreateResponder.new(self))
+  end
+
+  private
+
+  def sparql_client
+    Vocabulary.new.repository.query_client
   end
 end

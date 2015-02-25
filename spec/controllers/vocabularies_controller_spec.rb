@@ -20,13 +20,26 @@ RSpec.describe VocabulariesController do
   end
 
   describe "GET 'index'" do
-    before do
-      get :index
+    context "when there are vocabularies" do
+      let(:vocabulary) { vocabulary_mock }
+      before do
+        allow(vocabulary).to receive(:repository).and_return(Vocabulary.new.repository)
+        allow(AllVocabsQuery).to receive(:call).with(vocabulary.repository.query_client).and_return([vocabulary])
+      end
+      it "should set @vocabularies to all vocabs" do
+        get :index
+
+        expect(assigns(:vocabularies)).to eq [vocabulary]
+      end
     end
     it "should be successful" do
+      get :index
+
       expect(response).to be_success
     end
     it "renders index" do
+      get :index
+
       expect(response).to render_template "index"
     end
   end

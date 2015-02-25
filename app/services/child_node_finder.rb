@@ -19,7 +19,7 @@ class ChildNodeFinder
   end
 
   def children_terms
-    GraphToTerms.new(children_graph).run
+    GraphToTerms.new(Term, children_graph).run
   end
 
   def sparql_client
@@ -27,22 +27,6 @@ class ChildNodeFinder
   end
 end
 
-class GraphToTerms < Struct.new(:graph)
-  def run
-    graph.each_statement.group_by(&:subject).map do |subject, triples|
-      build_term(subject, triples)
-    end
-  end
-
-  private
-
-  def build_term(subject, triples)
-    t = Term.new(subject)
-    t.insert(*triples)
-    t
-  end
-
-end
 
 class ChildQuery < Struct.new(:sparql_client, :parent_uri)
   def run
