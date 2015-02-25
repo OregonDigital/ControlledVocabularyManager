@@ -33,10 +33,10 @@ RSpec.describe TermWithChildren do
     end
     context "with children" do
       let(:child) { Term.new(uri+"/1") }
-      let(:child_2) { Term.new(uri+"q/2") }
+      let(:unrelated_term) { Term.new(uri+"q/2") }
       before do
         child.persist!
-        child_2.persist!
+        unrelated_term.persist!
       end
       it "should have terms of itself and its children" do
         expect(subject.full_graph.count).to eq child.count + subject.count
