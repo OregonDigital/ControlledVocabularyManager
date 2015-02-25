@@ -1,5 +1,6 @@
 class VocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
+  before_filter :authorize, :only => [:new, :create]
 
   def index
     @vocabularies = AllVocabsQuery.call(sparql_client)
@@ -17,5 +18,11 @@ class VocabulariesController < ApplicationController
 
   def sparql_client
     Vocabulary.new.repository.query_client
+  end
+  def authorize
+    if session[:authorized] != true
+      session[:user_route] = request.env['PATH_INFO']
+      redirect_to '/login'
+    end
   end
 end
