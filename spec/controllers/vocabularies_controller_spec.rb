@@ -81,6 +81,7 @@ RSpec.describe VocabulariesController do
     it "should call vocabulary creator" do
       expect(VocabularyCreator).to have_received(:call).with(vocabulary_params, responder)
     end
+<<<<<<< HEAD
     context "when blank values are passed in" do
       let(:vocabulary_params) do
         {
@@ -92,6 +93,8 @@ RSpec.describe VocabulariesController do
         expect(VocabularyCreator).to have_received(:call).with({:label => [], :comment => ["Test2"]}, anything)
       end
     end
+=======
+>>>>>>> brought login code over from v2
     context "when logged out" do
       let(:logged_in) { false }
       it "should require login" do
