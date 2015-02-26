@@ -2,10 +2,9 @@ require 'rails_helper'
 
 RSpec.describe "terms/edit" do
   let(:id) { "Creator" }
-  let(:vocabulary) { Vocabulary.new(id) }
   let(:term) { Term.new("#{id}/JohnSmith") }
   before do
-    assign(:vocabulary, vocabulary)
+    allow(term).to receive(:persisted?).and_return(true)
     assign(:term, term)
     render
   end
