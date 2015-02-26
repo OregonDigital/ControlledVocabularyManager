@@ -6,7 +6,7 @@ RSpec.describe TermsController do
   let(:decorated_resource) { TermWithChildren.new(resource) }
   let(:logged_in) { true }
   before do
-    allow(controller).to receive(:authorize).and_return(true) if logged_in
+    allow(controller).to receive(:check_auth).and_return(true) if logged_in
   end
 
   describe '#show' do

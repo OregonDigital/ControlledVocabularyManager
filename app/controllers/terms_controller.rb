@@ -2,7 +2,7 @@ class TermsController < ApplicationController
   before_filter :load_term, :only => [:show, :edit, :update]
   before_filter :vocabulary, :only => :new
   rescue_from ActiveTriples::NotFound, :with => :render_404
-  before_filter :authorize, :only => [:new, :create]
+  skip_before_filter :check_auth, :only => [:show]
 
   def show
     respond_to do |format|

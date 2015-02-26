@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe VocabulariesController do
   let(:logged_in) { true }
   before do
-    allow(controller).to receive(:authorize).and_return(true) if logged_in
+    allow(controller).to receive(:check_auth).and_return(true) if logged_in
   end
 
   describe "GET 'new'" do
