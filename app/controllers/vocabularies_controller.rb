@@ -23,10 +23,4 @@ class VocabulariesController < ApplicationController
   def sparql_client
     Vocabulary.new.repository.query_client
   end
-  def authorize
-    if session[:authorized] != true
-      session[:user_route] = request.env['PATH_INFO']
-      redirect_to '/login'
-    end
-  end
 end

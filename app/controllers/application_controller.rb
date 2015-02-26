@@ -4,5 +4,11 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   private
+  def authorize
+    if session[:authorized] != true
+      session[:user_route] = request.env['PATH_INFO']
+      redirect_to '/login'
+    end
+  end
 
 end
