@@ -3,8 +3,9 @@
 
   <div class="form-inputs">
     <%= f.input :id, :label => "ID" %>
-    <%= render :partial => "form_attribute", :locals => {:vocabulary => vocabulary, :attribute => :label, :form => f} %>
-    <%= render :partial => "form_attribute", :locals => {:vocabulary => vocabulary, :attribute => :comment, :form => f} %>
+    <%= vocabulary.editable_fields.each do |field| %>
+      <%= render :partial => "form_attribute", :locals => {:vocabulary => vocabulary, :attribute => field, :form => f} %>
+    <% end %>
   </div>
 
   <div class="form-actions">

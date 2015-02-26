@@ -24,8 +24,8 @@ RSpec.describe "terms/new" do
   it "should have a vocabulary ID field" do
     expect(rendered).to have_selector("input[type='hidden'][name='vocabulary_id'][value='#{id}']")
   end
-  %w{label comment}.each do |attribute|
-    it "has inputs for #{attribute}" do
+  it "has inputs for all editable fields" do
+    term.editable_fields.each do |attribute|
       expect(rendered).to have_selector "input[name='term[#{attribute}][]']"
     end
   end

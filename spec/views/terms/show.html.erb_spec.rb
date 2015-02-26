@@ -7,19 +7,18 @@ RSpec.describe "terms/show" do
 
   before do
     assign(:term, resource)
-    resource.label = "Blah term"
-    resource.comment = "Blah comment"
-    resource.persist!
-    allow(resource).to receive(:modified).and_call_original
-    allow(resource).to receive(:children).and_return(children) if children
-
-    render
+    allow(resource).to receive(:fields).and_return([:label, :comment])
+    allow(resource).to receive(:get_values).with(anything) { |x| ["#{x}_string"] }
   end
 
   context "when given a vocab" do
     let(:vocabulary) { Vocabulary.new(uri) }
     let(:resource) { TermWithChildren.new(vocabulary) }
     let(:children) { [] }
+    before do
+      allow(resource).to receive(:children).and_return(children)
+      render
+    end
     it "should have a link to create a resource" do
       expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
     end
@@ -33,27 +32,12 @@ RSpec.describe "terms/show" do
     end
   end
 
-  it "displays the term name" do
-    expect(rendered).to have_content("bla")
-  end
+  it "should display all fields" do
+    render
 
-  it "displays the full URI" do
-    expect(rendered).to have_content("http://opaquenamespace.org/ns/bla") 
-  end
-
-  it "displays the label" do
-    expect(rendered).to have_content("Blah term")
-  end
-
-  it "displays a comment" do
-    expect(rendered).to have_content("Blah comment")
-  end
-
-  it "displays the issued date" do
-    expect(rendered).to have_content(Date.today.iso8601)
-  end
-
-  it "displays the modified date" do
-    expect(resource).to have_received(:modified)
+    resource.fields.each do |field|
+      expect(resource).to have_received(:get_values).with(field)
+      expect(rendered).to have_content("#{field}_string")
+    end
   end
 end

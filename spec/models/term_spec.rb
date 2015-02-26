@@ -22,6 +22,28 @@ RSpec.describe Term do
     end
   end
 
+  describe "#fields" do
+    it "should return all available fields" do
+      expect(resource.fields).to include(:comment, :modified, :label, :issued)
+    end
+  end
+
+  describe "#editable_fields" do
+    it "should return all fields except issued/modified" do
+      expect(resource.editable_fields).to eq resource.fields - [:issued, :modified]
+      expect(resource.editable_fields).not_to include(:issued, :modified)
+    end
+  end
+
+  describe "#get_values" do
+    before do
+      resource.comment = "test"
+    end
+    it "should be able to return values" do
+      expect(resource.get_values(:comment)).to eq ["test"]
+    end
+  end
+
   describe "#exists?" do
     let(:result) { Term.exists?("bla") }
     let(:repository) { ActiveTriples::Repositories.repositories[:default] }
