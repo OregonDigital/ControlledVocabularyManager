@@ -121,6 +121,21 @@ RSpec.describe TermsController do
       expect(TermCreator).to receive(:call).with(params[:term], vocabulary, [create_responder])
       post :create, params
     end
+    context "when blank arrays are passed in" do
+      let(:params) do
+        {
+          :vocabulary_id => vocabulary.id,
+          :term => {
+            :id => "test",
+            :label => [""]
+          }
+        }
+      end
+      it "should not pass them to TermCreator" do
+        expect(TermCreator).to receive(:call).with({"id" => "test", "label" => []}, anything, anything)
+        post :create, params
+      end
+    end
     context "when vocabulary isn't found" do
       before do
         allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound

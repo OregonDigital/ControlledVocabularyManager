@@ -10,10 +10,14 @@ class VocabulariesController < ApplicationController
   end
 
   def create
-    VocabularyCreator.call(params[:vocabulary], CreateResponder.new(self))
+    VocabularyCreator.call(vocab_params, CreateResponder.new(self))
   end
 
   private
+
+  def vocab_params
+    ParamCleaner.call(params[:vocabulary])
+  end
 
   def sparql_client
     Vocabulary.new.repository.query_client
