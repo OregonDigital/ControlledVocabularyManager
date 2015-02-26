@@ -16,7 +16,7 @@ class TermsController < ApplicationController
   end
 
   def create
-    TermCreator.call(params[:term], vocabulary, [CreateResponder.new(self)])
+    TermCreator.call(term_params, vocabulary, [CreateResponder.new(self)])
   end
 
   private
@@ -25,6 +25,10 @@ class TermsController < ApplicationController
     @term = TermFactory.find(params[:id])
   end
 
+  def term_params
+    ParamCleaner.call(params[:term])
+  end
+  
   def render_404
     respond_to do |format|
       format.html { render :file => "#{Rails.root}/public/404", :layout => true, :status => 404 }

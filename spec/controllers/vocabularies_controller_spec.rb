@@ -64,6 +64,17 @@ RSpec.describe VocabulariesController do
     it "should call vocabulary creator" do
       expect(VocabularyCreator).to have_received(:call).with(vocabulary_params, responder)
     end
+    context "when blank values are passed in" do
+      let(:vocabulary_params) do
+        {
+          :label => [""],
+          :comment => ["Test2"]
+        }
+      end
+      it "should not pass them through to VocabularyCreator" do
+        expect(VocabularyCreator).to have_received(:call).with({:label => [], :comment => ["Test2"]}, anything)
+      end
+    end
   end
 
   describe "Create Responder" do

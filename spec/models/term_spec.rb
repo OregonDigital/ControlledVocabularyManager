@@ -44,6 +44,24 @@ RSpec.describe Term do
     end
   end
 
+  describe "#attributes=" do
+    context "with blank arrays" do
+      let(:attributes) do
+        {
+          :label => [],
+          :comment => ["bla"]
+        }
+      end
+      before do
+        resource.attributes = attributes
+      end
+      it "should do nothing" do
+        expect(resource.label).to eq []
+        expect(resource.comment).to eq ["bla"]
+      end
+    end
+  end
+
   describe "#exists?" do
     let(:result) { Term.exists?("bla") }
     let(:repository) { ActiveTriples::Repositories.repositories[:default] }
