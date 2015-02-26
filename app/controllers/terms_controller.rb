@@ -37,10 +37,4 @@ class TermsController < ApplicationController
     @vocabulary ||= Vocabulary.find(params[:vocabulary_id])
   end
 
-  def authorize
-    if session[:authorized] != true
-      session[:user_route] = request.env['PATH_INFO']
-      redirect_to '/login'
-    end
-  end
 end
