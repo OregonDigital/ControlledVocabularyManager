@@ -1,6 +1,6 @@
 
 <h1><%= @term.id %></h2>
-<h2><%= @term.base_uri + @term.id %></h4>
+<h2><%= @term.rdf_subject %></h4>
 <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id) if @term.vocabulary? %>
 
 <dl>
