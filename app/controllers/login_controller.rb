@@ -1,5 +1,5 @@
 class LoginController < ApplicationController
-
+skip_before_filter :check_auth
   def index
   end
 
@@ -21,10 +21,13 @@ class LoginController < ApplicationController
   def authorize
     session[:authorized] ||= github_user.organization_member?('OregonDigital')
     if session[:authorized] != true
-      flash.keep[:notice] = "authorization failed"
+      flash[:notice] = "Authorization failed"
     end
-   session[:user_route] ||= "/"
-   redirect_to session[:user_route]
+    if session[:user_route]
+      redirect_to session[:user_route]
+    else flash[:notice] = "You are logged in"
+      redirect_to "/"
+    end
   end
 
   def destroy

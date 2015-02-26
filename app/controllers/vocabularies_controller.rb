@@ -1,6 +1,6 @@
 class VocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
-  before_filter :authorize, :only => [:new, :create]
+  skip_before_filter :check_auth, :only => [:index]
 
   def index
     @vocabularies = AllVocabsQuery.call(sparql_client)
