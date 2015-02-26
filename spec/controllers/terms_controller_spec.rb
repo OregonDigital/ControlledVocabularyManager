@@ -209,7 +209,7 @@ RSpec.describe TermsController do
  
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(term).to have_received(:attributes=).with(params[:term].except(:id))
+        expect(term).to have_received(:attributes=).with(params[:term])
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{term.id}")

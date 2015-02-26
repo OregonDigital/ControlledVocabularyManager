@@ -35,10 +35,6 @@ class TermsController < ApplicationController
 
   private
 
-  def term_params
-    params.require(:term).permit(:label => [], :comment => [])
-  end
-
   def load_term
     @term = TermFactory.find(params[:id])
   end
