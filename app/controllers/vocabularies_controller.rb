@@ -1,32 +1,28 @@
 class VocabulariesController < ApplicationController
   before_filter :load_vocab, :only => :show
+  delegate :term_form, :sparql_client, :all_vocabs_query, :to => :injector
   skip_before_filter :check_auth, :only => [:index]
 
   def index
-    @vocabularies = AllVocabsQuery.call(sparql_client)
+    @vocabularies = all_vocabs_query.call
   end
 
   def new
-    @vocabulary = VocabularyForm.new(Vocabulary, vocab_params)
+    @vocabulary = term_form
   end
 
   def create
-    form = VocabularyForm.new(Vocabulary, vocab_params)
-    if form.save
-      redirect_to term_path(:id => form.term_id)
+    if term_form.save
+      redirect_to term_path(:id => term_form.term_id)
     else
-      @vocabulary = form
+      @vocabulary = term_form
       render "new"
     end
   end
 
   private
 
-  def vocab_params
-    ParamCleaner.call(params[:vocabulary] || {})
-  end
-
-  def sparql_client
-    Vocabulary.new.repository.query_client
+  def injector
+    @injector ||= VocabularyInjector.new(params)
   end
 end

@@ -2,6 +2,7 @@ class TermsController < ApplicationController
   before_filter :load_term, :only => [:show, :edit, :update]
   before_filter :vocabulary, :only => :new
   before_filter :load_vocabulary, :only => [:new, :create]
+  delegate :term_form, :term_repository, :vocabulary_repository, :to => :injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
 
@@ -14,15 +15,14 @@ class TermsController < ApplicationController
   end
 
   def new
-    @term = TermForm.new(TermFactory, term_params)
+    @term = term_form
   end
 
   def create
-    form = TermForm.new(TermFactory, term_params)
-    if form.save
-      redirect_to term_path(:id => form.term_id)
+    if term_form.save
+      redirect_to term_path(:id => term_form.term_id)
     else
-      @term = form
+      @term = term_form
       render "new"
     end
   end
@@ -43,26 +43,18 @@ class TermsController < ApplicationController
 
   private
 
+  def injector
+    @injector ||= TermInjector.new(params)
+  end
+
   def load_term
-    @term = TermFactory.find(params[:id])
+    @term = term_repository.find(params[:id])
   end
 
   def load_vocabulary
-    @vocabulary = Vocabulary.find(vocabulary_id)
+    @vocabulary = vocabulary_repository.find(params[:vocabulary_id])
   end
 
-  def vocabulary_id
-    params[:vocabulary_id] || params[:term][:vocabulary_id]
-  end
-
-  def term_params
-    ParamCleaner.call(params_with_vocabulary)
-  end
-
-  def params_with_vocabulary
-    (params[:term] || {}).merge({:vocabulary_id => params[:vocabulary_id]})
-  end
-  
   def render_404
     respond_to do |format|
       format.html { render :file => "#{Rails.root}/public/404", :layout => true, :status => 404 }
