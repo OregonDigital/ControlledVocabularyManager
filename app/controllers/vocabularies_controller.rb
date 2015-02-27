@@ -7,17 +7,23 @@ class VocabulariesController < ApplicationController
   end
 
   def new
-    @vocabulary = Vocabulary.new
+    @vocabulary = VocabularyForm.new(Vocabulary, vocab_params)
   end
 
   def create
-    VocabularyCreator.call(vocab_params, CreateResponder.new(self))
+    form = VocabularyForm.new(Vocabulary, vocab_params)
+    if form.save
+      redirect_to term_path(:id => form.term_id)
+    else
+      @vocabulary = form
+      render "new"
+    end
   end
 
   private
 
   def vocab_params
-    ParamCleaner.call(params[:vocabulary])
+    ParamCleaner.call(params[:vocabulary] || {})
   end
 
   def sparql_client

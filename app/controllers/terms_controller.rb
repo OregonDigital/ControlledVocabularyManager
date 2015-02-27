@@ -1,6 +1,7 @@
 class TermsController < ApplicationController
   before_filter :load_term, :only => [:show, :edit, :update]
   before_filter :vocabulary, :only => :new
+  before_filter :load_vocabulary, :only => [:new, :create]
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
 
@@ -13,11 +14,17 @@ class TermsController < ApplicationController
   end
 
   def new
-    @term = Term.new
+    @term = TermForm.new(TermFactory, term_params)
   end
 
   def create
-    TermCreator.call(term_params, vocabulary, [CreateResponder.new(self)])
+    form = TermForm.new(TermFactory, term_params)
+    if form.save
+      redirect_to term_path(:id => form.term_id)
+    else
+      @term = form
+      render "new"
+    end
   end
 
   def edit
@@ -40,8 +47,20 @@ class TermsController < ApplicationController
     @term = TermFactory.find(params[:id])
   end
 
+  def load_vocabulary
+    @vocabulary = Vocabulary.find(vocabulary_id)
+  end
+
+  def vocabulary_id
+    params[:vocabulary_id] || params[:term][:vocabulary_id]
+  end
+
   def term_params
-    ParamCleaner.call(params[:term])
+    ParamCleaner.call(params_with_vocabulary)
+  end
+
+  def params_with_vocabulary
+    (params[:term] || {}).merge({:vocabulary_id => params[:vocabulary_id]})
   end
   
   def render_404

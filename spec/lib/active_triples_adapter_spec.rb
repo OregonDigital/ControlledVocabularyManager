@@ -75,6 +75,18 @@ RSpec.describe ActiveTriplesAdapter do
         expect(result).to eq false
       end
     end
+    context "when asking for a blank string" do
+      let(:id) { "" }
+      it "should be false" do
+        expect(result).to eq false
+      end
+    end
+    context "when asking for a blank node" do
+      let(:id) { RDF::Node.new.to_s }
+      it "should be false" do
+        expect(result).to eq false
+      end
+    end
     context "when there's something in the repository" do
       before do
         repository << RDF::Statement.new(RDF::URI(uri), RDF::DC.title, "bla")
