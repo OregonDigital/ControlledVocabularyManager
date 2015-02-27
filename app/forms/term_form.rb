@@ -1,20 +1,23 @@
-class TermForm < VocabularyForm
+class TermForm < SimpleDelegator
+  include ActiveModel::Validations
   validate :vocabulary_exists
+
+  attr_reader :repository
+  def initialize(term, repository)
+    @repository = repository
+    __setobj__(term)
+  end
 
   private
 
-  def term
-    @term ||= term_factory.new([vocabulary_id,params_id].join("/"))
-  end
-
   def vocabulary_exists
-    unless term_factory.exists?(vocabulary_id)
+    unless repository.exists?(vocabulary_id)
       errors.add(:id, "is in a non existent vocabulary")
     end
   end
 
   def vocabulary_id
-    params[:vocabulary_id]
+    rdf_subject.parent.to_s.gsub(base_uri, '').gsub(/\/$/,'')
   end
 
 end

@@ -2,34 +2,29 @@
 require 'rails_helper'
 
 RSpec.describe VocabularyForm do
-  subject { VocabularyForm.new(term_factory, params) }
-  let(:term_factory) { Vocabulary }
+  subject { VocabularyForm.new(term, repository) }
+  let(:term) do
+    t = Vocabulary.new(id)
+    t.attributes = params
+    t
+  end
+  let(:repository) { Vocabulary }
+  let(:id) { "term" }
   let(:params) do
     {
-      :id => id,
       :comment => ["Comment"],
       :label => ["Label"]
     }
   end
 
-  let(:id) { "term" }
-
   def id_exists(id, exists=true)
-    allow(term_factory).to receive(:exists?).with(id).and_return(exists)
+    allow(term.class).to receive(:exists?).with(id).and_return(exists)
   end
 
   def stub_term_factory
-    term = instance_double("Term")
-    allow(term_factory).to receive(:new).and_return(term)
     allow(term).to receive(:attributes=)
     allow(term).to receive(:fields).and_return([:comment, :label])
     term
-  end
-
-  it "should set attributes" do
-    term = stub_term_factory
-    subject
-    expect(term).to have_received(:attributes=).with(:comment => ["Comment"], :label => ["Label"])
   end
 
   describe "#editable_fields" do
