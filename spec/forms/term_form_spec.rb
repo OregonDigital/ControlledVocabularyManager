@@ -30,6 +30,17 @@ RSpec.describe TermForm do
     it "should be valid by default" do
       expect(subject).to be_valid
     end
+    context "when the id is blank" do
+      let(:term) do
+        t = Term.new("1/")
+        t.attributes = params
+        t
+      end
+      it "should not be valid" do
+        expect(subject).not_to be_valid
+        expect(subject.errors[:id]).to include "can't be blank"
+      end
+    end
     context "when the vocabulary doesn't exist" do
       let(:vocabulary_exists) { false }
       it "should not be valid" do

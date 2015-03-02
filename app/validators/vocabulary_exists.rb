@@ -7,6 +7,6 @@ class VocabularyExists < ActiveModel::Validator
   end
 
   def vocabulary_id(record)
-    record.rdf_subject.parent.to_s.gsub(record.base_uri, '').gsub(/\/$/,'')
+    TermUri.new(record.rdf_subject).vocabulary_id
   end
 end
