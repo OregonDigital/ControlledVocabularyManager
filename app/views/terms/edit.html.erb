@@ -1,0 +1,11 @@
+<h1>Edit</h1>
+
+<%= simple_form_for(@term) do |f| %>
+
+<p><%= @term.base_uri + @term.id %></p>
+
+  <% %w{label comment}.each do |attribute| %>
+    <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => @term, :attribute => attribute, :form => f} %>
+  <% end %>
+  <%= f.button :submit %>
+<% end %>

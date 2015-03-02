@@ -183,4 +183,50 @@ RSpec.describe TermsController do
       end
     end
   end
+
+
+  describe "PATCH update" do
+    let(:vocabulary) { vocabulary_mock }
+    let(:term) { term_mock }
+    let(:params) do
+      {
+        :term => {
+          :id => term.id,
+          :comment => ["Test"],
+          :label => ["Comment"]
+        }
+      }
+    end
+    let(:persist_success) { true }
+    let(:persist_failure) { false }
+
+    before do
+      allow(Term).to receive(:find).with(term.id).and_return(term)
+      allow(term).to receive(:attributes=)
+      allow(term).to receive(:persist!).and_return(persist_success)
+      patch :update, :id => term.id, :term => params[:term]
+    end
+ 
+    context "when the fields are edited" do
+      it "should update the properties" do
+        expect(term).to have_received(:attributes=).with(params[:term])
+      end
+      it "should redirect to the updated term" do
+        expect(response).to redirect_to("/ns/#{term.id}")
+      end
+    end
+
+    context "when the fields are edited and the update fails" do
+      before do
+        allow(term).to receive(:persist!).and_return(persist_failure)
+        patch :update, :id => term.id, :term => params[:term]
+      end
+      it "should show the edit form" do
+        expect(response).to redirect_to(edit_term_path(term.id))
+      end
+
+    end
+
+  end
+
 end

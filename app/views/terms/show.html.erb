@@ -1,7 +1,8 @@
-
 <h1><%= @term.id %></h2>
 <h2><%= @term.rdf_subject %></h4>
 <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id) if @term.vocabulary? %>
+
+<p><%= link_to "Edit", edit_term_path(@term.id) %></p>
 
 <dl>
   <% @term.fields.each do |field| %>
