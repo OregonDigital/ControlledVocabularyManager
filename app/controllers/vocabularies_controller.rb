@@ -1,5 +1,5 @@
 class VocabulariesController < ApplicationController
-  delegate :term_form, :sparql_client, :all_vocabs_query, :to => :injector
+  delegate :term_form, :all_vocabs_query, :to => :injector
   skip_before_filter :check_auth, :only => [:index]
 
   def index
