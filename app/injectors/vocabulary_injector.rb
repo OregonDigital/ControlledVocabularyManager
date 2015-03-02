@@ -1,6 +1,6 @@
 class VocabularyInjector < Struct.new(:params)
   def term_form
-    @term_form ||= term_form_factory.new(term_repository, term_params)
+    @term_form ||= term_form_factory.new(built_term, term_repository)
   end
 
   def term_repository
@@ -16,6 +16,12 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   private
+
+  def built_term
+    term = term_repository.new(inner_term_params[:id])
+    term.attributes = term_params.except(:id)
+    term
+  end
 
   def sparql_client
     @sparql_client ||= term_repository.new.repository.query_client

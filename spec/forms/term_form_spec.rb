@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TermForm do
   subject { TermForm.new(vocabulary_form, repository) }
-  let(:vocabulary_form) { VocabularyForm.new(term) }
+  let(:vocabulary_form) { VocabularyForm.new(term, Vocabulary) }
   let(:repository) { Vocabulary }
   let(:term) do
     t = Term.new("1/test")
@@ -35,6 +35,20 @@ RSpec.describe TermForm do
       it "should not be valid" do
         expect(subject).not_to be_valid
         expect(subject.errors[:id]).to include "is in a non existent vocabulary"
+      end
+    end
+    context "when the id already exists" do
+      before do
+        allow(Vocabulary).to receive(:exists?).with("1").and_return(false)
+        allow(Vocabulary).to receive(:exists?).with("1/test").and_return(true)
+      end
+      it "should not be valid" do
+        expect(subject).not_to be_valid
+      end
+      it "should allow two messages" do
+        subject.valid?
+
+        expect(subject.errors[:id].length).to eq 2
       end
     end
   end

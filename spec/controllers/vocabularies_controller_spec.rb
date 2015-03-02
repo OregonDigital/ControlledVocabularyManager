@@ -68,17 +68,20 @@ RSpec.describe VocabulariesController do
         :comment => ["Test2"]
       }
     end
-    let(:vocabulary) { instance_double("VocabularyForm") }
+    let(:vocabulary) { instance_double("Vocabulary") }
+    let(:vocabulary_form) { VocabularyForm.new(vocabulary, Vocabulary) }
     let(:result) { post 'create', :vocabulary => vocabulary_params }
     let(:save_success) { true }
     before do
-      allow(VocabularyForm).to receive(:new).and_return(vocabulary)
-      allow(vocabulary).to receive(:save).and_return(save_success)
-      allow(vocabulary).to receive(:term_id).and_return("test/test")
+      allow(VocabularyForm).to receive(:new).and_return(vocabulary_form)
+      allow(Vocabulary).to receive(:new).and_return(vocabulary)
+      allow(vocabulary_form).to receive(:save).and_return(save_success)
+      allow(vocabulary).to receive(:id).and_return("test")
+      allow(vocabulary).to receive(:attributes=)
       post 'create', :vocabulary => vocabulary_params 
     end
     it "should save term form" do
-      expect(vocabulary).to have_received(:save)
+      expect(vocabulary_form).to have_received(:save)
     end
     context "when blank arrays are passed in" do
       let(:vocabulary_params) do
@@ -87,8 +90,8 @@ RSpec.describe VocabulariesController do
           :comment => [""]
         }
       end
-      it "should not pass them to TermForm" do
-        expect(VocabularyForm).to have_received(:new).with(anything, {"label" => ["test"], "comment" => []})
+      it "should not pass them to vocabulary" do
+        expect(vocabulary).to have_received(:attributes=).with({"label" => ["test"], "comment" => []})
       end
     end
     context "when save fails" do
@@ -97,12 +100,12 @@ RSpec.describe VocabulariesController do
         expect(response).to render_template("new")
       end
       it "should assign @vocabulary" do
-        expect(assigns(:vocabulary)).to eq vocabulary
+        expect(assigns(:vocabulary)).to eq vocabulary_form
       end
     end
     context "when all goes well" do
       it "should redirect to the term" do
-        expect(response).to redirect_to("/ns/#{vocabulary.term_id}")
+        expect(response).to redirect_to("/ns/#{vocabulary.id}")
       end
     end
   end

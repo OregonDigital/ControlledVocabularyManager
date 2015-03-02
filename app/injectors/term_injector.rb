@@ -1,6 +1,6 @@
 class TermInjector < VocabularyInjector
   def term_form
-    @term_form ||= term_form_factory.new(term_repository, term_params)
+    @term_form ||= term_form_factory.new(built_term, term_repository)
   end
 
   def term_repository
@@ -8,10 +8,20 @@ class TermInjector < VocabularyInjector
   end
 
   def term
-    @term ||= term_repository.find(params[:id])
+    @term ||= term_repository.find("#{params[:vocabulary_id]}/#{params[:id]}")
   end
 
   private
+
+  def built_term
+    term = term_repository.new(combined_id)
+    term.attributes = term_params.except(:id, :vocabulary_id)
+    term
+  end
+
+  def combined_id
+    "#{inner_term_params[:vocabulary_id]}/#{inner_term_params[:id]}"
+  end
 
   def term_form_factory
     TermForm

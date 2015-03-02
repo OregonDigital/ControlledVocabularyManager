@@ -13,7 +13,7 @@ class VocabulariesController < ApplicationController
 
   def create
     if term_form.save
-      redirect_to term_path(:id => term_form.term_id)
+      redirect_to term_path(:id => term_form.id)
     else
       @vocabulary = term_form
       render "new"

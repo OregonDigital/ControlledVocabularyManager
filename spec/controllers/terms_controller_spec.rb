@@ -68,7 +68,7 @@ RSpec.describe TermsController do
     let(:term_form) { instance_double("TermForm") }
     let(:vocabulary_id) { "test" }
     before do
-      allow(TermForm).to receive(:new).with(anything, {:vocabulary_id => "test"}).and_return(term_form)
+      allow(TermForm).to receive(:new).and_return(term_form)
     end
     def get_new
       get :new, :vocabulary_id => vocabulary_id
@@ -104,7 +104,8 @@ RSpec.describe TermsController do
   end
 
   describe "POST create" do
-    let(:term_form) { instance_double("TermForm") }
+    let(:term_form) { TermForm.new(term, Term) }
+    let(:term) { instance_double("Term") }
     let(:params) do
       {
         :vocabulary_id => "test",
@@ -118,8 +119,10 @@ RSpec.describe TermsController do
     let(:save_success) { true }
     before do
       allow(TermForm).to receive(:new).and_return(term_form)
+      allow(Term).to receive(:new).and_return(term)
       allow(term_form).to receive(:save).and_return(save_success)
-      allow(term_form).to receive(:term_id).and_return("test/test")
+      allow(term).to receive(:id).and_return("test/test")
+      allow(term).to receive(:attributes=)
       allow(Vocabulary).to receive(:find)
       post :create, params
     end
@@ -142,8 +145,8 @@ RSpec.describe TermsController do
           }
         }
       end
-      it "should not pass them to TermForm" do
-        expect(TermForm).to have_received(:new).with(anything, {"id" => "test", "vocabulary_id" => "test", "label" => []})
+      it "should not pass them to Term" do
+        expect(term).to have_received(:attributes=).with({"label" => []})
       end
     end
     context "when save fails" do
@@ -157,7 +160,7 @@ RSpec.describe TermsController do
     end
     context "when all goes well" do
       it "should redirect to the term" do
-        expect(response).to redirect_to("/ns/#{term_form.term_id}")
+        expect(response).to redirect_to("/ns/#{term.id}")
       end
     end
     context "when vocabulary isn't found" do
