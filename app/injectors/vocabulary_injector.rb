@@ -15,6 +15,10 @@ class VocabularyInjector < Struct.new(:params)
     Vocabulary
   end
 
+  def params
+    super || {}
+  end
+
   private
 
   def built_term
