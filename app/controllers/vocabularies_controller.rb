@@ -1,5 +1,4 @@
 class VocabulariesController < ApplicationController
-  before_filter :load_vocab, :only => :show
   delegate :term_form, :sparql_client, :all_vocabs_query, :to => :injector
   skip_before_filter :check_auth, :only => [:index]
 
