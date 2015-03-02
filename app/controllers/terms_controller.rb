@@ -1,8 +1,7 @@
 class TermsController < ApplicationController
-  before_filter :load_term, :only => [:show, :edit, :update]
-  before_filter :vocabulary, :only => :new
+  before_filter :load_term, :only => [:show]
   before_filter :load_vocabulary, :only => [:new, :create]
-  delegate :term_form, :term_repository, :vocabulary_repository, :to => :injector
+  delegate :term_form, :edit_term_form, :term_repository, :vocabulary_repository, :to => :injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
 
@@ -28,15 +27,15 @@ class TermsController < ApplicationController
   end
 
   def edit
+    @term = edit_term_form
   end
 
   def update
-    @term.attributes = term_params
-
-    if @term.persist! 
+    if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else
-      redirect_to edit_term_path(:id => params[:id])
+      @term = edit_term_form
+      render "edit"
     end
   end
 

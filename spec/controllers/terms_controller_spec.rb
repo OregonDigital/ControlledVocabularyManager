@@ -181,6 +181,7 @@ RSpec.describe TermsController do
   describe "PATCH update" do
     let(:vocabulary) { vocabulary_mock }
     let(:term) { term_mock }
+    let(:term_form) { TermForm.new(term, Term) }
     let(:params) do
       {
         :term => {
@@ -195,14 +196,16 @@ RSpec.describe TermsController do
 
     before do
       allow(Term).to receive(:find).with(term.id).and_return(term)
+      allow(TermForm).to receive(:new).and_return(term_form)
       allow(term).to receive(:attributes=)
       allow(term).to receive(:persist!).and_return(persist_success)
+      allow(term_form).to receive(:valid?).and_return(true)
       patch :update, :id => term.id, :term => params[:term]
     end
  
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(term).to have_received(:attributes=).with(params[:term])
+        expect(term).to have_received(:attributes=).with(params[:term].except(:id))
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{term.id}")
@@ -215,7 +218,8 @@ RSpec.describe TermsController do
         patch :update, :id => term.id, :term => params[:term]
       end
       it "should show the edit form" do
-        expect(response).to redirect_to(edit_term_path(term.id))
+        expect(assigns(:term)).to eq term_form
+        expect(response).to render_template("edit")
       end
 
     end
