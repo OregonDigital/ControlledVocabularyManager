@@ -6,8 +6,7 @@ Warden::Manager.serialize_from_session do |user|
   Warden::GitHub::User.new(user["attribs"], user["token"])
 end
 Warden::GitHub::Rails.setup do |config|
-  config.add_scope :admin, redirect_uri:  '/',
-                           scope:         'read:org'
+  config.add_scope :admin, scope: 'read:org'
 
   config.default_scope = :admin
 

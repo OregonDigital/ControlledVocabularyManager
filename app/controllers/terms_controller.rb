@@ -2,6 +2,7 @@ class TermsController < ApplicationController
   before_filter :load_term, :only => [:show, :edit, :update]
   before_filter :vocabulary, :only => :new
   rescue_from ActiveTriples::NotFound, :with => :render_404
+  skip_before_filter :check_auth, :only => [:show]
 
   def show
     respond_to do |format|
@@ -53,4 +54,5 @@ class TermsController < ApplicationController
   def vocabulary
     @vocabulary ||= Vocabulary.find(params[:vocabulary_id])
   end
+
 end

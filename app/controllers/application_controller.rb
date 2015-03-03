@@ -2,20 +2,15 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :authenticate
-  before_filter :authorize
+  before_filter :check_auth
 
   private
-  
-  def authenticate
-    unless github_authenticated?
-      github_authenticate!
-    end
-  end
 
-  def authorize
-    session[:authorized] ||= github_user.organization_member?('OregonDigital')
-    render :status => 403, :text => "Not Authorized" unless session[:authorized] == true
+  def check_auth
+    if session[:authorized] != true
+      session[:user_route] = request.env['PATH_INFO']
+      redirect_to '/login'
+    end
   end
 
 end
