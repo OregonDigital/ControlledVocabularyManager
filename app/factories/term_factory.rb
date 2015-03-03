@@ -2,7 +2,7 @@ class TermFactory
   class << self
     def new(*args)
       decorate do
-        PolymorphicTermRepository.new(*args).build
+        PolymorphicTermRepository.new(*args)
       end
     end
 
@@ -26,32 +26,3 @@ class TermFactory
   end
 end
 
-class PolymorphicTermRepository < Struct.new(:id)
-  def self.find(id)
-    new(id).find
-  end
-
-  def build
-    repository.new(id)
-  end
-
-  def find
-    repository.find(id)
-  end
-
-  private
-
-  def repository
-    return vocabulary_repository unless id.include?("/")
-    term_repository
-  end
-
-  def vocabulary_repository
-    Vocabulary
-  end
-
-  def term_repository
-    Term
-  end
-
-end
