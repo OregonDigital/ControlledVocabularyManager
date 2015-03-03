@@ -1,4 +1,5 @@
-class TermInjector < VocabularyInjector
+class TermInjector < Struct.new(:params)
+  delegate :vocabulary_repository, :to => :vocabulary_injector
   def term_form
     @term_form ||= term_form_factory.new(built_term, term_repository)
   end
@@ -17,7 +18,15 @@ class TermInjector < VocabularyInjector
     @term
   end
 
+  def params
+    super || {}
+  end
+
   private
+
+  def vocabulary_injector
+    @vocabulary_injector ||= VocabularyInjector.new(params)
+  end
 
   def built_term
     term = term_repository.new(combined_id)
@@ -31,6 +40,10 @@ class TermInjector < VocabularyInjector
 
   def term_form_factory
     TermForm
+  end
+
+  def term_params
+    ParamCleaner.call(inner_term_params)
   end
 
   def inner_term_params
