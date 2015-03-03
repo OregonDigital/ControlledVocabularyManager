@@ -19,8 +19,33 @@ class TermFactory
     private
 
     def decorate
-      result = yield
+      result = PolymorphicTermFactory.call(yield)
+      
       TermWithChildren.new(result)
     end
+  end
+end
+
+class PolymorphicTermFactory < Struct.new(:object)
+  def self.call(object)
+    new(object).build
+  end
+
+  def build
+    if object.vocabulary?
+      return vocabulary_object
+    end
+    object
+  end
+
+  private
+
+  def vocabulary_object
+    return find_vocabulary if object.persisted?
+    Vocabulary.new << object
+  end
+
+  def find_vocabulary
+    Vocabulary.find(object.id)
   end
 end

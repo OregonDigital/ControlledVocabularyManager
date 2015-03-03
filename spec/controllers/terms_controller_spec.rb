@@ -119,7 +119,7 @@ RSpec.describe TermsController do
     let(:save_success) { true }
     before do
       allow(TermForm).to receive(:new).and_return(term_form)
-      allow(Term).to receive(:new).and_return(term)
+      allow(TermFactory).to receive(:new).and_return(term)
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")
       allow(term).to receive(:attributes=)
@@ -195,7 +195,7 @@ RSpec.describe TermsController do
     let(:persist_failure) { false }
 
     before do
-      allow(Term).to receive(:find).with(term.id).and_return(term)
+      allow(TermFactory).to receive(:find).with(term.id).and_return(term)
       allow(TermForm).to receive(:new).and_return(term_form)
       allow(term).to receive(:attributes=)
       allow(term).to receive(:persist!).and_return(persist_success)
