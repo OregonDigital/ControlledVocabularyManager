@@ -21,8 +21,15 @@ class PolymorphicTermRepository < Struct.new(:id)
   private
 
   def repository
-    return vocabulary_repository unless id.include?("/")
-    term_repository
+    if term_id.vocabulary?
+      vocabulary_repository
+    else
+      term_repository
+    end
+  end
+
+  def term_id
+    @term_id ||= TermID.new(id)
   end
 
   def vocabulary_repository
