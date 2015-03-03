@@ -23,6 +23,7 @@ RSpec.describe TermFactory do
       end
     end
     context "when a Vocabulary exists" do
+      let(:id) { "test" }
       let(:term) do
         t = Vocabulary.new(id)
         t.persist!

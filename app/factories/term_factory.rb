@@ -2,13 +2,13 @@ class TermFactory
   class << self
     def new(*args)
       decorate do
-        Term.new(*args)
+        PolymorphicTermRepository.new(*args).build
       end
     end
 
     def find(*args)
       decorate do
-        Term.find(*args)
+        PolymorphicTermRepository.find(*args)
       end
     end
 
@@ -19,33 +19,39 @@ class TermFactory
     private
 
     def decorate
-      result = PolymorphicTermFactory.call(yield)
+      result = yield
       
       TermWithChildren.new(result)
     end
   end
 end
 
-class PolymorphicTermFactory < Struct.new(:object)
-  def self.call(object)
-    new(object).build
+class PolymorphicTermRepository < Struct.new(:id)
+  def self.find(id)
+    new(id).find
   end
 
   def build
-    if object.vocabulary?
-      return vocabulary_object
-    end
-    object
+    repository.new(id)
+  end
+
+  def find
+    repository.find(id)
   end
 
   private
 
-  def vocabulary_object
-    return find_vocabulary if object.persisted?
-    Vocabulary.new << object
+  def repository
+    return vocabulary_repository unless id.include?("/")
+    term_repository
   end
 
-  def find_vocabulary
-    Vocabulary.find(object.id)
+  def vocabulary_repository
+    Vocabulary
   end
+
+  def term_repository
+    Term
+  end
+
 end
