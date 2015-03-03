@@ -65,16 +65,13 @@ RSpec.describe TermsController do
     end
   end
   describe "GET new" do
-    let(:vocabulary) { vocabulary_mock }
-    let(:persisted_status) { true }
-    let(:term) { term_mock }
+    let(:term_form) { instance_double("TermForm") }
+    let(:vocabulary_id) { "test" }
     before do
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
-      allow(vocabulary).to receive(:persisted?).and_return(persisted_status)
-      allow(Term).to receive(:new).with(no_args).and_return(term)
+      allow(TermForm).to receive(:new).and_return(term_form)
     end
     def get_new
-      get :new, :vocabulary_id => vocabulary.id
+      get :new, :vocabulary_id => vocabulary_id
     end
     context "when logged out" do
       let(:logged_in) { false }
@@ -84,21 +81,21 @@ RSpec.describe TermsController do
     end
     context "when the vocabulary is not persisted" do
       before do
-        expect(Vocabulary).to receive(:find).with(vocabulary.id).and_raise ActiveTriples::NotFound
+        expect(Vocabulary).to receive(:find).with(vocabulary_id).and_raise ActiveTriples::NotFound
       end
       it "should raise a 404" do
         expect(get_new.code).to eq "404"
       end
     end
     context "when the vocabulary is persisted" do
+      let(:vocabulary) { vocabulary_mock }
       before do
+        allow(Vocabulary).to receive(:find).with(vocabulary_id).and_return(vocabulary)
         get_new
       end
-      it "should assign @vocabulary" do
-        expect(assigns(:vocabulary)).to eq vocabulary
-      end
       it "should assign @term" do
-        expect(assigns(:term)).to eq term
+        expect(assigns(:term)).to eq term_form
+        expect(assigns(:vocabulary)).to eq vocabulary
       end
       it "should render new" do
         expect(response).to render_template("new")
@@ -107,11 +104,11 @@ RSpec.describe TermsController do
   end
 
   describe "POST create" do
-    let(:vocabulary) { vocabulary_mock }
-    let(:term) { term_mock }
+    let(:term_form) { TermForm.new(term, Term) }
+    let(:term) { instance_double("Term") }
     let(:params) do
       {
-        :vocabulary_id => vocabulary.id,
+        :vocabulary_id => "test",
         :term => {
           :id => "test",
           :comment => ["Test"],
@@ -119,37 +116,51 @@ RSpec.describe TermsController do
         }
       }
     end
-    let(:create_responder) { instance_double(TermsController::CreateResponder) }
+    let(:save_success) { true }
     before do
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
-      allow(TermCreator).to receive(:call) do
-        controller.render :nothing => true
-      end
+      allow(TermForm).to receive(:new).and_return(term_form)
+      allow(Term).to receive(:new).and_return(term)
+      allow(term_form).to receive(:save).and_return(save_success)
+      allow(term).to receive(:id).and_return("test/test")
+      allow(term).to receive(:attributes=)
+      allow(Vocabulary).to receive(:find)
+      post :create, params
     end
     context "when logged out" do
       let(:logged_in) { false }
       it "should require login" do
-        expect(post(:create, params)).to redirect_to login_path
+        expect(response).to redirect_to login_path
       end
     end
-    it "should call TermCreator" do
-      expect(TermsController::CreateResponder).to receive(:new).with(controller).and_return(create_responder)
-      expect(TermCreator).to receive(:call).with(params[:term], vocabulary, [create_responder])
-      post :create, params
+    it "should save term form" do
+      expect(term_form).to have_received(:save)
     end
     context "when blank arrays are passed in" do
       let(:params) do
         {
-          :vocabulary_id => vocabulary.id,
+          :vocabulary_id => "test",
           :term => {
             :id => "test",
             :label => [""]
           }
         }
       end
-      it "should not pass them to TermCreator" do
-        expect(TermCreator).to receive(:call).with({"id" => "test", "label" => []}, anything, anything)
-        post :create, params
+      it "should not pass them to Term" do
+        expect(term).to have_received(:attributes=).with({"label" => []})
+      end
+    end
+    context "when save fails" do
+      let(:save_success) { false }
+      it "should render new template" do
+        expect(response).to render_template("new")
+      end
+      it "should assign @term" do
+        expect(assigns(:term)).to eq term_form
+      end
+    end
+    context "when all goes well" do
+      it "should redirect to the term" do
+        expect(response).to redirect_to("/ns/#{term.id}")
       end
     end
     context "when vocabulary isn't found" do
@@ -159,43 +170,9 @@ RSpec.describe TermsController do
       it "should return a 404" do
         expect(post(:create, params).code).to eq "404"
       end
-      it "doesn't call TermCreator" do
-        expect(TermCreator).not_to receive(:call)
+      it "doesn't call TermForm" do
+        expect(TermForm).not_to receive(:new)
         post :create, params
-      end
-    end
-    describe "CreateResponder" do
-      let(:term) { Term.new }
-      let(:term_id) { "bla/bla" }
-      describe "#success" do
-        before do
-          allow(controller).to receive(:create) do
-            TermsController::CreateResponder.new(controller).success(term, vocabulary)
-          end
-          allow(term).to receive(:persisted?).and_return(true)
-          allow(term).to receive(:id).and_return(term_id)
-          post :create, params
-        end
-        it "should redirect to the term" do
-          expect(response).to redirect_to("/ns/#{term_id}")
-        end
-      end
-      describe "#failure" do
-        before do
-          allow(controller).to receive(:create) do
-            TermsController::CreateResponder.new(controller).failure(term, vocabulary)
-          end
-          post :create, params
-        end
-        it "should render new template" do
-          expect(response).to render_template("new")
-        end
-        it "should assign @vocabulary" do
-          expect(assigns(:vocabulary)).to eq vocabulary
-        end
-        it "should assign @term" do
-          expect(assigns(:term)).to eq term
-        end
       end
     end
   end
@@ -204,6 +181,7 @@ RSpec.describe TermsController do
   describe "PATCH update" do
     let(:vocabulary) { vocabulary_mock }
     let(:term) { term_mock }
+    let(:term_form) { TermForm.new(term, Term) }
     let(:params) do
       {
         :term => {
@@ -218,14 +196,16 @@ RSpec.describe TermsController do
 
     before do
       allow(Term).to receive(:find).with(term.id).and_return(term)
+      allow(TermForm).to receive(:new).and_return(term_form)
       allow(term).to receive(:attributes=)
       allow(term).to receive(:persist!).and_return(persist_success)
+      allow(term_form).to receive(:valid?).and_return(true)
       patch :update, :id => term.id, :term => params[:term]
     end
  
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(term).to have_received(:attributes=).with(params[:term])
+        expect(term).to have_received(:attributes=).with(params[:term].except(:id))
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{term.id}")
@@ -238,7 +218,8 @@ RSpec.describe TermsController do
         patch :update, :id => term.id, :term => params[:term]
       end
       it "should show the edit form" do
-        expect(response).to redirect_to(edit_term_path(term.id))
+        expect(assigns(:term)).to eq term_form
+        expect(response).to render_template("edit")
       end
 
     end

@@ -3,7 +3,12 @@ require 'rails_helper'
 RSpec.describe "terms/new" do
   let(:id) { "Creator" }
   let(:vocabulary) { Vocabulary.new(id) }
-  let(:term) { Term.new }
+  let(:term) { TermInjector.new(parameters).term_form }
+  let(:parameters) {
+    {
+      :vocabulary_id => "test"
+    }
+  }
   before do
     assign(:vocabulary, vocabulary)
     assign(:term, term)

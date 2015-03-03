@@ -12,6 +12,10 @@ class TermFactory
       end
     end
 
+    def exists?(*args)
+      Term.exists?(*args)
+    end
+
     private
 
     def decorate
