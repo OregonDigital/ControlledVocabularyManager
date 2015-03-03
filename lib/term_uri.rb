@@ -1,3 +1,8 @@
+##
+# Value object representing a URI for Terms.
+#
+# This encapsulates the logic for getting the ending ID of a term even if it's
+# in a vocabulary. It doesn't work in all use cases - only for our URI formats.
 class TermUri
   attr_reader :uri
   def initialize(uri)
