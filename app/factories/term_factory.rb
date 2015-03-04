@@ -2,13 +2,13 @@ class TermFactory
   class << self
     def new(*args)
       decorate do
-        Term.new(*args)
+        PolymorphicTermRepository.new(*args)
       end
     end
 
     def find(*args)
       decorate do
-        Term.find(*args)
+        PolymorphicTermRepository.find(*args)
       end
     end
 
@@ -20,7 +20,9 @@ class TermFactory
 
     def decorate
       result = yield
+      
       TermWithChildren.new(result)
     end
   end
 end
+

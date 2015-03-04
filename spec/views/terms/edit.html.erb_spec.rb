@@ -8,6 +8,17 @@ RSpec.describe "terms/edit" do
     assign(:term, term)
     render
   end
+  context "when given a vocabulary" do
+    let(:term) { Vocabulary.new("#{id}") }
+    it "should post to /ns/Creator/JohnSmith" do
+      expect(rendered).to have_selector("form[action='/ns/Creator'][method='post']")
+    end
+    it "has inputs for all editable fields" do
+      term.editable_fields.each do |attribute|
+        expect(rendered).to have_selector "input[name='term[#{attribute}][]']"
+      end
+    end
+  end
   it "should post to /ns/Creator/JohnSmith" do
     expect(rendered).to have_selector("form[action='/ns/Creator/JohnSmith'][method='post']")
   end
@@ -17,8 +28,8 @@ RSpec.describe "terms/edit" do
   it "should display the term URI" do
     expect(rendered).to have_content(term.rdf_subject.to_s)
   end
-  %w{label comment}.each do |attribute|
-    it "has inputs for #{attribute}" do
+  it "has inputs for all editable fields" do
+    term.editable_fields.each do |attribute|
       expect(rendered).to have_selector "input[name='term[#{attribute}][]']"
     end
   end
