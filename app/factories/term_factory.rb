@@ -2,26 +2,28 @@ class TermFactory
   class << self
     def new(*args)
       decorate do
-        PolymorphicTermRepository.new(*args)
+        repository.new(*args)
       end
     end
 
     def find(*args)
       decorate do
-        PolymorphicTermRepository.find(*args)
+        repository.find(*args)
       end
     end
 
     def exists?(*args)
-      Term.exists?(*args)
+      repository.exists?(*args)
     end
 
     private
 
     def decorate
-      result = yield
-      
-      TermWithChildren.new(result)
+      TermWithChildren.new(yield)
+    end
+
+    def repository
+      PolymorphicTermRepository
     end
   end
 end

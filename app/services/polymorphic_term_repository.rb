@@ -8,6 +8,10 @@ class PolymorphicTermRepository < Struct.new(:id)
     def find(*args)
       orig_new(*args).find
     end
+
+    def exists?(*args)
+      orig_new(*args).exists?
+    end
   end
 
   def build
@@ -16,6 +20,10 @@ class PolymorphicTermRepository < Struct.new(:id)
 
   def find
     repository.find(id)
+  end
+
+  def exists?
+    repository.exists?(id)
   end
 
   private
