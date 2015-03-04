@@ -1,0 +1,5 @@
+<h1>Edit</h1>
+
+<%= simple_form_for(@term, :url => update_vocabulary_path(:id => @term.id)) do |f| %>
+  <%= render "terms/edit_form", :f => f, :term => @term %>
+<% end %>

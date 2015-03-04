@@ -179,7 +179,6 @@ RSpec.describe TermsController do
 
 
   describe "PATCH update" do
-    let(:vocabulary) { vocabulary_mock }
     let(:term) { term_mock }
     let(:term_form) { TermForm.new(term, Term) }
     let(:params) do
@@ -202,7 +201,7 @@ RSpec.describe TermsController do
       allow(term_form).to receive(:valid?).and_return(true)
       patch :update, :id => term.id, :term => params[:term]
     end
- 
+    
     context "when the fields are edited" do
       it "should update the properties" do
         expect(term).to have_received(:attributes=).with(params[:term].except(:id))

@@ -1,0 +1,6 @@
+  <p><%= term.rdf_subject %></p>
+
+  <% term.editable_fields.each do |attribute| %>
+    <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
+  <% end %>
+  <%= f.button :submit %>

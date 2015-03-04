@@ -1,5 +1,5 @@
 class VocabulariesController < ApplicationController
-  delegate :vocabulary_form, :all_vocabs_query, :to => :injector
+  delegate :vocabulary_form, :edit_vocabulary_form, :all_vocabs_query, :to => :injector
   skip_before_filter :check_auth, :only => [:index]
 
   def index
@@ -16,6 +16,19 @@ class VocabulariesController < ApplicationController
     else
       @vocabulary = vocabulary_form
       render "new"
+    end
+  end
+
+  def edit
+    @term = edit_vocabulary_form
+  end
+
+  def update
+    if edit_vocabulary_form.save
+      redirect_to term_path(:id => params[:id])
+    else
+      @term = edit_vocabulary_form
+      render "edit"
     end
   end
 
