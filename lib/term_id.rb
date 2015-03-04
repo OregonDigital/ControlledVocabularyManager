@@ -6,7 +6,7 @@ class TermID
   attr_reader :id
 
   def initialize(id)
-    @id = id
+    @id = id.to_s
   end
 
   def to_s
@@ -14,6 +14,12 @@ class TermID
   end
 
   def vocabulary?
-    !id.include?("/")
+    !clean_id.include?("/")
+  end
+
+  private
+
+  def clean_id
+    id.gsub(/.*\/ns\//, '')
   end
 end
