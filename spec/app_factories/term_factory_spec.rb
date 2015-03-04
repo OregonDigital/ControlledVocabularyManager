@@ -15,9 +15,6 @@ RSpec.describe TermFactory do
       before do
         term
       end
-      it "should return a TermWithChildren" do
-        expect(result).to be_kind_of TermWithChildren
-      end
       it "should have found a Term" do
         expect(result.__getobj__).to be_kind_of Term
       end
@@ -36,6 +33,12 @@ RSpec.describe TermFactory do
         expect(result).to be_persisted
         expect(result.__getobj__).to be_kind_of Vocabulary
       end
+    end
+    it "should decorate it" do
+      term
+
+      expect(result).to be_instance_of TermWithChildren
+      expect(result.__getobj__).to be_instance_of Term
     end
   end
 end
