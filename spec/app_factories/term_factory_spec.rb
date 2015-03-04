@@ -37,8 +37,11 @@ RSpec.describe TermFactory do
     it "should decorate it" do
       term
 
-      expect(result).to be_instance_of TermWithChildren
-      expect(result.__getobj__).to be_instance_of Term
+      new_result = result
+      [TermWithChildren, SetsModified, Term].each do |klass|
+        expect(new_result).to be_instance_of(klass)
+        new_result = new_result.__getobj__ if new_result.respond_to?(:__getobj__)
+      end
     end
   end
 end

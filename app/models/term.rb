@@ -7,7 +7,6 @@ class Term < ActiveTriples::Resource
   property :issued, :predicate => RDF::DC.issued
   property :modified, :predicate => RDF::DC.modified
   before_persist :set_issued, :if => :new_record?
-  before_persist :set_modified, :if => :valid?
 
   validate :not_blank_node
 
@@ -42,7 +41,4 @@ class Term < ActiveTriples::Resource
     self.issued = RDF::Literal::Date.new(Time.now)
   end
 
-  def set_modified
-    self.modified = RDF::Literal::Date.new(Time.now)
-  end
 end

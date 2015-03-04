@@ -26,6 +26,7 @@ class TermFactory
 
     def decorators
       [
+        SetsModified,
         TermWithChildren
       ]
     end
