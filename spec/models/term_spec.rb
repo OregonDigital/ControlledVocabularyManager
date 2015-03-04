@@ -106,60 +106,26 @@ RSpec.describe Term do
     end
   end
 
-  describe "#issued" do
-    before do
-      stub_repository
+  describe ".base_uri" do
+    it "should be set to opaquenamespace.org" do
+      expect(resource.class.base_uri).to eq "http://opaquenamespace.org/ns/"
     end
-    context "when it's new" do
-      it "should be empty" do
-        expect(resource.issued).to be_empty
+  end
+
+  describe "#id" do
+    context "with no id" do
+      let(:resource) { Term.new }
+      it "should be nil" do
+        expect(resource.id).to be_nil
       end
     end
-    context "when persisted" do
+    context "with an id" do
+      let(:resource) { Term.new("bla/bla") }
       before do
         resource.persist!
       end
-      it "should be set" do
-        expect(resource.issued).not_to be_empty
-      end
-      it "should be the current day" do
-        expect(resource.issued.first).to eq Date.today
-      end
-      context "and then re-persisted" do
-        let(:reloaded) { resource.class.find(resource.rdf_subject) }
-        let(:before_issued) { reloaded.issued.first }
-        before do
-          before_issued
-          Timecop.travel(Time.current.tomorrow)
-          reloaded.persist!
-        end
-        it "should not change" do
-          expect(before_issued).to eq reloaded.issued.first
-        end
-      end
-    end
-
-    describe ".base_uri" do
-      it "should be set to opaquenamespace.org" do
-        expect(resource.class.base_uri).to eq "http://opaquenamespace.org/ns/"
-      end
-    end
-
-    describe "#id" do
-      context "with no id" do
-        let(:resource) { Term.new }
-        it "should be nil" do
-          expect(resource.id).to be_nil
-        end
-      end
-      context "with an id" do
-        let(:resource) { Term.new("bla/bla") }
-        before do
-          resource.persist!
-        end
-        it "should be just the id" do
-          expect(resource.id).to eq "bla/bla"
-        end
+      it "should be just the id" do
+        expect(resource.id).to eq "bla/bla"
       end
     end
   end

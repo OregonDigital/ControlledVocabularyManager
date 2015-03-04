@@ -6,7 +6,7 @@ RSpec.describe TermFactory do
   describe ".find" do
     let(:id) { "test/1" }
     let(:term) do
-      t = Term.new(id)
+      t = TermFactory.new(id)
       t.persist!
       t
     end
@@ -41,7 +41,7 @@ RSpec.describe TermFactory do
       term
 
       new_result = result
-      [TermWithChildren, SetsModified, Term].each do |klass|
+      [TermWithChildren, SetsIssued, SetsModified, Term].each do |klass|
         expect(new_result).to be_instance_of(klass)
         new_result = new_result.__getobj__ if new_result.respond_to?(:__getobj__)
       end
