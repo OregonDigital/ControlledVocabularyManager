@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TermSearch do
-  subject { TermSearch.new(sparql_client) }
+  subject { TermSearch.new(sparql_client, PolymorphicTermRepository) }
   let(:sparql_client) { Term.new.repository.query_client }
 
   describe "#search" do

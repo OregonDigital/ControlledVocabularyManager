@@ -1,8 +1,9 @@
 class TermSearch
-  attr_reader :sparql_client, :query
+  attr_reader :sparql_client, :repository, :query
 
-  def initialize(sparql_client)
+  def initialize(sparql_client, repository)
     @sparql_client = sparql_client
+    @repository = repository
   end
 
   def search(query)
@@ -13,7 +14,7 @@ class TermSearch
   private
 
   def terms
-    GraphToTerms.new(PolymorphicTermRepository, graph).run
+    GraphToTerms.new(repository, graph).run
   end
 
   def graph
