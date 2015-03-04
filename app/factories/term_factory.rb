@@ -19,7 +19,15 @@ class TermFactory
     private
 
     def decorate
-      TermWithChildren.new(yield)
+      decorators.inject(yield) do |term, decorator|
+        decorator.new(term)
+      end
+    end
+
+    def decorators
+      [
+        TermWithChildren
+      ]
     end
 
     def repository
