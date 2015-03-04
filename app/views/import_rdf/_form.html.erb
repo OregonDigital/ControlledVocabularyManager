@@ -1,0 +1,7 @@
+<%= simple_form_for(form, {:url => import_rdf_path} ) do |f| %>
+  <%= render :partial => "shared/errors", :locals => {:object => f.object} %>
+
+  <%= f.input :url, :label => "URL" %>
+  <%= f.input :preview, :as => :boolean, :label => "Preview first?" %>
+  <%= f.button :submit, "Import JSON-LD" %>
+<% end %>
