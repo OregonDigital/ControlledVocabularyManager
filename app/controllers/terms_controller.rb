@@ -59,7 +59,7 @@ class TermsController < ApplicationController
 
   def render_404
     respond_to do |format|
-      format.html { render :file => "#{Rails.root}/public/404", :layout => true, :status => 404 }
+      format.html { render "terms/404", :status => 404 }
       format.all { render nothing: true, status: 404 }
     end
   end
