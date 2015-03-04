@@ -3,6 +3,10 @@ class VocabularyInjector < Struct.new(:params)
     @vocabulary_form ||= vocabulary_form_factory.new(built_vocabulary, vocabulary_repository)
   end
 
+  def edit_vocabulary_form
+    @edit_vocabulary_form ||= vocabulary_form_factory.new(found_vocabulary, vocabulary_repository)
+  end
+
   def vocabulary_repository
     Vocabulary
   end
@@ -21,6 +25,12 @@ class VocabularyInjector < Struct.new(:params)
     vocabulary = vocabulary_repository.new(inner_vocabulary_params[:id])
     vocabulary.attributes = vocabulary_params.except(:id)
     vocabulary
+  end
+
+  def found_vocabulary
+    vocab = vocabulary_repository.find(params[:id])
+    vocab.attributes = vocabulary_params
+    vocab
   end
 
   def sparql_client

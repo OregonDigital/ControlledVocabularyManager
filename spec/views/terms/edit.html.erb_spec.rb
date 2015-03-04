@@ -10,12 +10,9 @@ RSpec.describe "terms/edit" do
   end
   context "when given a vocabulary" do
     let(:term) { Vocabulary.new("#{id}") }
-    it "should post to /terms/Creator" do
-      expect(rendered).to have_selector("form[action='/terms/Creator'][method='post']")
-    end
     it "has inputs for all editable fields" do
       term.editable_fields.each do |attribute|
-        expect(rendered).to have_selector "input[name='term[#{attribute}][]']"
+        expect(rendered).to have_selector "input[name='vocabulary[#{attribute}][]']"
       end
     end
   end

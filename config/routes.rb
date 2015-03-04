@@ -7,11 +7,12 @@ Rails.application.routes.draw do
 
   get '/ns/*id', :to => "terms#show", :as => "term"
   patch 'terms/*id', :to => "terms#update", :as => "update_term"
+  patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
 
   get '/login'  => 'login#index'
   get '/login/auth' => 'login#doauth'
 
-  resources :vocabularies, :only => [:index, :new, :create]
+  resources :vocabularies, :only => [:index, :new, :create, :edit]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
   resources :terms, :only => [:create, :edit]
 

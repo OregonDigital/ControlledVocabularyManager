@@ -30,6 +30,72 @@ RSpec.describe VocabulariesController do
     end
   end
 
+  describe "GET 'edit'" do
+    let(:vocabulary_form) { instance_double("VocabularyForm") }
+    let(:vocabulary) { vocabulary_mock }
+    before do
+      allow(VocabularyForm).to receive(:new).and_return(vocabulary_form)
+      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
+      allow(vocabulary).to receive(:attributes=)
+      get 'edit', :id => vocabulary.id
+    end
+    it "should assign @term" do
+      expect(assigns(:term)).to eq vocabulary_form
+    end
+    it "should render edit" do
+      expect(response).to render_template 'edit'
+    end
+  end
+
+  describe "PATCH 'update'" do
+    let(:vocabulary) { vocabulary_mock }
+    let(:vocabulary_form) { VocabularyForm.new(vocabulary, Vocabulary) }
+    let(:params) do
+      {
+        :comment => ["Test"],
+        :label => ["Comment"]
+      }
+    end
+    let(:persist_success) { true }
+
+    before do
+      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
+      allow(VocabularyForm).to receive(:new).and_return(vocabulary_form)
+      allow(vocabulary).to receive(:attributes=)
+      allow(vocabulary).to receive(:persist!).and_return(persist_success)
+      allow(vocabulary_form).to receive(:valid?).and_return(true)
+      patch :update, :id => vocabulary.id, :vocabulary => params
+    end
+    
+    context "when the fields are edited" do
+      it "should update the properties" do
+        expect(vocabulary).to have_received(:attributes=).with(params)
+      end
+      it "should redirect to the updated term" do
+        expect(response).to redirect_to("/ns/#{vocabulary.id}")
+      end
+      context "and there are blank fields" do
+        let(:params) do
+          {
+            :comment => [""],
+            :label => ["Test"]
+          }
+        end
+        it "should ignore them" do
+          expect(vocabulary).to have_received(:attributes=).with(:comment => [], :label => ["Test"])
+        end
+      end
+    end
+
+    context "when the fields are edited and the update fails" do
+      let(:persist_success) { false }
+      it "should show the edit form" do
+        expect(assigns(:term)).to eq vocabulary_form
+        expect(response).to render_template("edit")
+      end
+    end
+  end
+
   describe "GET 'index'" do
     context "when there are vocabularies" do
       let(:vocabulary) { vocabulary_mock }

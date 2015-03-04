@@ -28,6 +28,10 @@ class Term < ActiveTriples::Resource
     fields - [:issued, :modified]
   end
 
+  def to_param
+    id
+  end
+
   private
 
   def not_blank_node

@@ -9,6 +9,7 @@ RSpec.describe "terms/show" do
     assign(:term, resource)
     allow(resource).to receive(:fields).and_return([:label, :comment])
     allow(resource).to receive(:get_values).with(anything) { |x| ["#{x}_string"] }
+    allow(resource).to receive(:persisted?).and_return(true)
   end
 
   context "when given a vocab" do
@@ -17,6 +18,7 @@ RSpec.describe "terms/show" do
     let(:children) { [] }
     before do
       allow(resource).to receive(:children).and_return(children)
+      allow(vocabulary).to receive(:persisted?).and_return(true)
       render
     end
     it "should have a link to create a resource" do
@@ -30,6 +32,15 @@ RSpec.describe "terms/show" do
         expect(rendered).to have_link child.rdf_subject.to_s
       end
     end
+    it "should have a link to edit the vocabulary" do
+      expect(rendered).to have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
+    end
+  end
+
+  it "should have a link to edit the term" do
+    render
+    
+    expect(rendered).to have_link "Edit", :href => edit_term_path(:id => resource.id)
   end
 
   it "should display all fields" do
