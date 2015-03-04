@@ -6,7 +6,7 @@ Rails.application.routes.draw do
   root 'home#index'
 
   get '/ns/*id', :to => "terms#show", :as => "term"
-  patch '/ns/*id', :to => "terms#update"
+  patch 'terms/*id', :to => "terms#update", :as => "update_term"
 
   get '/login'  => 'login#index'
   get '/login/auth' => 'login#doauth'

@@ -10,8 +10,8 @@ RSpec.describe "terms/edit" do
   end
   context "when given a vocabulary" do
     let(:term) { Vocabulary.new("#{id}") }
-    it "should post to /ns/Creator/JohnSmith" do
-      expect(rendered).to have_selector("form[action='/ns/Creator'][method='post']")
+    it "should post to /terms/Creator" do
+      expect(rendered).to have_selector("form[action='/terms/Creator'][method='post']")
     end
     it "has inputs for all editable fields" do
       term.editable_fields.each do |attribute|
@@ -19,8 +19,8 @@ RSpec.describe "terms/edit" do
       end
     end
   end
-  it "should post to /ns/Creator/JohnSmith" do
-    expect(rendered).to have_selector("form[action='/ns/Creator/JohnSmith'][method='post']")
+  it "should post to /terms/Creator/JohnSmith" do
+    expect(rendered).to have_selector("form[action='/terms/Creator/JohnSmith'][method='post']")
   end
   it "should not have a _method field" do
     expect(rendered).not_to have_selector("input[name='_method']")

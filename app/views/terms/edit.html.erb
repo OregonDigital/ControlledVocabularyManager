@@ -1,6 +1,6 @@
 <h1>Edit</h1>
 
-<%= simple_form_for(@term, :url => term_path(:id => @term.id), :as => :term) do |f| %>
+<%= simple_form_for(@term, :url => update_term_path(:id => @term.id), :as => :term) do |f| %>
 
 <p><%= @term.base_uri + @term.id %></p>
 
