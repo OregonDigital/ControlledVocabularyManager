@@ -13,10 +13,12 @@ RSpec.describe TermFactory do
     let(:result) { subject.find(id) }
     context "when a term exists" do
       before do
+        allow(Term).to receive(:find).with(id).and_return(term)
         term
       end
       it "should have found a Term" do
-        expect(result.__getobj__).to be_kind_of Term
+        expect(result).to eq term
+        expect(Term).to have_received(:find).with(id)
       end
     end
     context "when a Vocabulary exists" do
@@ -27,11 +29,12 @@ RSpec.describe TermFactory do
         t
       end
       before do
+        allow(Vocabulary).to receive(:find).with(id).and_return(term)
         term
       end
       it "should have found a Vocabulary" do
-        expect(result).to be_persisted
-        expect(result.__getobj__).to be_kind_of Vocabulary
+        expect(result).to eq term
+        expect(Vocabulary).to have_received(:find).with(id)
       end
     end
     it "should decorate it" do
