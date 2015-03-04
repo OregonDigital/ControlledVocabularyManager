@@ -23,5 +23,17 @@ RSpec.describe TermID do
         expect(result).to eq false
       end
     end
+    context "when given a vocabulary URI" do
+      let(:id) { RDF::URI("http://opaquenamespace.org/ns/vocab") }
+      it "should return true" do
+        expect(result).to eq true
+      end
+    end
+    context "when given a term URI" do
+      let(:id) { RDF::URI("http://opaquenamespace.org/ns/vocab/term") }
+      it "should return false" do
+        expect(result).to eq false
+      end
+    end
   end
 end
