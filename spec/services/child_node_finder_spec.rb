@@ -4,8 +4,8 @@ RSpec.describe ChildNodeFinder do
   describe ".find_children" do
     let(:result) { described_class.find_children(vocabulary) }
     let(:vocabulary) { Vocabulary.new("bla") }
-    let(:term) { Term.new("bla/1") }
-    let(:unrelated_term) { Term.new("bla2/1") }
+    let(:term) { TermFactory.new("bla/1") }
+    let(:unrelated_term) { TermFactory.new("bla2/1") }
     before do
       vocabulary.persist!
       term.persist!
@@ -20,7 +20,7 @@ RSpec.describe ChildNodeFinder do
       expect(statements_hash(result.first)).to eq statements_hash(term)
     end
     context "when there are two children" do
-      let(:unrelated_term) { Term.new("bla/2") }
+      let(:unrelated_term) { TermFactory.new("bla/2") }
       let(:sorted_result) { result.sort_by(&:rdf_subject) }
       it "should be able to return them" do
         expect(result.length).to eq 2
