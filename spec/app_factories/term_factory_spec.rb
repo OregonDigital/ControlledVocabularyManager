@@ -1,12 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe TermFactory do
-  subject { TermFactory }
+  subject { TermFactory.new(decorators) }
+  let(:decorators) { double("decorators") }
+  before do
+    allow(decorators).to receive(:new).with(anything) {|x| x }
+  end
 
   describe ".find" do
     let(:id) { "test/1" }
     let(:term) do
-      t = TermFactory.new(id)
+      t = subject.new(id)
       t.persist!
       t
     end
@@ -40,11 +44,7 @@ RSpec.describe TermFactory do
     it "should decorate it" do
       term
 
-      new_result = result
-      [TermWithChildren, SetsIssued, SetsModified, Term].each do |klass|
-        expect(new_result).to be_instance_of(klass)
-        new_result = new_result.__getobj__ if new_result.respond_to?(:__getobj__)
-      end
+      expect(decorators).to have_received(:new).with(term)
     end
   end
 end

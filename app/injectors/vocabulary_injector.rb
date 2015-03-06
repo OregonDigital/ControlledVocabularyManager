@@ -8,11 +8,19 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def vocabulary_repository
-    TermFactory
+    TermFactory.new(decorators)
   end
 
   def all_vocabs_query
     -> { AllVocabsQuery.call(sparql_client) }
+  end
+  
+  def sparql_client
+    @sparql_client ||= vocabulary_repository.new.repository.query_client
+  end
+
+  def child_node_finder
+    @child_node_finder ||= ChildNodeFinder.new(vocabulary_repository, sparql_client)
   end
 
   def params
@@ -33,8 +41,12 @@ class VocabularyInjector < Struct.new(:params)
     vocab
   end
 
-  def sparql_client
-    @sparql_client ||= vocabulary_repository.new.repository.query_client
+  def decorators
+    DecoratorList.new(
+      SetsModified,
+      SetsIssued,
+      DecoratorWithArguments.new(TermWithChildren, ChildNodeFinder)
+    )
   end
 
 

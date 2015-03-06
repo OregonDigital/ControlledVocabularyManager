@@ -1,38 +1,34 @@
 class TermFactory
-  class << self
-    def new(*args)
-      decorate do
-        repository.new(*args)
-      end
-    end
+  attr_reader :decorators
 
-    def find(*args)
-      decorate do
-        repository.find(*args)
-      end
-    end
+  def initialize(decorators)
+    @decorators = decorators
+  end
 
-    def exists?(*args)
-      repository.exists?(*args)
+  def new(*args)
+    decorate do
+      repository.new(*args)
     end
+  end
 
-    private
-
-    def decorate
-      decorators.new(yield)
+  def find(*args)
+    decorate do
+      repository.find(*args)
     end
+  end
 
-    def decorators
-      DecoratorList.new(
-        SetsModified,
-        SetsIssued,
-        DecoratorWithArguments.new(TermWithChildren, ChildNodeFinder)
-      )
-    end
+  def exists?(*args)
+    repository.exists?(*args)
+  end
 
-    def repository
-      PolymorphicTermRepository
-    end
+  private
+
+  def decorate
+    decorators.new(yield)
+  end
+
+  def repository
+    PolymorphicTermRepository
   end
 
 end
