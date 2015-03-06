@@ -12,7 +12,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client) }
+    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository) }
   end
   
   def sparql_client

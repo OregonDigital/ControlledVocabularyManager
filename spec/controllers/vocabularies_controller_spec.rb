@@ -99,9 +99,10 @@ RSpec.describe VocabulariesController do
   describe "GET 'index'" do
     context "when there are vocabularies" do
       let(:vocabulary) { vocabulary_mock }
+      let(:injector) { VocabularyInjector.new }
       before do
         allow(vocabulary).to receive(:repository).and_return(Vocabulary.new.repository)
-        allow(AllVocabsQuery).to receive(:call).with(vocabulary.repository.query_client).and_return([vocabulary])
+        allow(AllVocabsQuery).to receive(:call).and_return([vocabulary])
       end
       it "should set @vocabularies to all vocabs" do
         get :index
