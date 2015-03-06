@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.feature "Creating a vocabulary & term" do
   background do
     allow_any_instance_of(ApplicationController).to receive(:check_auth).and_return(true)
-    #vocabulary = Vocabulary.new("test")
-    #vocabulary.label = "yo"
-    #vocabulary.persist!
-    #@term_page = TermCreatePage.new(vocabulary.id)
     @vocabulary_page = VocabularyIndexPage.new
     visit vocabularies_path
   end
