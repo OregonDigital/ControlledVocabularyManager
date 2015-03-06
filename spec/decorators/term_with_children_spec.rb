@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TermWithChildren do
   let(:vocabulary) { Vocabulary.new(uri) }
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  subject { TermWithChildren.new(vocabulary) }
+  subject { TermWithChildren.new(vocabulary, ChildNodeFinder) }
 
   describe "#children" do
     let(:result) { subject.children }

@@ -14,7 +14,7 @@ RSpec.describe "terms/show" do
 
   context "when given a vocab" do
     let(:vocabulary) { Vocabulary.new(uri) }
-    let(:resource) { TermWithChildren.new(vocabulary) }
+    let(:resource) { TermWithChildren.new(vocabulary, ChildNodeFinder) }
     let(:children) { [] }
     before do
       allow(resource).to receive(:children).and_return(children)

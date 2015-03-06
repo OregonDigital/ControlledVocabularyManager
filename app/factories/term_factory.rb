@@ -19,21 +19,44 @@ class TermFactory
     private
 
     def decorate
-      decorators.inject(yield) do |term, decorator|
-        decorator.new(term)
-      end
+      decorators.new(yield)
     end
 
     def decorators
-      [
+      DecoratorList.new(
         SetsModified,
         SetsIssued,
-        TermWithChildren
-      ]
+        DelayedDecorator.new(TermWithChildren, ChildNodeFinder)
+      )
     end
 
     def repository
       PolymorphicTermRepository
+    end
+  end
+
+  class DecoratorList
+    attr_reader :decorators
+
+    def initialize(*decorators)
+      @decorators = decorators
+    end
+
+    def new(term)
+      decorators.inject(term) do |obj, decorator|
+        decorator.new(obj)
+      end
+    end
+  end
+  class DelayedDecorator
+    attr_reader :decorator, :args
+    def initialize(decorator, *args)
+      @decorator = decorator
+      @args = args
+    end
+
+    def new(object)
+      decorator.new(object, *args)
     end
   end
 end

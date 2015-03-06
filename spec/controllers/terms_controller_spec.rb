@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TermsController do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { term_mock }
-  let(:decorated_resource) { TermWithChildren.new(resource) }
+  let(:decorated_resource) { TermWithChildren.new(resource, ChildNodeFinder) }
   let(:logged_in) { true }
   before do
     allow(controller).to receive(:check_auth).and_return(true) if logged_in
