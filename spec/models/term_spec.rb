@@ -139,36 +139,6 @@ RSpec.describe Term do
       end
     end
 
-    describe "#modified" do
-      before do
-        stub_repository
-      end
-      context "when it's persisted" do
-        before do
-          resource.persist!
-        end
-        it "should be set" do
-          expect(resource.modified).not_to be_empty
-        end
-        it "should be the current day" do
-          expect(resource.modified.first).to eq Date.today
-        end
-        context "and then re-persisted" do
-          let(:reloaded) { resource.class.new(resource.rdf_subject) }
-          let(:before_modified) { reloaded.modified.first }
-          before do
-            before_modified
-            Timecop.travel(Time.current.tomorrow)
-            reloaded.persist!
-          end
-          it "should change" do
-            expect(before_modified).not_to eq reloaded.modified.first
-            expect(reloaded.modified.first).to eq Date.today
-          end
-        end
-      end
-    end
-
     describe ".base_uri" do
       it "should be set to opaquenamespace.org" do
         expect(resource.class.base_uri).to eq "http://opaquenamespace.org/ns/"

@@ -8,7 +8,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def vocabulary_repository
-    Vocabulary
+    TermFactory
   end
 
   def all_vocabs_query
