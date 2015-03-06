@@ -6,7 +6,6 @@ class Term < ActiveTriples::Resource
   property :comment, :predicate => RDF::RDFS.comment
   property :issued, :predicate => RDF::DC.issued
   property :modified, :predicate => RDF::DC.modified
-  before_persist :set_issued, :if => :new_record?
 
   validate :not_blank_node
 
@@ -35,10 +34,6 @@ class Term < ActiveTriples::Resource
 
   def not_blank_node
     errors.add(:id, "can not be blank") if node?
-  end
-
-  def set_issued
-    self.issued = RDF::Literal::Date.new(Time.now)
   end
 
 end

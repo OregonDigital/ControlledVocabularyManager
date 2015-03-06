@@ -13,14 +13,14 @@ RSpec.describe TermWithChildren do
       end
     end
     context "with children" do
-      let(:child) { Term.new(uri+"/1") }
-      let(:child_2) { Term.new(uri+"q/2") }
+      let(:child) { TermFactory.new(uri+"/1") }
+      let(:child_2) { TermFactory.new(uri+"q/2") }
       before do
         child.persist!
         child_2.persist!
       end
       it "should return children" do
-        expect(subject.children).to eq [child]
+        expect(subject.children.map(&:rdf_subject)).to eq [child.rdf_subject]
       end
     end
   end
@@ -32,8 +32,8 @@ RSpec.describe TermWithChildren do
       end
     end
     context "with children" do
-      let(:child) { Term.new(uri+"/1") }
-      let(:unrelated_term) { Term.new(uri+"q/2") }
+      let(:child) { TermFactory.new(uri+"/1") }
+      let(:unrelated_term) { TermFactory.new(uri+"q/2") }
       before do
         child.persist!
         unrelated_term.persist!

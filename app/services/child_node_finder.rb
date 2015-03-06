@@ -19,7 +19,7 @@ class ChildNodeFinder
   end
 
   def children_terms
-    GraphToTerms.new(Term, children_graph).run
+    GraphToTerms.new(TermFactory, children_graph).run
   end
 
   def sparql_client
