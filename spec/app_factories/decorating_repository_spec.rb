@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe TermFactory do
-  subject { TermFactory.new(decorators, repository) }
+RSpec.describe DecoratingRepository do
+  subject { DecoratingRepository.new(decorators, repository) }
   let(:decorators) { double("decorators") }
   let(:repository) { double("repository") }
   before do

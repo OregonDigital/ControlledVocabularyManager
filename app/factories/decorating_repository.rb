@@ -1,4 +1,4 @@
-class TermFactory
+class DecoratingRepository
   attr_reader :decorators, :repository
 
   def initialize(decorators, repository)

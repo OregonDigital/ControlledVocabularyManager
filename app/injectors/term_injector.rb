@@ -9,7 +9,7 @@ class TermInjector < Struct.new(:params)
   end
 
   def term_repository
-    TermFactory.new(decorators, polymorphic_repository)
+    DecoratingRepository.new(decorators, polymorphic_repository)
   end
 
   def term
