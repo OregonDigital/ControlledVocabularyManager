@@ -16,11 +16,11 @@ class VocabularyInjector < Struct.new(:params)
   end
   
   def sparql_client
-    @sparql_client ||= vocabulary_repository.new.repository.query_client
+    @sparql_client ||= ActiveTriples::Repositories.repositories[Vocabulary.repository].query_client
   end
 
   def child_node_finder
-    @child_node_finder ||= ChildNodeFinder.new(vocabulary_repository, sparql_client)
+    @child_node_finder ||= ChildNodeFinder.new(PolymorphicTermRepository, sparql_client)
   end
 
   def params
@@ -45,7 +45,7 @@ class VocabularyInjector < Struct.new(:params)
     DecoratorList.new(
       SetsModified,
       SetsIssued,
-      DecoratorWithArguments.new(TermWithChildren, ChildNodeFinder)
+      DecoratorWithArguments.new(TermWithChildren, child_node_finder)
     )
   end
 
