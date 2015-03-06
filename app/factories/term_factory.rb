@@ -1,8 +1,9 @@
 class TermFactory
-  attr_reader :decorators
+  attr_reader :decorators, :repository
 
-  def initialize(decorators)
+  def initialize(decorators, repository)
     @decorators = decorators
+    @repository = repository
   end
 
   def new(*args)
@@ -25,10 +26,6 @@ class TermFactory
 
   def decorate
     decorators.new(yield)
-  end
-
-  def repository
-    PolymorphicTermRepository
   end
 
 end

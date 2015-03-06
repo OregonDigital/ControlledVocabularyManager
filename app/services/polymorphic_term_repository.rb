@@ -1,28 +1,25 @@
-class PolymorphicTermRepository < Struct.new(:id)
-  class << self
-    alias_method :orig_new, :new
-    def new(*args)
-      orig_new(*args).build
-    end
+class PolymorphicTermRepository
 
-    def find(*args)
-      orig_new(*args).find
-    end
+  attr_reader :vocabulary_repository, :term_repository, :id
+  delegate :new, :find, :exists?, :to => :repository
 
-    def exists?(*args)
-      orig_new(*args).exists?
-    end
+  def initialize(vocabulary_repository, term_repository)
+    @vocabulary_repository = vocabulary_repository
+    @term_repository = term_repository
   end
 
-  def build
+  def new(id)
+    @id = id
     repository.new(id)
   end
 
-  def find
+  def find(id)
+    @id = id
     repository.find(id)
   end
 
-  def exists?
+  def exists?(id)
+    @id = id
     repository.exists?(id)
   end
 
@@ -37,15 +34,7 @@ class PolymorphicTermRepository < Struct.new(:id)
   end
 
   def term_id
-    @term_id ||= TermID.new(id)
-  end
-
-  def vocabulary_repository
-    Vocabulary
-  end
-
-  def term_repository
-    Term
+    TermID.new(id)
   end
 
 end

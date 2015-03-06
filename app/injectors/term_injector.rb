@@ -1,5 +1,5 @@
 class TermInjector < Struct.new(:params)
-  delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
+  delegate :vocabulary_repository, :child_node_finder, :polymorphic_repository, :to => :vocabulary_injector
   def term_form
     @term_form ||= term_form_factory.new(built_term, term_repository)
   end
@@ -9,7 +9,7 @@ class TermInjector < Struct.new(:params)
   end
 
   def term_repository
-    TermFactory.new(decorators)
+    TermFactory.new(decorators, polymorphic_repository)
   end
 
   def term
