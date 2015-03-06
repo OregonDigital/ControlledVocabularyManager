@@ -26,7 +26,7 @@ class TermFactory
       DecoratorList.new(
         SetsModified,
         SetsIssued,
-        DelayedDecorator.new(TermWithChildren, ChildNodeFinder)
+        DecoratorWithArguments.new(TermWithChildren, ChildNodeFinder)
       )
     end
 
@@ -35,29 +35,5 @@ class TermFactory
     end
   end
 
-  class DecoratorList
-    attr_reader :decorators
-
-    def initialize(*decorators)
-      @decorators = decorators
-    end
-
-    def new(term)
-      decorators.inject(term) do |obj, decorator|
-        decorator.new(obj)
-      end
-    end
-  end
-  class DelayedDecorator
-    attr_reader :decorator, :args
-    def initialize(decorator, *args)
-      @decorator = decorator
-      @args = args
-    end
-
-    def new(object)
-      decorator.new(object, *args)
-    end
-  end
 end
 
