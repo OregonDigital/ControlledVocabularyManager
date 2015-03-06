@@ -25,7 +25,7 @@ class TermInjector < Struct.new(:params)
   private
 
   def decorators
-    vocabulary_injector.__send__(:decorators)
+    vocabulary_injector.decorators
   end
 
   def vocabulary_injector

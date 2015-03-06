@@ -423,6 +423,7 @@ DEPENDENCIES
   awesome_print
   bootstrap-sass (~> 3.3.1)
   capistrano (~> 2.0)
+  capybara
   capybara-screenshot
   coffee-rails (~> 4.0.0)
   database_cleaner

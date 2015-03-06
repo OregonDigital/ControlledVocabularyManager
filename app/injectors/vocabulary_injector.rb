@@ -31,6 +31,14 @@ class VocabularyInjector < Struct.new(:params)
     PolymorphicTermRepository.new(Vocabulary, Term)
   end
 
+  def decorators
+    DecoratorList.new(
+      SetsModified,
+      SetsIssued,
+      DecoratorWithArguments.new(TermWithChildren, child_node_finder)
+    )
+  end
+
   private
 
   def built_vocabulary
@@ -44,15 +52,6 @@ class VocabularyInjector < Struct.new(:params)
     vocab.attributes = vocabulary_params
     vocab
   end
-
-  def decorators
-    DecoratorList.new(
-      SetsModified,
-      SetsIssued,
-      DecoratorWithArguments.new(TermWithChildren, child_node_finder)
-    )
-  end
-
 
   def vocabulary_form_factory
     VocabularyForm

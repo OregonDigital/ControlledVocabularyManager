@@ -20,7 +20,7 @@ class PolymorphicTermRepository
 
   def exists?(id)
     @id = id
-    repository.exists?(id)
+    term_repository.exists?(id)
   end
 
   private
