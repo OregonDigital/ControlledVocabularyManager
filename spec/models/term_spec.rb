@@ -107,8 +107,8 @@ RSpec.describe Term do
   end
 
   describe ".base_uri" do
-    it "should be set to opaquenamespace.org" do
-      expect(resource.class.base_uri).to eq "http://opaquenamespace.org/ns/"
+    it "should be set to the app domain" do
+      expect(resource.class.base_uri).to eq "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
     end
   end
 
