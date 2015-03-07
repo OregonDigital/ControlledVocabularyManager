@@ -7,11 +7,14 @@ RSpec.describe ImportableTermList do
   let(:terms) { [vocabulary, term1, term2] }
   let(:termlist) { ImportableTermList.new(terms) }
 
+  before do
+    allow(Term).to receive(:exists?).and_return(false)
+  end
+
   describe "when checking validations" do
     context "and a term is already in the repository" do
       before do
-        dupeterm1 = Term.new(term1.id)
-        dupeterm1.persist!
+        expect(Term).to receive(:exists?).with(term1.id).and_return(true)
       end
 
       it "should report that term 'vocab/one' already exists" do
