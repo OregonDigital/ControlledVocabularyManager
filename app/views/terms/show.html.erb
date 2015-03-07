@@ -2,7 +2,8 @@
 <h2><%= @term.rdf_subject %></h4>
 <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id) if @term.vocabulary? %>
 
-<p><%= link_to "Edit", polymorphic_path([:edit, @term]) %></p>
+<p><%= link_to "Edit", polymorphic_path([:edit, @term]) %>
+<br/><%= link_to "Return to Vocabulary", term_path(:id => @term.vocabulary_id) unless @term.vocabulary? %></p>
 
 <dl>
   <% @term.fields.each do |field| %>
