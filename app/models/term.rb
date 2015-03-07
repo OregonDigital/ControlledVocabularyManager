@@ -6,6 +6,7 @@ class Term < ActiveTriples::Resource
   property :comment, :predicate => RDF::RDFS.comment
   property :issued, :predicate => RDF::DC.issued
   property :modified, :predicate => RDF::DC.modified
+  delegate :vocabulary_id, :to => :term_uri
 
   validate :not_blank_node
 
@@ -28,6 +29,10 @@ class Term < ActiveTriples::Resource
 
   def to_param
     id
+  end
+
+  def term_uri
+    TermUri.new(rdf_subject)
   end
 
   private

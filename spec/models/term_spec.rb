@@ -35,6 +35,12 @@ RSpec.describe Term do
     end
   end
 
+  describe "#term_uri" do
+    it "should return the parent URI" do
+      expect(resource.term_uri.uri).to eq uri
+    end
+  end
+
   describe "#get_values" do
     before do
       resource.comment = "test"
