@@ -32,7 +32,7 @@ class Term < ActiveTriples::Resource
   end
 
   def term_uri
-    TermUri.new(rdf_subject); 
+    TermUri.new(rdf_subject)
   end
 
   private
