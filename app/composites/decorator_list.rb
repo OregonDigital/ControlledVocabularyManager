@@ -5,8 +5,8 @@ class DecoratorList
     @decorators = decorators
   end
 
-  def new(term)
-    decorators.inject(term) do |obj, decorator|
+  def new(undecorated_object)
+    decorators.inject(undecorated_object) do |obj, decorator|
       decorator.new(obj)
     end
   end
