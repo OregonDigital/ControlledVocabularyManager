@@ -1,7 +1,7 @@
 # Injector for various RDF importing dependencies
 class ImportRdfInjector
   def url_to_graph
-    ->(url) { RdfFetcher.call(url) }
+    RdfFetcher
   end
 
   def form_factory
