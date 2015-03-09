@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe PaginatableTerms do
   subject { described_class.new(query).page(page).per(limit) }
   let(:injector) { VocabularyInjector.new }
-  let(:query) { AllVocabsQuery.new(injector.__send__(:sparql_client)) }
+  let(:query) { injector.__send__(:all_vocabs_query_client) }
   let(:page) { 1 }
   let(:limit) { 10 }
   before do
