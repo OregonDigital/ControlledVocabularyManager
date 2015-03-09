@@ -1,7 +1,5 @@
 class PolymorphicTermRepository
-
   attr_reader :vocabulary_repository, :term_repository, :id
-  delegate :new, :find, :exists?, :to => :repository
 
   def initialize(vocabulary_repository, term_repository)
     @vocabulary_repository = vocabulary_repository
@@ -9,32 +7,26 @@ class PolymorphicTermRepository
   end
 
   def new(id)
-    @id = id
-    repository.new(id)
+    repository(id).new(id)
   end
 
   def find(id)
-    @id = id
-    repository.find(id)
+    repository(id).find(id)
   end
 
   def exists?(id)
-    @id = id
-    term_repository.exists?(id)
+    repository(id).exists?(id)
   end
 
   private
 
-  def repository
+  def repository(id)
+    term_id = TermID.new(id)
     if term_id.vocabulary?
       vocabulary_repository
     else
       term_repository
     end
-  end
-
-  def term_id
-    TermID.new(id)
   end
 
 end
