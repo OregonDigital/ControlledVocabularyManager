@@ -81,11 +81,13 @@ RSpec.describe ImportRdfController, :type => :controller do
           expect(controller).to receive(:url_to_graph).and_return(url_to_graph)
           expect(form).to receive(:url).at_least(:once).and_return(url)
           allow(form).to receive(:errors).and_return(errors)
+          allow(graph).to receive(:empty?).and_return(false)
         end
 
         context "and a graph cannot be created from the given URL" do
+          let(:empty_graph) { RDF::Graph.new }
           before do
-            expect(url_to_graph).to receive(:call).with(url) { raise StandardError.new "foo is bad, man" }
+            expect(url_to_graph).to receive(:call).with(url).and_return(empty_graph)
             post :import, params
           end
 

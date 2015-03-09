@@ -19,11 +19,9 @@ class ImportRdfController < ApplicationController
       return
     end
 
-    begin
-      graph = url_to_graph.call(@form.url)
-    rescue StandardError => e
+    graph = url_to_graph.call(@form.url)
+    if graph.empty?
       @form.errors.add(:base, "Unable to retrieve valid RDF from URL <%s>" % @form.url)
-      Rails.logger.warn("Error trying to fetch RDF: %s" % e.message)
       render :index
       return
     end
