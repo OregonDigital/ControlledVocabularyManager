@@ -1,5 +1,5 @@
 class PolymorphicTermRepository
-  attr_reader :vocabulary_repository, :term_repository, :id
+  attr_reader :vocabulary_repository, :term_repository
 
   def initialize(vocabulary_repository, term_repository)
     @vocabulary_repository = vocabulary_repository
