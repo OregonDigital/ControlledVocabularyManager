@@ -3,7 +3,8 @@ require 'rails_helper'
 RSpec.describe TermsController do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { term_mock }
-  let(:decorated_resource) { TermWithChildren.new(resource) }
+  let(:injector) { TermInjector.new }
+  let(:decorated_resource) { TermWithChildren.new(resource, injector.child_node_finder) }
   let(:logged_in) { true }
   before do
     allow(controller).to receive(:check_auth).and_return(true) if logged_in
@@ -16,7 +17,7 @@ RSpec.describe TermsController do
       full_graph = instance_double("RDF::Graph")
       allow(full_graph).to receive(:dump)
       allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
-      allow(TermFactory).to receive(:find).with("bla").and_return(decorated_resource)
+      allow_any_instance_of(DecoratingRepository).to receive(:find).with("bla").and_return(decorated_resource)
     end
 
     context "when the resource exists" do
@@ -55,7 +56,7 @@ RSpec.describe TermsController do
 
     context "when the resource does not exist" do
       before do
-        allow(TermFactory).to receive(:find).with("nothing").and_raise ActiveTriples::NotFound
+        allow_any_instance_of(DecoratingRepository).to receive(:find).with("nothing").and_raise ActiveTriples::NotFound
         get :show, :id => "nothing"
       end
 
@@ -119,7 +120,7 @@ RSpec.describe TermsController do
     let(:save_success) { true }
     before do
       allow(TermForm).to receive(:new).and_return(term_form)
-      allow(TermFactory).to receive(:new).and_return(term)
+      allow_any_instance_of(DecoratingRepository).to receive(:new).and_return(term)
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")
       allow(term).to receive(:attributes=)
@@ -194,7 +195,7 @@ RSpec.describe TermsController do
     let(:persist_failure) { false }
 
     before do
-      allow(TermFactory).to receive(:find).with(term.id).and_return(term)
+      allow_any_instance_of(DecoratingRepository).to receive(:find).with(term.id).and_return(term)
       allow(TermForm).to receive(:new).and_return(term_form)
       allow(term).to receive(:attributes=)
       allow(term).to receive(:persist!).and_return(persist_success)

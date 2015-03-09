@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe TermWithChildren do
   let(:vocabulary) { Vocabulary.new(uri) }
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  subject { TermWithChildren.new(vocabulary) }
+  let(:injector) { TermInjector.new }
+  let(:term_repository) { injector.term_repository }
+  subject { TermWithChildren.new(vocabulary, injector.child_node_finder) }
 
   describe "#children" do
     let(:result) { subject.children }
@@ -13,8 +15,8 @@ RSpec.describe TermWithChildren do
       end
     end
     context "with children" do
-      let(:child) { TermFactory.new(uri+"/1") }
-      let(:child_2) { TermFactory.new(uri+"q/2") }
+      let(:child) { term_repository.new(uri+"/1") }
+      let(:child_2) { term_repository.new(uri+"q/2") }
       before do
         child.persist!
         child_2.persist!
@@ -32,8 +34,8 @@ RSpec.describe TermWithChildren do
       end
     end
     context "with children" do
-      let(:child) { TermFactory.new(uri+"/1") }
-      let(:unrelated_term) { TermFactory.new(uri+"q/2") }
+      let(:child) { term_repository.new(uri+"/1") }
+      let(:unrelated_term) { term_repository.new(uri+"q/2") }
       before do
         child.persist!
         unrelated_term.persist!

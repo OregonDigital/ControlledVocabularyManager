@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PolymorphicTermRepository do
-  subject { PolymorphicTermRepository }
+  subject { PolymorphicTermRepository.new(Vocabulary, Term) }
 
   describe ".new" do
     let(:id) { "vocab" }

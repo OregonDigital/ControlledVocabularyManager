@@ -1,30 +1,15 @@
 class ChildNodeFinder
-  def self.find_children(vocabulary)
-    new(vocabulary).children
+  attr_reader :repository, :sparql_client
+  def initialize(repository, sparql_client)
+    @repository = repository
+    @sparql_client = sparql_client
   end
 
-  attr_reader :vocabulary
-  def initialize(vocabulary)
-    @vocabulary = vocabulary
+  def find_children(vocabulary)
+    query_graph = ChildQuery.new(sparql_client, vocabulary.rdf_subject).run
+    GraphToTerms.new(repository, query_graph).run
   end
 
-  def children
-    children_terms
-  end
-
-  private
-
-  def children_graph
-    ChildQuery.new(sparql_client, vocabulary.rdf_subject).run
-  end
-
-  def children_terms
-    GraphToTerms.new(TermFactory, children_graph).run
-  end
-
-  def sparql_client
-    vocabulary.repository.query_client
-  end
 end
 
 

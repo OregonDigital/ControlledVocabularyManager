@@ -1,17 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe ChildNodeFinder do
-  describe ".find_children" do
-    let(:result) { described_class.find_children(vocabulary) }
+  describe "#find_children" do
+    subject { ChildNodeFinder.new(repository, sparql_client) }
     let(:vocabulary) { Vocabulary.new("bla") }
-    let(:term) { TermFactory.new("bla/1") }
-    let(:unrelated_term) { TermFactory.new("bla2/1") }
+    let(:repository) { VocabularyInjector.new.vocabulary_repository }
+    let(:sparql_client) { VocabularyInjector.new.sparql_client }
+    let(:term) { repository.new("bla/1") }
+    let(:unrelated_term) { repository.new("bla2/1") }
+    let(:result) { subject.find_children(vocabulary) }
     before do
       vocabulary.persist!
       term.persist!
       unrelated_term.persist!
     end
-
     def statements_hash(graph)
       graph.statements.to_a.map{|x| x.to_hash}.sort_by{|x| x[:predicate]}
     end
@@ -20,7 +22,7 @@ RSpec.describe ChildNodeFinder do
       expect(statements_hash(result.first)).to eq statements_hash(term)
     end
     context "when there are two children" do
-      let(:unrelated_term) { TermFactory.new("bla/2") }
+      let(:unrelated_term) { repository.new("bla/2") }
       let(:sorted_result) { result.sort_by(&:rdf_subject) }
       it "should be able to return them" do
         expect(result.length).to eq 2

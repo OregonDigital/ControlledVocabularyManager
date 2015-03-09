@@ -57,6 +57,7 @@ group :development, :test do
   gem 'jettywrapper'
   gem 'dotenv-rails'
   gem 'warden-rspec-rails', :github => "mspanc/warden-rspec-rails"
+  gem 'capybara'
 end
 
 group :test do

@@ -8,15 +8,35 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def vocabulary_repository
-    TermFactory
+    DecoratingRepository.new(decorators, polymorphic_repository)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client) }
+    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository) }
+  end
+  
+  def sparql_client
+    @sparql_client ||= ActiveTriples::Repositories.repositories[Vocabulary.repository].query_client
+  end
+
+  def child_node_finder
+    @child_node_finder ||= ChildNodeFinder.new(polymorphic_repository, sparql_client)
   end
 
   def params
     super || {}
+  end
+
+  def polymorphic_repository
+    PolymorphicTermRepository.new(Vocabulary, Term)
+  end
+
+  def decorators
+    DecoratorList.new(
+      SetsModified,
+      SetsIssued,
+      DecoratorWithArguments.new(TermWithChildren, child_node_finder)
+    )
   end
 
   private
@@ -32,11 +52,6 @@ class VocabularyInjector < Struct.new(:params)
     vocab.attributes = vocabulary_params
     vocab
   end
-
-  def sparql_client
-    @sparql_client ||= vocabulary_repository.new.repository.query_client
-  end
-
 
   def vocabulary_form_factory
     VocabularyForm

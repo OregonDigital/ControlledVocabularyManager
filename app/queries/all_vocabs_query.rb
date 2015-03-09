@@ -1,12 +1,12 @@
-class AllVocabsQuery < Struct.new(:sparql_client)
+class AllVocabsQuery < Struct.new(:sparql_client, :repository)
   class << self
-    def call(sparql_client)
-      new(sparql_client).all
+    def call(sparql_client, repository)
+      new(sparql_client, repository).all
     end
   end
 
   def all
-    GraphToTerms.new(Vocabulary, all_vocabs_graph).run
+    GraphToTerms.new(repository, all_vocabs_graph).run
   end
 
   private
