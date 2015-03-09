@@ -99,15 +99,18 @@ RSpec.describe VocabulariesController do
   describe "GET 'index'" do
     context "when there are vocabularies" do
       let(:vocabulary) { vocabulary_mock }
-      let(:injector) { VocabularyInjector.new }
+      let(:paginatable_terms) { double("PaginatableTerms") }
       before do
         allow(vocabulary).to receive(:repository).and_return(Vocabulary.new.repository)
-        allow(AllVocabsQuery).to receive(:call).and_return([vocabulary])
+        allow(AllVocabsQuery).to receive(:new).with(vocabulary.repository.query_client, anything).and_return([vocabulary])
+        allow(PaginatableTerms).to receive(:new).with([vocabulary]).and_return(paginatable_terms)
+        allow(paginatable_terms).to receive(:page).and_return(paginatable_terms)
+        allow(paginatable_terms).to receive(:per).and_return(paginatable_terms)
       end
       it "should set @vocabularies to all vocabs" do
         get :index
 
-        expect(assigns(:vocabularies)).to eq [vocabulary]
+        expect(assigns(:vocabularies)).to eq paginatable_terms
       end
     end
     it "should be successful" do

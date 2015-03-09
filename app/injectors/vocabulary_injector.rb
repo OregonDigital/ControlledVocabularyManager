@@ -12,7 +12,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository, query_options) }
+    -> { paginatable_vocabs }
   end
   
   def sparql_client
@@ -40,6 +40,18 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   private
+
+  def paginatable_vocabs
+    PaginatableTerms.new(all_vocabs_query_client).page(page).per(10)
+  end
+
+  def page
+    (params[:page] || 1).to_i
+  end
+
+  def all_vocabs_query_client
+    AllVocabsQuery.new(sparql_client, vocabulary_repository) 
+  end
 
   def query_options
     if params[:page]

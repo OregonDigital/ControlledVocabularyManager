@@ -8,32 +8,33 @@ RSpec.describe VocabularyInjector do
   end
 
   describe "#all_vocabs_query" do
-    let(:query) { instance_double("AllVocabsQuery") }
+    let(:query) { instance_double("PaginatableTerms") }
     before do
-      allow(AllVocabsQuery).to receive(:new).and_return(query)
-      allow(query).to receive(:all)
+      allow(PaginatableTerms).to receive(:new).and_return(query)
+      allow(query).to receive(:page).and_return(query)
+      allow(query).to receive(:per).and_return(query)
       subject.all_vocabs_query.call
     end
     context "when there's no page argument" do
       it "should instantiate" do
-        expect(AllVocabsQuery).to have_received(:new).with(anything, {})
-        expect(query).to have_received(:all)
+        expect(query).to have_received(:page).with(1)
+        expect(query).to have_received(:per).with(10)
       end
     end
     context "when there's a page argument" do
       let(:params) do
         { :page => "1" }
       end
-      it "should set limit and offset" do
-        expect(AllVocabsQuery).to have_received(:new).with(anything, {:limit => 10, :offset => 0})
+      it "should set page" do
+        expect(query).to have_received(:page).with(1)
+        expect(query).to have_received(:per).with(10)
       end
       context "and it's set to a future page" do
         let(:params) do
           { :page => "2" }
         end
-        it "should set limit and offset correctly" do
-
-          expect(AllVocabsQuery).to have_received(:new).with(anything, {:limit => 10, :offset => 10})
+        it "should set page" do
+          expect(query).to have_received(:page).with(2)
         end
       end
     end
