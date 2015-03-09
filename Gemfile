@@ -43,6 +43,7 @@ gem 'simple_form'
 
 # Paging
 gem 'kaminari'
+gem 'bootstrap-kaminari-views'
 
 group :development do
   gem 'spring-commands-rspec'
