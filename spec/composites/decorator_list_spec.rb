@@ -17,7 +17,4 @@ RSpec.describe DecoratorList do
       expect(decorator_2).to have_received(:new)
     end
   end
-  context "when given decorators" do
-    
-  end
 end
