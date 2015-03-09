@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe AllVocabsQuery do
+  let(:sparql_client) { vocabulary.repository.query_client }
+  let(:vocabulary) { SetsIssued.new(Vocabulary.new("bla")) }
   describe ".call" do
     context "when vocabularies exist" do
       let(:vocabulary) { SetsIssued.new(Vocabulary.new("bla")) }
@@ -34,6 +36,24 @@ RSpec.describe AllVocabsQuery do
           end
         end
       end
+    end
+  end
+
+  describe "#limit" do
+    subject { described_class.new(sparql_client) }
+    it "should set limit" do
+      result = subject.limit(1)
+
+      expect(result.options[:limit]).to eq 1
+    end
+  end
+
+  describe "#offset" do
+    subject { described_class.new(sparql_client) }
+    it "should set offset" do
+      result = subject.offset(1)
+
+      expect(result.options[:offset]).to eq 1
     end
   end
 end

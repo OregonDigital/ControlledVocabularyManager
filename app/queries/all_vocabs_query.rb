@@ -5,22 +5,36 @@ class AllVocabsQuery < Struct.new(:sparql_client, :repository, :options)
     end
   end
 
+  delegate :subjects, :graph, :to => :all_vocabs_graph
+
   def all
-    GraphToTerms.new(repository, all_vocabs_graph).run
+    GraphToTerms.new(repository, graph).run
+  end
+
+  def limit(new_limit)
+    self.class.new(sparql_client, repository, options.merge(:limit => new_limit))
+  end
+  
+  def offset(new_offset)
+    self.class.new(sparql_client, repository, options.merge(:offset => new_offset))
+  end
+
+  def options
+    super || {}
   end
 
   private
 
-  def limit
-    options[:limit]
-  end
-  
-  def offset
-    options[:offset]
+  def all_vocabs_graph
+    @all_vocabs_graph ||= AllVocabsGraph.new(sparql_client, options_limit, options_offset)
   end
 
-  def all_vocabs_graph
-    AllVocabsGraph.new(sparql_client, limit, offset).graph
+  def options_limit
+    options[:limit]
+  end
+
+  def options_offset
+    options[:offset]
   end
 
 end
@@ -39,12 +53,11 @@ class AllVocabsGraph
     SubjectsToGraph.new(sparql_client, subjects).graph
   end
 
-  private
-
-
   def subjects
     @subjects ||= query.each_solution.map{|x| x[:s]}
   end
+
+  private
 
   def query
     query = select_query
