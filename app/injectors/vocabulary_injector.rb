@@ -12,7 +12,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository) }
+    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository, query_options) }
   end
   
   def sparql_client
@@ -40,6 +40,14 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   private
+
+  def query_options
+    if params[:page]
+      { :limit => 10, :offset => (params[:page].to_i-1)*10 }
+    else
+      {}
+    end
+  end
 
   def built_vocabulary
     vocabulary = vocabulary_repository.new(inner_vocabulary_params[:id])
