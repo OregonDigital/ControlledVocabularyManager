@@ -1,14 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe ImportForm do
-  let(:opts) { Hash.new }
+  let(:url) { "" }
+  let(:preview) { "0" }
+  let(:opts) do
+    {:url => url, :preview => preview}
+  end
   let(:form) { ImportForm.new(opts) }
 
   describe "validations" do
     context "when the URL is http" do
-      before do
-        opts[:url] = "http://example.com"
-      end
+      let(:url) { "http://example.com" }
 
       it "should be valid" do
         expect(form).to be_valid
@@ -16,9 +18,7 @@ RSpec.describe ImportForm do
     end
 
     context "when the URL is https" do
-      before do
-        opts[:url] = "https://example.com"
-      end
+      let(:url) { "https://example.com" }
 
       it "should be valid" do
         expect(form).to be_valid
@@ -26,9 +26,7 @@ RSpec.describe ImportForm do
     end
 
     context "when the URL isn't an allowed scheme" do
-      before do
-        opts[:url] = "gopher://example.com"
-      end
+      let(:url) { "gopher://example.com" }
 
       it "should be invalid" do
         expect(form).not_to be_valid
@@ -42,9 +40,7 @@ RSpec.describe ImportForm do
     end
 
     context "when the URL isn't parseable" do
-      before do
-        opts[:url] = "This isn't a URI"
-      end
+      let(:url) { "This isn't a URI" }
 
       it "should be invalid" do
         expect(form).not_to be_valid
@@ -58,9 +54,7 @@ RSpec.describe ImportForm do
     end
 
     context "when the URL is missing" do
-      before do
-        opts[:url] = nil
-      end
+      let(:url) { nil }
 
       it "should be invalid" do
         expect(form).not_to be_valid
@@ -72,13 +66,14 @@ RSpec.describe ImportForm do
         expect(form.errors[:url]).to eq ["can't be blank"]
       end
     end
+
+    context "when the graph can't be built from the URL" do
+    end
   end
 
   describe "#preview?" do
     context "when preview is '1'" do
-      before do
-        opts[:preview] = "1"
-      end
+      let(:preview) { "1" }
 
       it "should return true" do
         expect(form.preview?).to eq(true)
