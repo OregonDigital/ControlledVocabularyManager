@@ -70,111 +70,70 @@ RSpec.describe ImportRdfController, :type => :controller do
       end
 
       context "and the form is valid" do
-        let(:url_to_graph) { double("url_to_graph") }
-        let(:graph_to_termlist) { double("graph_to_termlist") }
-        let(:graph) { instance_double("RDF::Graph") }
         let(:termlist) { instance_double("ImportableTermList") }
         let(:errors) { ActiveModel::Errors.new(form) }
 
         before do
           expect(form).to receive(:valid?).and_return(true)
-          expect(controller).to receive(:url_to_graph).and_return(url_to_graph)
-          expect(form).to receive(:url).at_least(:once).and_return(url)
+          allow(form).to receive(:term_list).and_return(termlist)
           allow(form).to receive(:errors).and_return(errors)
-          allow(graph).to receive(:empty?).and_return(false)
         end
 
-        context "and a graph cannot be created from the given URL" do
-          let(:empty_graph) { RDF::Graph.new }
+        context "and the form has other errors added" do
           before do
-            expect(url_to_graph).to receive(:call).with(url).and_return(empty_graph)
+            form.errors.add(:base, "error")
             post :import, params
+          end
+
+          it "should assign the form" do
+            expect(assigns(:form)).to eq(form)
           end
 
           it "should render the index" do
             expect(response).to render_template("index")
           end
-
-          it "should add an error to the form" do
-            expect(form.errors.count).to eq(1)
-            expect(form.errors[:base][0]).to match("Unable to retrieve valid RDF")
-          end
         end
 
-        context "and a graph can be created from the URL" do
+        context "and the form doesn't have errors" do
+          let(:term1) { instance_double("Vocabulary", :id => "vocab") }
+          let(:term2) { instance_double("Term", :id => "vocab/one") }
+          let(:term3) { instance_double("Term", :id => "vocab/two") }
+          let(:term4) { instance_double("Term", :id => "vocab/three") }
+          let(:terms) { [term1, term2, term3, term4] }
+
           before do
-            expect(url_to_graph).to receive(:call).with(url).and_return(graph)
-            expect(controller).to receive(:graph_to_termlist).and_return(graph_to_termlist)
-            expect(graph_to_termlist).to receive(:call).with(graph).and_return(termlist)
+            expect(termlist).to receive(:terms).and_return(terms)
           end
 
-          context "and the termlist is invalid" do
-            let(:termlist_errors) { double("termlist errors") }
+          context "and the form is requesting a preview" do
             before do
-              expect(termlist).to receive(:valid?).and_return(false)
-              expect(termlist).to receive(:errors).and_return(termlist_errors)
-              expect(termlist_errors).to receive(:full_messages).and_return([1,2,3,4,5,6,7,8,9,10,11,12])
+              expect(form).to receive(:preview?).and_return(true)
               post :import, params
             end
 
-            it "should render the index" do
-              expect(response).to render_template("index")
+            it "should render the preview page" do
+              expect(response).to render_template("preview_import")
             end
 
-            it "should add termlist's errors to the form" do
-              0.upto(9) do |index|
-                expect(form.errors[:base][index]).to eq(index + 1)
-              end
-            end
-
-            it "should only add the first ten errors to the form" do
-              expect(form.errors.count).to eq(11)
-              expect(form.errors[:base][10]).to eq("Further errors exist but were suppressed")
+            it "should assign terms and vocabulary" do
+              expect(assigns[:vocabulary]).to eq(term1)
+              expect(assigns[:terms]).to eq([term2, term3, term4])
             end
           end
 
-          context "and the termlist is valid" do
-            let(:term1) { instance_double("Vocabulary", :id => "vocab") }
-            let(:term2) { instance_double("Term", :id => "vocab/one") }
-            let(:term3) { instance_double("Term", :id => "vocab/two") }
-            let(:term4) { instance_double("Term", :id => "vocab/three") }
-            let(:terms) { [term1, term2, term3, term4] }
-
+          context "and the form is not requesting a preview" do
             before do
-              expect(termlist).to receive(:valid?).and_return(true)
-              expect(termlist).to receive(:terms).and_return(terms)
+              expect(form).to receive(:preview?).and_return(false)
+              allow(termlist).to receive(:save)
+              post :import, params
             end
 
-            context "and the form is requesting a preview" do
-              before do
-                expect(form).to receive(:preview?).and_return(true)
-                post :import, params
-              end
-
-              it "should render the preview page" do
-                expect(response).to render_template("preview_import")
-              end
-
-              it "should assign terms and vocabulary" do
-                expect(assigns[:vocabulary]).to eq(term1)
-                expect(assigns[:terms]).to eq([term2, term3, term4])
-              end
+            it "should save the term list" do
+              expect(termlist).to have_received(:save)
             end
 
-            context "and the form is not requesting a preview" do
-              before do
-                expect(form).to receive(:preview?).and_return(false)
-                allow(termlist).to receive(:save)
-                post :import, params
-              end
-
-              it "should save the term list" do
-                expect(termlist).to have_received(:save)
-              end
-
-              it "should show the first term imported" do
-                expect(response).to redirect_to term_path(term1.id)
-              end
+            it "should show the first term imported" do
+              expect(response).to redirect_to term_path(term1.id)
             end
           end
         end
