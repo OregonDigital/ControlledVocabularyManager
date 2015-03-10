@@ -1,4 +1,4 @@
-class ImportFormInjector
+class RdfImporterInjector
   def url_to_graph
     RdfLoader
   end
@@ -25,5 +25,9 @@ class ImportFormInjector
 
   def term_list_factory
     ImportableTermList
+  end
+
+  def validators
+    [IsValidRdfImportUrl]
   end
 end

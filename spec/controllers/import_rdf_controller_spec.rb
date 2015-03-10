@@ -54,9 +54,9 @@ RSpec.describe ImportRdfController, :type => :controller do
         expect(controller).to receive(:form_params).and_return(form_params)
       end
 
-      context "and the form is invalid" do
+      context "and the form doesn't save" do
         before do
-          expect(form).to receive(:valid?).and_return(false)
+          expect(form).to receive(:save).and_return(false)
           post :import, params
         end
 
@@ -69,72 +69,44 @@ RSpec.describe ImportRdfController, :type => :controller do
         end
       end
 
-      context "and the form is valid" do
+      context "and the form saves" do
+        let(:term1) { instance_double("Vocabulary", :id => "vocab") }
+        let(:term2) { instance_double("Term", :id => "vocab/one") }
+        let(:term3) { instance_double("Term", :id => "vocab/two") }
+        let(:term4) { instance_double("Term", :id => "vocab/three") }
+        let(:terms) { [term1, term2, term3, term4] }
         let(:termlist) { instance_double("ImportableTermList") }
-        let(:errors) { ActiveModel::Errors.new(form) }
 
         before do
-          expect(form).to receive(:valid?).and_return(true)
-          allow(form).to receive(:term_list).and_return(termlist)
-          allow(form).to receive(:errors).and_return(errors)
+          expect(form).to receive(:save).and_return(true)
+          expect(form).to receive(:term_list).and_return(termlist)
+          expect(termlist).to receive(:terms).and_return(terms)
         end
 
-        context "and the form has other errors added" do
+        context "and the form is requesting a preview" do
           before do
-            form.errors.add(:base, "error")
+            expect(form).to receive(:preview?).and_return(true)
             post :import, params
           end
 
-          it "should assign the form" do
-            expect(assigns(:form)).to eq(form)
+          it "should render the preview page" do
+            expect(response).to render_template("preview_import")
           end
 
-          it "should render the index" do
-            expect(response).to render_template("index")
+          it "should assign terms and vocabulary" do
+            expect(assigns[:vocabulary]).to eq(term1)
+            expect(assigns[:terms]).to eq([term2, term3, term4])
           end
         end
 
-        context "and the form doesn't have errors" do
-          let(:term1) { instance_double("Vocabulary", :id => "vocab") }
-          let(:term2) { instance_double("Term", :id => "vocab/one") }
-          let(:term3) { instance_double("Term", :id => "vocab/two") }
-          let(:term4) { instance_double("Term", :id => "vocab/three") }
-          let(:terms) { [term1, term2, term3, term4] }
-
+        context "and the form is not requesting a preview" do
           before do
-            expect(termlist).to receive(:terms).and_return(terms)
+            expect(form).to receive(:preview?).and_return(false)
+            post :import, params
           end
 
-          context "and the form is requesting a preview" do
-            before do
-              expect(form).to receive(:preview?).and_return(true)
-              post :import, params
-            end
-
-            it "should render the preview page" do
-              expect(response).to render_template("preview_import")
-            end
-
-            it "should assign terms and vocabulary" do
-              expect(assigns[:vocabulary]).to eq(term1)
-              expect(assigns[:terms]).to eq([term2, term3, term4])
-            end
-          end
-
-          context "and the form is not requesting a preview" do
-            before do
-              expect(form).to receive(:preview?).and_return(false)
-              allow(termlist).to receive(:save)
-              post :import, params
-            end
-
-            it "should save the term list" do
-              expect(termlist).to have_received(:save)
-            end
-
-            it "should show the first term imported" do
-              expect(response).to redirect_to term_path(term1.id)
-            end
+          it "should show the first term imported" do
+            expect(response).to redirect_to term_path(term1.id)
           end
         end
       end

@@ -3,127 +3,96 @@ require 'rails_helper'
 RSpec.describe ImportForm do
   let(:url) { "http://example.com" }
   let(:preview) { "0" }
-  let(:opts) do
-    {:url => url, :preview => preview}
-  end
-  let(:form) { ImportForm.new(opts) }
-  let(:url_to_graph) { double("url_to_graph") }
-  let(:graph) { instance_double("RDF::Graph") }
-  let(:graph_to_termlist) { double("graph_to_termlist") }
-  let(:termlist) { instance_double("ImportableTermList") }
+  let(:form) { ImportForm.new(:url => url, :preview => preview) }
+  let(:rdf_importer) { instance_double("RdfImporter") }
+  let(:term_list) { instance_double("ImportableTermList") }
 
   before do
-    allow(form).to receive(:url_to_graph).and_return(url_to_graph)
-    allow(url_to_graph).to receive(:call).with(form.url).and_return(graph)
-    allow(graph).to receive(:empty?).and_return(false)
-
-    allow(form).to receive(:graph_to_termlist).and_return(graph_to_termlist)
-    allow(graph_to_termlist).to receive(:call).with(graph).and_return(termlist)
-    allow(termlist).to receive(:valid?).and_return(true)
-
-    expect(form).not_to receive(:injector)
+    allow(RdfImporter).to receive(:new).and_return(rdf_importer)
+    allow(rdf_importer).to receive(:term_list).and_return(term_list)
   end
 
-  describe "validations" do
-    context "when the URL is http" do
-      it "should be valid" do
-        expect(form).to be_valid
-      end
-    end
-
-    context "when the URL is https" do
-      let(:url) { "https://example.com" }
-
-      it "should be valid" do
-        expect(form).to be_valid
-      end
-    end
-
-    context "when the URL isn't an allowed scheme" do
-      let(:url) { "gopher://example.com" }
-
-      it "should be invalid" do
-        expect(form).not_to be_valid
-      end
-
-      it "should have errors" do
-        form.valid?
-        expect(form.errors.count).to eq 1
-        expect(form.errors[:url]).to eq ["is not an allowed RDF import URL"]
-      end
-    end
-
-    context "when the URL isn't parseable" do
-      let(:url) { "This isn't a URI" }
-
-      it "should be invalid" do
-        expect(form).not_to be_valid
-      end
-
-      it "should have errors" do
-        form.valid?
-        expect(form.errors.count).to eq 1
-        expect(form.errors[:url]).to eq ["is not a URL"]
-      end
-    end
-
-    context "when the URL is missing" do
-      let(:url) { nil }
-
-      it "should be invalid" do
-        expect(form).not_to be_valid
-      end
-
-      it "should have errors" do
-        form.valid?
-        expect(form.errors.count).to eq 1
-        expect(form.errors[:url]).to eq ["can't be blank"]
-      end
+  describe ".new" do
+    it "should create an RdfImporter" do
+      expect(RdfImporter).to receive(:new).and_return(rdf_importer)
+      form
     end
   end
 
-  describe "#graph" do
-    it "should return the graph built by the url_to_graph service" do
-      expect(form.graph).to eq(graph)
+  describe "#valid?" do
+    it "should return the state of errors.empty?" do
+      expect(form.errors).to receive(:empty?).and_return(:state)
+      expect(form.valid?).to eq(:state)
     end
 
-    context "when the graph is empty" do
+    context "when the rdf importer hasn't produced a term list" do
       before do
-        expect(graph).to receive(:empty?).and_return(true)
+        expect(rdf_importer).to receive(:term_list).and_return(nil)
       end
 
-      it "should add an error" do
-        form.graph
-        expect(form.errors.count).to eq(1)
-        expect(form.errors[:url]).to eq(["must resolve to valid RDF"])
+      it "should call the rdf importer" do
+        expect(rdf_importer).to receive(:call).with(form.url)
+        form.valid?
       end
+    end
+
+    context "when the rdf importer has already produced a term list" do
+      it "should not call the rdf importer" do
+        expect(rdf_importer).not_to receive(:call)
+        form.valid?
+      end
+    end
+  end
+
+  describe "#save" do
+    let(:valid) { true }
+    let(:preview) { false }
+
+    before do
+      allow(form).to receive(:valid?).and_return(valid)
+      allow(form).to receive(:preview?).and_return(preview)
+      allow(term_list).to receive(:save)
+    end
+
+    context "when the form isn't valid" do
+      let(:valid) { false }
+
+      it "should return false" do
+        expect(form.save).to eq(false)
+      end
+
+      it "shouldn't save the term list" do
+        expect(term_list).not_to receive(:save)
+        form.save
+      end
+    end
+
+    context "when the form is a preview" do
+      let(:preview) { true }
+
+      it "should return true" do
+        expect(form.save).to eq(true)
+      end
+
+      it "shouldn't save the term list" do
+        expect(term_list).not_to receive(:save)
+        form.save
+      end
+    end
+
+    it "should save the term list" do
+      expect(term_list).to receive(:save)
+      form.save
     end
   end
 
   describe "#term_list" do
-    it "should return the term list build by the graph_to_termlist service" do
-      expect(form.term_list).to eq(termlist)
+    before do
+      allow(rdf_importer).to receive(:term_list).and_return(term_list)
     end
 
-    context "when the term list has errors" do
-      let(:errors) { double("errors") }
-      let(:full_messages) { (1..12).to_a }
-      before do
-        expect(termlist).to receive(:valid?).and_return(false)
-        allow(termlist).to receive(:errors).and_return(errors)
-        allow(errors).to receive(:full_messages).and_return(full_messages)
-        form.term_list
-      end
-
-      it "should add errors to the form" do
-        expect(form.errors.count).to be > 0
-      end
-
-      it "should only add the first ten errors" do
-        expect(form.errors.count).to eq(11)
-        0.upto(9) {|i| expect(form.errors[:base][i]).to eq(i+1)}
-        expect(form.errors[:base][10]).to eq("Further errors exist but were suppressed")
-      end
+    it "should return rdf_importer's term list" do
+      expect(form.term_list).to eq(rdf_importer.term_list)
     end
   end
 

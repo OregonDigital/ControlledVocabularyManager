@@ -9,5 +9,6 @@ class ImportableTermList < Struct.new(:terms)
   def save
     return false unless valid?
     terms.each { |term| term.persist! }
+    true
   end
 end
