@@ -19,8 +19,3 @@ class StandardRepository < Struct.new(:decorators)
   end
 end
 
-class NullDecorator
-  def new(obj)
-    obj
-  end
-end
