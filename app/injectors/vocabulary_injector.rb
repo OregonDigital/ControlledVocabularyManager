@@ -8,7 +8,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def vocabulary_repository
-    DecoratingRepository.new(decorators, polymorphic_repository)
+    @vocabulary_repository ||= StandardRepository.new(decorators)
   end
 
   def all_vocabs_query
@@ -20,15 +20,11 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def child_node_finder
-    @child_node_finder ||= ChildNodeFinder.new(polymorphic_repository, sparql_client)
+    @child_node_finder ||= ChildNodeFinder.new(StandardRepository.new, sparql_client)
   end
 
   def params
     super || {}
-  end
-
-  def polymorphic_repository
-    PolymorphicTermRepository.new(Vocabulary, Term)
   end
 
   def decorators
