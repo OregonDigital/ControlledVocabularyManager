@@ -37,7 +37,7 @@ class TermsController < ApplicationController
 
   def update
     edit_term_form = term_form_repository.find(params[:id])
-    edit_term_form.attributes = term_params.except(:id)
+    edit_term_form.attributes = term_params
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else
