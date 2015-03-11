@@ -16,7 +16,6 @@ class RdfImporter
   private
 
   def reset(url)
-    errors.clear
     @url = url
     @term_list = nil
     @graph = nil

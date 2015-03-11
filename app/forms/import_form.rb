@@ -27,6 +27,7 @@ class ImportForm
 
   def run
     return if term_list
+    errors.clear
     @rdf_importer.call(url)
   end
 end
