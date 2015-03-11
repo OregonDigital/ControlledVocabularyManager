@@ -1,5 +1,5 @@
 class TermsController < ApplicationController
-  delegate :term_form_factory, :term_repository, :vocabulary_repository, :to => :injector
+  delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
 
@@ -14,14 +14,14 @@ class TermsController < ApplicationController
   end
 
   def new
-    @term = term_form_factory.new
+    @term = term_form_repository.new
     @vocabulary = find_vocabulary
   end
 
   def create
     @vocabulary = find_vocabulary
     combined_id =  "#{params[:vocabulary_id]}/#{term_params[:id]}"
-    term_form = term_form_factory.new(combined_id)
+    term_form = term_form_repository.new(combined_id)
     term_form.attributes = term_params.except(:id)
     if term_form.save
       redirect_to term_path(:id => term_form.id)
@@ -32,11 +32,11 @@ class TermsController < ApplicationController
   end
 
   def edit
-    @term = term_form_factory.find(params[:id])
+    @term = term_form_repository.find(params[:id])
   end
 
   def update
-    edit_term_form = term_form_factory.find(params[:id])
+    edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = term_params.except(:id)
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])

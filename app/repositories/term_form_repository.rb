@@ -1,4 +1,4 @@
-class TermFormFactory < Struct.new(:decorators)
+class TermFormRepository < Struct.new(:decorators)
   delegate :new, :find, :exists?, :to => :repository
 
   def repository

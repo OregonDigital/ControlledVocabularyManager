@@ -1,8 +1,8 @@
 class TermInjector < Struct.new(:params)
   delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
 
-  def term_form_factory
-    TermFormFactory.new(decorators)
+  def term_form_repository
+    TermFormRepository.new(decorators)
   end
 
   def term_repository
