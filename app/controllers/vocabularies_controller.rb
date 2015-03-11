@@ -1,5 +1,5 @@
 class VocabulariesController < ApplicationController
-  delegate :vocabulary_form, :edit_vocabulary_form, :all_vocabs_query, :to => :injector
+  delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
   skip_before_filter :check_auth, :only => [:index]
 
   def index
@@ -7,10 +7,12 @@ class VocabulariesController < ApplicationController
   end
 
   def new
-    @vocabulary = vocabulary_form
+    @vocabulary = vocabulary_form_repository.new
   end
 
   def create
+    vocabulary_form = vocabulary_form_repository.new(vocabulary_params[:id])
+    vocabulary_form.attributes = vocabulary_params.except(:id)
     if vocabulary_form.save
       redirect_to term_path(:id => vocabulary_form.id)
     else
@@ -20,10 +22,12 @@ class VocabulariesController < ApplicationController
   end
 
   def edit
-    @term = edit_vocabulary_form
+    @term = vocabulary_form_repository.find(params[:id])
   end
 
   def update
+    edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
+    edit_vocabulary_form.attributes = vocabulary_params
     if edit_vocabulary_form.save
       redirect_to term_path(:id => params[:id])
     else
@@ -33,6 +37,10 @@ class VocabulariesController < ApplicationController
   end
 
   private
+
+  def vocabulary_params
+    ParamCleaner.call(params[:vocabulary])
+  end
 
   def injector
     @injector ||= VocabularyInjector.new(params)

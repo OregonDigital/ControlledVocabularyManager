@@ -34,8 +34,7 @@ RSpec.describe VocabulariesController do
     let(:vocabulary_form) { instance_double("VocabularyForm") }
     let(:vocabulary) { vocabulary_mock }
     before do
-      allow(VocabularyForm).to receive(:new).and_return(vocabulary_form)
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
+      allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
       allow(vocabulary).to receive(:attributes=)
       get 'edit', :id => vocabulary.id
     end
@@ -59,8 +58,7 @@ RSpec.describe VocabulariesController do
     let(:persist_success) { true }
 
     before do
-      allow(Vocabulary).to receive(:find).with(vocabulary.id).and_return(vocabulary)
-      allow(VocabularyForm).to receive(:new).and_return(vocabulary_form)
+      allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:persist!).and_return(persist_success)
       allow(vocabulary_form).to receive(:valid?).and_return(true)
@@ -140,8 +138,7 @@ RSpec.describe VocabulariesController do
     let(:result) { post 'create', :vocabulary => vocabulary_params }
     let(:save_success) { true }
     before do
-      allow(VocabularyForm).to receive(:new).and_return(vocabulary_form)
-      allow(Vocabulary).to receive(:new).and_return(vocabulary)
+      allow_any_instance_of(VocabularyFormRepository).to receive(:new).and_return(vocabulary_form)
       allow(vocabulary_form).to receive(:save).and_return(save_success)
       allow(vocabulary).to receive(:id).and_return("test")
       allow(vocabulary).to receive(:attributes=)

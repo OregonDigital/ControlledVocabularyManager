@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "vocabularies/new" do
-  let(:vocabulary) { VocabularyInjector.new.vocabulary_form }
+  let(:vocabulary) { VocabularyFormRepository.new.new }
   before do
     assign(:vocabulary, vocabulary)
     render
