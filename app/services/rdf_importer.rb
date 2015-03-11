@@ -1,6 +1,6 @@
 class RdfImporter
   attr_reader :url, :errors, :term_list
-  delegate :url_to_graph, :graph_to_termlist, :validators, :to => :injector
+  delegate :url_to_graph, :graph_to_termlist, :validators, :error_propagator, :to => :injector
 
   def initialize(errors)
     @errors = errors
@@ -34,15 +34,7 @@ class RdfImporter
     return if errors.any?
 
     @term_list = graph_to_termlist.call(@graph)
-    unless @term_list.valid?
-      errorlist = @term_list.errors.full_messages
-      if errorlist.count > 10
-        errorlist = errorlist[0,10] + ["Further errors exist but were suppressed"]
-      end
-      errorlist.each do |message|
-        errors.add(:base, message)
-      end
-    end
+    error_propagator.call(@term_list, errors, :limit => 10)
   end
 
   def injector

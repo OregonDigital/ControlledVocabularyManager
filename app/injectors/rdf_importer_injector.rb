@@ -27,6 +27,10 @@ class RdfImporterInjector
     ImportableTermList
   end
 
+  def error_propagator
+    ErrorPropagator
+  end
+
   def validators
     [IsValidRdfImportUrl]
   end

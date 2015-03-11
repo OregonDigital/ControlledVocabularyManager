@@ -8,6 +8,7 @@ RSpec.describe RdfImporter do
   let(:graph) { instance_double("RDF::Graph") }
   let(:graph_to_termlist) { double("graph_to_termlist") }
   let(:termlist) { instance_double("ImportableTermList") }
+  let(:error_propagator) { class_double("ErrorPropagator") }
   let(:validator_class) { IsValidRdfImportUrl }
   let(:validator) { instance_double("IsValidRdfImportUrl") }
 
@@ -19,6 +20,9 @@ RSpec.describe RdfImporter do
     allow(importer).to receive(:graph_to_termlist).and_return(graph_to_termlist)
     allow(graph_to_termlist).to receive(:call).with(graph).and_return(termlist)
     allow(termlist).to receive(:valid?).and_return(true)
+
+    allow(importer).to receive(:error_propagator).and_return(error_propagator)
+    allow(error_propagator).to receive(:call)
 
     allow(importer).to receive(:validators).and_return([validator_class])
     allow(validator_class).to receive(:new).and_return(validator)
@@ -32,6 +36,11 @@ RSpec.describe RdfImporter do
       it "should set the term_list" do
         importer.call(url)
         expect(importer.term_list).to eq(termlist)
+      end
+
+      it "should call the error propagator on the termlist" do
+        expect(error_propagator).to receive(:call).with(termlist, errors, :limit => 10)
+        importer.call(url)
       end
     end
 
@@ -66,23 +75,6 @@ RSpec.describe RdfImporter do
       it "shouldn't call graph_to_termlist" do
         expect(graph_to_termlist).not_to receive(:call)
         importer.call(url)
-      end
-    end
-
-    context "when the term list is invalid" do
-      let(:termlist_errors) { double("errors") }
-      let(:full_messages) { (1..12).to_a }
-      before do
-        expect(termlist).to receive(:valid?).and_return(false)
-        expect(termlist).to receive(:errors).and_return(termlist_errors)
-        expect(termlist_errors).to receive(:full_messages).and_return(full_messages)
-      end
-
-      it "should propagate up to ten errors from the termlist" do
-        importer.call(url)
-        expect(importer.errors.count).to eq(11)
-        0.upto(9) {|i| expect(importer.errors[:base][i]).to eq(i+1)}
-        expect(importer.errors[:base][10]).to eq("Further errors exist but were suppressed")
       end
     end
   end
