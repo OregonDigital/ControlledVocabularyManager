@@ -1,10 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "vocabularies/index.html.erb" do
-  let(:vocabs) { [vocabulary] }
+  let(:paged_result) do
+    Kaminari.paginate_array([vocabulary]).page(1)
+  end
   let(:vocabulary) { Vocabulary.new("bla") }
   before do
-    assign(:vocabularies, vocabs)
+    assign(:vocabularies, paged_result)
     render
   end
   it "should display all vocabularies" do

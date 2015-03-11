@@ -12,7 +12,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository) }
+    -> { paginatable_vocabs }
   end
   
   def sparql_client
@@ -40,6 +40,26 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   private
+
+  def paginatable_vocabs
+    PaginatableTerms.new(all_vocabs_query_client).page(page).per(10)
+  end
+
+  def page
+    (params[:page] || 1).to_i
+  end
+
+  def all_vocabs_query_client
+    AllVocabsQuery.new(sparql_client, vocabulary_repository) 
+  end
+
+  def query_options
+    if params[:page]
+      { :limit => 10, :offset => (params[:page].to_i-1)*10 }
+    else
+      {}
+    end
+  end
 
   def built_vocabulary
     vocabulary = vocabulary_repository.new(inner_vocabulary_params[:id])

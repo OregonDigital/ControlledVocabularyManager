@@ -89,6 +89,9 @@ GEM
     awesome_print (1.2.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-kaminari-views (0.0.5)
+      kaminari (>= 0.13)
+      rails (>= 3.1)
     bootstrap-sass (3.3.1.0)
       sass (~> 3.2)
     builder (3.2.2)
@@ -184,6 +187,9 @@ GEM
     json (1.8.1)
     json-ld (1.1.7)
       rdf (~> 1.1, >= 1.1.4)
+    kaminari (0.16.1)
+      actionpack (>= 3.0.0)
+      activesupport (>= 3.0.0)
     kgio (2.9.2)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -421,6 +427,7 @@ DEPENDENCIES
   active-triples!
   autoprefixer-rails
   awesome_print
+  bootstrap-kaminari-views
   bootstrap-sass (~> 3.3.1)
   capistrano (~> 2.0)
   capybara
@@ -434,6 +441,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jettywrapper
   jquery-rails
+  kaminari
   poltergeist
   rails (= 4.1.7)
   rdf-marmotta!

@@ -41,6 +41,10 @@ gem 'warden-github-rails'
 
 gem 'simple_form'
 
+# Paging
+gem 'kaminari'
+gem 'bootstrap-kaminari-views'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'
