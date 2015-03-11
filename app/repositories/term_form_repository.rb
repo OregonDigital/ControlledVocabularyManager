@@ -1,3 +1,5 @@
+# Repository that returns a decorated Term object with TermForm
+# validations.
 class TermFormRepository < Struct.new(:decorators)
   delegate :new, :find, :exists?, :to => :repository
 
