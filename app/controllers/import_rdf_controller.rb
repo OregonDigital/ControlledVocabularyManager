@@ -1,5 +1,3 @@
-require 'json/ld'
-
 class ImportRdfController < ApplicationController
   delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
   
