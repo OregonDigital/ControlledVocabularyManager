@@ -33,7 +33,7 @@ class RdfImporter
   def build_term_list
     return if errors.any?
 
-    @term_list = graph_to_termlist.call(@graph)
+    @term_list = graph_to_termlist.new(@graph).run
     error_propagator.call(@term_list, errors, :limit => 10)
   end
 

@@ -4,9 +4,9 @@ RSpec.describe RdfImporter do
   let(:url) { "http://example.com" }
   let(:errors) { ActiveModel::Errors.new(ImportForm.new) }
   let(:importer) { RdfImporter.new(errors) }
-  let(:url_to_graph) { double("url_to_graph") }
+  let(:url_to_graph) { class_double("RdfLoader") }
   let(:graph) { instance_double("RDF::Graph") }
-  let(:graph_to_termlist) { double("graph_to_termlist") }
+  let(:graph_to_termlist) { instance_double("GraphToImportableTermList") }
   let(:termlist) { instance_double("ImportableTermList") }
   let(:error_propagator) { class_double("ErrorPropagator") }
   let(:validator_class) { IsValidRdfImportUrl }
@@ -17,8 +17,8 @@ RSpec.describe RdfImporter do
     allow(url_to_graph).to receive(:call).with(url).and_return(graph)
     allow(graph).to receive(:empty?).and_return(false)
 
-    allow(importer).to receive(:graph_to_termlist).and_return(graph_to_termlist)
-    allow(graph_to_termlist).to receive(:call).with(graph).and_return(termlist)
+    allow(GraphToImportableTermList).to receive(:new).with(graph).and_return(graph_to_termlist)
+    allow(graph_to_termlist).to receive(:run).with(no_args).and_return(termlist)
     allow(termlist).to receive(:valid?).and_return(true)
 
     allow(importer).to receive(:error_propagator).and_return(error_propagator)
@@ -27,8 +27,6 @@ RSpec.describe RdfImporter do
     allow(importer).to receive(:validators).and_return([validator_class])
     allow(validator_class).to receive(:new).and_return(validator)
     allow(validator).to receive(:validate).with(importer)
-
-    expect(importer).not_to receive(:injector)
   end
 
   describe "#call" do
@@ -55,7 +53,7 @@ RSpec.describe RdfImporter do
       end
 
       it "shouldn't call graph_to_termlist" do
-        expect(graph_to_termlist).not_to receive(:call)
+        expect(graph_to_termlist).not_to receive(:run)
         importer.call(url)
       end
     end
@@ -73,7 +71,7 @@ RSpec.describe RdfImporter do
       end
 
       it "shouldn't call graph_to_termlist" do
-        expect(graph_to_termlist).not_to receive(:call)
+        expect(graph_to_termlist).not_to receive(:run)
         importer.call(url)
       end
     end
