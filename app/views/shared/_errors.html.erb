@@ -1,0 +1,12 @@
+<% if object.errors.any? %>
+  <div class="alert alert-danger">
+    <p><%= t("simple_form.error_notification.default_message") %></p>
+    <% if object.errors[:base].any? %>
+      <ul>
+        <% object.errors[:base].each do |error| %>
+          <li><%= error %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  </div>
+<% end %>
