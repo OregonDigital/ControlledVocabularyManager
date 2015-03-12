@@ -119,8 +119,7 @@ RSpec.describe TermsController do
     end
     let(:save_success) { true }
     before do
-      allow(TermForm).to receive(:new).and_return(term_form)
-      allow_any_instance_of(DecoratingRepository).to receive(:new).and_return(term)
+      allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")
       allow(term).to receive(:attributes=)
@@ -185,7 +184,6 @@ RSpec.describe TermsController do
     let(:params) do
       {
         :term => {
-          :id => term.id,
           :comment => ["Test"],
           :label => ["Comment"]
         }
@@ -195,8 +193,7 @@ RSpec.describe TermsController do
     let(:persist_failure) { false }
 
     before do
-      allow_any_instance_of(DecoratingRepository).to receive(:find).with(term.id).and_return(term)
-      allow(TermForm).to receive(:new).and_return(term_form)
+      allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
       allow(term).to receive(:attributes=)
       allow(term).to receive(:persist!).and_return(persist_success)
       allow(term_form).to receive(:valid?).and_return(true)
@@ -205,7 +202,7 @@ RSpec.describe TermsController do
     
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(term).to have_received(:attributes=).with(params[:term].except(:id))
+        expect(term).to have_received(:attributes=).with(params[:term])
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{term.id}")

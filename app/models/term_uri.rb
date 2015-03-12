@@ -10,7 +10,7 @@ class TermUri
   end
 
   def leaf
-    if uri.ends_with?("/")
+    if uri.node? || uri.ends_with?("/")
       ""
     else
       uri.to_s.gsub(uri.parent.to_s, '')

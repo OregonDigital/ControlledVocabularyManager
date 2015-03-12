@@ -1,21 +1,12 @@
 class TermInjector < Struct.new(:params)
-  delegate :vocabulary_repository, :child_node_finder, :polymorphic_repository, :to => :vocabulary_injector
-  def term_form
-    @term_form ||= term_form_factory.new(built_term, term_repository)
-  end
+  delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
 
-  def edit_term_form
-    @edit_term_form ||= term_form_factory.new(term, term_repository)
+  def term_form_repository
+    TermFormRepository.new(decorators)
   end
 
   def term_repository
-    DecoratingRepository.new(decorators, polymorphic_repository)
-  end
-
-  def term
-    @term ||= term_repository.find(params[:id])
-    @term.attributes = term_params.except(:id, :vocabulary_id)
-    @term
+    StandardRepository.new(decorators)
   end
 
   def params
@@ -32,25 +23,4 @@ class TermInjector < Struct.new(:params)
     @vocabulary_injector ||= VocabularyInjector.new(params)
   end
 
-  def built_term
-    term = term_repository.new(combined_id)
-    term.attributes = term_params.except(:id, :vocabulary_id)
-    term
-  end
-
-  def combined_id
-    "#{inner_term_params[:vocabulary_id]}/#{inner_term_params[:id]}"
-  end
-
-  def term_form_factory
-    TermForm
-  end
-
-  def term_params
-    ParamCleaner.call(inner_term_params)
-  end
-
-  def inner_term_params
-    (params[:term] || {}).merge({:vocabulary_id => params[:vocabulary_id]})
-  end
 end
