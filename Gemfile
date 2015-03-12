@@ -40,6 +40,7 @@ gem "sparql-client", :github => "ruby-rdf/sparql-client", :branch => "develop"
 gem 'warden-github-rails'
 
 gem 'simple_form'
+gem 'coveralls'
 
 group :development do
   gem 'spring-commands-rspec'

@@ -28,3 +28,6 @@ marmotta
 
 # Ignore dotenv
 .env
+
+# Ignore coverage
+/coverage
