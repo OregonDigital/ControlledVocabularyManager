@@ -8,7 +8,7 @@ class IdExists < ActiveModel::Validator
   private
 
   def leaf_id(record)
-    record.term_uri.leaf
+    record.term_uri_leaf
   end
 
 end
