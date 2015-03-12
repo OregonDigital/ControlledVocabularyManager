@@ -1,12 +1,6 @@
 class ImportForm
   include ActiveModel::Model
-  attr_accessor :url, :preview, :rdf_importer
-  delegate :term_list, :to => :rdf_importer
-
-  def initialize(params = {})
-    super(params)
-    @rdf_importer = RdfImporter.new(errors)
-  end
+  attr_accessor :url, :preview, :term_list
 
   def preview?
     preview == "1"
@@ -28,6 +22,6 @@ class ImportForm
   def run
     return if term_list
     errors.clear
-    @rdf_importer.call(url)
+    @term_list = RdfImporter.new(errors, url).run
   end
 end

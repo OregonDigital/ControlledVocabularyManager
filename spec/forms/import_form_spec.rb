@@ -8,15 +8,8 @@ RSpec.describe ImportForm do
   let(:term_list) { instance_double("ImportableTermList") }
 
   before do
-    allow(RdfImporter).to receive(:new).and_return(rdf_importer)
-    allow(rdf_importer).to receive(:term_list).and_return(term_list)
-  end
-
-  describe ".new" do
-    it "should create an RdfImporter" do
-      expect(RdfImporter).to receive(:new).and_return(rdf_importer)
-      form
-    end
+    allow(RdfImporter).to receive(:new).with(form.errors, url).and_return(rdf_importer)
+    allow(rdf_importer).to receive(:run).and_return(term_list)
   end
 
   describe "#valid?" do
@@ -25,37 +18,25 @@ RSpec.describe ImportForm do
       expect(form.valid?).to eq(:state)
     end
 
-    context "when the rdf importer hasn't produced a term list" do
-      before do
-        expect(rdf_importer).to receive(:term_list).and_return(nil)
-      end
-
-      it "should call the rdf importer" do
-        expect(rdf_importer).to receive(:call).with(form.url)
-        form.valid?
-      end
+    it "should call the rdf importer" do
+      expect(rdf_importer).to receive(:run)
+      form.valid?
     end
 
-    context "when the rdf importer has already produced a term list" do
-      it "should not call the rdf importer" do
-        expect(rdf_importer).not_to receive(:call)
+    context "when the rdf importer has already been run" do
+      it "should not call the rdf importer a second time" do
+        expect(RdfImporter).to receive(:new).with(form.errors, url).and_return(rdf_importer).once
+        form.valid?
         form.valid?
       end
     end
   end
 
   describe "#save" do
-    let(:valid) { true }
-    let(:preview) { false }
-
-    before do
-      allow(form).to receive(:valid?).and_return(valid)
-      allow(form).to receive(:preview?).and_return(preview)
-      allow(term_list).to receive(:save)
-    end
-
     context "when the form isn't valid" do
-      let(:valid) { false }
+      before do
+        allow(form).to receive(:valid?).and_return(false)
+      end
 
       it "should return false" do
         expect(form.save).to eq(false)
@@ -68,7 +49,7 @@ RSpec.describe ImportForm do
     end
 
     context "when the form is a preview" do
-      let(:preview) { true }
+      let(:preview) { "1" }
 
       it "should return true" do
         expect(form.save).to eq(true)
@@ -80,19 +61,26 @@ RSpec.describe ImportForm do
       end
     end
 
-    it "should save the term list" do
-      expect(term_list).to receive(:save)
-      form.save
+    context "when the form is valid and not a preview" do
+      it "should save the term list" do
+        expect(term_list).to receive(:save)
+        form.save
+      end
     end
   end
 
   describe "#term_list" do
-    before do
-      allow(rdf_importer).to receive(:term_list).and_return(term_list)
+    context "when the importer hasn't been run" do
+      it "should be nil" do
+        expect(form.term_list).to eq(nil)
+      end
     end
 
-    it "should return rdf_importer's term list" do
-      expect(form.term_list).to eq(rdf_importer.term_list)
+    context "when the importer has been run" do
+      it "should be the importer's `run` result" do
+        form.valid?
+        expect(form.term_list).to eq(term_list)
+      end
     end
   end
 

@@ -2,24 +2,18 @@ class RdfImporter
   attr_reader :url, :errors, :term_list
   delegate :url_to_graph, :graph_to_termlist, :validators, :error_propagator, :to => :injector
 
-  def initialize(errors)
+  def initialize(errors, url)
     @errors = errors
+    @url = url
   end
 
-  def call(url)
-    reset(url)
+  def run
     validators.each {|v| v.new.validate(self)}
     build_graph
     build_term_list
   end
 
   private
-
-  def reset(url)
-    @url = url
-    @term_list = nil
-    @graph = nil
-  end
 
   def build_graph
     return if errors.any?
