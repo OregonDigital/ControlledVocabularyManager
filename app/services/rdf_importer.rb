@@ -11,7 +11,7 @@ class RdfImporter
     validators.each {|v| v.new.validate(self)}
     build_graph
     build_term_list
-    @term_list
+    term_list
   end
 
   private
@@ -29,7 +29,7 @@ class RdfImporter
     return if errors.any?
 
     @term_list = graph_to_termlist.new(@graph).run
-    error_propagator.new(@term_list, errors, 10).run
+    error_propagator.new(term_list, errors, 10).run
   end
 
   def injector
