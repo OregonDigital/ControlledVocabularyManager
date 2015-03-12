@@ -8,8 +8,7 @@ class IdExists < ActiveModel::Validator
   private
 
   def leaf_id(record)
-    return "" if record.rdf_subject.node?
-    TermUri.new(record.rdf_subject).leaf
+    record.term_uri.leaf
   end
 
 end

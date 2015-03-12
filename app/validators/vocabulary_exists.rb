@@ -7,6 +7,6 @@ class VocabularyExists < ActiveModel::Validator
   end
 
   def vocabulary_id(record)
-    TermUri.new(record.rdf_subject).vocabulary_id
+    record.term_uri.vocabulary_id
   end
 end
