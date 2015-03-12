@@ -11,7 +11,7 @@ class TermsAreImportable < ActiveModel::Validator
   end
 
   def decorate(term)
-    return ImportableTerm.new(term)
+    ImportableTerm.new(term)
   end
 
   def term_errors(term)
