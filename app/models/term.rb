@@ -6,7 +6,7 @@ class Term < ActiveTriples::Resource
   property :comment, :predicate => RDF::RDFS.comment
   property :issued, :predicate => RDF::DC.issued
   property :modified, :predicate => RDF::DC.modified
-  delegate :vocabulary_id, :to => :term_uri
+  delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
 
   validate :not_blank_node
 
