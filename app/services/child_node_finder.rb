@@ -13,7 +13,9 @@ class ChildNodeFinder
 end
 
 
-class ChildQuery < Struct.new(:sparql_client, :parent_uri)
+class ChildQuery
+  pattr_initialize :sparql_client, :parent_uri
+
   def run
     graph
   end

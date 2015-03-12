@@ -1,4 +1,6 @@
-class SubjectsToGraph < Struct.new(:sparql_client, :subjects)
+class SubjectsToGraph
+  pattr_initialize :sparql_client, :subjects
+
   def graph
     SolutionsToGraph.new(solutions).graph
   end

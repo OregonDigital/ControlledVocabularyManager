@@ -1,4 +1,6 @@
-class SolutionsToGraph < Struct.new(:solutions)
+class SolutionsToGraph
+  pattr_initialize :solutions
+
   def graph
     g = RDF::Graph.new
     g.insert(*triples)
