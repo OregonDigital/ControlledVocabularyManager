@@ -20,7 +20,7 @@ class TermsController < ApplicationController
 
   def create
     @vocabulary = find_vocabulary
-    combined_id =  "#{params[:vocabulary_id]}/#{term_params[:id]}"
+    combined_id = CombinedId.new(params[:vocabulary_id], term_params[:id])
     term_form = term_form_repository.new(combined_id)
     term_form.attributes = term_params.except(:id)
     if term_form.save
