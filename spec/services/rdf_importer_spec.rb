@@ -38,7 +38,7 @@ RSpec.describe RdfImporter do
       end
 
       it "should call the error propagator on the termlist" do
-        expect(ErrorPropagator).to receive(:new).with(termlist, errors, :limit => 10).and_return(error_propagator)
+        expect(ErrorPropagator).to receive(:new).with(termlist, errors, 10).and_return(error_propagator)
         expect(error_propagator).to receive(:run)
         importer.run
       end
