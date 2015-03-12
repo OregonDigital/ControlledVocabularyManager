@@ -33,9 +33,8 @@ RSpec.describe RdfImporter do
         allow(errors).to receive(:any?).and_return(false)
       end
 
-      it "should set the term_list" do
-        importer.run
-        expect(importer.term_list).to eq(termlist)
+      it "should return the term_list" do
+        expect(importer.run).to eq(termlist)
       end
 
       it "should call the error propagator on the termlist" do

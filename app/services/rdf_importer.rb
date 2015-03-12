@@ -11,6 +11,7 @@ class RdfImporter
     validators.each {|v| v.new.validate(self)}
     build_graph
     build_term_list
+    @term_list
   end
 
   private
