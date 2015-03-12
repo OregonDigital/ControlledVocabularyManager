@@ -21,9 +21,7 @@ class ChildQuery < Struct.new(:sparql_client, :parent_uri)
   private
 
   def graph
-    g = RDF::Graph.new
-    g.insert(*triples)
-    g
+    @graph ||= SolutionsToGraph.new(solutions).graph
   end
 
   def solutions
@@ -38,12 +36,4 @@ class ChildQuery < Struct.new(:sparql_client, :parent_uri)
     "STRSTARTS(STR(?s), \"#{parent_uri}/\")"
   end
 
-  def triples
-    solutions.map{ |x| to_triple(x) }
-  end
-
-  def to_triple(solution)
-    hsh = solution.to_hash
-    RDF::Statement.from([hsh[:s], hsh[:p], hsh[:o]])
-  end
 end
