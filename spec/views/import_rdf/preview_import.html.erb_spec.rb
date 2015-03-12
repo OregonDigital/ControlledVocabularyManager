@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "import_rdf/preview_import.html.erb" do
   let(:vocabns) { "http://opaquenamespace.org/ns/newthing" }
-  let(:form) { ImportForm.new }
+  let(:form) { ImportForm.new("url", "preview", RdfImporter) }
   let(:terms) { [Term.new(vocabns + "/1"), Term.new(vocabns + "/2"), Term.new(vocabns + "/3")] }
 
   let(:vocabulary) do

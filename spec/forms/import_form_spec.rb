@@ -3,12 +3,13 @@ require 'rails_helper'
 RSpec.describe ImportForm do
   let(:url) { "http://example.com" }
   let(:preview) { "0" }
-  let(:form) { ImportForm.new(:url => url, :preview => preview) }
+  let(:form) { ImportForm.new(url, preview, rdf_import_factory) }
+  let(:rdf_import_factory) { class_double("RdfImporter") }
   let(:rdf_importer) { instance_double("RdfImporter") }
   let(:term_list) { instance_double("ImportableTermList") }
 
   before do
-    allow(RdfImporter).to receive(:new).with(form.errors, url).and_return(rdf_importer)
+    allow(rdf_import_factory).to receive(:new).with(form.errors, url).and_return(rdf_importer)
     allow(rdf_importer).to receive(:run).and_return(term_list)
   end
 
@@ -25,7 +26,7 @@ RSpec.describe ImportForm do
 
     context "when the rdf importer has already been run" do
       it "should not call the rdf importer a second time" do
-        expect(RdfImporter).to receive(:new).with(form.errors, url).and_return(rdf_importer).once
+        expect(rdf_import_factory).to receive(:new).with(form.errors, url).and_return(rdf_importer).once
         form.valid?
         form.valid?
       end

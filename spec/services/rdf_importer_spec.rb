@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe RdfImporter do
   let(:url) { "http://example.com" }
-  let(:errors) { ActiveModel::Errors.new(ImportForm.new) }
+  let(:errors) { instance_double("ActiveModel::Errors") }
   let(:importer) { RdfImporter.new(errors, url) }
   let(:url_to_graph) { class_double("RdfLoader") }
   let(:graph) { instance_double("RDF::Graph") }
@@ -28,6 +28,11 @@ RSpec.describe RdfImporter do
   describe "#run" do
     context "when there are no errors" do
       let(:error_propagator) { instance_double("ErrorPropagator") }
+
+      before do
+        allow(errors).to receive(:any?).and_return(false)
+      end
+
       it "should set the term_list" do
         importer.run
         expect(importer.term_list).to eq(termlist)
@@ -40,19 +45,37 @@ RSpec.describe RdfImporter do
       end
     end
 
-    context "when there's an error in the validator" do
-      before do
-        expect(validator).to receive(:validate).with(importer) { errors.add(:base, "validator error") }
+    context "Presence of errors preventing code execution" do
+      context "When there are errors in all cases" do
+        before do
+          expect(errors).to receive(:any?).and_return(true, true)
+        end
+
+        it "shouldn't call url_to_graph" do
+          expect(url_to_graph).not_to receive(:call)
+          importer.run
+        end
+
+        it "shouldn't call graph_to_termlist" do
+          expect(graph_to_termlist).not_to receive(:run)
+          importer.run
+        end
       end
 
-      it "shouldn't call url_to_graph" do
-        expect(url_to_graph).not_to receive(:call)
-        importer.run
-      end
+      context "when there is no error on the first call" do
+        before do
+          expect(errors).to receive(:any?).and_return(false, true)
+        end
 
-      it "shouldn't call graph_to_termlist" do
-        expect(graph_to_termlist).not_to receive(:run)
-        importer.run
+        it "should call url_to_graph" do
+          expect(url_to_graph).to receive(:call)
+          importer.run
+        end
+
+        it "shouldn't call graph_to_termlist" do
+          expect(graph_to_termlist).not_to receive(:run)
+          importer.run
+        end
       end
     end
 
@@ -60,16 +83,12 @@ RSpec.describe RdfImporter do
       before do
         expect(url_to_graph).to receive(:call).with(url).and_return(graph)
         expect(graph).to receive(:empty?).and_return(true)
+        allow(errors).to receive(:add)
+        allow(errors).to receive(:any?).and_return(false, false)
       end
 
       it "should add an error" do
-        importer.run
-        expect(importer.errors.count).to eq(1)
-        expect(importer.errors[:url]).to eq(["must resolve to valid RDF"])
-      end
-
-      it "shouldn't call graph_to_termlist" do
-        expect(graph_to_termlist).not_to receive(:run)
+        expect(errors).to receive(:add).with(:url, "must resolve to valid RDF")
         importer.run
       end
     end

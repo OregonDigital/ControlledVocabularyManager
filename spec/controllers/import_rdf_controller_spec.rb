@@ -4,13 +4,15 @@ RSpec.describe ImportRdfController, :type => :controller do
   let(:logged_in) { true }
   let(:form_factory) { class_double("ImportForm") }
   let(:form) { instance_double("ImportForm") }
+  let(:url) { "http://example.com" }
+  let(:preview) { "0" }
+  let(:params) do
+    {:import_form => {:url => url, :preview => preview}}
+  end
 
   before do
     allow(controller).to receive(:check_auth).and_return(true) if logged_in
-    allow(controller).to receive(:form_factory).and_return(form_factory)
-    allow(form_factory).to receive(:new).and_return(form)
-
-    expect(controller).not_to receive(:injector)
+    allow(ImportForm).to receive(:new).with(url, preview, RdfImporter).and_return(form)
   end
 
   describe "GET 'index'" do
@@ -20,25 +22,31 @@ RSpec.describe ImportRdfController, :type => :controller do
         get :index
         expect(response).to redirect_to login_path
       end
+
+      it "shouldn't create the ImportForm" do
+        expect(ImportForm).not_to receive(:new)
+        get :index
+      end
     end
 
-    it "should render the index template" do
-      get :index
-      expect(response).to render_template("index")
-    end
+    context "when logged in" do
+      before do
+        expect(ImportForm).to receive(:new).with(nil, nil, RdfImporter).and_return(form)
+      end
 
-    it "should assign the new form for the view to use" do
-      get :index
-      expect(assigns[:form]).to eq(form)
+      it "should render the index template" do
+        get :index
+        expect(response).to render_template("index")
+      end
+
+      it "should assign the new form for the view to use" do
+        get :index
+        expect(assigns[:form]).to eq(form)
+      end
     end
   end
 
   describe "POST 'import'" do
-    let(:url) { "http://example.com" }
-    let(:params) do
-      {:import_form => {:url => url}}
-    end
-
     context "when logged out" do
       let(:logged_in) { false }
       it "should require login" do
@@ -48,12 +56,6 @@ RSpec.describe ImportRdfController, :type => :controller do
     end
 
     context "when logged in" do
-      let(:form_params) { params[:import_form] }
-
-      before do
-        expect(controller).to receive(:form_params).and_return(form_params)
-      end
-
       context "and the form doesn't save" do
         before do
           expect(form).to receive(:save).and_return(false)

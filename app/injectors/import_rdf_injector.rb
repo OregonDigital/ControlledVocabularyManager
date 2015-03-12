@@ -11,4 +11,8 @@ class ImportRdfInjector
   def form_key
     form_factory.model_name.param_key
   end
+
+  def rdf_importer_factory
+    RdfImporter
+  end
 end

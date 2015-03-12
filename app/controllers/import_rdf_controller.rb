@@ -1,14 +1,14 @@
 require 'json/ld'
 
 class ImportRdfController < ApplicationController
-  delegate :form_factory, :param_cleaner, :form_key, :to => :injector
+  delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
   
   def index
-    @form = form_factory.new
+    @form = form_factory.new(*form_params)
   end
 
   def import
-    @form = form_factory.new(form_params)
+    @form = form_factory.new(*form_params)
     unless @form.save
       render :index
       return
@@ -29,7 +29,8 @@ class ImportRdfController < ApplicationController
   private
 
   def form_params
-    param_cleaner.call(params[form_key])
+    params[form_key] ||= {}
+    param_cleaner.call(params[form_key]).values_at(:url, :preview) + [rdf_importer_factory]
   end
 
   def injector

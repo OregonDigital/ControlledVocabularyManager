@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "import_rdf/_form.html.erb" do
-  let(:form) { ImportForm.new }
+  let(:form) { ImportForm.new("url", "preview", RdfImporter) }
 
   before do
     render :partial => "import_rdf/form", :locals => {:form => form}
@@ -28,10 +28,9 @@ RSpec.describe "import_rdf/_form.html.erb" do
   end
 
   context "when the form has errors" do
-    let(:form) do
-      i = ImportForm.new
-      i.errors.add(:url, "isn't a cool enough website")
-      i
+    before do
+      form.errors.add(:url, "isn't a cool enough website")
+      render :partial => "import_rdf/form", :locals => {:form => form}
     end
 
     it "should render errors" do

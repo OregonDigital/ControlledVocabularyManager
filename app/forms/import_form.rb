@@ -1,6 +1,12 @@
 class ImportForm
   include ActiveModel::Model
-  attr_accessor :url, :preview, :term_list
+  attr_accessor :url, :preview, :term_list, :rdf_importer_factory
+
+  def initialize(url, preview, rdf_importer_factory)
+    @url = url
+    @preview = preview
+    @rdf_importer_factory = rdf_importer_factory
+  end
 
   def preview?
     preview == "1"
@@ -22,6 +28,6 @@ class ImportForm
   def run
     return if term_list
     errors.clear
-    @term_list = RdfImporter.new(errors, url).run
+    @term_list = rdf_importer_factory.new(errors, url).run
   end
 end

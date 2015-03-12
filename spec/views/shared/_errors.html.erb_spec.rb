@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "shared/_errors.html.erb" do
-  let(:object) { ImportForm.new }
+  let(:object) { ImportForm.new(nil, nil, RdfImporter) }
 
   context "when there are no errors" do
     it "should render nothing" do
