@@ -3,13 +3,15 @@ require 'rails_helper'
 RSpec.describe ErrorPropagator do
   let(:object) { double("object", :valid? => valid) }
   let(:errors) { instance_double("ActiveModel::Errors") }
+  let(:limit) { 20 }
+  let(:propagator) { ErrorPropagator.new(object, errors, limit) }
 
-  describe ".call" do
+  describe "#run" do
     context "when the object is valid" do
       let(:valid) { true }
       it "shouldn't touch errors" do
         expect(errors).not_to receive(:add)
-        ErrorPropagator.call(object, errors)
+        propagator.run
       end
     end
 
@@ -27,7 +29,7 @@ RSpec.describe ErrorPropagator do
           full_messages.each do |message|
             expect(errors).to receive(:add).with(:base, message)
           end
-          ErrorPropagator.call(object, errors)
+          propagator.run
         end
       end
 
@@ -39,7 +41,7 @@ RSpec.describe ErrorPropagator do
             expect(errors).to receive(:add).with(:base, full_messages[0])
             expect(errors).to receive(:add).with(:base, full_messages[1])
             expect(errors).to receive(:add).with(:base, "Further errors exist but were suppressed")
-            ErrorPropagator.call(object, errors, limit)
+            propagator.run
           end
         end
 
@@ -49,7 +51,7 @@ RSpec.describe ErrorPropagator do
             full_messages.each do |message|
               expect(errors).to receive(:add).with(:base, message)
             end
-            ErrorPropagator.call(object, errors, limit)
+            propagator.run
           end
         end
       end

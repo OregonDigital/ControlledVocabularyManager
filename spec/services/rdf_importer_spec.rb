@@ -8,7 +8,6 @@ RSpec.describe RdfImporter do
   let(:graph) { instance_double("RDF::Graph") }
   let(:graph_to_termlist) { instance_double("GraphToImportableTermList") }
   let(:termlist) { instance_double("ImportableTermList") }
-  let(:error_propagator) { class_double("ErrorPropagator") }
   let(:validator_class) { IsValidRdfImportUrl }
   let(:validator) { instance_double("IsValidRdfImportUrl") }
 
@@ -21,9 +20,6 @@ RSpec.describe RdfImporter do
     allow(graph_to_termlist).to receive(:run).with(no_args).and_return(termlist)
     allow(termlist).to receive(:valid?).and_return(true)
 
-    allow(importer).to receive(:error_propagator).and_return(error_propagator)
-    allow(error_propagator).to receive(:call)
-
     allow(importer).to receive(:validators).and_return([validator_class])
     allow(validator_class).to receive(:new).and_return(validator)
     allow(validator).to receive(:validate).with(importer)
@@ -31,13 +27,15 @@ RSpec.describe RdfImporter do
 
   describe "#run" do
     context "when there are no errors" do
+      let(:error_propagator) { instance_double("ErrorPropagator") }
       it "should set the term_list" do
         importer.run
         expect(importer.term_list).to eq(termlist)
       end
 
       it "should call the error propagator on the termlist" do
-        expect(error_propagator).to receive(:call).with(termlist, errors, :limit => 10)
+        expect(ErrorPropagator).to receive(:new).with(termlist, errors, :limit => 10).and_return(error_propagator)
+        expect(error_propagator).to receive(:run)
         importer.run
       end
     end

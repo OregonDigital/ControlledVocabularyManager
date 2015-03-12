@@ -1,25 +1,33 @@
-class ErrorPropagator
-  class << self
-    def call(object, errors, limit = Float::INFINITY)
-      unless object.valid?
-        propagate(errors, truncated_messages(object, limit))
-      end
+class ErrorPropagator < Struct.new(:object, :errors, :limit)
+  def run
+    if object.valid?
+      return
     end
 
-    private
-
-    def propagate(errors, messages)
-      messages.each do |message|
-        errors.add(:base, message)
-      end
+    truncated_messages.each do |message|
+      errors.add(:base, message)
     end
+  end
 
-    def truncated_messages(object, limit)
-      messages = object.errors.full_messages
-      if messages.count <= limit
-        return messages
-      end
+  def messages
+    @messages ||= object.errors.full_messages
+  end
+
+  private
+
+  def truncated_messages
+    if exceeds_limit(messages.count)
       messages[0..limit - 1] + ["Further errors exist but were suppressed"]
+    else
+      messages
     end
+  end
+
+  def exceeds_limit(value)
+    if !limit
+      return false
+    end
+
+    value > limit
   end
 end

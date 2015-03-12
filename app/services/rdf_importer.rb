@@ -28,7 +28,7 @@ class RdfImporter
     return if errors.any?
 
     @term_list = graph_to_termlist.new(@graph).run
-    error_propagator.call(@term_list, errors, :limit => 10)
+    error_propagator.new(@term_list, errors, :limit => 10).run
   end
 
   def injector
