@@ -85,6 +85,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.6)
     arel (5.0.1.20140414130214)
+    attr_extras (4.4.0)
     autoprefixer-rails (4.0.2.1)
       execjs
     awesome_print (1.2.0)
@@ -433,6 +434,7 @@ PLATFORMS
 
 DEPENDENCIES
   active-triples!
+  attr_extras
   autoprefixer-rails
   awesome_print
   bootstrap-sass (~> 3.3.1)

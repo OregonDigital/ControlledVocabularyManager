@@ -1,8 +1,10 @@
 # Removes blank attributes from hashes in params.
-class ParamCleaner < Struct.new(:params)
+class ParamCleaner
   def self.call(params)
     new(params).cleaned_params
   end
+
+  pattr_initialize :params
 
   def cleaned_params
     params.each do |k,v|
