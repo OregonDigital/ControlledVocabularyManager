@@ -18,10 +18,10 @@ GIT
 
 GIT
   remote: git://github.com/ruby-rdf/sparql-client.git
-  revision: c85826b546592b4ce687445c1c4935fcac5d8028
+  revision: e120e271330c7144e75078e0a7bc2d5e48769455
   branch: develop
   specs:
-    sparql-client (1.1.3.1)
+    sparql-client (1.1.4)
       net-http-persistent (~> 2.9)
       rdf (~> 1.1)
 
@@ -44,7 +44,7 @@ GIT
 
 GIT
   remote: git://github.com/terrellt/rdf-marmotta.git
-  revision: a2e58ee36183bd030c6ce5508daf7b86880b56cc
+  revision: 2d4d29380fb1b0182b06951fe94bf9f50e6d4a8c
   branch: feature/UseSparqlRepository
   specs:
     rdf-marmotta (0.0.6)
@@ -52,6 +52,7 @@ GIT
       rake
       rdf (~> 1.1)
       rdf-rdfxml (~> 1.1)
+      sparql-client (~> 1.1.4)
 
 GEM
   remote: https://rubygems.org/
