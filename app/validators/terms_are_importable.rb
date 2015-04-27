@@ -24,7 +24,6 @@ end
 class ImportableTerm < SimpleDelegator
   include ActiveModel::Validations
   validates_with IdExists
-  validates_with TermIsUnique
 
   # This hack ensures we can call .repository.exists? without error (which is
   # how TermIsUnique works), but this is REALLY not the right approach - if we
