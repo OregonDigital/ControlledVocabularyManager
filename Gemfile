@@ -43,6 +43,8 @@ gem 'simple_form'
 gem 'coveralls'
 gem 'rails_config'
 gem 'marmotta'
+gem 'passenger'
+gem 'jettywrapper'
 
 group :development do
   gem 'spring-commands-rspec'
@@ -57,7 +59,6 @@ group :development, :test do
   # Test Coverage
   gem 'simplecov'
   gem 'capybara-screenshot'
-  gem 'jettywrapper'
   gem 'dotenv-rails'
   gem 'warden-rspec-rails', :github => "mspanc/warden-rspec-rails"
   gem 'capybara'
