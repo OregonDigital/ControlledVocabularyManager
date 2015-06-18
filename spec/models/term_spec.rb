@@ -9,9 +9,6 @@ RSpec.describe Term do
   it "should instantiate" do
     expect{Term.new}.not_to raise_error
   end
-  it "should have the default repository configured" do
-    expect(described_class.repository).to eq :default
-  end
   context "when it is persisted" do
     before do
       resource.comment = "This is a comment"
@@ -70,11 +67,10 @@ RSpec.describe Term do
 
   describe "#exists?" do
     let(:result) { Term.exists?("bla") }
-    let(:repository) { ActiveTriples::Repositories.repositories[:default] }
     context "when it is in the repository" do
       before do
-        stub_repository
-        repository << RDF::Statement.new(RDF::URI(uri), RDF::DC.title, "bla")
+        resource.comment = ["bla"]
+        resource.persist!
       end
       it "should be true" do
         expect(result).to eq true

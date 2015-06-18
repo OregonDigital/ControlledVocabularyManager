@@ -4,7 +4,7 @@ RSpec.describe AllVocabsQuery do
   describe ".call" do
     context "when vocabularies exist" do
       let(:vocabulary) { Vocabulary.new("bla") }
-      let(:sparql_client) { vocabulary.repository.query_client }
+      let(:sparql_client) { VocabularyInjector.new.sparql_client }
       let(:repository) { VocabularyInjector.new.vocabulary_repository }
       before do
         vocabulary.label = "YO"

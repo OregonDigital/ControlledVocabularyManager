@@ -1,9 +1,6 @@
-MARMOTTA_REPO ||= RDF::Marmotta.new("http://localhost:8983/marmotta/")
+MARMOTTA_REPO ||= Marmotta::Connection.new(uri: Settings.marmotta.url, context: Rails.env)
 RSpec.configure do |config|
   config.before do
-    # TODO: We NEED to fix this.
-    while MARMOTTA_REPO.count > 0
-      MARMOTTA_REPO.clear!
-    end
+    MARMOTTA_REPO.delete_all
   end
 end
