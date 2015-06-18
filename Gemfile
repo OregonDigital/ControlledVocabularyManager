@@ -43,6 +43,7 @@ gem 'simple_form'
 gem 'coveralls'
 gem 'rails_config'
 gem 'marmotta'
+gem 'passenger'
 
 group :development do
   gem 'spring-commands-rspec'

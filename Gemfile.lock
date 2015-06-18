@@ -239,6 +239,9 @@ GEM
       mini_portile (~> 0.6.0)
     octokit (3.7.0)
       sawyer (~> 0.6.0, >= 0.5.3)
+    passenger (5.0.7)
+      rack
+      rake (>= 0.8.1)
     poltergeist (1.5.1)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -465,6 +468,7 @@ DEPENDENCIES
   jettywrapper
   jquery-rails
   marmotta
+  passenger
   poltergeist
   rails (= 4.1.7)
   rails_config
