@@ -14,7 +14,7 @@ class MarmottaRepository
   end
 
   def <<(stuff)
-    graph = marmotta_resource.get
+    graph = (RDF::Graph.new << marmotta_resource.get)
     graph << stuff
     marmotta_resource.post(graph)
     true
