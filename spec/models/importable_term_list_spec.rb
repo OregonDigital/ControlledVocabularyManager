@@ -12,19 +12,6 @@ RSpec.describe ImportableTermList do
   end
 
   describe "when checking validations" do
-    context "and a term is already in the repository" do
-      before do
-        expect(Term).to receive(:exists?).with(term1.id).and_return(true)
-      end
-
-      it "should report that term 'vocab/one' already exists" do
-        expect(termlist.valid?).to eq(false)
-        expect(termlist.errors.count).to eq(1)
-        expect(termlist.errors[:base].first).to match(%r|vocab/one|)
-        expect(termlist.errors[:base].first).to match(%r|already exists|)
-      end
-    end
-
     context "and a term is in the list more than once" do
       let(:terms) { [vocabulary, term1, term2, term2] }
 
