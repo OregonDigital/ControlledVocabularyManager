@@ -7,7 +7,7 @@ set :stages, config['stages'] || []
 set :default_stage, config['default_stage'] || (config['stages'] || []).first
 require 'capistrano/ext/multistage'
 
-set :application, 'ScholarsArchive'
+set :application, 'ControlledVocabManager'
 set :repository, config['repository']
 set :user, config['user']
 set :default_environment, config['default_environment'] || {}
