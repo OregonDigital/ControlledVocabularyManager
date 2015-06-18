@@ -41,6 +41,7 @@ gem 'warden-github-rails'
 
 gem 'simple_form'
 gem 'coveralls'
+gem 'rails_config'
 
 group :development do
   gem 'spring-commands-rspec'
