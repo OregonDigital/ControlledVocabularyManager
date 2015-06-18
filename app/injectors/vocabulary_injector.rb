@@ -12,7 +12,7 @@ class VocabularyInjector < Struct.new(:params)
   end
   
   def sparql_client
-    @sparql_client ||= ActiveTriples::Repositories.repositories[Vocabulary.repository].query_client
+    @sparql_client ||= SPARQL::Client.new("#{Settings.marmotta.url}/sparql/select")
   end
 
   def child_node_finder

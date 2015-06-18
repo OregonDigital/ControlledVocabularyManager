@@ -1,7 +1,8 @@
 class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
-  configure :repository => :default
+  include ActiveModel::Validations
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
+  configure :repository => :default
   property :label, :predicate => RDF::RDFS.label
   property :comment, :predicate => RDF::RDFS.comment
   property :issued, :predicate => RDF::DC.issued
@@ -16,7 +17,7 @@ class Term < ActiveTriples::Resource
   end
 
   def vocabulary?
-    type.include?(Vocabulary.type)
+    type.include?(*Array(Vocabulary.type))
   end
 
   def repository
@@ -35,7 +36,15 @@ class Term < ActiveTriples::Resource
     TermUri.new(rdf_subject)
   end
 
+  def repository
+    @repository ||= MarmottaRepository.new(rdf_subject, marmotta_connection)
+  end
+
   private
+
+  def marmotta_connection
+    Marmotta::Connection.new(uri: Settings.marmotta.url, context: Rails.env)
+  end
 
   def not_blank_node
     errors.add(:id, "can not be blank") if node?
