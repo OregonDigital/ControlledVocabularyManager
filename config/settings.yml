@@ -1,2 +1,2 @@
 marmotta:
-  url: <%= ENV["CVM_MARMOTTA_URL"]
+  url: <%= ENV["CVM_MARMOTTA_URL"] %>
