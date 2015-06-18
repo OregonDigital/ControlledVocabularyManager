@@ -10,7 +10,7 @@ Warden::GitHub::Rails.setup do |config|
     scope: 'read:org',
     client_id: ENV['CVM_GITHUB_CLIENT_ID'] || ENV['GITHUB_CLIENT_ID'],
     client_secret: ENV['CVM_GITHUB_CLIENT_SECRET'] || ENV['GITHUB_CLIENT_SECRET'],
-    redirect_uri: '/'
+    redirect_uri: '/login'
 
   config.default_scope = :admin
 
