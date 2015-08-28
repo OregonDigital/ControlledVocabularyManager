@@ -14,7 +14,8 @@ Rails.application.routes.draw do
 
   resources :vocabularies, :only => [:index, :new, :create, :edit]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
-  resources :terms, :only => [:create, :edit]
+  resources :terms, :only => [:create]
+  get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
 
   get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"
   post "/import_rdf", :to => "import_rdf#import", :as => "import_rdf"
