@@ -20,6 +20,19 @@ Start the servers:
 	rake jetty:start
 	rails server
 
+
+GitHub OAuth Test App Setup
+-----
+In order to login locally and authenticate through GitHub:
+
+1. [Create new OAuth application in GitHub settings](https://github.com/settings/applications/new)
+2. Set the callback URL to `http://localhost:3000`
+3. Save app, then save both client IDs in environment variables locally: `CVM_GITHUB_CLIENT_ID` and `CVM_GITHUB_CLIENT_SECRET` (on Linux this is `export CVM_GITHUB_CLIENT_ID=########`)
+4. Then run `rails server`
+
+(More information at https://github.com/fphilipe/warden-github-rails)
+
+
 Vagrant Setup
 -----
 
