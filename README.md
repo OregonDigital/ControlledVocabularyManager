@@ -4,6 +4,11 @@ Controlled Vocabulary Manager
 [![Coverage Status](https://coveralls.io/repos/OregonDigital/ControlledVocabularyManager/badge.svg)](https://coveralls.io/r/OregonDigital/ControlledVocabularyManager)
 [![Code Climate](https://codeclimate.com/github/OregonDigital/ControlledVocabularyManager/badges/gpa.svg)](https://codeclimate.com/github/OregonDigital/ControlledVocabularyManager)
 
+Overview
+-----
+Rails app connected to Marmotta for managing local controlled vocabularies for [Oregon Digital](http://oregondigital.org).
+Currently powering at http://OpaqueNamespace.org
+
 Local Development Setup
 -----
 
