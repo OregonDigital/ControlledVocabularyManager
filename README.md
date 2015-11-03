@@ -7,7 +7,7 @@ Controlled Vocabulary Manager
 Overview
 -----
 Rails app connected to Marmotta for managing local controlled vocabularies for [Oregon Digital](http://oregondigital.org).
-Currently powering at http://OpaqueNamespace.org
+Currently powering http://OpaqueNamespace.org
 
 Local Development Setup
 -----
