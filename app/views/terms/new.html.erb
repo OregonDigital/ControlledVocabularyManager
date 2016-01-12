@@ -1,3 +1,7 @@
+<% content_for :title do %>
+  Create Term
+<% end %>
+
 <h1>Create New Term</h1>
 
 <%= simple_form_for(@term, :url => terms_path, :as => :term) do |f| %>
