@@ -21,13 +21,20 @@ RSpec.describe ChildNodeFinder do
       expect(result.length).to eq 1
       expect(statements_hash(result.first)).to eq statements_hash(term)
     end
-    context "when there are two children" do
+    context "when there are four children" do
       let(:unrelated_term) { repository.new("bla/2") }
-      let(:sorted_result) { result.sort_by(&:rdf_subject) }
+      let(:another_term) { repository.new("bla/Foo") }
+      let(:another_term2){ repository.new("bla/blue") }
+      let(:sorted_result) { result.sort_by{|i| i.rdf_subject.to_s.downcase} }
+      before do
+        unrelated_term.persist!
+        another_term.persist!
+        another_term2.persist!
+      end
       it "should be able to return them" do
-        expect(result.length).to eq 2
+        expect(result.length).to eq 4
         expect(statements_hash(sorted_result.first)).to eq statements_hash(term)
-        expect(statements_hash(sorted_result.last)).to eq statements_hash(unrelated_term)
+        expect(statements_hash(sorted_result.last)).to eq statements_hash(another_term)
       end
     end
   end

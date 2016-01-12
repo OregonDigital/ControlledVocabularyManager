@@ -7,7 +7,8 @@ class ChildNodeFinder
 
   def find_children(vocabulary)
     query_graph = ChildQuery.new(sparql_client, vocabulary.rdf_subject).run
-    GraphToTerms.new(repository, query_graph).run
+    results = GraphToTerms.new(repository, query_graph).run
+    results.sort_by{|i| i.rdf_subject.to_s.downcase}
   end
 
 end
