@@ -5,6 +5,7 @@ class Term < ActiveTriples::Resource
   configure :repository => :default
   property :label, :predicate => RDF::RDFS.label
   property :comment, :predicate => RDF::RDFS.comment
+  property :is_replaced_by, :predicate => RDF::DC.isReplacedBy
   property :issued, :predicate => RDF::DC.issued
   property :modified, :predicate => RDF::DC.modified
   delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
@@ -25,7 +26,11 @@ class Term < ActiveTriples::Resource
   end
 
   def editable_fields
-    fields - [:issued, :modified]
+    fields - [:issued, :modified, :is_replaced_by]
+  end
+
+  def editable_fields_deprecate
+    fields - [:issued, :modified, :label, :comment]
   end
 
   def to_param

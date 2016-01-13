@@ -6,4 +6,7 @@
 
 <%= simple_form_for(@term, :url => update_term_path(:id => @term.id)) do |f| %>
   <%= render "edit_form", :f => f, :term => @term %>
+
+  <%= link_to "Deprecate", polymorphic_path([@term], :action => 'deprecate'), :class => 'btn btn-default' %>
 <% end %>
+
