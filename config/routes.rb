@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   get '/ns/*id', :to => "terms#show", :as => "term"
   patch 'terms/*id', :to => "terms#update", :as => "update_term"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
+  patch 'vocabularies/*id', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
 
   get '/login'  => 'login#index'
   get '/login/auth' => 'login#doauth'
@@ -17,6 +18,7 @@ Rails.application.routes.draw do
   resources :terms, :only => [:create]
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
+  
 
   get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"
   post "/import_rdf", :to => "import_rdf#import", :as => "import_rdf"
