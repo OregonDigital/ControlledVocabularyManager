@@ -3,7 +3,7 @@
 <% end %>
 <h1>Vocabularies</h1>
 
-<%= link_to "Create Vocabulary", new_vocabulary_path %>
+<%= link_to "Create Vocabulary", new_vocabulary_path, {:class=>'btn btn-default'} %>
 
 <ul>
   <% @vocabularies.each do |vocabulary| %>
