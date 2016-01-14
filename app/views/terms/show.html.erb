@@ -1,3 +1,6 @@
+<% content_for :title do %>
+  <%= @term.id %>
+<% end %>
 <h1><%= @term.id %></h2>
 <h2><%= @term.rdf_subject %></h4>
 <% if @term.vocabulary? %>
