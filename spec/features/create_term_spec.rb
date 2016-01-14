@@ -3,23 +3,15 @@ require 'rails_helper'
 RSpec.feature "Creating a vocabulary & term" do
   background do
     allow_any_instance_of(ApplicationController).to receive(:check_auth).and_return(true)
-    @vocabulary_page = VocabularyIndexPage.new
-    visit vocabularies_path
   end
   scenario "succesfully creating a term" do
-    expect(@vocabulary_page).to be_visible
-    vocabulary_create_page = @vocabulary_page.click_create
-
-    expect(vocabulary_create_page).to be_visible
-    vocabulary_show_page = vocabulary_create_page.create
-
-    expect(vocabulary_show_page).to be_visible
-    term_create_page = vocabulary_show_page.click_create_term
-
-    expect(term_create_page).to be_visible
-    term_show_page = term_create_page.create
-
-    expect(term_show_page).to be_visible
-
+    visit "/vocabularies/new"
+    page.fill_in "vocabulary_id", :with => "pebble"
+    page.click_button "Create Vocabulary"
+    expect(page.body).to include("pebble")
+    visit "/vocabularies/pebble/new"
+    page.fill_in "term_id", :with => "fruity"
+    page.click_button "Create Term"
+    expect(page.body).to include("fruity")
   end
 end
