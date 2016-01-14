@@ -21,9 +21,30 @@ RSpec.describe "terms/show" do
       allow(vocabulary).to receive(:persisted?).and_return(true)
       render
     end
-    it "should have a link to create a resource" do
-      expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
+    context "when logged in" do
+      before do
+        session[:authorized] = true
+      end
+      it "should have a link to create a resource" do
+         render
+         expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
+      end
+      it "should have a link to edit the vocabulary" do
+        render
+        expect(rendered).to have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
+      end
     end
+    context "when not logged in" do
+      it "should not have a link to create a resource" do
+         render
+         expect(rendered).to_not have_link "Create Term", :href => "/vocabularies/bla/new"
+      end
+      it "should not have a link to edit the vocabulary" do
+        render
+        expect(rendered).to_not have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
+      end
+    end
+
     context "with children" do
       let(:child) { Term.new(uri.to_s+"/banana") }
       let(:children) { [child] }
@@ -32,15 +53,21 @@ RSpec.describe "terms/show" do
         expect(rendered).to have_link child.rdf_subject.to_s
       end
     end
-    it "should have a link to edit the vocabulary" do
-      expect(rendered).to have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
+  end
+  context "when logged in" do
+    before do
+      session[:authorized] = true
+    end
+    it "should have a link to edit the term" do
+      render
+      expect(rendered).to have_link "Edit", :href => edit_term_path(:id => resource.id)
     end
   end
-
-  it "should have a link to edit the term" do
-    render
-    
-    expect(rendered).to have_link "Edit", :href => edit_term_path(:id => resource.id)
+  context "when not logged in" do
+    it "should not have a link to edit the term" do
+      render
+      expect(rendered).to_not have_link "Edit", :href => edit_term_path(:id => resource.id)
+    end
   end
 
   it "should display all fields" do
