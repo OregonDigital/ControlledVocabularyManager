@@ -37,6 +37,18 @@ RSpec.describe "terms/show" do
     end
   end
 
+  context "when term is deprecated" do
+    let(:resource) { 
+      t = Term.new(uri) 
+      t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+      t
+    }
+    it "should display deprecated alert" do
+      render
+      expect(rendered).to have_content "Deprecated"
+    end
+  end
+
   it "should have a link to edit the term" do
     render
     

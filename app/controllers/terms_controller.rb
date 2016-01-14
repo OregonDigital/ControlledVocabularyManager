@@ -35,10 +35,6 @@ class TermsController < ApplicationController
     @term = term_form_repository.find(params[:id])
   end
 
-  def deprecate
-    @term = term_form_repository.find(params[:id])
-  end
-
   def update
     edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = term_params
@@ -48,6 +44,10 @@ class TermsController < ApplicationController
       @term = edit_term_form
       render "edit"
     end
+  end
+
+  def deprecate
+    @term = term_form_repository.find(params[:id])
   end
 
 

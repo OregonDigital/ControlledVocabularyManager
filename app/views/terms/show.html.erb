@@ -5,7 +5,12 @@
 <h2><%= @term.rdf_subject %></h4>
 
 <% if !@term.get_values(:is_replaced_by).empty? %>
-  <p><span class="label label-warning">Deprecated</span></p>
+  <div class="alert alert-warning">
+    <strong>Deprecated</strong> - 
+      <%= :is_replaced_by.to_s.humanize %>
+      <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
+
+  </div>
 <% end %>
  
 <% if @term.vocabulary? %>
@@ -20,11 +25,7 @@
     <dt><%= field.to_s.humanize %>:</dt>
     <% @term.get_values(field).each do |value| %>
       <dd>
-      <% if(field == :is_replaced_by) %>
-        <%= link_to value, value %>
-      <% else %>
-        <%= value %>
-      <% end %>
+      <%= value %>
       </dd>
     <% end %>
   <% end %>
