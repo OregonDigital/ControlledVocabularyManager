@@ -32,6 +32,13 @@ RSpec.describe Term do
     end
   end
 
+  describe "#editable_fields_deprecate" do
+    it "should return is_replaced_by field" do
+      expect(resource.editable_fields_deprecate).to eq resource.fields - [:issued, :modified, :label, :comment]
+      expect(resource.editable_fields_deprecate).to include(:is_replaced_by)
+    end
+  end
+
   describe "#term_uri" do
     it "should return the parent URI" do
       expect(resource.term_uri.uri).to eq uri
