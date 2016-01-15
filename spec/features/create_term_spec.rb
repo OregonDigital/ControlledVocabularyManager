@@ -13,7 +13,6 @@ RSpec.feature "Creating a vocabulary & term", :js => true do
     expect(vocabulary_create_page).to be_visible
     vocabulary_show_page = vocabulary_create_page.create
     
-    binding.pry
     expect(get_vocab_statement_list[3].object.language).to eq :aa
     expect(vocabulary_show_page).to be_visible
     term_create_page = vocabulary_show_page.click_create_term
