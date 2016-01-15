@@ -46,6 +46,10 @@ class TermsController < ApplicationController
     end
   end
 
+  def deprecate
+    @term = term_form_repository.find(params[:id])
+  end
+
 
   private
 

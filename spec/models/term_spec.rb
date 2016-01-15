@@ -27,8 +27,15 @@ RSpec.describe Term do
 
   describe "#editable_fields" do
     it "should return all fields except issued/modified" do
-      expect(resource.editable_fields).to eq resource.fields - [:issued, :modified]
-      expect(resource.editable_fields).not_to include(:issued, :modified)
+      expect(resource.editable_fields).to eq resource.fields - [:issued, :modified, :is_replaced_by]
+      expect(resource.editable_fields).not_to include(:issued, :modified, :is_replaced_by)
+    end
+  end
+
+  describe "#editable_fields_deprecate" do
+    it "should return is_replaced_by field" do
+      expect(resource.editable_fields_deprecate).to eq resource.fields - [:issued, :modified, :label, :comment]
+      expect(resource.editable_fields_deprecate).to include(:is_replaced_by)
     end
   end
 

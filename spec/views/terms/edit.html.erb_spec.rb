@@ -33,4 +33,7 @@ RSpec.describe "terms/edit" do
   it "should have an Update Term button" do
     expect(rendered).to have_button("Update Term")
   end
+  it "should have a Deprecate Term button" do
+    expect(rendered).to have_content("Deprecate")
+  end
 end
