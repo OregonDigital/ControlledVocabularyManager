@@ -173,6 +173,7 @@ GEM
     htmlentities (4.3.3)
     hurley (0.1)
     i18n (0.7.0)
+    iso-639 (0.2.5)
     jbuilder (2.2.5)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
@@ -465,6 +466,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   formulaic
+  iso-639
   jazz_hands!
   jbuilder (~> 2.0)
   jettywrapper

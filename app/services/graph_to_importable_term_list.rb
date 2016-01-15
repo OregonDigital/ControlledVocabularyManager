@@ -10,7 +10,7 @@ class GraphToImportableTermList < Struct.new(:graph)
   end
 
   def decorators
-    @decorators ||= DecoratorList.new(SetsModified, SetsIssued)
+    @decorators ||= DecoratorList.new(SetsModified, SetsIssued, SetsAttributes)
   end
 
   def terms

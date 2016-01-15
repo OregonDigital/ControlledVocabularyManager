@@ -3,10 +3,14 @@ require 'rails_helper'
 RSpec.describe SetsModified do
   subject { SetsModified.new(term) }
   let(:term) { term_mock }
+
   before do
     stub_repository
     allow(term).to receive(:modified=)
     allow(term).to receive(:persist!)
+    allow(term).to receive(:attributes=)
+    allow(term).to receive(:attributes)
+
     allow(term).to receive(:valid?).and_return(true)
   end
 

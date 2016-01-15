@@ -23,6 +23,7 @@ class TermsController < ApplicationController
     combined_id = CombinedId.new(params[:vocabulary_id], term_params[:id])
     term_form = term_form_repository.new(combined_id)
     term_form.attributes = term_params.except(:id)
+    term_form.set_languages(params)
     if term_form.save
       redirect_to term_path(:id => term_form.id)
     else
@@ -38,6 +39,7 @@ class TermsController < ApplicationController
   def update
     edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = term_params
+    edit_term_form.set_languages(params)
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else

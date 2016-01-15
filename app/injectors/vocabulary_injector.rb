@@ -25,6 +25,7 @@ class VocabularyInjector < Struct.new(:params)
 
   def decorators
     DecoratorList.new(
+      SetsAttributes,
       SetsModified,
       SetsIssued,
       DecoratorWithArguments.new(TermWithChildren, child_node_finder)
