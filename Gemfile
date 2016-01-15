@@ -32,6 +32,9 @@ gem 'spring',        group: :development
 # Use unicorn as the app server
 gem 'unicorn'
 
+# Use for getting the ISO639 language sets easily
+gem 'iso-639'
+
 # Active Triples for RDF resources.
 gem 'active-triples', '~> 0.6.0'
 gem 'rdf-marmotta', :github => "terrellt/rdf-marmotta", :branch => "feature/UseSparqlRepository"

@@ -105,13 +105,13 @@ RSpec.describe TermsController do
   end
 
   describe "POST create" do
-    let(:term_form) { TermForm.new(term, Term) }
+    let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
     let(:term) { instance_double("Term") }
     let(:params) do
       {
         :vocabulary_id => "test",
         :term => {
-          :id => "test",
+          "id" => "test",
           :comment => ["Test"],
           :label => ["Label"]
         }
@@ -123,6 +123,7 @@ RSpec.describe TermsController do
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")
       allow(term).to receive(:attributes=)
+      allow(term).to receive(:attributes).and_return(params[:term])
       allow(Vocabulary).to receive(:find)
       post :create, params
     end
@@ -140,7 +141,7 @@ RSpec.describe TermsController do
         {
           :vocabulary_id => "test",
           :term => {
-            :id => "test",
+            "id" => "test",
             :label => [""]
           }
         }
@@ -180,7 +181,7 @@ RSpec.describe TermsController do
 
   describe "PATCH update" do
     let(:term) { term_mock }
-    let(:term_form) { TermForm.new(term, Term) }
+    let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
     let(:params) do
       {
         :term => {
@@ -195,6 +196,7 @@ RSpec.describe TermsController do
     before do
       allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
       allow(term).to receive(:attributes=)
+      allow(term).to receive(:attributes).and_return(params)
       allow(term).to receive(:persist!).and_return(persist_success)
       allow(term_form).to receive(:valid?).and_return(true)
       patch :update, :id => term.id, :term => params[:term]

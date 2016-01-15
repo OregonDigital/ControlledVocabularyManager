@@ -48,7 +48,7 @@ RSpec.describe VocabulariesController do
 
   describe "PATCH 'update'" do
     let(:vocabulary) { vocabulary_mock }
-    let(:vocabulary_form) { VocabularyForm.new(vocabulary, Vocabulary) }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
     let(:params) do
       {
         :comment => ["Test"],
@@ -62,12 +62,13 @@ RSpec.describe VocabulariesController do
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:persist!).and_return(persist_success)
       allow(vocabulary_form).to receive(:valid?).and_return(true)
+      allow(vocabulary).to receive(:attributes).and_return(params)
       patch :update, :id => vocabulary.id, :vocabulary => params
     end
     
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(vocabulary).to have_received(:attributes=).with(params)
+        expect(vocabulary).to have_received(:attributes=).with(params).exactly(2).times
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{vocabulary.id}")
@@ -134,7 +135,7 @@ RSpec.describe VocabulariesController do
       }
     end
     let(:vocabulary) { instance_double("Vocabulary") }
-    let(:vocabulary_form) { VocabularyForm.new(vocabulary, Vocabulary) }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
     let(:result) { post 'create', :vocabulary => vocabulary_params }
     let(:save_success) { true }
     before do
@@ -142,6 +143,7 @@ RSpec.describe VocabulariesController do
       allow(vocabulary_form).to receive(:save).and_return(save_success)
       allow(vocabulary).to receive(:id).and_return("test")
       allow(vocabulary).to receive(:attributes=)
+      allow(vocabulary).to receive(:attributes).and_return(vocabulary_params)
       post 'create', :vocabulary => vocabulary_params 
     end
     it "should save term form" do

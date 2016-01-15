@@ -2,6 +2,11 @@
 
 <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
   <%= form.input_field attribute, :as => :array, :class => "form-control" %>
+  <select name="<%= attribute %>" id="language_selector">
+    <% ISO_639::ISO_639_1.each do |language|%>
+      <option value=<%= language[2] %>><%= language[3]%></option>
+  <% end %>
+  </select>
   <span class="input-group-btn">
     <button class="btn btn-success" type="button">+</button>
   </span>
