@@ -2,7 +2,7 @@
   <%= @term.id %>
 <% end %>
 
-<h2><%= @term.id %></h2>
+<h2><%= @term.rdf_label.first %></h2>
 <h3 class="uri"><%= @term.rdf_subject %></h3>
 
 <% if !@term.get_values(:is_replaced_by).empty? %>
@@ -15,22 +15,22 @@
 <% end %>
  
 <% if @term.vocabulary? %>
-<%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id),    {:class=>'btn btn-default'} %>
+<%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id), {:class=>'btn btn-default'} %>
 <% end %>
-<p><%= link_to "Edit", polymorphic_path([:edit, @term]), {:class=>'btn btn-default'} %>
 
-<br/><%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id) unless @term.vocabulary? %></p>
+<%= link_to "Edit", polymorphic_path([:edit, @term]), {:class=>'btn btn-default'} %>
+<%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id) unless @term.vocabulary? %>
 
-<dl>
+<table class="table table-condensed" style="margin-top: 20px;">
   <% @term.fields.each do |field| %>
-    <dt><%= field.to_s.humanize %>:</dt>
-    <% @term.get_values(field).each do |value| %>
-      <dd>
-      <%= value %>
-      </dd>
-    <% end %>
+    <tr>
+      <th scope="row"><%= field.to_s.humanize %>:</th>
+      <td>
+        <%= @term.get_values(field).join("; ") %>
+      </td>
+    </tr>
   <% end %>
-</dl>
+</table>
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
 
