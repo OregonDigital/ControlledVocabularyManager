@@ -4,7 +4,7 @@
   <% vocabulary.children.each do |child| %>
     <tr>
       <td><%= link_to child.rdf_label.first, term_path(child.id) %></td>
-      <td><span style="font-family: Consolas, Lucida Console, monospace;"><%= link_to child.rdf_subject.to_s, term_path(child.id) %></td>
+      <td><span class="uri"><%= link_to child.rdf_subject.to_s, term_path(child.id) %></span></td>
     </tr>
   <% end %>
 </table>
