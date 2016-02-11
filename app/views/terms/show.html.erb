@@ -2,7 +2,7 @@
   <%= @term.id %>
 <% end %>
 
-<h2><%= @term.id %></h2>
+<h2><%= @term.rdf_label.first %></h2>
 <h3 class="uri"><%= @term.rdf_subject %></h3>
 
 <% if !@term.get_values(:is_replaced_by).empty? %>
