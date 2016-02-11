@@ -5,10 +5,11 @@
 
 <%= link_to "Create Vocabulary", new_vocabulary_path, {:class=>'btn btn-default'} %>
 
-<ul>
-  <% @vocabularies.each do |vocabulary| %>
-    <li>
-      <%= link_to vocabulary.rdf_subject, term_path(:id => vocabulary.id) %>
-    </li>
+<table class="table table-striped">
+  <% @vocabularies.each do |vocab| %>
+    <tr>
+      <td><%= link_to vocab.rdf_label.first, term_path(:id => vocab.id) %></td>
+      <td><span style="font-family: Consolas, Lucida Console, monospace;"><%= link_to vocab.rdf_subject, term_path(:id => vocab.id) %></span></td>
+    </tr>
   <% end %>
-</ul>
+</table>
