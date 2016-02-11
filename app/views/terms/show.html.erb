@@ -15,13 +15,13 @@
 <% end %>
  
 <% if @term.vocabulary? %>
-<%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id),    {:class=>'btn btn-default'} %>
+<%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id), {:class=>'btn btn-default'} %>
 <% end %>
-<p><%= link_to "Edit", polymorphic_path([:edit, @term]), {:class=>'btn btn-default'} %>
 
-<br/><%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id) unless @term.vocabulary? %></p>
+<%= link_to "Edit", polymorphic_path([:edit, @term]), {:class=>'btn btn-default'} %>
+<%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id) unless @term.vocabulary? %>
 
-<table class="table table-condensed">
+<table class="table table-condensed" style="margin-top: 20px;">
   <% @term.fields.each do |field| %>
     <tr>
       <th scope="row"><%= field.to_s.humanize %>:</th>
