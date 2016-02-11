@@ -25,11 +25,16 @@ RSpec.describe "terms/show" do
       expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
     end
     context "with children" do
-      let(:child) { Term.new(uri.to_s+"/banana") }
+      let(:child) { 
+        t = Term.new(uri.to_s+"/banana") 
+        t.label = "BananaChild"
+        t
+      }
       let(:children) { [child] }
       it "should have a list of terms in the vocabulary" do
         expect(rendered).to have_content I18n.t("vocabulary.children_header")
         expect(rendered).to have_link child.rdf_subject.to_s
+        expect(rendered).to have_content("BananaChild")
       end
     end
     it "should have a link to edit the vocabulary" do
