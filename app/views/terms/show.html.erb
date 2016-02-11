@@ -26,9 +26,7 @@
     <tr>
       <th scope="row"><%= field.to_s.humanize %>:</th>
       <td>
-        <% @term.get_values(field).each do |value| %>
-          <%= value %>
-        <% end %>
+        <%= @term.get_values(field).join("; ") %>
       </td>
     </tr>
   <% end %>
