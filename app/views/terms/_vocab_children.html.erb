@@ -1,6 +1,10 @@
-<h3><%= I18n.t("vocabulary.children_header") %></h4>
-<ul>
-<% vocabulary.children.each do |child| %>
-  <li><%= link_to child.rdf_subject.to_s, term_path(child.id) %> </li>
-<% end %>
-</ul>
+<h3><%= I18n.t("vocabulary.children_header") %></h3>
+
+<table class="table table-striped">
+  <% vocabulary.children.each do |child| %>
+    <tr>
+      <td><%= link_to child.rdf_label.first, term_path(child.id) %></td>
+      <td><span class="uri"><%= link_to child.rdf_subject.to_s, term_path(child.id) %></span></td>
+    </tr>
+  <% end %>
+</table>
