@@ -6,6 +6,7 @@ class Term < ActiveTriples::Resource
   property :label, :predicate => RDF::RDFS.label
   property :comment, :predicate => RDF::RDFS.comment
   property :is_replaced_by, :predicate => RDF::DC.isReplacedBy
+  property :is_defined_by, :predicate => RDF::RDFS.isDefinedBy
   property :issued, :predicate => RDF::DC.issued
   property :modified, :predicate => RDF::DC.modified
   delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
