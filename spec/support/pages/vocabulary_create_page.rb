@@ -8,7 +8,7 @@ class VocabularyCreatePage
   def create
     fill_in "ID", :with => "TestVocab"
     fill_in "vocabulary_label", :with => "test"
-    click_button "Create Vocabulary"
+    find_button("Create Vocabulary").trigger("click")
     VocabularyShowPage.new("TestVocab")
   end
 end
