@@ -2,9 +2,9 @@
   Vocabularies
 <% end %>
 <h1>Vocabularies</h1>
-
-<%= link_to "Create Vocabulary", new_vocabulary_path, {:class=>'btn btn-default'} %>
-
+<%- if session[:authorized] == true  %>
+  <%= link_to "Create Vocabulary", new_vocabulary_path, {:class=>'btn btn-default'} %>
+<% end %>
 <table class="table table-striped">
   <% @vocabularies.each do |vocab| %>
     <tr>
