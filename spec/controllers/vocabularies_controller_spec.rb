@@ -65,7 +65,7 @@ RSpec.describe VocabulariesController do
       allow(vocabulary).to receive(:attributes).and_return(params)
       patch :update, :id => vocabulary.id, :vocabulary => params
     end
-    
+
     context "when the fields are edited" do
       it "should update the properties" do
         expect(vocabulary).to have_received(:attributes=).with(params).exactly(2).times
@@ -97,16 +97,25 @@ RSpec.describe VocabulariesController do
 
   describe "GET 'index'" do
     context "when there are vocabularies" do
-      let(:vocabulary) { vocabulary_mock }
       let(:injector) { VocabularyInjector.new }
+      let(:aa_vocab) {
+        a_v = Vocabulary.new("aa")
+        a_v.label = "AA"
+        a_v
+      }
+      let(:bb_vocab) {
+        b_v = Vocabulary.new("bb")
+        b_v.label = "BB"
+        b_v
+      }
       before do
-        allow(vocabulary).to receive(:repository).and_return(Vocabulary.new.repository)
-        allow(AllVocabsQuery).to receive(:call).and_return([vocabulary])
+        allow(aa_vocab).to receive(:repository).and_return(Vocabulary.new.repository)
+        allow(bb_vocab).to receive(:repository).and_return(Vocabulary.new.repository)
+        allow(AllVocabsQuery).to receive(:call).and_return([bb_vocab, aa_vocab])
       end
-      it "should set @vocabularies to all vocabs" do
+      it "should set @vocabularies to all vocabs sorted alphabetically" do
         get :index
-
-        expect(assigns(:vocabularies)).to eq [vocabulary]
+        expect(assigns(:vocabularies)).to eq [aa_vocab, bb_vocab]
       end
     end
     it "should be successful" do
@@ -144,7 +153,7 @@ RSpec.describe VocabulariesController do
       allow(vocabulary).to receive(:id).and_return("test")
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:attributes).and_return(vocabulary_params)
-      post 'create', :vocabulary => vocabulary_params 
+      post 'create', :vocabulary => vocabulary_params
     end
     it "should save term form" do
       expect(vocabulary_form).to have_received(:save)

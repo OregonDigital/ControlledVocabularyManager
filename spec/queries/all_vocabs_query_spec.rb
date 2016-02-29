@@ -11,11 +11,11 @@ RSpec.describe AllVocabsQuery do
         vocabulary.persist!
       end
       it "should return all vocabularies" do
-        expect(described_class.call(sparql_client, repository)).to eq [vocabulary]
+        expect(described_class.call(sparql_client, repository)).to include(vocabulary)
       end
       it "should not return terms" do
         repository.new("2/1").persist!
-        expect(described_class.call(sparql_client, repository)).to eq [vocabulary]
+        expect(described_class.call(sparql_client, repository)).to include(vocabulary)
       end
     end
   end

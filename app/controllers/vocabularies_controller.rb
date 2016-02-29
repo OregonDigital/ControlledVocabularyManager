@@ -4,6 +4,7 @@ class VocabulariesController < ApplicationController
 
   def index
     @vocabularies = all_vocabs_query.call
+    @vocabularies.sort_by! {|v| v[:label]}
   end
 
   def new
