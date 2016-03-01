@@ -2,8 +2,8 @@ require 'rails_helper'
 
 RSpec.describe "vocabularies/index.html.erb" do
   let(:vocabs) { [vocabulary] }
-  let(:vocabulary) { 
-    v = Vocabulary.new("bla") 
+  let(:vocabulary) {
+    v = Vocabulary.new("bla")
     v.label = "Test Vocabulary"
     v
   }
