@@ -139,8 +139,8 @@ RSpec.describe Term do
     end
   end
 
-  describe "#property_language_list" do
-    context "When requesting a language associated with a property field" do
+  describe "#values_for_property" do
+    context "When requesting a list of values for a property" do
       let(:label) {RDF::Literal("blah", :language => :en)}
       let(:resource) do
         t = Term.new("1")
@@ -148,12 +148,12 @@ RSpec.describe Term do
         t
       end
 
-      it "should return the language associated with that field value" do
-        expect(resource.property_language_list(:label)).to eq ["English"]
+      it "should return the list of values" do
+        expect(resource.values_for_property(:label)).to eq ["blah"]
       end
     end
 
-    context "When requesting a language associated with a property field with multiple values" do
+    context "When requesting a list of values with multiple values" do
       let(:label1) {RDF::Literal("blah", :language => :en)}
       let(:label2) {RDF::Literal("banana", :language => :zu)}
       let(:resource) do
@@ -162,10 +162,44 @@ RSpec.describe Term do
         t
       end
 
-      it "should return the language associated with that field value" do
-        expect(resource.property_language_list(:label)).to eq ["English", "Zulu"]
+      it "should return the list of values" do
+        expect(resource.values_for_property(:label)).to eq ["blah", "banana"]
+      end
+    end
+  end
+  describe "#literal_language_list_for_property" do
+    context "When requesting a list of literals with languages for a property" do
+      let(:label) {RDF::Literal("blah", :language => :en)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label]
+        t
+      end
+
+      it "should return the list" do
+        expect(resource.literal_language_list_for_property(:label).first.first).to be_kind_of RDF::Literal
+        expect(resource.literal_language_list_for_property(:label).first.second).to eq "English"
       end
     end
 
+    context "When requesting a list of literals with languages" do
+      let(:label1) {RDF::Literal("blah", :language => :en)}
+      let(:label2) {RDF::Literal("banana", :language => :zu)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label1, label2]
+        t
+      end
+
+      it "should return the list" do
+        expect(resource.values_for_property(:label)).to eq ["blah", "banana"]
+      end
+    end
+  end
+
+  describe "#language_from_symbol" do
+    it "should return a string from a language symbol" do
+      expect(resource.language_from_symbol(:zu)).to eq "Zulu"
+    end
   end
 end

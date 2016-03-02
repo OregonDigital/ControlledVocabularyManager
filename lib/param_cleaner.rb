@@ -6,7 +6,7 @@ class ParamCleaner < Struct.new(:params)
 
   def cleaned_params
     params.each do |k,v|
-      new_params[k] = clean_value(v)
+      new_params[k] = clean_value(v) unless k == "language"
     end
     new_params
   end

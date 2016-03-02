@@ -7,9 +7,9 @@
 
 <% if !@term.get_values(:is_replaced_by).empty? %>
   <div class="alert alert-warning">
-    <strong>Deprecated</strong> - 
-      <%= :is_replaced_by.to_s.humanize %>
-      <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
+    <strong>Deprecated</strong> -
+    <%= :is_replaced_by.to_s.humanize %>
+    <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
 
   </div>
 <% end %>
@@ -26,7 +26,17 @@
     <tr>
       <th scope="row"><%= field.to_s.humanize %>:</th>
       <td>
-        <%= @term.get_values(field).join("; ") %>
+        <ul style="list-style: none;">
+          <% if @term.blacklisted_language_properties.include?(field) %>
+            <% @term.get_values(field).each do |t| %>
+              <li><%= t %></li>
+            <% end %>
+          <% else %>
+            <% @term.literal_language_list_for_property(field).each do |t| %>
+              <li><%= "#{t[0].value} (#{t[1]}/#{t[0].language})" %></li>
+            <% end %>
+          <% end %>
+        </ul>
       </td>
     </tr>
   <% end %>

@@ -1,5 +1,5 @@
 <p><%= term.rdf_subject %></p>
   <% term.editable_fields_deprecate.each do |attribute| %>
-    <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
+    <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
   <% end %>
   <%= f.button :submit, "Deprecate" %>

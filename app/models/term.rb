@@ -13,6 +13,10 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  def default_language
+    :en
+  end
+
   def blacklisted_language_properties
     [
       :id,

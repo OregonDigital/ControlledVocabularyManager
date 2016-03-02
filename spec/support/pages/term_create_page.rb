@@ -7,8 +7,8 @@ class TermCreatePage < Struct.new(:vocabulary_id)
 
   def create
     fill_in "ID", :with => "banana"
-    fill_in "term_label", :with => "Test label"
-    fill_in "term_comment", :with => "Test comment"
+    fill_in "vocabulary[label][]", :with => "Test label"
+    fill_in "vocabulary[comment][]", :with => "Test comment"
     click_button "Create Term"
     TermShowPage.new(id)
   end

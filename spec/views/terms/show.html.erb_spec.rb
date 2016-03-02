@@ -2,13 +2,17 @@ require 'rails_helper'
 
 RSpec.describe "terms/show" do
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  let(:resource) { Term.new(uri) }
+  let(:resource) do 
+    Term.new(uri).tap do |t|
+      t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+      t.label = ["a_label"] 
+    end
+  end
   let(:children) {}
 
   before do
     assign(:term, resource)
-    allow(resource).to receive(:fields).and_return([:label, :comment])
-    allow(resource).to receive(:get_values).with(anything) { |x| ["#{x}_string"] }
+    allow(resource).to receive(:fields).and_return([:label])
     allow(resource).to receive(:persisted?).and_return(true)
   end
 
@@ -87,13 +91,22 @@ RSpec.describe "terms/show" do
       expect(rendered).to_not have_link "Edit", :href => edit_term_path(:id => resource.id)
     end
   end
+  context "when visiting the show page" do
+    let(:resource) { 
+      t = Term.new(uri) 
+      t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+      t.label = ["a_label", "another_label"]
+      t.comment = ["comment"]
+      t
+    }
+    it "should display all fields" do
 
-  it "should display all fields" do
-    render
+      render
 
-    resource.fields.each do |field|
-      expect(resource).to have_received(:get_values).with(field)
-      expect(rendered).to have_content("#{field}_string")
+      resource.fields.each do |field|
+        expect(rendered).to have_content(field)
+      end
+
     end
   end
 end

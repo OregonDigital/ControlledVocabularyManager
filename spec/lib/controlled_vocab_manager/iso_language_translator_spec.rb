@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe ControlledVocabManager::IsoLanguageTranslator do
-  let(:translator) {described_class.new}
+  let(:translator) {described_class}
 
   describe "#language_list" do
     context "When requesting a list with symbol access" do

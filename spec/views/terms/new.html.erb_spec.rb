@@ -31,7 +31,7 @@ RSpec.describe "terms/new" do
   end
   it "has inputs for all editable fields" do
     term.editable_fields.each do |attribute|
-      expect(rendered).to have_selector "input[name='term[#{attribute}][]']"
+      expect(rendered).to have_selector "input[name='vocabulary[#{attribute}][]']"
     end
   end
   it "should have a create term button" do
