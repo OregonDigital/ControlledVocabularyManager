@@ -13,6 +13,14 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  def blacklisted_language_properties
+    [
+      :id,
+      :issued,
+      :modified
+    ]
+  end
+
   def id
     return nil if rdf_subject.node?
     rdf_subject.to_s.gsub(self.class.base_uri,"")
@@ -38,12 +46,30 @@ class Term < ActiveTriples::Resource
     id
   end
 
+  def values_for_property(property_name)
+    self.get_values(property_name.to_s)
+  end
+
   def term_uri
     TermUri.new(rdf_subject)
   end
 
   def repository
     @repository ||= MarmottaRepository.new(rdf_subject, marmotta_connection)
+  end
+
+  #Returns a multi-dimensional array with translated language for a given
+  #property.
+  def literal_language_list_for_property(property_name)
+    self.get_values(property_name.to_s, :literal => true).map{ |literal| [literal, language_from_symbol(literal.language)]}
+  end
+
+  def language_from_symbol(language_symbol)
+   translator.find_by_symbol(language_symbol)
+  end
+
+  def translator
+    ControlledVocabManager::IsoLanguageTranslator
   end
 
   private

@@ -138,4 +138,34 @@ RSpec.describe Term do
       end
     end
   end
+
+  describe "#property_language_list" do
+    context "When requesting a language associated with a property field" do
+      let(:label) {RDF::Literal("blah", :language => :en)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label]
+        t
+      end
+
+      it "should return the language associated with that field value" do
+        expect(resource.property_language_list(:label)).to eq ["English"]
+      end
+    end
+
+    context "When requesting a language associated with a property field with multiple values" do
+      let(:label1) {RDF::Literal("blah", :language => :en)}
+      let(:label2) {RDF::Literal("banana", :language => :zu)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label1, label2]
+        t
+      end
+
+      it "should return the language associated with that field value" do
+        expect(resource.property_language_list(:label)).to eq ["English", "Zulu"]
+      end
+    end
+
+  end
 end

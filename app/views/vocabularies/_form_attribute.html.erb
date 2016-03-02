@@ -1,13 +1,22 @@
 <label class="control-label" for="vocabulary_"><%= attribute.to_s.humanize %></label>
 
-<%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
-  <%= form.input_field attribute, :as => :array, :class => "form-control" %>
-  <select name="<%= attribute %>" id="language_selector">
-    <% ISO_639::ISO_639_1.each do |language|%>
-      <option value=<%= language[2] %>><%= language[3]%></option>
+<% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+  <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
+    <%#= form.input_field attribute, :as => :array, :class => "form-control" %>
+    <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+    <% unless form.object.blacklisted_language_properties.include?(attribute) %>
+      <select name="<%= "vocabulary[language][#{attribute.to_s}][]" %>" >
+        <% ControlledVocabManager::IsoLanguageTranslator.language_list.each_pair do |symbol, string| %>
+          <% if form.object.literal_language_list_for_property(attribute)[index].first.language == symbol %>
+            <option value=<%= symbol %> selected="selected"><%= string %></option>
+          <% else %>
+            <option value=<%= symbol %>><%= string %></option>
+          <% end %>
+        <% end %>
+      </select>
+    <% end %>
+    <span class="input-group-btn">
+      <button class="btn btn-success" type="button">+</button>
+    </span>
   <% end %>
-  </select>
-  <span class="input-group-btn">
-    <button class="btn btn-success" type="button">+</button>
-  </span>
 <% end %>
