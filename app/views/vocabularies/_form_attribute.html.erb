@@ -1,13 +1,24 @@
 <label class="control-label" for="vocabulary_"><%= attribute.to_s.humanize %></label>
 
 <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
-  <%= form.input_field attribute, :as => :array, :class => "form-control" %>
+
+  <% if form.object.multi_value_properties.include?(attribute) %>
+    <div class="multi-value-field repeating-field">
+      <fieldset>
+        <ul class="listing">
+          <li class="field-wrapper">
+            <%= form.input_field attribute, :as => :array, :class => "form-control" %>
+          </li>
+        </ul>
+      </fieldset>
+    </div>
+  <% else %>
+    <%= form.input_field attribute, :as => :array, :class => "form-control" %>
+  <% end %>
+
   <select name="<%= attribute %>" id="language_selector">
     <% ISO_639::ISO_639_1.each do |language|%>
       <option value=<%= language[2] %>><%= language[3]%></option>
   <% end %>
   </select>
-  <span class="input-group-btn">
-    <button class="btn btn-success" type="button">+</button>
-  </span>
 <% end %>

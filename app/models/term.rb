@@ -13,6 +13,14 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  def multi_value_properties
+    [
+      :label,
+      :comment,
+      :title
+    ]
+  end
+
   def id
     return nil if rdf_subject.node?
     rdf_subject.to_s.gsub(self.class.base_uri,"")

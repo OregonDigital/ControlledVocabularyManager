@@ -15,4 +15,6 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require analytics
+//= require manage_repeating_fields
+//= require multi_value_fields
 //= require_tree .
