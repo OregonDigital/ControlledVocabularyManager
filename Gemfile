@@ -68,7 +68,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'poltergeist'
+  gem 'poltergeist', '~> 1.9.0'
   gem 'database_cleaner'
   gem 'formulaic'
   gem 'shoulda-matchers', require: false

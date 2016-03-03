@@ -474,7 +474,7 @@ DEPENDENCIES
   jquery-rails
   marmotta
   passenger
-  poltergeist
+  poltergeist (~> 1.9.0)
   rails (= 4.1.7)
   rails_config
   rdf-marmotta!
