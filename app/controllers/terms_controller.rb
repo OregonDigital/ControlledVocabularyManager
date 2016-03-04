@@ -60,7 +60,7 @@ class TermsController < ApplicationController
   end
 
   def vocab_params
-    ParamCleaner.call(params[:vocabulary].except(:language))
+    ParamCleaner.call(params[:vocabulary])
   end
 
   def injector

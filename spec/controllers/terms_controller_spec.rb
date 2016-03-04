@@ -128,7 +128,7 @@ RSpec.describe TermsController do
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")
       allow(term).to receive(:attributes=)
-      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :midified])
+      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(term).to receive(:attributes).and_return(params[:vocabulary])
       allow(Vocabulary).to receive(:find)
       post :create, params
@@ -205,10 +205,11 @@ RSpec.describe TermsController do
     end
     let(:persist_success) { true }
     let(:persist_failure) { false }
-before do
+
+    before do
       allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
       allow(term).to receive(:attributes=)
-      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :midified])
+      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(term).to receive(:attributes).and_return(params)
       allow(term).to receive(:persist!).and_return(persist_success)
       allow(term_form).to receive(:valid?).and_return(true)
