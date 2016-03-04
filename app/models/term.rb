@@ -21,7 +21,9 @@ class Term < ActiveTriples::Resource
     [
       :id,
       :issued,
-      :modified
+      :modified,
+      :is_defined_by,
+      :is_replaced_by
     ]
   end
 
