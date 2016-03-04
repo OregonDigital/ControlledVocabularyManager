@@ -4,7 +4,7 @@
   <div class="form-inputs">
     <%= f.input :id, :label => "ID" %>
     <% vocabulary.editable_fields.each do |field| %>
-      <%= render :partial => "form_attribute", :locals => {:vocabulary => vocabulary, :attribute => field, :form => f} %>
+      <%= render :partial => "form_attribute_list", :locals => {:vocabulary => vocabulary, :attribute => field, :form => f} %>
     <% end %>
   </div>
 

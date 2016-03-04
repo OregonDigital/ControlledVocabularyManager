@@ -52,13 +52,18 @@ RSpec.describe VocabulariesController do
     let(:params) do
       {
         :comment => ["Test"],
-        :label => ["Comment"]
+        :label => ["Test"],
+        :language => {
+          :label => ["en"],
+          :comment => ["en"]
+        }
       }
     end
     let(:persist_success) { true }
 
     before do
       allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:persist!).and_return(persist_success)
       allow(vocabulary_form).to receive(:valid?).and_return(true)
@@ -68,7 +73,7 @@ RSpec.describe VocabulariesController do
 
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(vocabulary).to have_received(:attributes=).with(params).exactly(2).times
+        expect(vocabulary).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :label=>[RDF::Literal("Test", :language => :en)]}).exactly(1).times
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{vocabulary.id}")
@@ -77,7 +82,10 @@ RSpec.describe VocabulariesController do
         let(:params) do
           {
             :comment => [""],
-            :label => ["Test"]
+            :label => ["Test"],
+              :language => {
+                :label => ["en"]
+              }
           }
         end
         it "should ignore them" do
@@ -138,10 +146,14 @@ RSpec.describe VocabulariesController do
 
   describe "POST create" do
     let(:vocabulary_params) do
-      {
-        :label => ["Test1"],
-        :comment => ["Test2"]
-      }
+        {
+          :label => ["test"],
+          :comment => ["blah"],
+          :language => {
+            :label => ["en"],
+            :comment => ["en"]
+          }
+        }
     end
     let(:vocabulary) { instance_double("Vocabulary") }
     let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
@@ -150,6 +162,7 @@ RSpec.describe VocabulariesController do
     before do
       allow_any_instance_of(VocabularyFormRepository).to receive(:new).and_return(vocabulary_form)
       allow(vocabulary_form).to receive(:save).and_return(save_success)
+      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(vocabulary).to receive(:id).and_return("test")
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:attributes).and_return(vocabulary_params)
@@ -162,7 +175,11 @@ RSpec.describe VocabulariesController do
       let(:vocabulary_params) do
         {
           :label => ["test"],
-          :comment => [""]
+          :comment => [""],
+          :language => {
+            :label => ["en"],
+            :comment => ["en"]
+          }
         }
       end
       it "should not pass them to vocabulary" do

@@ -14,7 +14,7 @@ class VocabulariesController < ApplicationController
   def create
     vocabulary_form = vocabulary_form_repository.new(vocabulary_params[:id])
     vocabulary_form.attributes = vocabulary_params.except(:id)
-    vocabulary_form.set_languages(params)
+    vocabulary_form.set_languages(params[:vocabulary])
     if vocabulary_form.save
       redirect_to term_path(:id => vocabulary_form.id)
     else
@@ -30,7 +30,7 @@ class VocabulariesController < ApplicationController
   def update
     edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.attributes = vocabulary_params
-    edit_vocabulary_form.set_languages(params)
+    edit_vocabulary_form.set_languages(params[:vocabulary])
     if edit_vocabulary_form.save
       redirect_to term_path(:id => params[:id])
     else

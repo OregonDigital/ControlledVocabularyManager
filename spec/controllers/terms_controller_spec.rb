@@ -109,12 +109,17 @@ RSpec.describe TermsController do
     let(:term) { instance_double("Term") }
     let(:params) do
       {
-        :vocabulary_id => "test",
         :term => {
-          "id" => "test",
-          :comment => ["Test"],
-          :label => ["Label"]
-        }
+          :id => "blah"
+        },
+        :vocabulary_id => "test",
+        :vocabulary => {
+          "id" => "testing",
+          :label => ["Test"],
+          :comment => ["Comment"],
+          :language => {
+            :label => ["en"],
+            :comment => ["en"]}}
       }
     end
     let(:save_success) { true }
@@ -123,7 +128,8 @@ RSpec.describe TermsController do
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")
       allow(term).to receive(:attributes=)
-      allow(term).to receive(:attributes).and_return(params[:term])
+      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+      allow(term).to receive(:attributes).and_return(params[:vocabulary])
       allow(Vocabulary).to receive(:find)
       post :create, params
     end
@@ -139,10 +145,16 @@ RSpec.describe TermsController do
     context "when blank arrays are passed in" do
       let(:params) do
         {
-          :vocabulary_id => "test",
           :term => {
+            :id => "blah"
+          },
+          :vocabulary_id => "test",
+          :vocabulary => {
             "id" => "test",
-            :label => [""]
+            :label => [""],
+            :language => {
+              :label => ["en"],
+            }
           }
         }
       end
@@ -184,10 +196,11 @@ RSpec.describe TermsController do
     let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
     let(:params) do
       {
-        :term => {
-          :comment => ["Test"],
-          :label => ["Comment"]
-        }
+          :label => ["Test"],
+          :comment => ["Comment"],
+          :language => {
+            :label => ["en"],
+            :comment => ["en"]}
       }
     end
     let(:persist_success) { true }
@@ -196,15 +209,16 @@ RSpec.describe TermsController do
     before do
       allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
       allow(term).to receive(:attributes=)
+      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(term).to receive(:attributes).and_return(params)
       allow(term).to receive(:persist!).and_return(persist_success)
       allow(term_form).to receive(:valid?).and_return(true)
-      patch :update, :id => term.id, :term => params[:term]
+      patch :update, :id => term.id, :vocabulary => params
     end
     
     context "when the fields are edited" do
       it "should update the properties" do
-        expect(term).to have_received(:attributes=).with(params[:term])
+        expect(term).to have_received(:attributes=).with(params.except(:language))
       end
       it "should redirect to the updated term" do
         expect(response).to redirect_to("/ns/#{term.id}")
@@ -214,15 +228,12 @@ RSpec.describe TermsController do
     context "when the fields are edited and the update fails" do
       before do
         allow(term).to receive(:persist!).and_return(persist_failure)
-        patch :update, :id => term.id, :term => params[:term]
+        patch :update, :id => term.id, :vocabulary => params
       end
       it "should show the edit form" do
         expect(assigns(:term)).to eq term_form
         expect(response).to render_template("edit")
       end
-
     end
-
   end
-
 end

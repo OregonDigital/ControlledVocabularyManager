@@ -22,8 +22,8 @@ class TermsController < ApplicationController
     @vocabulary = find_vocabulary
     combined_id = CombinedId.new(params[:vocabulary_id], term_params[:id])
     term_form = term_form_repository.new(combined_id)
-    term_form.attributes = term_params.except(:id)
-    term_form.set_languages(params)
+    term_form.attributes = vocab_params.except(:id)
+    term_form.set_languages(params[:vocabulary])
     if term_form.save
       redirect_to term_path(:id => term_form.id)
     else
@@ -38,8 +38,8 @@ class TermsController < ApplicationController
 
   def update
     edit_term_form = term_form_repository.find(params[:id])
-    edit_term_form.attributes = term_params
-    edit_term_form.set_languages(params)
+    edit_term_form.attributes = vocab_params
+    edit_term_form.set_languages(params[:vocabulary])
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else
@@ -57,6 +57,10 @@ class TermsController < ApplicationController
 
   def term_params
     ParamCleaner.call(params[:term])
+  end
+
+  def vocab_params
+    ParamCleaner.call(params[:vocabulary])
   end
 
   def injector

@@ -11,7 +11,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true do
     expect(vocabulary_create_page).to be_visible
     vocabulary_show_page = vocabulary_create_page.create
     
-    expect(get_vocab_statement_list[3].object.language).to eq :aa
+    expect(get_vocab_statement_list[3].object.language).to eq :en
     expect(vocabulary_show_page).to be_visible
 
     term_create_page = TermCreatePage.new("TestVocab")
@@ -20,7 +20,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true do
     expect(term_create_page).to be_visible
     term_show_page = term_create_page.create
 
-    expect(get_term_statement_list[2].object.language).to eq :aa
+    expect(get_term_statement_list[2].object.language).to eq :en
     expect(term_show_page).to be_visible
 
   end

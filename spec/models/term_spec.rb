@@ -138,4 +138,68 @@ RSpec.describe Term do
       end
     end
   end
+
+  describe "#values_for_property" do
+    context "When requesting a property's values when 1 value is present." do
+      let(:label) {RDF::Literal("blah", :language => :en)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label]
+        t
+      end
+
+      it "should return the value in array form" do
+        expect(resource.values_for_property(:label)).to eq ["blah"]
+      end
+    end
+
+    context "When requesting a property's values when multiple values are present" do
+      let(:label1) {RDF::Literal("blah", :language => :en)}
+      let(:label2) {RDF::Literal("banana", :language => :zu)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label1, label2]
+        t
+      end
+
+      it "should return the list of values" do
+        expect(resource.values_for_property(:label)).to eq ["blah", "banana"]
+      end
+    end
+  end
+  describe "#literal_language_list_for_property" do
+    context "When requesting a literal with a language for a property" do
+      let(:label) {RDF::Literal("blah", :language => :en)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label]
+        t
+      end
+
+      it "should return the literal and language" do
+        expect(resource.literal_language_list_for_property(:label).first.first).to be_kind_of RDF::Literal
+        expect(resource.literal_language_list_for_property(:label).first.second).to eq "English"
+      end
+    end
+
+    context "When requesting a list of literals with languages" do
+      let(:label1) {RDF::Literal("blah", :language => :en)}
+      let(:label2) {RDF::Literal("banana", :language => :zu)}
+      let(:resource) do
+        t = Term.new("1")
+        t.label = [label1, label2]
+        t
+      end
+
+      it "should return the list" do
+        expect(resource.values_for_property(:label)).to eq ["blah", "banana"]
+      end
+    end
+  end
+
+  describe "#language_from_symbol" do
+    it "should return a string from a language symbol" do
+      expect(resource.language_from_symbol(:zu)).to eq "Zulu"
+    end
+  end
 end
