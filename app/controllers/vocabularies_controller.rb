@@ -41,7 +41,7 @@ class VocabulariesController < ApplicationController
   private
 
   def vocabulary_params
-    ParamCleaner.call(params[:vocabulary].except(:language))
+    ParamCleaner.call(params[:vocabulary])
   end
 
   def injector

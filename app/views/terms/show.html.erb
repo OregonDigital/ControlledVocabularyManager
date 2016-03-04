@@ -33,7 +33,11 @@
             <% end %>
           <% else %>
             <% @term.literal_language_list_for_property(field).each do |t| %>
-              <li><%= "#{t[0].value} (#{t[1]}/#{t[0].language})" %></li>
+              <% if t[1] == "Language Not Found" %>
+                <li><%= "#{t[0].value}" %> </li>
+              <% else %>
+                <li><%= "#{t[0].value} (#{t[1]}/#{t[0].language})" %></li>
+              <% end %>
             <% end %>
           <% end %>
         </ul>
