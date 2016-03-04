@@ -13,6 +13,7 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require jquery_ujs
-//= require turbolinks
+//= require manage_repeating_fields
+//= require multi_value_fields
 //= require analytics
 //= require_tree .

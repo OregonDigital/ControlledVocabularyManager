@@ -24,6 +24,39 @@ RSpec.feature "Creating a vocabulary & term", :js => true do
     expect(term_show_page).to be_visible
 
   end
+
+  scenario "succesfully creating a term with multiple labels and languages" do
+    when_creating_new_vocabulary
+    expect(get_vocab_statement_list[3].object.value).to eq "Hello world"
+    expect(get_vocab_statement_list[3].object.language).to eq :en
+    expect(get_vocab_statement_list[4].object.value).to eq "Hola mundo"
+    expect(get_vocab_statement_list[4].object.language).to eq :es
+  end
+
+  scenario "successfully updating a term with multiple labels and languages" do
+    when_creating_new_vocabulary
+    visit "/vocabularies/TestVocab/edit"
+    within('.edit_vocabulary > .multi-value-field ul.listing li:first-child') do
+      click_button("Remove", :match => :first)
+    end
+    expect(page).not_to have_xpath("//input[@value='Hello world']")
+  end
+
+  def when_creating_new_vocabulary
+    visit "/vocabularies/new"
+    fill_in('ID', with: 'TestVocab')
+    fill_in "vocabulary[label][]", :with => "Hello world"
+    within('.vocabulary_label') do
+      click_button("Add", :match => :first)
+    end
+    within('.vocabulary_label ul.listing li:nth-child(2)') do
+      fill_in "vocabulary[label][]", :with => "Hola mundo"
+      find(:xpath, ".//select[contains(@name, 'vocabulary[language][label][]')]").find(:xpath, 'option[148]').select_option
+    end
+    find_button('Create Vocabulary').trigger('click')
+    sleep 1
+  end
+
 end
 
 def get_term_statement_list

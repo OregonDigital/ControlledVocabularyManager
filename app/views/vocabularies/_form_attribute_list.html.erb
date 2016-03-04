@@ -1,8 +1,22 @@
 <label class="control-label" for="vocabulary_"><%= attribute.to_s.humanize %></label>
+
 <% if form.object.values_for_property(attribute).empty? %>
   <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
 <% else %>
-  <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
-    <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
-  <% end %>
+  
+  <div class="multi-value-field repeating-field">
+    <fieldset>
+      <ul class="listing">
+        <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+
+          <li class="field-wrapper">
+          <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
+          </li>
+        <% end %>
+
+      </ul>
+    </fieldset>
+  </div>
+
 <% end %>
+
