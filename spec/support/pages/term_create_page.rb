@@ -9,7 +9,7 @@ class TermCreatePage < Struct.new(:vocabulary_id)
     fill_in "ID", :with => "banana"
     fill_in "vocabulary[label][]", :with => "Test label"
     fill_in "vocabulary[comment][]", :with => "Test comment"
-    click_button "Create Term"
+    find(:xpath, "//input[@name = 'commit']").trigger("click")
     TermShowPage.new(id)
   end
 
