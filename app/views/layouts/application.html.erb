@@ -1,35 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <title><% if content_for?(:title) %><%= yield :title %> - <% end %>opaquenamespace.org</title>
+  <head>
+    <title><% if content_for?(:title) %><%= yield :title %> - <% end %>opaquenamespace.org</title>
 
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
-  <%= render :partial => 'shared/analytics' %>
-  <%= csrf_meta_tags %>
-</head>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+    <%= render :partial => 'shared/analytics' %>
+    <%= csrf_meta_tags %>
+  </head>
 
-<body>
-
-  <%= render :partial => 'shared/navbar' %>
-
-  <div class="container">
-    <div class="starter-template">
-      <% flash.each do |key, value| %>
-        <%= content_tag :div, value, class: "flash #{key}" %>
-      <% end %>
-      <%= yield %>
+  <body>
+    <%= render :partial => 'shared/navbar' %>
+    <div class="container-full">
+      <div class="container">
+        <div class="starter-template">
+          <% flash.each do |key, value| %>
+            <%= content_tag :div, value, class: "flash #{key}" %>
+          <% end %>
+          <%= yield %>
+        </div>
+      </div><!-- /.container -->
     </div>
-  </div><!-- /.container -->
-
-  <div class="footer">
-     <div class="container">
-      Opaquenamespace.org is a linked data service, jointly maintained by <%= link_to("Oregon State University Libraries", "http://osulibrary.oregonstate.edu") %> and <%= link_to("University of Oregon Libraries", "http://library.uoregon.edu") %>
+    <div class="footer">
+      <div class="container">
+        Opaquenamespace.org is a linked data service, jointly maintained by <%= link_to("Oregon State University Libraries", "http://osulibrary.oregonstate.edu") %> and <%= link_to("University of Oregon Libraries", "http://library.uoregon.edu") %>
     </div>
-  </div>
-</body>
+    </div>
+  </body>
 </html>
