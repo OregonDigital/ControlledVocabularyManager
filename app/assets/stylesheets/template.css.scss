@@ -5,7 +5,6 @@ html, body {
 }
 body {
   padding-top: 50px;
-  /*margin-bottom: 60px !important;*/
 }
 
 .starter-template {
@@ -28,10 +27,11 @@ body {
 }
 
 .footer {
-  /*position: fixed;*/
+  position: fixed;
   height: 60px;
   bottom: 0;
   width: 100%;
   background-color: #f5f5f5;
   padding: 15px;
+  z-index: 100;
 }
