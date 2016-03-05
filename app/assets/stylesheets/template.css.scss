@@ -1,6 +1,10 @@
+html, body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
 body {
   padding-top: 50px;
-  margin-bottom: 60px !important;
 }
 
 .starter-template {
@@ -11,6 +15,16 @@ body {
   font-family: Consolas, Lucida Console, monospace;
 }
 
+.container-full {
+  min-height: 100%;
+  height: auto;
+  margin: 0 auto -60px;
+}
+.container-full .container {
+  min-height: 100%;
+  height: auto;
+  padding-bottom: 60px;
+}
 
 .footer {
   position: fixed;
@@ -19,6 +33,7 @@ body {
   width: 100%;
   background-color: #f5f5f5;
   padding: 15px;
+  z-index: 100;
 }
 
 .multi-value-controls {

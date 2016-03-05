@@ -3,11 +3,14 @@ class Term < ActiveTriples::Resource
   include ActiveModel::Validations
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
   configure :repository => :default
-  property :label, :predicate => RDF::RDFS.label
-  property :comment, :predicate => RDF::RDFS.comment
   property :is_replaced_by, :predicate => RDF::DC.isReplacedBy
   property :is_defined_by, :predicate => RDF::RDFS.isDefinedBy
+  property :same_as, :predicate => RDF::OWL.sameAs
+  property :label, :predicate => RDF::RDFS.label
+  property :alternate_name, :predicate => RDF::URI("http://schema.org/alternateName")
+  property :comment, :predicate => RDF::RDFS.comment
   property :issued, :predicate => RDF::DC.issued
+  property :date, :predicate => RDF::DC.date
   property :modified, :predicate => RDF::DC.modified
   delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
 
@@ -22,8 +25,10 @@ class Term < ActiveTriples::Resource
       :id,
       :issued,
       :modified,
-      :is_defined_by,
-      :is_replaced_by
+      :is_replaced_by,
+      :date,
+      :same_as,
+      :is_defined_by
     ]
   end
 
