@@ -1,10 +1,10 @@
 <div class="row multi-value-controls">
   <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
 
-    <div class="col-xs-6">
+    <div class="col-sm-9">
       <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
     </div>
-    <div class="col-xs-6">
+    <div class="col-sm-3">
       <% unless form.object.blacklisted_language_properties.include?(attribute) %>
         <select class="form-control" name="<%= "vocabulary[language][#{attribute.to_s}][]" %>" id="<%= "#{attribute}_select_#{index}" %>" >
           <% ControlledVocabManager::IsoLanguageTranslator.language_list.each_pair do |symbol, string| %>

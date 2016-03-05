@@ -6,10 +6,10 @@
         <li class="field-wrapper">
 
           <div class="row multi-value-controls">
-            <div class="col-xs-6">
+            <div class="col-sm-9">
               <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
             </div>
-            <div class="col-xs-6">
+            <div class="col-sm-3">
               <% unless form.object.blacklisted_language_properties.include?(attribute) %>
                 <select class="form-control" name="<%= "vocabulary[language][#{attribute.to_s}][]" %>" >
                   <% ControlledVocabManager::IsoLanguageTranslator.language_list.each_pair do |symbol, string| %>
