@@ -5,6 +5,6 @@ jQuery ->
   $(".multi-value-field").on("managed_field:remove", (event, removed) ->
       items = $(event.target).find("li")
       if(items.length == 1)
-        parent = $(event.target).parent().find("button.remove").hide()
+        $(event.target).find("button.remove").hide()
    )
 
