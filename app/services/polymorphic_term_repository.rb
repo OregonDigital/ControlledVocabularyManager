@@ -25,6 +25,8 @@ class PolymorphicTermRepository
     term = Term.find(id)
     if term.vocabulary?
        Vocabulary
+    elsif term.predicate?
+      Predicate
     else Term
     end
   end

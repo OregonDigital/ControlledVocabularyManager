@@ -1,0 +1,9 @@
+<% content_for :title do %>
+  Edit <%= @term.id %>
+<% end %>
+
+<h1>Edit</h1>
+
+<%= simple_form_for(@term, :url => update_predicate_path(:id => @term.id)) do |f| %>
+  <%= render "terms/edit_form", :f => f, :term => @term %>
+<% end %>

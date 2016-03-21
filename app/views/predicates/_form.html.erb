@@ -1,0 +1,14 @@
+<%= simple_form_for(predicate, :url => predicates_path, :as => :predicate) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :id, :label => "ID" %>
+    <% predicate.editable_fields.each do |field| %>
+      <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => predicate, :attribute => field, :form => f} %>
+    <% end %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

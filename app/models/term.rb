@@ -43,6 +43,10 @@ class Term < ActiveTriples::Resource
     type.include?(*Array(Vocabulary.type))
   end
 
+  def predicate?
+    type.include?(*Array(Predicate.type))
+  end
+
   def repository
     super
   end

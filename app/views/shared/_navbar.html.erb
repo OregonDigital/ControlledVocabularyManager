@@ -8,6 +8,9 @@
           <li><%= link_to "Home", '/' %></li>
           <li><%= link_to "Vocabularies", vocabularies_path %></li>
 
+          <li><%= link_to "Predicates", predicates_path %></li>
+          <li><%= link_to "Import External RDF", import_rdf_path %></li>
+
           <%- if session[:authorized] == true  %>
             <li><%= link_to "Import External RDF", import_rdf_path %></li>
             <li><%= link_to "Logout", '/login/auth' %></li>

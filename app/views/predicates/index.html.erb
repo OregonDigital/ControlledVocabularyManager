@@ -1,0 +1,16 @@
+<% content_for :title do %>
+  Predicates
+<% end %>
+<h1>Predicates</h1>
+<%- if session[:authorized] == true  %>
+  <%= link_to "Create Predicate", new_predicate_path, {:class=>'btn btn-default'} %>
+<% end %>
+
+<table class="table table-striped">
+  <% @predicates.each do |pred| %>
+    <tr>
+      <td><%= link_to pred.rdf_label.first, term_path(:id => pred.id) %></td>
+      <td><span class="uri"><%= link_to pred.rdf_subject, term_path(:id => pred.id) %></span></td>
+    </tr>
+  <% end %>
+</table>

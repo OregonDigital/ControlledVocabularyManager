@@ -21,6 +21,14 @@ RSpec.describe AllVocabsQuery do
       it "should not return terms" do
         expect(described_class.call(sparql_client, repository,Vocabulary.type)).not_to include(term)
       end
+      let(:predicate) {Predicate.new("mypred")}
+      before do
+        predicate.label = "Strawberry"
+        predicate.persist!
+      end
+      it "should not return preds" do
+        expect(described_class.call(sparql_client, repository,Vocabulary.type)).not_to include(predicate)
+      end
     end
   end
 end
