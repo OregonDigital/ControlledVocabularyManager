@@ -6,7 +6,7 @@ class TermInjector < Struct.new(:params)
   end
 
   def term_repository
-    StandardRepository.new(decorators)
+    StandardRepository.new(decorators, nil)
   end
 
   def params

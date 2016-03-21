@@ -12,11 +12,13 @@ class TermID
   def to_s
     id
   end
-
+#maybe remove this in favor of has_parent
   def vocabulary?
     !clean_id.include?("/")
   end
-
+  def hasParent?
+    clean_id.include?("/")
+  end
   private
 
   def clean_id

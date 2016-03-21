@@ -1,7 +1,7 @@
-class AllVocabsQuery < Struct.new(:sparql_client, :repository)
+class AllVocabsQuery < Struct.new(:sparql_client, :repository, :term_type)
   class << self
-    def call(sparql_client, repository)
-      new(sparql_client, repository).all
+    def call(sparql_client, repository, term_type)
+      new(sparql_client, repository, term_type).all
     end
   end
 
@@ -12,12 +12,12 @@ class AllVocabsQuery < Struct.new(:sparql_client, :repository)
   private
 
   def all_vocabs_graph
-    AllVocabsGraph.new(sparql_client).graph
+    AllVocabsGraph.new(sparql_client, term_type).graph
   end
 
 end
 
-class AllVocabsGraph < Struct.new(:sparql_client)
+class AllVocabsGraph < Struct.new(:sparql_client, :term_type)
 
   def graph
     SubjectsToGraph.new(sparql_client, subjects).graph
@@ -27,7 +27,7 @@ class AllVocabsGraph < Struct.new(:sparql_client)
 
 
   def subjects
-    @subjects ||= sparql_client.select.where([:s, RDF.type, Vocabulary.type]).each_solution.map{|x| x[:s]}
+    @subjects ||= sparql_client.select.where([:s, RDF.type, term_type]).each_solution.map{|x| x[:s]}
   end
 
 end

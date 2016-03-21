@@ -67,6 +67,10 @@ class Term < ActiveTriples::Resource
     TermUri.new(rdf_subject)
   end
 
+  def term_id
+    TermID.new(id)
+  end
+
   def repository
     @repository ||= MarmottaRepository.new(rdf_subject, marmotta_connection)
   end

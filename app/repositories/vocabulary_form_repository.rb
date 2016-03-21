@@ -15,6 +15,6 @@ class VocabularyFormRepository < Struct.new(:decorators)
   end
 
   def term_form_decorator
-    DecoratorWithArguments.new(VocabularyForm, StandardRepository.new)
+    DecoratorWithArguments.new(VocabularyForm, StandardRepository.new(nil, Vocabulary))
   end
 end

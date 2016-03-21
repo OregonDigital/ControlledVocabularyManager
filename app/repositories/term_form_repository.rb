@@ -15,6 +15,6 @@ class TermFormRepository < Struct.new(:decorators)
   end
 
   def term_form_decorator
-    DecoratorWithArguments.new(TermForm, StandardRepository.new)
+    DecoratorWithArguments.new(TermForm, StandardRepository.new(nil, Term))
   end
 end

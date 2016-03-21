@@ -4,11 +4,11 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def vocabulary_repository
-    @vocabulary_repository ||= StandardRepository.new(decorators)
+    @vocabulary_repository ||= StandardRepository.new(decorators, nil)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository) }
+    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository, Vocabulary.type) }
   end
   
   def sparql_client
