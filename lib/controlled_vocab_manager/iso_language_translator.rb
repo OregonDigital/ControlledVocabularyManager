@@ -15,6 +15,10 @@ module ControlledVocabManager
       language_hash
     end
 
+    def self.sorted_language_list
+      language_list.sort_by{|key, value| value}.to_h
+    end
+
     def self.find_by_name(name)
       language_list(:string)[name.capitalize]
     end

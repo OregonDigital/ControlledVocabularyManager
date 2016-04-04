@@ -32,6 +32,14 @@ RSpec.describe ControlledVocabManager::IsoLanguageTranslator do
     end
   end
 
+  describe "#sorted_language_list" do
+    it "should return a sorted list of the language hash" do
+      expect(translator.language_list.first.second).to eq "Afar"
+      expect(translator.sorted_language_list.first.second).to eq "Abkhazian"
+    end
+  end
+
+
   describe "#find_by_symbol" do
     it "should return a string for the language symbol" do
       expect(translator.find_by_symbol(:de)).to eq "German"
