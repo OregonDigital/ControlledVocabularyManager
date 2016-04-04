@@ -51,7 +51,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true do
     end
     within('.vocabulary_label ul.listing li:nth-child(2)') do
       fill_in "vocabulary[label][]", :with => "Hola mundo"
-      find(:xpath, ".//select[contains(@name, 'vocabulary[language][label][]')]").find(:xpath, 'option[148]').select_option
+      find(:xpath, ".//select[contains(@name, 'vocabulary[language][label][]')]").find(:xpath, 'option[149]').select_option
     end
     find_button('Create Vocabulary').trigger('click')
     sleep 1
