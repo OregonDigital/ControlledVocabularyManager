@@ -6,10 +6,7 @@
 
 <%= simple_form_for(@term, :url => terms_path, :as => :term) do |f| %>
   <%= render "form_id", :f => f %>
-  <select name="term_type">
-    <option value="Concept">Concept</option>
-    <option value="Term">Term</option>
-  </select>
+  <%= render :partial => "term_types_select", :locals => {:disabled => false, :term => @term }%>
   <% @term.editable_fields.each do |attribute| %>
     <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => @term, :attribute => attribute, :form => f} %>
   <% end %>

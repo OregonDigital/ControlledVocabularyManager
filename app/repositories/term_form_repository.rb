@@ -11,7 +11,6 @@ class TermFormRepository < Struct.new(:decorators)
 
   def decorators
     result = super || NullDecorator.new
-    binding.pry
     DecoratorList.new(result, term_form_decorator)
   end
 

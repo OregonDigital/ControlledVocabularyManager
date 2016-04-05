@@ -1,0 +1,14 @@
+<label class="control-label" for="vocabulary_">Term Type</label>
+<div class="form-group term_type">
+  <div>
+    <div class="input-group col-sm-12">
+      <select class="form-control" name="term_type" <%= disabled == true ? "disabled='disabled'" : "" %>>
+        <% TermType.terms.each_pair do |k,v| %>
+          <option value="<%= k %>"
+                  data-url="<%= v[1] %>"
+                  <%= term.type[0].to_s == v[1] ? "selected='selected'" : "" %>><%= v[0] %></option>
+        <% end %>
+      </select>
+    </div>
+  </div>
+</div>
