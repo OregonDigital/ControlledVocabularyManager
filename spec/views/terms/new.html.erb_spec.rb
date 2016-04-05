@@ -15,7 +15,7 @@ RSpec.describe "terms/new" do
     render
   end
   it "should post to /terms" do
-    expect(rendered).to have_selector("form[action='/terms'][method='post']")
+    expect(rendered).to have_selector("form[action='/vocabularies/#{vocabulary.id}'][method='post']")
   end
   it "should not have a _method field" do
     expect(rendered).not_to have_selector("input[name='_method']")

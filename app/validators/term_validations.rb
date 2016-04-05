@@ -1,1 +1,1 @@
-TermValidations = [TermIsUnique, IdExists]
+TermValidations = [TermIsUnique, IdExists, TermIsSanitary]
