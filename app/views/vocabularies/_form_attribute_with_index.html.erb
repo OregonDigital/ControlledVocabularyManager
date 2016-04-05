@@ -1,30 +1,16 @@
 <div class="row multi-value-controls">
   <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
-
-    <div class="col-sm-9">
-      <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
-    </div>
-    <div class="col-sm-3">
-      <% unless form.object.blacklisted_language_properties.include?(attribute) %>
-        <select class="form-control" name="<%= "vocabulary[language][#{attribute.to_s}][]" %>" id="<%= "#{attribute}_select_#{index}" %>" >
-          <% ControlledVocabManager::IsoLanguageTranslator.sorted_language_list.each_pair do |symbol, string| %>
-            <% if form.object.literal_language_list_for_property(attribute).length > 0 %>
-              <option value=<%= symbol %>
-            <%= form.object.literal_language_list_for_property(attribute)[index].first.language == symbol ? "selected='selected'" : "" %>>
-            <%= string %>
-              </option>
-            <% else %>
-              <option value=<%= symbol %>
-            <%= form.object.default_language == symbol ? "selected='selected'" : "" %>>
-            <%= string %>
-              </option>
-            <% end %>
-          <% end %>
-        </select>
-      <% end %>
-    </div>
-
+    <% if form.object.blacklisted_language_properties.include?(attribute) %>
+      <div class="col-sm-12">
+        <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+      </div>
+    <% else %>
+      <div class="col-sm-9">
+        <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+      </div>
+      <div class="col-sm-3">
+        <%= render "vocabularies/language_select", :form => form, :attribute => attribute, :index => index %>
+      </div>
+    <% end %>
   <% end %>
-
 </div>
-
