@@ -2,6 +2,7 @@ class TermsController < ApplicationController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
+  include Sanitize
 
   def show
     @term = find_term
@@ -19,6 +20,10 @@ class TermsController < ApplicationController
   end
 
   def create
+    if !check_validity(term_params[:id])
+      flash[:notice] = "Term is not valid UTF-8"
+      render "new"
+    else
     @vocabulary = find_vocabulary
     combined_id = CombinedId.new(params[:vocabulary_id], term_params[:id])
     term_form = term_form_repository.new(combined_id)
@@ -29,6 +34,7 @@ class TermsController < ApplicationController
     else
       @term = term_form
       render "new"
+    end
     end
   end
 
