@@ -219,7 +219,7 @@ RSpec.describe TermsController do
       end
     end
     context "when term has spaces in it" do
-      let(:badterm) {"bad term".encode!(Encoding::ISO_8859_1)}
+      let(:badterm) {"bad term"}
       let(:params) do
         {
           :term => {
