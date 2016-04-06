@@ -20,21 +20,20 @@ class TermsController < ApplicationController
   end
 
   def create
-    if !check_validity(term_params[:id])
-      flash[:notice] = "Term is not valid UTF-8"
-      render "new"
-    else
     @vocabulary = find_vocabulary
     combined_id = CombinedId.new(params[:vocabulary_id], term_params[:id])
     term_form = term_form_repository.new(combined_id)
     term_form.attributes = vocab_params.except(:id)
     term_form.set_languages(params[:vocabulary])
-    if term_form.save
+
+    messages = []
+    messages = check_validity(term_params[:id])
+    if messages.empty? && term_form.save
       redirect_to term_path(:id => term_form.id)
     else
+      flash[:alert] = messages unless messages.empty?
       @term = term_form
       render "new"
-    end
     end
   end
 

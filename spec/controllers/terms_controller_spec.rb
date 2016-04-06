@@ -188,7 +188,7 @@ RSpec.describe TermsController do
         post :create, params
       end
     end
-    context "when term is not valid" do
+    context "when term is not utf-8 valid" do
       let(:badterm) {"R\u00E9sum\u00E9".encode!(Encoding::ISO_8859_1)}
       let(:params) do
         {
@@ -212,7 +212,37 @@ RSpec.describe TermsController do
         expect(response).to render_template("new")
       end
       it "should warn the user term is not valid" do
-        expect(flash[:notice]).to include("Term is not valid UTF-8")
+        expect(flash[:alert]).to include("Term is not valid UTF-8")
+      end
+      it "should not save" do
+        expect(term_form).to_not have_received(:save)
+      end
+    end
+    context "when term has spaces in it" do
+      let(:badterm) {"bad term".encode!(Encoding::ISO_8859_1)}
+      let(:params) do
+        {
+          :term => {
+            :id => badterm
+          },
+          :vocabulary_id => "test",
+          :vocabulary => {
+            "id" => "test",
+            :label => [""],
+            :language => {
+              :label => ["en"],
+            }
+          }
+        }
+      end
+      before do
+        allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
+      end
+      it "should show the term form again" do
+        expect(response).to render_template("new")
+      end
+      it "should warn the user term is not valid" do
+        expect(flash[:alert]).to include("Term contains spaces")
       end
       it "should not save" do
         expect(term_form).to_not have_received(:save)
