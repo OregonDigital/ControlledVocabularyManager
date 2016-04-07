@@ -18,6 +18,18 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  def self.option_text
+    "Generic Term"
+  end
+
+  def self.uri
+    ""
+  end
+
+  def self.visible_form_fields
+    %w[label alternate_name date comment is_replaced_by is_defined_by same_as modified issued]
+  end
+
   def default_language
     :en
   end

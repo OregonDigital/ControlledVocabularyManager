@@ -18,4 +18,5 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
-ul { padding: 0; }
+ul { padding: 0; margin: 0; }
+select#term_type { margin-bottom: 10px; }

@@ -1,12 +1,13 @@
+<%-# Relies on app/assets/javascripts/term_type_select.js for functionality -%>
 <label class="control-label" for="vocabulary_">Term Type</label>
 <div class="form-group term_type">
   <div>
     <div class="input-group col-sm-12">
-      <select class="form-control" name="term_type" <%= disabled == true ? "disabled='disabled'" : "" %>>
-        <% TermType.terms.each_pair do |k,v| %>
-          <option value="<%= k %>"
-                  data-url="<%= v[1] %>"
-                  <%= term.type[0].to_s == v[1] ? "selected='selected'" : "" %>><%= v[0] %></option>
+      <select class="form-control" id="term_type" name="term_type" <%= disabled == true ? "disabled='disabled'" : "" %>>
+        <% TermType.models.each do |model| %>
+          <option value="<%= model.constantize %>"
+                  data-url="<%= model.constantize.uri %>"
+                  <%= term.type[0].to_s == model.constantize.uri ? "selected='selected'" : "" %>><%= model.constantize.option_text %></option>
         <% end %>
       </select>
     </div>
