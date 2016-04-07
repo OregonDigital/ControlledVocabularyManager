@@ -23,5 +23,9 @@ $(document).ready(function(){
     set_field_visibility("select#term_type");
   });
 
-  set_field_visibility($("select#term_type"));
+  // Only kick this off if the SELECT exists on the page, which it does not when
+  // the page is rendered for a vocabulary (instead of a term)
+  if($("select#term_type").length > 0){
+    set_field_visibility($("select#term_type"));
+  }
 });
