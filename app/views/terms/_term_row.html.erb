@@ -1,0 +1,21 @@
+<tr>
+<th scope="row"><%= field.to_s.humanize %>:</th>
+<td>
+  <ul style="list-style: none;">
+    <% if @term.blacklisted_language_properties.include?(field) %>
+      <% @term.get_values(field).each do |t| %>
+        <li><%= t %></li>
+      <% end %>
+    <% else %>
+      <% @term.literal_language_list_for_property(field).each do |t| %>
+        <% if t[1] == "Language Not Found" %>
+          <li><%= "#{t[0].value}" %> </li>
+        <% else %>
+          <li><%= "#{t[0].value} (#{t[1]}/#{t[0].language})" %></li>
+        <% end %>
+      <% end %>
+    <% end %>
+  </ul>
+</td>
+</tr>
+

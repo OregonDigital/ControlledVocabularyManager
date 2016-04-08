@@ -22,34 +22,23 @@
 <% if @term.term_id.hasParent? %>
   <%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id)  %>
 <% end %>
-<table class="table table-condensed" style="margin-top: 20px;">
-  <tr>
-    <th scope="row">Type:</th>
-    <td><%= TermType.name_for(@term.type.first.to_s) %></td>
-  </tr>
-  <% @term.fields.each do |field| %>
-    <tr>
-      <th scope="row"><%= field.to_s.humanize %>:</th>
-      <td>
-        <ul style="list-style: none;">
-          <% if @term.blacklisted_language_properties.include?(field) %>
-            <% @term.get_values(field).each do |t| %>
-              <li><%= t %></li>
-            <% end %>
-          <% else %>
-            <% @term.literal_language_list_for_property(field).each do |t| %>
-              <% if t[1] == "Language Not Found" %>
-                <li><%= "#{t[0].value}" %> </li>
-              <% else %>
-                <li><%= "#{t[0].value} (#{t[1]}/#{t[0].language})" %></li>
-              <% end %>
-            <% end %>
-          <% end %>
-        </ul>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<% if @term.vocabulary? %>
+  <table class="table table-condensed" style="margin-top: 20px;">
+    <%= render :partial => "terms/term_row", locals: {:field => :title} %>
+    <%= render :partial => "terms/term_row", locals: {:field => :publisher} %>
+    <% @term.fields.each do |field| %>
+      <% unless field == :title || field == :publisher %>
+        <%= render :partial => "terms/term_row", locals: {:field => field} %>
+      <% end %>
+    <% end %>
+  </table>
+<% else %>
+  <table class="table table-condensed" style="margin-top: 20px;">
+    <% @term.fields.each do |field| %>
+      <%= render :partial => "terms/term_row", locals: {:field => field} %>
+    <% end %>
+  </table>
+<% end %>
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
 
