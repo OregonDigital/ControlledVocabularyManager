@@ -11,11 +11,23 @@ RSpec.describe AllVocabsQuery do
         vocabulary.persist!
       end
       it "should return all vocabularies" do
-        expect(described_class.call(sparql_client, repository)).to include(vocabulary)
+        expect(described_class.call(sparql_client, repository,Vocabulary.type)).to include(vocabulary)
+      end
+      let(:term) { Term.new("bla/1") }
+      before do
+        term.label = "GURT"
+        term.persist!
       end
       it "should not return terms" do
-        repository.new("2/1").persist!
-        expect(described_class.call(sparql_client, repository)).to include(vocabulary)
+        expect(described_class.call(sparql_client, repository,Vocabulary.type)).not_to include(term)
+      end
+      let(:predicate) {Predicate.new("mypred")}
+      before do
+        predicate.label = "Strawberry"
+        predicate.persist!
+      end
+      it "should not return preds" do
+        expect(described_class.call(sparql_client, repository,Vocabulary.type)).not_to include(predicate)
       end
     end
   end

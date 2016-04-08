@@ -4,7 +4,7 @@ RSpec.describe TermWithChildren do
   let(:vocabulary) { Vocabulary.new(uri) }
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:injector) { TermInjector.new }
-  let(:term_repository) { injector.term_repository }
+  let(:term_repository) { injector.term_form_repository }
   subject { TermWithChildren.new(vocabulary, injector.child_node_finder) }
 
   describe "#children" do

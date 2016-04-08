@@ -1,7 +1,7 @@
 require 'rails_helper'
-
+#this test is kind of obsolete? but fixing it anyway
 RSpec.describe StandardRepository do
-  subject { StandardRepository.new(decorators) }
+  subject { StandardRepository.new(decorators,Term) }
   let(:decorators) { }
   describe "#new" do
     let(:result) { subject.new(id) }

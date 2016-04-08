@@ -82,7 +82,7 @@ RSpec.describe TermsController do
     end
     context "when the vocabulary is not persisted" do
       before do
-        expect(Vocabulary).to receive(:find).with(vocabulary_id).and_raise ActiveTriples::NotFound
+        expect(Term).to receive(:find).with(vocabulary_id).and_raise ActiveTriples::NotFound
       end
       it "should raise a 404" do
         expect(get_new.code).to eq "404"
@@ -91,7 +91,7 @@ RSpec.describe TermsController do
     context "when the vocabulary is persisted" do
       let(:vocabulary) { vocabulary_mock }
       before do
-        allow(Vocabulary).to receive(:find).with(vocabulary_id).and_return(vocabulary)
+        allow(Term).to receive(:find).with(vocabulary_id).and_return(vocabulary)
         get_new
       end
       it "should assign @term" do
@@ -123,7 +123,9 @@ RSpec.describe TermsController do
       }
     end
     let(:save_success) { true }
+    let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
     before do
+
       allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
       allow(term_form).to receive(:save).and_return(save_success)
       allow(term).to receive(:id).and_return("test/test")

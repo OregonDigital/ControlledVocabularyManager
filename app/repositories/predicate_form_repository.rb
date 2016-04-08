@@ -1,10 +1,10 @@
 # Repository that returns a decorated Vocabulary object with VocabularyForm
 # validations.
-class VocabularyFormRepository < Struct.new(:decorators)
+class PredicateFormRepository < Struct.new(:decorators)
   delegate :new, :find, :exists?, :to => :repository
 
   def repository
-    DecoratingRepository.new(decorators, Vocabulary)
+    DecoratingRepository.new(decorators, Predicate)
   end
 
   private
@@ -15,6 +15,6 @@ class VocabularyFormRepository < Struct.new(:decorators)
   end
 
   def term_form_decorator
-    DecoratorWithArguments.new(VocabularyForm, StandardRepository.new(nil, Vocabulary))
+    DecoratorWithArguments.new(PredicateForm, StandardRepository.new(nil, Predicate))
   end
 end

@@ -1,9 +1,8 @@
 class PolymorphicTermRepository
-  attr_reader :vocabulary_repository, :term_repository
+  attr_reader :repository_type
 
-  def initialize(vocabulary_repository, term_repository)
-    @vocabulary_repository = vocabulary_repository
-    @term_repository = term_repository
+  def initialize(repository_type)
+    @repository_type = repository_type
   end
 
   def new(id)
@@ -21,11 +20,14 @@ class PolymorphicTermRepository
   private
 
   def repository(id)
-    term_id = TermID.new(id)
-    if term_id.vocabulary?
-      vocabulary_repository
-    else
-      term_repository
+    return repository_type unless repository_type.nil?
+
+    term = Term.find(id)
+    if term.vocabulary?
+       Vocabulary
+    elsif term.predicate?
+      Predicate
+    else Term
     end
   end
 

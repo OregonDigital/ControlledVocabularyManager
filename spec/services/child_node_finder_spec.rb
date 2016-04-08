@@ -4,7 +4,7 @@ RSpec.describe ChildNodeFinder do
   describe "#find_children" do
     subject { ChildNodeFinder.new(repository, sparql_client) }
     let(:vocabulary) { Vocabulary.new("bla") }
-    let(:repository) { VocabularyInjector.new.vocabulary_repository }
+    let(:repository) { TermInjector.new.term_form_repository }
     let(:sparql_client) { VocabularyInjector.new.sparql_client }
     let(:term) { repository.new("bla/1") }
     let(:unrelated_term) { repository.new("bla2/1") }

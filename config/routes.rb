@@ -9,12 +9,16 @@ Rails.application.routes.draw do
   patch 'terms/*id', :to => "terms#update", :as => "update_term"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
   patch 'vocabularies/*id', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
+  patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
   get '/login'  => 'login#index'
   get '/login/auth' => 'login#doauth'
 
   resources :vocabularies, :only => [:index, :new, :create, :edit]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
+
+  resources :predicates, :only => [:index, :new, :create, :edit]
+
   resources :terms, :only => [:create]
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
