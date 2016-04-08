@@ -20,3 +20,27 @@
 
 ul { padding: 0; margin: 0; }
 select#term_type { margin-bottom: 10px; }
+
+
+#formValidationModal {
+  .modal-dialog {
+    width: 400px;
+    .modal-content {
+      padding-left: 10px;
+      padding-right: 10px;
+      #formValidationExplanation {
+        i { color: red; }
+      }
+      > span.red {
+        margin: 10px 0;
+        float: left;
+        color: red;
+      }
+      ul {
+        list-style: none;
+        margin-bottom: 10px;
+        li { width: 100%; }
+      }
+    }
+  }
+}

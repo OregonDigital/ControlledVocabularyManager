@@ -1,9 +1,10 @@
-  <p><%= term.rdf_subject %></p>
+<p><%= term.rdf_subject %></p>
 
-  <% if term.vocabulary? == false %>
-    <%= render :partial => "terms/term_types_select", :locals => { :disabled => true, :term => term } %>
-  <% end %>
-  <% term.editable_fields.each do |attribute| %>
-    <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
-  <% end %>
-  <%= f.button :submit %>
+<% if term.vocabulary? == false %>
+  <%= render :partial => "terms/term_types_select", :locals => { :disabled => true, :term => term } %>
+<% end %>
+<% term.editable_fields.each do |attribute| %>
+  <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
+<% end %>
+<%= render :partial => "form_validation_modal" %>
+<%= f.button :submit %>

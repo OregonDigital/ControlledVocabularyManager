@@ -1,0 +1,14 @@
+<div id="formValidationModal" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-labelledby="formValidationModal">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <h3>Term Validation Confirmation</h3>
+      <span id="formValidationExplanation">A <b id="formValidationTermType"></b> term is being submitted with <i>invalid</i> or <i>currently hidden</i> data fields.</span>
+      <span class="red">Please click the 'Submit' button to acknowledge that the term will be created <b>without</b> the listed hidden fields and values saved.</span>
+      <ul id="validationErrors"></ul>
+      <div class="modal-footer">
+        <button id="formValidationCancelled" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        <button id="formValidationConfirmed" type="button" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
