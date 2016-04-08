@@ -12,7 +12,11 @@ class VocabularyInjector < Struct.new(:params)
   end
   
   def sparql_client
-    @sparql_client ||= SPARQL::Client.new("#{Settings.marmotta.url}/sparql/select")
+    sparql = SPARQL::Client.new("#{Settings.marmotta.url}/sparql/select")
+    if Rails.env == "test"
+      sparql = sparql.select.graph("#{Settings.marmotta.url}/context/test")
+    end
+    @sparql_client ||= sparql
   end
 
   def child_node_finder
