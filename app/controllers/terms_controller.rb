@@ -2,6 +2,7 @@ class TermsController < ApplicationController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
+  include Sanitize
 
   def show
     @term = find_term
@@ -24,9 +25,13 @@ class TermsController < ApplicationController
     term_form = term_form_repository.new(combined_id, params[:term_type].constantize)
     term_form.attributes = vocab_params.except(:id)
     term_form.set_languages(params[:vocabulary])
-    if term_form.save
+
+    messages = []
+    messages = check_validity(term_params[:id])
+    if messages.empty? && term_form.save
       redirect_to term_path(:id => term_form.id)
     else
+      flash[:alert] = messages unless messages.empty?
       @term = term_form
       render "new"
     end
