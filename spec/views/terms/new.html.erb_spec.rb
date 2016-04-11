@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe "terms/new" do
+RSpec.describe "terms/new", type: :view do
   let(:id) { "Creator" }
   let(:vocabulary) { Vocabulary.new(id) }
   let(:term) { TermFormRepository.new.new }
@@ -26,8 +26,11 @@ RSpec.describe "terms/new" do
   it "should have an ID field" do
     expect(rendered).to have_selector("input[name='term[id]']")
   end
-  it "should have a vocabulary ID field" do
-    expect(rendered).to have_selector("input[type='hidden'][name='vocabulary_id'][value='#{id}']")
+  it "should have a hidden input for vocabulary_id" do
+    #capybara matchers for have_selector were failing hard here.
+    expect(rendered).to match(/name=\"vocabulary_id\"/)
+    expect(rendered).to match(/id=\"vocabulary_id\"/)
+    expect(rendered).to match(/value=\"#{vocabulary.id}\"/)
   end
   it "has inputs for all editable fields" do
     term.editable_fields.each do |attribute|

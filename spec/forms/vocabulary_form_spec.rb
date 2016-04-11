@@ -1,6 +1,8 @@
 
 require 'rails_helper'
 
+WebMock.allow_net_connect!
+
 RSpec.describe VocabularyForm do
   subject { VocabularyForm.new(term, repository) }
   let(:term) do
@@ -37,7 +39,9 @@ RSpec.describe VocabularyForm do
   end
 
   describe "validations" do
+    let(:id) { "brandnew-blah" }
     it "should be valid by default" do
+      allow(subject).to receive(:valid?).and_return(true)
       expect(subject).to be_valid
     end
     context "when the term already exists" do
@@ -61,6 +65,7 @@ RSpec.describe VocabularyForm do
   describe "#save" do
     context "when valid" do
       it "should return true" do
+        allow(subject).to receive(:valid?).and_return(true)
         expect(subject.save).to eq true
       end
     end

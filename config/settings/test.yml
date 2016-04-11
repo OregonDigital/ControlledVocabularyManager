@@ -1,2 +1,2 @@
-marmotta:
-  url: "http://localhost:8983/marmotta"
+triplestore_adapter:
+  url: "http://localhost:9999/blazegraph/namespace/test/sparql"

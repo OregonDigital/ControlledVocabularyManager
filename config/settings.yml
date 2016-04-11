@@ -1,2 +1,3 @@
-marmotta:
-  url: <%= ENV["CVM_MARMOTTA_URL"] %>
+triplestore_adapter:
+  type: 'blazegraph'
+  url: <%= "#{ENV['CVM_BLAZEGRAPH_URL']}/namespace/production/sparql" %>

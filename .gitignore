@@ -15,6 +15,7 @@
 
 # Ignore all logfiles and tempfiles.
 /log/*.log
+/log/*.log.*
 /tmp
 
 # Ignore vagrant
@@ -39,3 +40,4 @@ config/god.conf
 config/config.yml
 
 git_dev/*
+blazegraph*

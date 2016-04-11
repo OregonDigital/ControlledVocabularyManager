@@ -1,43 +1,17 @@
 require 'rails_helper'
 
+WebMock.allow_net_connect!
+
 RSpec.describe ImportForm do
-    let(:jsonld) { '{
-    "@context": {
-      "dc": "http://purl.org/dc/terms/",
-          "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
-              "skos": "http://www.w3.org/2004/02/skos/core#",
-                  "xsd": "http://www.w3.org/2001/XMLSchema#"
-                    },
-                      "@id": "http://opaquenamespace.org/ns/workType/aibanprints",
-    "@type": "skos:Concept",
-    "dc:issued": {
-        "@value": "2015-07-16",
-        "@type": "xsd:date"
-      },
-    "dc:modified": {
-          "@value": "2015-07-16",
-          "@type": "xsd:date"
-        },
-    "rdfs:comment": {
-            "@value": "Yamane, Y?z?; F?zokuga to Ukiyoe shi (Genshoku Nihon no Bijutsu, v.24), 1971. Japanese prints aproximately 34.5 x 22.5 cm or (9 x 13 in). ",
-                "@language": "en"
-          },
-    "rdfs:isDefinedBy": {
-              "@id": "http://opaquenamespace.org/VOCAB_PLACEHOLDER.nt"
-            },
-    "rdfs:label": {
-                "@value": "aiban (prints)",
-                    "@language": "en"
-              }
-  }'}
-  let(:url) { "http://example.com" }
+  let(:url) { "http://opaquenamespace.org/ns/workType/aibanprints" }
   let(:preview) { "0" }
   let(:term_list) { instance_double("ImportableTermList") }
   let(:validators) { instance_double("IsValidRdfImportUrl") }
-  let(:form) { ImportForm.new(url, preview, RdfImporter) }
+  let(:rdfimporter) { RdfImporter }
+  let(:form) { ImportForm.new(url, preview, rdfimporter) }
 
   before do
-    stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
+    RdfLoader.load_url(url)
   end
 
   describe "#valid?" do

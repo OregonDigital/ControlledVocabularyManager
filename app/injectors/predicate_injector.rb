@@ -13,7 +13,7 @@ class PredicateInjector < Struct.new(:params)
   end
 
   def sparql_client
-    @sparql_client ||= SPARQL::Client.new("#{Settings.marmotta.url}/sparql/select")
+    @sparql_client ||= SPARQL::Client.new("#{Settings.triplestore_adapter.url}")
   end
 
   def child_node_finder

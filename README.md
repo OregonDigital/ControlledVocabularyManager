@@ -6,7 +6,7 @@ Controlled Vocabulary Manager
 
 Overview
 -----
-Rails app connected to Marmotta for managing local controlled vocabularies for [Oregon Digital](http://oregondigital.org).
+Rails app connected to Blazegraph for managing local controlled vocabularies for [Oregon Digital](http://oregondigital.org).
 Currently powering http://OpaqueNamespace.org
 
 Local Development Setup
@@ -18,24 +18,11 @@ Local Development Setup
 	cd ControlledVocabularyManager
 	bundle install
 	rake db:create && rake db:migrate
-	rake jetty:clean
+	rake triplestore_adapter:blazegraph:reset
 
 Start the servers:
 
-	rake jetty:start
 	rails server
-
-
-GitHub OAuth Test App Setup
------
-In order to login locally and authenticate through GitHub:
-
-1. [Create new OAuth application in GitHub settings](https://github.com/settings/applications/new)
-2. Set the callback URL to `http://localhost:3000`
-3. Save app, then save both client IDs in environment variables locally: `CVM_GITHUB_CLIENT_ID` and `CVM_GITHUB_CLIENT_SECRET` (on Linux this is `export CVM_GITHUB_CLIENT_ID=########`)
-4. Then run `rails server`
-
-(More information at https://github.com/fphilipe/warden-github-rails)
 
 
 Vagrant Setup
@@ -59,5 +46,5 @@ start the Rails server:
     cd /vagrant
     rails server
 
-You can browse the app via `http://localhost:3000`, and check on the jetty
-container (which houses Marmotta) at `http://localhost:8983`.
+You can browse the app via `http://localhost:3000`, and check on the blazegraph
+server at `http://localhost:9999/blazegraph`

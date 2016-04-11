@@ -1,0 +1,2 @@
+triplestore_adapter:
+  url: "http://localhost:9999/blazegraph/namespace/staging/sparql"
