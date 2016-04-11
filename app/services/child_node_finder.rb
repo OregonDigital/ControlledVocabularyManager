@@ -1,13 +1,12 @@
 class ChildNodeFinder
-  attr_reader :repository, :sparql_client
-  def initialize(repository, sparql_client)
-    @repository = repository
+  attr_reader :sparql_client
+  def initialize(sparql_client)
     @sparql_client = sparql_client
   end
 
   def find_children(vocabulary)
     query_graph = ChildQuery.new(sparql_client, vocabulary.rdf_subject).run
-    results = GraphToTerms.new(repository, query_graph).run
+    results = GraphToTerms.new(nil, query_graph).terms
     results.sort_by{|i| i.rdf_subject.to_s.downcase}
   end
 
@@ -30,11 +29,6 @@ class ChildQuery < Struct.new(:sparql_client, :parent_uri)
   end
 
   def query
-    sparql_client.select.where([:s, :p, :o]).filter(query_filter)
+    sparql_client.query("SELECT * WHERE { ?s ?p ?o . FILTER(STRSTARTS(STR(?s), \"#{parent_uri}/\")) }")
   end
-
-  def query_filter
-    "STRSTARTS(STR(?s), \"#{parent_uri}/\")"
-  end
-
 end

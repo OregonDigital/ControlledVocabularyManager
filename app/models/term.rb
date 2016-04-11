@@ -2,10 +2,12 @@ class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   include ActiveModel::Validations
 
+  attr_accessor :commit_history
+
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
   configure :repository => :default
   configure :type => RDF::URI("http://www.w3.org/2004/02/skos/core#Concept")
-  attr_accessor :commit_history
+
   property :label, :predicate => RDF::RDFS.label
   property :alternate_name, :predicate => RDF::URI("http://schema.org/alternateName")
   property :date, :predicate => RDF::DC.date
@@ -69,10 +71,6 @@ class Term < ActiveTriples::Resource
     type.include?(*Array(Predicate.type))
   end
 
-  def repository
-    super
-  end
-
   def editable_fields
     fields - [:issued, :modified, :is_replaced_by]
   end
@@ -98,7 +96,8 @@ class Term < ActiveTriples::Resource
   end
 
   def repository
-    @repository ||= MarmottaRepository.new(rdf_subject, marmotta_connection)
+    rdf_statement = RDF::Statement.new(:subject => rdf_subject)
+    @repository ||= TriplestoreRepository.new(rdf_statement, Settings.triplestore_adapter.type, Settings.triplestore_adapter.url)
   end
 
   #Returns a multi-dimensional array with translated language for a given
@@ -116,13 +115,8 @@ class Term < ActiveTriples::Resource
   end
 
   private
-
   def vocab_subject_uri
     self.term_uri.uri.to_s
-  end
-
-  def marmotta_connection
-    Marmotta::Connection.new(uri: Settings.marmotta.url, context: Rails.env)
   end
 
   def not_blank_node

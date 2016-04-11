@@ -3,10 +3,12 @@ require 'json/ld'
 # Wraps RDF::Graph.load for consistent return: on meaningless data, an empty
 # graph is returned, so we do the same when an exception occurs
 class RdfLoader
+
   def self.load_url(url)
     begin
-      RDF::Graph.load(url)
-    rescue
+      @triplestore = TriplestoreAdapter::Triplestore.new(TriplestoreAdapter::Client.new(Settings.triplestore_adapter.type, Settings.triplestore_adapter.url))
+      @triplestore.fetch(url.to_s)
+    rescue => e
       RDF::Graph.new
     end
   end

@@ -1,5 +1,6 @@
-
 require 'rails_helper'
+
+WebMock.allow_net_connect!
 
 RSpec.describe DeprecateVocabularyForm do
   subject { DeprecateVocabularyForm.new(term, repository) }
@@ -39,6 +40,9 @@ RSpec.describe DeprecateVocabularyForm do
   end
 
   describe "validations" do
+    before do
+      id_exists(id, false)
+    end
     it "should be valid by default" do
       expect(subject).to be_valid
     end
@@ -90,6 +94,9 @@ RSpec.describe DeprecateVocabularyForm do
 
   describe "#save" do
     context "when valid" do
+      before do
+        id_exists(id, false)
+      end
       it "should return true" do
         expect(subject.save).to eq true
       end

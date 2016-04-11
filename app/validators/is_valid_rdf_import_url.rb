@@ -7,7 +7,7 @@ class IsValidRdfImportUrl < ActiveModel::Validator
     end
 
     begin
-      uri = URI.parse(record.url)
+      uri = URI.parse(record.url.to_s)
     rescue
       record.errors.add(:url, "is not a URL")
       record.errors.add(:base, "URL is not valid.")

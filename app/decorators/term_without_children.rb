@@ -1,7 +1,5 @@
 class TermWithoutChildren < SimpleDelegator
-  attr_reader :node_finder
-  def initialize(resource, node_finder)
-    @node_finder = node_finder
+  def initialize(resource)
     super(resource)
   end
 

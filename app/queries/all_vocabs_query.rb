@@ -6,29 +6,22 @@ class AllVocabsQuery < Struct.new(:sparql_client, :repository, :term_type)
   end
 
   def all
-    GraphToTerms.new(repository, all_vocabs_graph).run
+    GraphToTerms.new(repository, all_vocabs_graph).terms
   end
 
   private
-
   def all_vocabs_graph
     AllVocabsGraph.new(sparql_client, term_type).graph
   end
-
 end
 
 class AllVocabsGraph < Struct.new(:sparql_client, :term_type)
-
   def graph
-    SubjectsToGraph.new(sparql_client, subjects).graph
+    SubjectsToGraph.new(sparql_client, statements).graph
   end
 
   private
-
-
-  def subjects
-    @subjects ||= sparql_client.select.where([:s, RDF.type, term_type]).each_solution.map{|x| x[:s]}
+  def statements
+    @statements ||= sparql_client.select.where([:s, RDF.type, term_type]).each_solution.map{|x| x[:s]}
   end
-
 end
-
