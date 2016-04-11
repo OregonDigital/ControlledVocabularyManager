@@ -8,19 +8,17 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def all_vocabs_query
-    -> { AllVocabsQuery.call(sparql_client, vocabulary_repository, Vocabulary.type) }
+     sparql = sparql_client.select.graph("#{Settings.marmotta.url}/context/#{Rails.env}")
+    -> { AllVocabsQuery.call(sparql, vocabulary_repository, Vocabulary.type) }
   end
   
   def sparql_client
-    sparql = SPARQL::Client.new("#{Settings.marmotta.url}/sparql/select")
-    if Rails.env == "test"
-      sparql = sparql.select.graph("#{Settings.marmotta.url}/context/test")
-    end
-    @sparql_client ||= sparql
+    @sparql_client ||= SPARQL::Client.new("#{Settings.marmotta.url}/sparql/select")
   end
 
   def child_node_finder
-    @child_node_finder ||= ChildNodeFinder.new(StandardRepository.new, sparql_client)
+    sparql = sparql_client.select.graph("#{Settings.marmotta.url}/context/#{Rails.env}")
+    @child_node_finder ||= ChildNodeFinder.new(StandardRepository.new, sparql)
   end
 
   def params
