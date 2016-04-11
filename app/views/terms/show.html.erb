@@ -22,23 +22,11 @@
 <% if @term.term_id.hasParent? %>
   <%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id)  %>
 <% end %>
-<% if @term.vocabulary? %>
-  <table class="table table-condensed" style="margin-top: 20px;">
-    <%= render :partial => "terms/term_row", locals: {:field => :title} %>
-    <%= render :partial => "terms/term_row", locals: {:field => :publisher} %>
-    <% @term.fields.each do |field| %>
-      <% unless field == :title || field == :publisher %>
-        <%= render :partial => "terms/term_row", locals: {:field => field} %>
-      <% end %>
-    <% end %>
-  </table>
-<% else %>
-  <table class="table table-condensed" style="margin-top: 20px;">
-    <% @term.fields.each do |field| %>
-      <%= render :partial => "terms/term_row", locals: {:field => field} %>
-    <% end %>
-  </table>
-<% end %>
+<table class="table table-condensed" style="margin-top: 20px;">
+  <% @term.fields.each do |field| %>
+    <%= render :partial => "terms/term_row", locals: {:field => field} %>
+  <% end %>
+</table>
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
 
