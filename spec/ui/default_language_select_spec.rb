@@ -5,7 +5,7 @@ RSpec.feature "Using a language SELECT with a default language set", :js => true
     allow_any_instance_of(ApplicationController).to receive(:check_auth).and_return(true)
   end
 
-  scenario "adding another label defaults lanuage select to english" do
+  scenario "adding another label defaults language select to english" do
     visit "/vocabularies/new"
     within('.vocabulary_label') do
       find(".language-select option[value='es']").select_option

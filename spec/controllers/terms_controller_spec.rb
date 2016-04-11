@@ -30,7 +30,7 @@ RSpec.describe TermsController do
       it "should render the show template" do
         expect(response).to render_template("show")
       end
-      
+
       context "format html" do
         it "should render html" do
           expect(response.content_type).to eq("text/html")
@@ -113,6 +113,7 @@ RSpec.describe TermsController do
           :id => "blah"
         },
         :vocabulary_id => "test",
+        :term_type => "Term",
         :vocabulary => {
           "id" => "testing",
           :label => ["Test"],
@@ -151,6 +152,7 @@ RSpec.describe TermsController do
             :id => "blah"
           },
           :vocabulary_id => "test",
+          :term_type => "Term",
           :vocabulary => {
             "id" => "test",
             :label => [""],
@@ -217,7 +219,7 @@ RSpec.describe TermsController do
       allow(term_form).to receive(:valid?).and_return(true)
       patch :update, :id => term.id, :vocabulary => params
     end
-    
+
     context "when the fields are edited" do
       it "should update the properties" do
         expect(term).to have_received(:attributes=).with(params.except(:language))

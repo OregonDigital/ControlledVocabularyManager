@@ -23,6 +23,10 @@
   <%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id)  %>
 <% end %>
 <table class="table table-condensed" style="margin-top: 20px;">
+  <tr>
+    <th scope="row">Type:</th>
+    <td><%= TermType.name_for(@term.type.first.to_s) %></td>
+  </tr>
   <% @term.fields.each do |field| %>
     <tr>
       <th scope="row"><%= field.to_s.humanize %>:</th>

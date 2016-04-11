@@ -8,7 +8,11 @@ class DecoratingRepository
 
   def new(*args)
     decorate do
-      repository.new(*args)
+      if args[1].blank?
+        repository.new(*args)
+      else
+        args[1].new(*args)
+      end
     end
   end
 
