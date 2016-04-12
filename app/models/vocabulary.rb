@@ -14,4 +14,9 @@ class Vocabulary < Term
   def self.visible_form_fields
     %w[label alternate_name date comment is_replaced_by is_defined_by same_as modified issued title publisher]
   end
+
+  # Update the fields method with any new properties added to this model
+  def fields
+    [:title, :publisher] | super
+  end
 end
