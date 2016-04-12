@@ -24,6 +24,7 @@ class TermsController < ApplicationController
     term_form = term_form_repository.new(combined_id, params[:term_type].constantize)
     term_form.attributes = vocab_params.except(:id)
     term_form.set_languages(params[:vocabulary])
+
     if term_form.save
       redirect_to term_path(:id => term_form.id)
     else

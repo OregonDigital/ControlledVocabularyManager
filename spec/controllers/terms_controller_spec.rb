@@ -107,137 +107,183 @@ RSpec.describe TermsController do
   describe "POST create" do
     let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
     let(:term) { instance_double("Term") }
+    let(:term_id) { "blah" }
     let(:params) do
       {
         :term => {
-          :id => "blah"
+          :id => term_id
         },
         :vocabulary_id => "test",
         :term_type => "Term",
         :vocabulary => {
-          "id" => "testing",
+          :id => "testing",
           :label => ["Test"],
           :comment => ["Comment"],
           :language => {
             :label => ["en"],
-            :comment => ["en"]}}
-      }
-    end
-    let(:save_success) { true }
-    let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
-    before do
-
-      allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
-      allow(term_form).to receive(:save).and_return(save_success)
-      allow(term).to receive(:id).and_return("test/test")
-      allow(term).to receive(:attributes=)
-      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
-      allow(term).to receive(:attributes).and_return(params[:vocabulary])
-      allow(Vocabulary).to receive(:find)
-      post :create, params
-    end
-    context "when logged out" do
-      let(:logged_in) { false }
-      it "should require login" do
-        expect(response).to redirect_to login_path
-      end
-    end
-    it "should save term form" do
-      expect(term_form).to have_received(:save)
-    end
-    context "when blank arrays are passed in" do
-      let(:params) do
-        {
-          :term => {
-            :id => "blah"
-          },
-          :vocabulary_id => "test",
-          :term_type => "Term",
-          :vocabulary => {
-            "id" => "test",
-            :label => [""],
-            :language => {
-              :label => ["en"],
-            }
-          }
+          :comment => ["en"]}}
         }
       end
-      it "should not pass them to Term" do
-        expect(term).to have_received(:attributes=).with({"label" => []})
-      end
-    end
-    context "when save fails" do
-      let(:save_success) { false }
-      it "should render new template" do
-        expect(response).to render_template("new")
-      end
-      it "should assign @term" do
-        expect(assigns(:term)).to eq term_form
-      end
-    end
-    context "when all goes well" do
-      it "should redirect to the term" do
-        expect(response).to redirect_to("/ns/#{term.id}")
-      end
-    end
-    context "when vocabulary isn't found" do
+      let(:save_success) { true }
+      let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
       before do
-        allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
-      end
-      it "should return a 404" do
-        expect(post(:create, params).code).to eq "404"
-      end
-      it "doesn't call TermForm" do
-        expect(TermForm).not_to receive(:new)
+        allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
+        allow(term_form).to receive(:save).and_return(save_success)
+        allow(term).to receive(:id).and_return(term_id)
+        allow(term).to receive(:attributes=)
+        allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+        allow(term).to receive(:attributes).and_return(params[:vocabulary])
+        allow(Vocabulary).to receive(:find)
         post :create, params
       end
+      context "when logged out" do
+        let(:logged_in) { false }
+        it "should require login" do
+          expect(response).to redirect_to login_path
+        end
+      end
+      it "should save term form" do
+        expect(term_form).to have_received(:save)
+      end
+      context "when blank arrays are passed in" do
+        let(:term_id) { "blah" }
+        let(:params) do
+          {
+            :term => {
+              :id => term_id
+            },
+            :vocabulary_id => "test",
+            :term_type => "Term",
+            :vocabulary => {
+              :id => "test",
+              :label => [""],
+              :language => {
+                :label => ["en"],
+              }
+            }
+          }
+        end
+        it "should not pass them to Term" do
+          expect(term).to have_received(:attributes=).with({"label" => []})
+        end
+      end
+      context "when save fails" do
+        let(:save_success) { false }
+        it "should render new template" do
+          expect(response).to render_template("new")
+        end
+        it "should assign @term" do
+          expect(assigns(:term)).to eq term_form
+        end
+      end
+      context "when all goes well" do
+        it "should redirect to the term" do
+          expect(response).to redirect_to("/ns/#{term.id}")
+        end
+      end
+      context "when vocabulary isn't found" do
+        before do
+          allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
+        end
+        it "should return a 404" do
+          expect(post(:create, params).code).to eq "404"
+        end
+        it "doesn't call TermForm" do
+          expect(TermForm).not_to receive(:new)
+          post :create, params
+        end
+      end
+      context "when term is not utf-8 valid" do
+        let(:term_id) {"R\u00E9sum\u00E9".encode!(Encoding::ISO_8859_1)}
+        let(:save_success) { false }
+        let(:params) do
+          {
+            :term => {
+              :id => term_id
+            },
+            :vocabulary_id => "test",
+            :term_type => "Term",
+            :vocabulary => {
+              :id => "test",
+              :label => [""],
+              :language => {
+                :label => ["en"],
+              }
+            }
+          }
+        end
+        it "should show the term form again" do
+          expect(response).to render_template("new")
+        end
+      end
+      context "when term has spaces in it" do
+        let(:term_id) {"bad term"}
+        let(:save_success) { false }
+        let(:params) do
+          {
+            :term => {
+              :id => term_id
+            },
+            :vocabulary_id => "test",
+            :term_type => "Term",
+            :vocabulary => {
+              :id => "test",
+              :label => [""],
+              :language => {
+                :label => ["en"],
+              }
+            }
+          }
+        end
+        it "should show the term form again" do
+          expect(response).to render_template("new")
+        end
+      end
     end
-  end
 
-
-  describe "PATCH update" do
-    let(:term) { term_mock }
-    let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
-    let(:params) do
-      {
+    describe "PATCH update" do
+      let(:term) { term_mock }
+      let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+      let(:params) do
+        {
           :label => ["Test"],
           :comment => ["Comment"],
           :language => {
             :label => ["en"],
-            :comment => ["en"]}
-      }
-    end
-    let(:persist_success) { true }
-    let(:persist_failure) { false }
-
-    before do
-      allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
-      allow(term).to receive(:attributes=)
-      allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
-      allow(term).to receive(:attributes).and_return(params)
-      allow(term).to receive(:persist!).and_return(persist_success)
-      allow(term_form).to receive(:valid?).and_return(true)
-      patch :update, :id => term.id, :vocabulary => params
-    end
-
-    context "when the fields are edited" do
-      it "should update the properties" do
-        expect(term).to have_received(:attributes=).with(params.except(:language))
+          :comment => ["en"]}
+        }
       end
-      it "should redirect to the updated term" do
-        expect(response).to redirect_to("/ns/#{term.id}")
-      end
-    end
+      let(:persist_success) { true }
+      let(:persist_failure) { false }
 
-    context "when the fields are edited and the update fails" do
       before do
-        allow(term).to receive(:persist!).and_return(persist_failure)
+        allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        allow(term).to receive(:attributes=)
+        allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+        allow(term).to receive(:attributes).and_return(params)
+        allow(term).to receive(:persist!).and_return(persist_success)
+        allow(term_form).to receive(:valid?).and_return(true)
         patch :update, :id => term.id, :vocabulary => params
       end
-      it "should show the edit form" do
-        expect(assigns(:term)).to eq term_form
-        expect(response).to render_template("edit")
+
+      context "when the fields are edited" do
+        it "should update the properties" do
+          expect(term).to have_received(:attributes=).with(params.except(:language))
+        end
+        it "should redirect to the updated term" do
+          expect(response).to redirect_to("/ns/#{term.id}")
+        end
+      end
+
+      context "when the fields are edited and the update fails" do
+        before do
+          allow(term).to receive(:persist!).and_return(persist_failure)
+          patch :update, :id => term.id, :vocabulary => params
+        end
+        it "should show the edit form" do
+          expect(assigns(:term)).to eq term_form
+          expect(response).to render_template("edit")
+        end
       end
     end
   end
-end

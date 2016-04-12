@@ -1,6 +1,7 @@
 class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   include ActiveModel::Validations
+
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
   configure :repository => :default
 
@@ -98,7 +99,7 @@ class Term < ActiveTriples::Resource
   end
 
   def language_from_symbol(language_symbol)
-   translator.find_by_symbol(language_symbol)
+    translator.find_by_symbol(language_symbol)
   end
 
   def translator
@@ -114,5 +115,4 @@ class Term < ActiveTriples::Resource
   def not_blank_node
     errors.add(:id, "can not be blank") if node?
   end
-
 end

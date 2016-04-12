@@ -24,5 +24,6 @@ module ControlledVocabularyManager
     Rails.application.routes.default_url_options[:host] = 'opaquenamespace.org'
     config.autoload_paths += %W(#{config.root}/lib)
     config.middleware.use ::ConnegMiddleware
+    config.encoding = "utf-8"
   end
 end
