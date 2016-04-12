@@ -5,7 +5,7 @@ RSpec.describe ChildNodeFinder do
     subject { ChildNodeFinder.new(repository, sparql_client) }
     let(:vocabulary) { Vocabulary.new("bla") }
     let(:repository) { TermInjector.new.term_form_repository }
-    let(:sparql_client) { VocabularyInjector.new.sparql_client }
+    let(:sparql_client) { VocabularyInjector.new.sparql_client.select.graph("#{Settings.marmotta.url}/context/#{Rails.env}")}
     let(:term) { repository.new("bla/1") }
     let(:unrelated_term) { repository.new("bla2/1") }
     let(:result) { subject.find_children(vocabulary) }
