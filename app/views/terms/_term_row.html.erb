@@ -4,6 +4,9 @@
   <ul style="list-style: none;">
     <% if @term.blacklisted_language_properties.include?(field) %>
       <% @term.get_values(field).each do |term| %>
+        <!-- This is a temporary fix!!!!!!!!! Since this is an RDF error, the easiest way to fix this issue
+          is by checking if a terms value responds to rdf_label. We need to fix this as we are enabling rdf to 
+          work for the whole system -->
         <% if term.respond_to?(:rdf_label) %>
           <li><%= term.rdf_label.first %></li>
         <% else %>
