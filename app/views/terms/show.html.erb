@@ -21,9 +21,6 @@
 <% if @term.term_id.hasParent? %>
   <%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id)  %>
 <% end %>
-<% if !@term.commit_history.nil? %>
-  <%= render :partial => "terms/history", locals: {:term => @term} %>
-<% end %>
 <table class="table table-condensed" style="margin-top: 20px;">
   <% @term.fields.each do |field| %>
     <%= render :partial => "terms/term_row", locals: {:field => field} %>
@@ -31,5 +28,9 @@
 </table>
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
+
+<% if !@term.commit_history.nil? %>
+  <%= render :partial => "terms/history", locals: {:term => @term} %>
+<% end %>
 
 <%= render("vocab_children", :vocabulary => @term) if @term.vocabulary? %>
