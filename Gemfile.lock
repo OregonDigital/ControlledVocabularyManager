@@ -380,6 +380,7 @@ GEM
       rspec-support (~> 3.1.0)
     rspec-support (3.1.2)
     rubyzip (1.1.7)
+    rugged (0.24.0)
     safe_yaml (1.0.4)
     sass (3.2.19)
     sass-rails (4.0.5)
@@ -496,6 +497,7 @@ DEPENDENCIES
   rails_config
   rdf-marmotta!
   rspec-rails
+  rugged
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   shoulda-matchers

@@ -3,10 +3,10 @@ class TermsController < AdminController
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
-
+  include GitInterface
   def show
     @term = find_term
-
+    @term.commit_history = get_history(@term.id)
     respond_to do |format|
       format.html
       format.nt { render body: @term.full_graph.dump(:ntriples), :content_type => Mime::NT }

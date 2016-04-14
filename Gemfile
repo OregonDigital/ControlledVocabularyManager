@@ -43,6 +43,7 @@ gem 'rdf-marmotta', :github => "terrellt/rdf-marmotta", :branch => "feature/UseS
 gem "sparql-client", :github => "ruby-rdf/sparql-client", :branch => "develop"
 
 gem 'warden-github-rails'
+gem 'rugged'
 
 gem 'simple_form'
 gem 'coveralls'
