@@ -2,11 +2,14 @@ module GitInterface
   extend ActiveSupport::Concern
   require 'rugged'
   
-  def rugged_create (id,string)
+  def rugged_create (id,string,action)
     repo = setup
 
-    #create branch and check it out
-    branch = repo.branches.create(id, "HEAD")
+    #find/create branch and check it out
+    branch = repo.branches[id]
+    if branch.nil?
+      branch = repo.branches.create(id, "HEAD")
+    end
     repo.checkout(branch)
     #add blob
     oid = repo.write(string,:blob)
@@ -18,7 +21,7 @@ module GitInterface
     options[:tree] = index.write_tree(repo)
     options[:author] = {:email => "author@uoregon.edu",:name => 'hayao', :time => Time.now }
     options[:committer] = {:email => "author@uoregon.edu", :name => 'hayao', :time => Time.now }
-    options[:message] = "adding " + id
+    options[:message] = action + ": " + id
     options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
     options[:update_ref] = 'HEAD'
     Rugged::Commit.create(repo, options)
@@ -122,7 +125,6 @@ module GitInterface
     end
   end
 
-
   def commit_info_rugged(repo, path)
 
     walker = Rugged::Walker.new(repo)
@@ -135,6 +137,7 @@ module GitInterface
       a
     end
   end
+
   def format_response(results)
     if results.empty?
       return
