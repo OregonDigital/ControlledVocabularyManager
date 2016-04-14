@@ -27,6 +27,8 @@ class TermsController < AdminController
     term_form.set_languages(params[:vocabulary])
 
     if term_form.save
+      rugged_create(combined_id.to_s, term_form.full_graph.dump(:ntriples))
+      rugged_merge(combined_id.to_s) #move to review
       redirect_to term_path(:id => term_form.id)
     else
       @term = term_form

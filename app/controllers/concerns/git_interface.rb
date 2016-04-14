@@ -2,17 +2,68 @@ module GitInterface
   extend ActiveSupport::Concern
   require 'rugged'
   
-  def rugged_create
-  #create branch and check it out
-  
-  #add blob
-  #commit
+  def rugged_create (id,string)
+    repo = setup
 
+    #create branch and check it out
+    branch = repo.branches.create(id, "HEAD")
+    repo.checkout(branch)
+    #add blob
+    oid = repo.write(string,:blob)
+    index = repo.index
+    index.read_tree(repo.head.target.tree)
+    index.add(:path => id, :oid => oid, :mode => 0100644)
+    #commit
+    options = {}
+    options[:tree] = index.write_tree(repo)
+    options[:author] = {:email => "author@uoregon.edu",:name => 'hayao', :time => Time.now }
+    options[:committer] = {:email => "author@uoregon.edu", :name => 'hayao', :time => Time.now }
+    options[:message] = "adding " + id
+    options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
+    options[:update_ref] = 'HEAD'
+    Rugged::Commit.create(repo, options)
+    index.write
+    options = {}
+    options[:strategy] = :force
+    repo.checkout_head(options)
+    repo.checkout('master')
   end
 
-  def rugged_merge
-  #merge 
-  #close branch
+  def rugged_merge (id)
+    repo = setup
+    repo.checkout('master')
+    #merge
+    into_branch = 'master'
+    from_branch = id
+    their_commit = repo.branches[into_branch].target_id
+    our_commit = repo.branches[from_branch].target_id
+
+    merge_index = repo.merge_commits(our_commit, their_commit)
+
+    if merge_index.conflicts?
+      # conflicts. deal with them
+    else
+      # no conflicts
+      commit_tree = merge_index.write_tree(repo)
+      options = {}
+      options[:tree] = commit_tree
+      options[:author] = { :email => 'reviewer@uoregon.edu', :name => 'toshio', :time => Time.now }
+      options[:committer] = { :email => "reviewer@uoregon.edu", :name => 'toshio', :time => Time.now }
+      options[:message] ||= "Merge #{from_branch} into #{into_branch}"
+      options[:parents] = [repo.head.target, our_commit]
+      options[:update_ref] = 'HEAD'
+
+      Rugged::Commit.create(repo, options)
+      repo.checkout_tree(commit_tree)
+      index = repo.index
+      index.write
+      options = {}
+      options[:strategy] = :force
+      repo.checkout_head(options)
+      #repo.push('origin', [repo.head.name], { credentials: @cred })
+      #repo.branches.delete(from_branch)
+      #close branch
+    end
   end
 
   #put this in config?
@@ -22,7 +73,7 @@ module GitInterface
 
   def get_history(id)
    #for now
-    repo = self.setup
+    repo = setup
     info = commit_info_rugged(repo, id)
     formatted = format_response(info)
    end
@@ -88,11 +139,8 @@ module GitInterface
     if results.empty?
       return
     else
-      authors = []
-      results.each do |thing|
-        authors << thing[:author][:name]
-      end
-      formatted = {:authors=>authors, :date_modified => results.first[:date] }
+      formatted = {:author => results.last[:author][:name],
+          :reviewer => results.first[:author][:name], :date_modified => results.first[:date] }
     end
   end
 
