@@ -56,8 +56,11 @@ class Term < ActiveTriples::Resource
     !values_for_property(:is_replaced_by).empty?
   end
 
-  def allow_deprecate?
-    true
+  def allow_vocab_deprecate?
+    injector = TermInjector.new
+    vocab = TermWithChildren.new(self, injector.child_node_finder)
+    deprecated_list = vocab.children.select { |c| c.deprecated? }
+    deprecated_list.empty?
   end
 
   def vocabulary?
