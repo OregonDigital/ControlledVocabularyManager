@@ -7,3 +7,8 @@
 <%= simple_form_for(@term, :url => update_vocabulary_path(:id => @term.id)) do |f| %>
   <%= render "terms/edit_form", :f => f, :term => @term %>
 <% end %>
+
+<% if @term.allow_deprecate? %>
+  <%= link_to "Deprecate", polymorphic_path([@term], :action => 'deprecate'), :class => 'btn btn-default' %>
+<% end %>
+

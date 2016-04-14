@@ -1,0 +1,12 @@
+<% content_for :title do %>
+  Deprecate <%= @term.id %>
+<% end %>
+
+<h1>Deprecate Vocabulary</h1>
+
+<div class="deprecate_form">
+<%= simple_form_for(@term, :url => update_vocabulary_path(:id => @term.id)) do |f| %>
+  <%= render "terms/deprecate_vocab_form", :f => f, :term => @term %>
+<% end %>
+</div>
+

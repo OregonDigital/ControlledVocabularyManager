@@ -19,6 +19,19 @@ RSpec.describe Term do
     end
   end
 
+  describe "#deprecated?" do
+    context "when it is deprecated" do
+      it "should return true" do
+        expect(resource.fields).to include(:is_replaced_by)
+      end
+    end
+    context "when it is active" do
+      it "should return true" do
+        expect(resource.fields).to include(:is_replaced_by)
+      end
+    end
+  end
+
   describe "#fields" do
     it "should return all available fields" do
       expect(resource.fields).to include(:comment, :modified, :label, :issued)
@@ -34,7 +47,6 @@ RSpec.describe Term do
 
   describe "#editable_fields_deprecate" do
     it "should return is_replaced_by field" do
-      expect(resource.editable_fields_deprecate).to eq resource.fields - [:issued, :modified, :label, :comment]
       expect(resource.editable_fields_deprecate).to include(:is_replaced_by)
     end
   end

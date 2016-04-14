@@ -23,6 +23,10 @@ class VocabulariesController < ApplicationController
     end
   end
 
+  def deprecate
+    @term = vocabulary_form_repository.find(params[:id])
+  end
+
   def edit
     @term = vocabulary_form_repository.find(params[:id])
   end
@@ -30,7 +34,9 @@ class VocabulariesController < ApplicationController
   def update
     edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.attributes = vocabulary_params
-    edit_vocabulary_form.set_languages(params[:vocabulary])
+    # edit_vocabulary_form.set_languages(params[:vocabulary]) unless params[:is_replaced_by].blank?
+
+    edit_vocabulary_form.set_languages(params[:vocabulary]) 
     if edit_vocabulary_form.save
       redirect_to term_path(:id => params[:id])
     else

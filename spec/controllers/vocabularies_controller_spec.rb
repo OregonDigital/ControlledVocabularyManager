@@ -63,7 +63,8 @@ RSpec.describe VocabulariesController do
 
     before do
       allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
-      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
+
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:persist!).and_return(persist_success)
       allow(vocabulary_form).to receive(:valid?).and_return(true)

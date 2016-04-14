@@ -5,12 +5,11 @@
 <h2><%= @term.rdf_label.first %></h2>
 <h3 class="uri"><%= @term.rdf_subject %></h3>
 
-<% if !@term.get_values(:is_replaced_by).empty? %>
+<% if @term.deprecated? %>
   <div class="alert alert-warning">
     <strong>Deprecated</strong> -
     <%= :is_replaced_by.to_s.humanize %>
     <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
-
   </div>
 <% end %>
 <%- if session[:authorized] == true  %>

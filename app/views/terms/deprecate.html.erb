@@ -1,5 +1,6 @@
 <h1>Deprecate Term</h1>
-
+<div class="deprecate_form">
 <%= simple_form_for(@term, :url => update_term_path(:id => @term.id)) do |f| %>
   <%= render "deprecate_form", :f => f, :term => @term %>
 <% end %>
+</div>

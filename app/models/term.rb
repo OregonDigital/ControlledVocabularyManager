@@ -52,6 +52,14 @@ class Term < ActiveTriples::Resource
     rdf_subject.to_s.gsub(self.class.base_uri,"")
   end
 
+  def deprecated?
+    !values_for_property(:is_replaced_by).empty?
+  end
+
+  def allow_deprecate?
+    true
+  end
+
   def vocabulary?
     type.include?(*Array(Vocabulary.type))
   end
@@ -69,7 +77,7 @@ class Term < ActiveTriples::Resource
   end
 
   def editable_fields_deprecate
-    fields - [:issued, :modified, :label, :comment]
+    fields - [:issued, :modified, :label, :comment, :date, :is_defined_by, :same_as, :alternate_name]
   end
 
   def to_param
