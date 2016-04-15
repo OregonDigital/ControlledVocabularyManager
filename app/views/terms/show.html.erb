@@ -12,7 +12,7 @@
     <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
   </div>
 <% end %>
-<%- if session[:authorized] == true  %>
+<%- if current_user && current_user.admin? %>
   <% if @term.vocabulary? %>
     <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id), {:class=>'btn btn-default'} %>
   <% end %>

@@ -50,6 +50,9 @@ gem 'marmotta'
 gem 'passenger'
 gem 'jettywrapper'
 
+gem 'devise'
+gem 'cancan'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'

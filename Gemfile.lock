@@ -84,6 +84,7 @@ GEM
     awesome_print (1.2.0)
     bcp47 (0.3.3)
       i18n
+    bcrypt (3.1.11)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.3.1.0)
@@ -92,6 +93,7 @@ GEM
     byebug (2.7.0)
       columnize (~> 0.3)
       debugger-linecache (~> 1.2)
+    cancan (1.6.10)
     capistrano (2.15.5)
       highline
       net-scp (>= 1.0.0)
@@ -137,6 +139,13 @@ GEM
     debugger-linecache (1.2.0)
     deprecation (0.2.2)
       activesupport
+    devise (3.5.6)
+      bcrypt (~> 3.0)
+      orm_adapter (~> 0.1)
+      railties (>= 3.2.6, < 5)
+      responders
+      thread_safe (~> 0.1)
+      warden (~> 1.2.3)
     diff-lcs (1.2.5)
     diffy (3.0.7)
     docile (1.1.5)
@@ -242,6 +251,7 @@ GEM
       mini_portile2 (~> 2.0.0.rc2)
     octokit (3.7.0)
       sawyer (~> 0.6.0, >= 0.5.3)
+    orm_adapter (0.5.0)
     passenger (5.0.7)
       rack
       rake (>= 0.8.1)
@@ -347,6 +357,8 @@ GEM
       rdf (~> 1.1, >= 1.1.9)
     rdoc (4.2.0)
       json (~> 1.4)
+    responders (1.1.2)
+      railties (>= 3.2, < 4.2)
     rest-client (1.7.2)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
@@ -458,12 +470,14 @@ DEPENDENCIES
   autoprefixer-rails
   awesome_print
   bootstrap-sass (~> 3.3.1)
+  cancan
   capistrano (~> 2.0)
   capybara
   capybara-screenshot
   coffee-rails (~> 4.0.0)
   coveralls
   database_cleaner
+  devise
   dotenv-rails
   factory_girl_rails
   formulaic
