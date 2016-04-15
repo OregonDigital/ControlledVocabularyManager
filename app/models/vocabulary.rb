@@ -19,12 +19,20 @@ class Vocabulary < Term
     deprecated_children.length == vocab_with_children.length
   end
 
+  def deprecated?
+    Term.find(vocab_subject_uri).deprecated? if Term.exists?(vocab_subject_uri)
+  end
+
   # Update the fields method with any new properties added to this model
   def fields
     [:title, :publisher] | super
   end
 
   private
+
+  def vocab_subject_uri
+    self.term_uri.uri.to_s
+  end
 
   def deprecated_children
     vocab_with_children.select { |c| c.deprecated? }

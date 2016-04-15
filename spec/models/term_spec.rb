@@ -21,13 +21,20 @@ RSpec.describe Term do
 
   describe "#deprecated?" do
     context "when it is deprecated" do
+      before do
+        resource.is_replaced_by = "test"
+      end
       it "should return true" do
-        expect(resource.fields).to include(:is_replaced_by)
+        expect(resource.deprecated?).to be true
       end
     end
     context "when it is active" do
+      before do
+        resource.is_replaced_by = []
+      end
+
       it "should return true" do
-        expect(resource.fields).to include(:is_replaced_by)
+        expect(resource.deprecated?).to be false
       end
     end
   end
