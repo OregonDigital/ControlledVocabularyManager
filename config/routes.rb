@@ -8,7 +8,6 @@ Rails.application.routes.draw do
   get '/ns/*id', :to => "terms#show", :as => "term"
   patch 'terms/*id', :to => "terms#update", :as => "update_term"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
-  patch 'vocabularies/*id', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
   patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
   get '/login'  => 'login#index'
@@ -20,6 +19,7 @@ Rails.application.routes.draw do
   post '/vocabularies/*vocabulary_id', :to => "terms#create", :as => "create_term"
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
+  get 'vocabularies/*id/deprecate', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
 
 
   get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"

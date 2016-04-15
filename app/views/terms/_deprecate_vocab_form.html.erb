@@ -1,0 +1,9 @@
+<p><%= term.rdf_subject %></p>
+
+<% if term.vocabulary? %>
+  <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => term, :attribute => :is_replaced_by, :form => f} %>
+<% end %>
+
+<%= f.button :submit, "Deprecate" %>
+
+

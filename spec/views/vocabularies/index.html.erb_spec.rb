@@ -5,6 +5,7 @@ RSpec.describe "vocabularies/index.html.erb" do
   let(:vocabulary) {
     v = Vocabulary.new("bla")
     v.label = "Test Vocabulary"
+    v.is_replaced_by = "test"
     v
   }
   before do
@@ -17,6 +18,7 @@ RSpec.describe "vocabularies/index.html.erb" do
   it "should display the label/title of the vocabulary" do
     expect(rendered).to have_content("Test Vocabulary")
   end
+
   context "when logged in" do
     before do
       session[:authorized] = true

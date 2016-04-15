@@ -40,7 +40,7 @@ class TermsController < ApplicationController
   def update
     edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = vocab_params
-    edit_term_form.set_languages(params[:vocabulary])
+    edit_term_form.set_languages(params[:vocabulary]) unless params[:is_replaced_by].blank?
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else

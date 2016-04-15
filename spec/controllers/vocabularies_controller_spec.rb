@@ -56,19 +56,20 @@ RSpec.describe VocabulariesController do
         :language => {
           :label => ["en"],
           :comment => ["en"]
-        }
+        },
       }
     end
     let(:persist_success) { true }
 
     before do
       allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
-      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
+
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:persist!).and_return(persist_success)
       allow(vocabulary_form).to receive(:valid?).and_return(true)
       allow(vocabulary).to receive(:attributes).and_return(params)
-      patch :update, :id => vocabulary.id, :vocabulary => params
+      patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
     end
 
     context "when the fields are edited" do
