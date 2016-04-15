@@ -3,8 +3,13 @@ html, body {
   padding: 0;
   margin: 0;
 }
+
 body {
   padding-top: 50px;
+}
+
+.alert > ul {
+  margin-left: 15px;
 }
 
 .starter-template {
@@ -20,6 +25,7 @@ body {
   height: auto;
   margin: 0 auto -60px;
 }
+
 .container-full .container {
   min-height: 100%;
   height: auto;
@@ -48,8 +54,42 @@ li.field-wrapper.input-group {
   margin-bottom: 0em;
 }
 
-.input-group-btn { vertical-align: top; }
+.input-group-btn {
+  vertical-align: top;
+}
 
 ul.listing {
   padding: 0;
 }
+
+textarea.tall {
+  min-height: 350px;
+}
+
+/* Bootstrapified spinner */
+.glyphicon.spinning {
+  margin-right: 10px;
+  animation: spin 1s infinite linear;
+  -webkit-animation: spin2 1s infinite linear;
+}
+
+@keyframes spin {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+
+  to {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+@-webkit-keyframes spin2 {
+  from {
+    -webkit-transform: rotate(0deg);
+  }
+
+  to {
+    -webkit-transform: rotate(360deg);
+  }
+}
+/* ^^ Bootstrapified spinner ^^ */

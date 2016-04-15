@@ -33,6 +33,7 @@ RSpec.describe IsValidRdfImportUrl do
 
       it "should add an error" do
         expect(errors).to receive(:add).with(:url, "is not an allowed RDF import URL")
+        expect(errors).to receive(:add).with(:base, "URL is not allowed for import.")
         validate
       end
     end
@@ -42,6 +43,7 @@ RSpec.describe IsValidRdfImportUrl do
 
       it "should add an error" do
         expect(errors).to receive(:add).with(:url, "is not a URL")
+        expect(errors).to receive(:add).with(:base, "URL is not valid.")
         validate
       end
     end
@@ -51,6 +53,7 @@ RSpec.describe IsValidRdfImportUrl do
 
       it "should add an error" do
         expect(errors).to receive(:add).with(:url, "can't be blank")
+        expect(errors).to receive(:add).with(:base, "URL cannot be blank.")
         validate
       end
     end

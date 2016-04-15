@@ -1,12 +1,10 @@
 class ImportRdfController < ApplicationController
-  delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
-  
   def index
-    @form = form_factory.new(*form_params)
+    @form = ImportForm.new(*form_params)
   end
 
   def import
-    @form = form_factory.new(*form_params)
+    @form = ImportForm.new(*form_params)
     unless @form.save
       render :index
       return
@@ -20,18 +18,38 @@ class ImportRdfController < ApplicationController
       return
     end
 
-    flash[:notice] = "Imported external RDF resource(s)"
+    flash[:success] = "Imported external RDF resource(s)"
+    redirect_to term_path(@form.term_list.terms.first.id)
+  end
+
+  # load_rdf process takes in the text of the RDF to import into the triplestore
+  def load
+    @form = LoadForm.new(*load_form_params)
+  end
+
+  # save to the triplestore
+  def save
+    @form = LoadForm.new(*load_form_params)
+    unless @form.save
+      render :load
+      return
+    end
+
+    flash[:success] = "Loaded RDF resource(s)"
     redirect_to term_path(@form.term_list.terms.first.id)
   end
 
   private
 
   def form_params
-    params[form_key] ||= {}
-    param_cleaner.call(params[form_key]).values_at(:url, :preview) + [rdf_importer_factory]
+    key = ImportForm.model_name.param_key
+    params[key] ||= {}
+    ParamCleaner.call(params[key]).values_at(:url, :preview) + [RdfImporter]
   end
 
-  def injector
-    @injector ||= ImportRdfInjector.new
+  def load_form_params
+    key = LoadForm.model_name.param_key
+    params[key] ||= {}
+    ParamCleaner.call(params[key]).values_at(:rdf_string) + [RdfImporter]
   end
 end

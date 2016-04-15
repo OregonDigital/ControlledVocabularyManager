@@ -28,6 +28,10 @@ class ImportForm
   def run
     return if term_list
     errors.clear
-    @term_list = rdf_importer_factory.new(errors, url).run
+    @term_list = rdf_importer_factory.new(errors, url: url, validators: validators).run
+  end
+
+  def validators
+    [IsValidRdfImportUrl]
   end
 end

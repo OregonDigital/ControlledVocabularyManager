@@ -24,4 +24,6 @@ Rails.application.routes.draw do
 
   get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"
   post "/import_rdf", :to => "import_rdf#import", :as => "import_rdf"
+  get "/load_rdf", :to => "import_rdf#load", :as => "load_rdf_form"
+  post "/load_rdf", :to => "import_rdf#save", :as => "save_rdf"
 end

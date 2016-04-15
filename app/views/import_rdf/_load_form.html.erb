@@ -1,0 +1,6 @@
+<%= simple_form_for(form, {:url => save_rdf_path} ) do |f| %>
+  <%= render :partial => "shared/errors", :locals => {:object => f.object} %>
+
+  <%= f.input :rdf_string, :label => "Enter RDF text", :as => :text, :input_html => { class: "tall" } %>
+  <%= f.button :button, "Load", :class => "btn-success has-button-spinner" %>
+<% end %>
