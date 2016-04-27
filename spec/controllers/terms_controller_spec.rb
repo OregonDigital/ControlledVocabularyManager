@@ -182,6 +182,22 @@ RSpec.describe TermsController do
         end
       end
       context "when vocabulary isn't found" do
+        let(:params) do
+          {
+            :term => {
+              :id => term_id
+            },
+            :vocabulary_id => "error404",
+            :term_type => "Term",
+            :vocabulary => {
+              :id => "error404",
+              :label => [""],
+              :language => {
+                :label => ["en"],
+              }
+            }
+          }
+        end
         before do
           allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
         end
