@@ -7,7 +7,7 @@ class PredicatesController < ApplicationController
     @predicates.sort_by! {|v| v[:label]}
   end
 
- def new
+  def new
     @predicate = predicate_form_repository.new
   end
 
