@@ -1,4 +1,6 @@
-class ImportRdfController < ApplicationController
+class ImportRdfController < AdminController
+  delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
+  
   def index
     @form = ImportForm.new(*form_params)
   end

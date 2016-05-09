@@ -5,9 +5,11 @@ RSpec.describe TermsController do
   let(:resource) { term_mock }
   let(:injector) { TermInjector.new }
   let(:decorated_resource) { TermWithChildren.new(resource, injector.child_node_finder) }
-  let(:logged_in) { true }
+  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+
   before do
-    allow(controller).to receive(:check_auth).and_return(true) if logged_in
+    #allow(controller).to receive(:check_auth).and_return(true) if logged_in
+    sign_in(user) if user
   end
 
   describe '#show' do
@@ -75,9 +77,10 @@ RSpec.describe TermsController do
       get :new, :vocabulary_id => vocabulary_id
     end
     context "when logged out" do
-      let(:logged_in) { false }
+      let(:user) { }
       it "should require login" do
-        expect(get_new).to redirect_to login_path
+        get_new
+        expect(response.body).to have_content("Only admin can access")
       end
     end
     context "when the vocabulary is not persisted" do
@@ -137,9 +140,9 @@ RSpec.describe TermsController do
         post :create, params
       end
       context "when logged out" do
-        let(:logged_in) { false }
+        let(:user) { }
         it "should require login" do
-          expect(response).to redirect_to login_path
+          expect(response.body).to have_content("Only admin can access")
         end
       end
       it "should save term form" do

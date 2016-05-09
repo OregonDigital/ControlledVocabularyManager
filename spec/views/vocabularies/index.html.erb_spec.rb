@@ -20,10 +20,11 @@ RSpec.describe "vocabularies/index.html.erb" do
   end
 
   context "when logged in" do
-    before do
-      session[:authorized] = true
-    end
+    let(:user) {User.create(:email => 'admin@example.com', :password => 'admin123', :role => "admin")}
+
     it "should display a link to create a new vocabulary" do
+      allow(view).to receive(:current_user).and_return(user)
+
       render
       expect(rendered).to have_link "Create Vocabulary", :href => "/vocabularies/new"
     end

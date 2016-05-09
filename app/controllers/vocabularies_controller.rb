@@ -1,4 +1,4 @@
-class VocabulariesController < ApplicationController
+class VocabulariesController < AdminController
   delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
   skip_before_filter :check_auth, :only => [:index]
 

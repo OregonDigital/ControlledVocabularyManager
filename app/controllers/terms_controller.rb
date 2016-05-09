@@ -1,4 +1,4 @@
-class TermsController < ApplicationController
+class TermsController < AdminController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]

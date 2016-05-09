@@ -9,13 +9,13 @@ RSpec.describe "shared/_navbar.html.erb" do
     before do
       session[:authorized] = true
     end
-    it "should display a link to import external RDF  " do
+    xit "should display a link to import external RDF  " do
       render
       expect(rendered).to have_link "Import External RDF", :href => "/import_rdf"
     end
   end
   context "when not logged in" do
-    it "should not display link to import external RDF" do
+    xit "should not display link to import external RDF" do
       render
       expect(rendered).to_not have_link "Import External RDF", :href => "/import_rdf"
     end

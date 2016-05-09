@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.feature "Using a language SELECT with a default language set", :js => true do
   background do
-    allow_any_instance_of(ApplicationController).to receive(:check_auth).and_return(true)
+    allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
   end
 
   scenario "adding another label defaults language select to english" do
