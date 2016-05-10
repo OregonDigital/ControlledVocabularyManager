@@ -19,6 +19,7 @@ RSpec.describe TermsController do
       full_graph = instance_double("RDF::Graph")
       allow(full_graph).to receive(:dump)
       allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
+      allow(resource).to receive(:commit_history=)
       allow_any_instance_of(DecoratingRepository).to receive(:find).with("bla").and_return(decorated_resource)
     end
 
@@ -108,7 +109,9 @@ RSpec.describe TermsController do
   end
 
   describe "POST create" do
-    let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+    let(:injector) { TermInjector.new }
+    let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
+    let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
     let(:term) { instance_double("Term") }
     let(:term_id) { "blah" }
     let(:params) do
@@ -130,8 +133,12 @@ RSpec.describe TermsController do
       let(:save_success) { true }
       let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
       before do
+        stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
         allow(term_form).to receive(:save).and_return(save_success)
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump).and_return("blah")
+        allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:id).and_return(term_id)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -262,7 +269,9 @@ RSpec.describe TermsController do
 
     describe "PATCH update" do
       let(:term) { term_mock }
-      let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+      let(:injector) { TermInjector.new }
+      let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
+      let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
       let(:params) do
         {
           :label => ["Test"],
@@ -276,7 +285,11 @@ RSpec.describe TermsController do
       let(:persist_failure) { false }
 
       before do
+        stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump).and_return("blah")
+        allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
         allow(term).to receive(:attributes).and_return(params)
