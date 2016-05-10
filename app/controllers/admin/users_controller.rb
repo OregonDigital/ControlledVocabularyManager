@@ -1,5 +1,6 @@
 class Admin::UsersController < AdminController
   respond_to :html, :json
+  before_filter :require_admin
 
   def index
     @users = User.all
