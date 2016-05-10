@@ -2,7 +2,7 @@
   Predicates
 <% end %>
 <h1>Predicates</h1>
-<%- if session[:authorized] == true  %>
+<%- if current_user && current_user.admin?  %>
   <%= link_to "Create Predicate", new_predicate_path, {:class=>'btn btn-default'} %>
 <% end %>
 

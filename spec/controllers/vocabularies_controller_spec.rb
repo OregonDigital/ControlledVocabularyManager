@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe VocabulariesController do
-  let(:logged_in) { true }
+  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+
   before do
-    allow(controller).to receive(:check_auth).and_return(true) if logged_in
+    sign_in(user) if user 
   end
 
   describe "GET 'new'" do
@@ -12,9 +13,9 @@ RSpec.describe VocabulariesController do
       result
     end
     context "when logged out" do
-      let(:logged_in) { false }
+      let(:user) { }
       it "should require login" do
-        expect(result).to redirect_to login_path
+        expect(result.body).to have_content("Only admin can access")
       end
     end
     it "should be successful" do

@@ -3,7 +3,7 @@ require 'corporate_name'
 
 RSpec.feature "Using the term type SELECT", :js => true do
   background do
-    allow_any_instance_of(ApplicationController).to receive(:check_auth).and_return(true)
+    allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
   end
 
   scenario "hide fields which aren't specifically configured as visible for the model" do

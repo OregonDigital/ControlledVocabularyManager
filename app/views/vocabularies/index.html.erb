@@ -2,7 +2,7 @@
   Vocabularies
 <% end %>
 <h1>Vocabularies</h1>
-<%- if session[:authorized] == true  %>
+<%- if current_user && current_user.admin?  %>
   <%= link_to "Create Vocabulary", new_vocabulary_path, {:class=>'btn btn-default'} %>
 <% end %>
 <table class="table table-striped">

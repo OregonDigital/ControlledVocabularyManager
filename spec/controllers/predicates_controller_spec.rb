@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe PredicatesController do
-  let(:logged_in) { true}
+  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+
   before do
-    allow(controller).to receive(:check_auth).and_return(true) if logged_in
+    #allow(controller).to receive(:check_auth).and_return(true) if logged_in
+    sign_in(user) if user
   end
 
   describe "Get 'new'" do

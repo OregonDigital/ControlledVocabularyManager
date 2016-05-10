@@ -30,7 +30,6 @@ RSpec.describe ImportRdfController, :type => :controller do
                     "@language": "en"
               }
   }'}
-  let(:logged_in) { true }
   let(:form_factory) { class_double("ImportForm") }
   let(:form) { instance_double("ImportForm") }
   let(:load_form) { instance_double("LoadForm") }
@@ -44,17 +43,15 @@ RSpec.describe ImportRdfController, :type => :controller do
     {:load_form => {:rdf_string => jsonld}}
   end
   before do
-    allow(controller).to receive(:check_auth).and_return(true) if logged_in
     allow(ImportForm).to receive(:new).with(url, preview, RdfImporter).and_return(form)
     allow(LoadForm).to receive(:new).with(jsonld, RdfImporter).and_return(load_form)
   end
 
   describe "GET 'index'" do
     context "when logged out" do
-      let(:logged_in) { false }
       it "should require login" do
         get :index
-        expect(response).to redirect_to login_path
+        expect(response.body).to have_content("Only admin can access")
       end
 
       it "shouldn't create the ImportForm" do
@@ -64,7 +61,9 @@ RSpec.describe ImportRdfController, :type => :controller do
     end
 
     context "when logged in" do
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
       before do
+        allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
         expect(ImportForm).to receive(:new).with(nil, nil, RdfImporter).and_return(form)
       end
 
@@ -82,14 +81,17 @@ RSpec.describe ImportRdfController, :type => :controller do
 
   describe "POST 'import'" do
     context "when logged out" do
-      let(:logged_in) { false }
       it "should require login" do
         post :import, params
-        expect(response).to redirect_to login_path
+        expect(response.body).to have_content("Only admin can access")
       end
     end
 
     context "when logged in" do
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+      before do
+        allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
+      end
       context "and the form doesn't save" do
         before do
           expect(form).to receive(:save).and_return(false)
@@ -153,7 +155,7 @@ RSpec.describe ImportRdfController, :type => :controller do
       let(:logged_in) { false }
       it "should require login" do
         get :load
-        expect(response).to redirect_to login_path
+        expect(response.body).to eq("Only admin can access")
       end
 
       it "shouldn't create the LoadForm" do
@@ -164,6 +166,7 @@ RSpec.describe ImportRdfController, :type => :controller do
 
     context "when logged in" do
       before do
+        allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
         expect(LoadForm).to receive(:new).with(nil, RdfImporter).and_return(load_form)
       end
 
@@ -183,13 +186,14 @@ RSpec.describe ImportRdfController, :type => :controller do
       let(:logged_in) { false }
       it "should require login" do
         post :save, load_params
-        expect(response).to redirect_to login_path
+        expect(response.body).to eq("Only admin can access")
       end
     end
 
     context "when logged in" do
       context "and the form doesn't save" do
         before do
+          allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
           expect(load_form).to receive(:save).and_return(false)
           post :save, load_params
         end
@@ -209,6 +213,7 @@ RSpec.describe ImportRdfController, :type => :controller do
         let(:termlist) { instance_double("ImportableTermList") }
         context "and the form is posted with valid jsonld" do
           before do
+            allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
             expect(load_form).to receive(:save).and_return(true)
             expect(load_form).to receive(:term_list).and_return(termlist)
             expect(termlist).to receive(:terms).and_return(terms)

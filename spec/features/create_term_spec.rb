@@ -1,8 +1,9 @@
 require 'rails_helper'
 
-RSpec.feature "Creating a vocabulary & term", :js => true do
+RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
+  given(:user) { User.create(:email => 'admin@example.com', :password => 'admin123', :role => "admin") }
   background do
-    allow_any_instance_of(ApplicationController).to receive(:check_auth).and_return(true)
+    allow_any_instance_of(ApplicationController).to receive(:current_user) {user}
   end
   scenario "succesfully creating a term" do
     vocabulary_create_page = VocabularyCreatePage.new
@@ -65,4 +66,13 @@ end
 
 def get_vocab_statement_list
   Vocabulary.find('TestVocab').statements.each.map{|x| x}
+end
+def capybara_login(user)
+  visit new_user_registration_path
+  page.fill_in 'user_email', :with => user.email 
+  page.fill_in 'user_password', :with => user.password
+  page.fill_in 'user_password_confirmation', :with => user.password
+  sleep(5)
+  page.click_button "Sign up"
+  expect(current_path).to eq root_path
 end

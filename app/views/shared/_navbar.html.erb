@@ -10,13 +10,19 @@
 
           <li><%= link_to "Predicates", predicates_path %></li>
 
-          <%- if session[:authorized] == true  %>
-            <li><%= link_to "Import External RDF", import_rdf_form_path %></li>
+          <% if current_user %>
+            <% if current_user.admin? %>
+              <li><%= link_to "Import External RDF", import_rdf_form_path %></li>
             <li><%= link_to "Load RDF", load_rdf_form_path %></li>
-            <li><%= link_to "Logout", '/login/auth' %></li>
-          <%- else -%>
-            <li><%= link_to "Login", '/login/auth' %></li>
-          <%- end -%>
+              <li><%= link_to "Admin Dashboard", admin_path %></li>  
+            <% end %>
+            <li><%= link_to "Logout", destroy_user_session_path %></li>
+            <li class="pull-right" style="color: #9d9d9d; padding-top: 15px; padding-left: 50px;" >
+              Hello <%= current_user.email %>
+            </li>
+          <% else %>
+            <li><%= link_to "Login", "/users/sign_in" %></li>
+          <% end %>
         </ul>
       </div><!--/.nav-collapse -->
     </div>

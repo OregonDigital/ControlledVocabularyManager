@@ -26,8 +26,9 @@ RSpec.describe "terms/show" do
       render
     end
     context "when logged in" do
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
       before do
-        session[:authorized] = true
+        sign_in(user) if user
       end
       it "should have a link to create a resource" do
          render
@@ -63,8 +64,10 @@ RSpec.describe "terms/show" do
     end
   end
   context "when logged in" do
+    let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+
     before do
-      session[:authorized] = true
+      sign_in(user) if user
     end
     it "should have a link to edit the term" do
       render
