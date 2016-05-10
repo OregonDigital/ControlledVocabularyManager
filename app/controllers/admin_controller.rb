@@ -1,5 +1,5 @@
 class AdminController < ApplicationController
-  before_filter :require_admin
+  before_filter :require_admin, :except => [:index]
   
   def index
     
