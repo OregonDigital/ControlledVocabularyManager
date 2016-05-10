@@ -5,7 +5,6 @@
       </div>
       <div id="navbar" class="collapse navbar-collapse">
         <ul class="nav navbar-nav">
-          <li><%= link_to "Home", '/' %></li>
           <li><%= link_to "Vocabularies", vocabularies_path %></li>
 
           <li><%= link_to "Predicates", predicates_path %></li>
@@ -18,7 +17,7 @@
             <% end %>
             <li><%= link_to "Logout", destroy_user_session_path %></li>
             <li class="pull-right" style="color: #9d9d9d; padding-top: 15px; padding-left: 50px;" >
-              Hello <%= current_user.email %>
+              <%= current_user.email %>
             </li>
           <% else %>
             <li><%= link_to "Login", "/users/sign_in" %></li>
