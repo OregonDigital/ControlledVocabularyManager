@@ -1,7 +1,8 @@
 class IsValidRdfImportUrl < ActiveModel::Validator
   def validate(record)
     if record.url.blank?
-      record.errors.add(:url, "can't be blank")
+      record.errors.add(:url, "can't be blank") if record.url.blank?
+      record.errors.add(:base, "URL cannot be blank.") if record.url.blank?
       return
     end
 
@@ -9,11 +10,13 @@ class IsValidRdfImportUrl < ActiveModel::Validator
       uri = URI.parse(record.url)
     rescue
       record.errors.add(:url, "is not a URL")
+      record.errors.add(:base, "URL is not valid.")
       return
     end
 
     unless allowed_uri(uri)
       record.errors.add(:url, "is not an allowed RDF import URL")
+      record.errors.add(:base, "URL is not allowed for import.")
     end
   end
 

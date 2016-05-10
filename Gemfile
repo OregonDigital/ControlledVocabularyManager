@@ -37,6 +37,7 @@ gem 'iso-639'
 
 # Active Triples for RDF resources.
 gem 'active-triples', '~> 0.6.0'
+gem 'json-ld'
 gem 'rdf-marmotta', :github => "terrellt/rdf-marmotta", :branch => "feature/UseSparqlRepository"
 gem "sparql-client", :github => "ruby-rdf/sparql-client", :branch => "develop"
 

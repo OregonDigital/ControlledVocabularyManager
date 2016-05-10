@@ -472,6 +472,7 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jettywrapper
   jquery-rails
+  json-ld
   marmotta
   passenger
   poltergeist (~> 1.9.0)
@@ -495,3 +496,6 @@ DEPENDENCIES
   warden-github-rails
   warden-rspec-rails!
   webmock
+
+BUNDLED WITH
+   1.11.2

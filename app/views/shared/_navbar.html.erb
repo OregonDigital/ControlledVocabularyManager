@@ -11,7 +11,8 @@
           <li><%= link_to "Predicates", predicates_path %></li>
 
           <%- if session[:authorized] == true  %>
-            <li><%= link_to "Import External RDF", import_rdf_path %></li>
+            <li><%= link_to "Import External RDF", import_rdf_form_path %></li>
+            <li><%= link_to "Load RDF", load_rdf_form_path %></li>
             <li><%= link_to "Logout", '/login/auth' %></li>
           <%- else -%>
             <li><%= link_to "Login", '/login/auth' %></li>
