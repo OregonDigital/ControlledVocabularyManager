@@ -56,6 +56,10 @@ class Term < ActiveTriples::Resource
     !values_for_property(:is_replaced_by).empty?
   end
 
+  def deprecated_vocab?
+    Term.find(vocab_subject_uri).deprecated? if Term.exists?(vocab_subject_uri)
+  end
+
   def vocabulary?
     type.include?(*Array(Vocabulary.type))
   end
@@ -111,6 +115,10 @@ class Term < ActiveTriples::Resource
   end
 
   private
+
+  def vocab_subject_uri
+    self.term_uri.uri.to_s
+  end
 
   def marmotta_connection
     Marmotta::Connection.new(uri: Settings.marmotta.url, context: Rails.env)

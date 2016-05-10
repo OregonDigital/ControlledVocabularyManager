@@ -11,7 +11,7 @@
       <td><%= link_to vocab.rdf_label.first, term_path(:id => vocab.id) %></td>
       <td><span class="uri"><%= link_to vocab.rdf_subject, term_path(:id => vocab.id) %></span></td>
       <td>
-        <% if vocab.deprecated? %>
+        <% if vocab.deprecated_vocab? %>
           <span class="label label-warning">Deprecated</span>
         <% end %>
       </td>

@@ -64,7 +64,6 @@ class TermsController < AdminController
     @term = term_form_repository.find(params[:id])
   end
 
-
   private
 
   def term_params
