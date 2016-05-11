@@ -21,5 +21,13 @@ test:
   database: db/test.sqlite3
 
 production:
-  <<: *default
+  adapter: <%= ENV['CVM_ADAPTER'] || "sqlite3" %>
   database: <%= ENV['CVM_DB'] || 'db/production.sqlite3' %>
+  encoding: utf8
+  reconnect: false
+  username: <%= ENV['CVM_DB_USERNAME'] %>
+  password: <%= ENV['CVM_DB_PASSWORD'] %>
+  host: <%= ENV['CVM_DB_HOST'] %>
+  port: <%= ENV['CVM_DB_PORT'] || 3306 %>
+  pool: 5
+  timeout: 5000
