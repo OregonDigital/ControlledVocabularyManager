@@ -346,7 +346,7 @@ RSpec.describe TermsController do
       context "when the fields are edited and the update fails" do
         before do
           allow(term).to receive(:persist!).and_return(persist_failure)
-          patch :update, :id => term.id, :vocabulary => params
+          patch :deprecate_only, :id => term.id, :vocabulary => params
         end
         it "should show the edit form" do
           expect(assigns(:term)).to eq term_form
