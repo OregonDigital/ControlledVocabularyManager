@@ -305,4 +305,53 @@ RSpec.describe TermsController do
         end
       end
     end
-  end
+
+    describe "PATCH deprecate_only" do
+      let(:term) { term_mock }
+      let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+      let(:params) do
+        {
+          :label => ["Test"],
+          :comment => ["Comment"],
+          :is_replaced_by => ["test"],
+          :language => {
+            :label => ["en"],
+            :comment => ["en"]}
+        }
+      end
+      let(:persist_success) { true }
+      let(:persist_failure) { false }
+
+      before do
+        allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        allow(term).to receive(:attributes=)
+        allow(term).to receive(:is_replaced_by=)
+        allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+        allow(term).to receive(:attributes).and_return(params)
+        allow(term).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
+        allow(term).to receive(:persist!).and_return(persist_success)
+        allow(term_form).to receive(:valid?).and_return(true)
+        patch :deprecate_only, :id => term.id, :vocabulary => params
+      end
+
+      context "when the fields are edited" do
+        it "should update the is_replaced_by property" do
+          expect(term).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
+        end
+        it "should redirect to the updated term" do
+          expect(response).to redirect_to("/ns/#{term.id}")
+        end
+      end
+
+      context "when the fields are edited and the update fails" do
+        before do
+          allow(term).to receive(:persist!).and_return(persist_failure)
+          patch :update, :id => term.id, :vocabulary => params
+        end
+        it "should show the edit form" do
+          expect(assigns(:term)).to eq term_form
+          expect(response).to render_template("edit")
+        end
+      end
+    end
+end
