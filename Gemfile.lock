@@ -238,6 +238,7 @@ GEM
     minitest (5.7.0)
     multi_json (1.11.2)
     multipart-post (2.0.0)
+    mysql2 (0.3.20)
     net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -488,6 +489,7 @@ DEPENDENCIES
   jquery-rails
   json-ld
   marmotta
+  mysql2
   passenger
   poltergeist (~> 1.9.0)
   rails (= 4.1.7)
