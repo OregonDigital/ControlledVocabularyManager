@@ -40,7 +40,18 @@ class TermsController < AdminController
   def update
     edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = vocab_params
-    edit_term_form.set_languages(params[:vocabulary]) unless params[:is_replaced_by].blank?
+    edit_term_form.set_languages(params[:vocabulary])
+    if edit_term_form.save
+      redirect_to term_path(:id => params[:id])
+    else
+      @term = edit_term_form
+      render "edit"
+    end
+  end
+
+  def deprecate_only
+    edit_term_form = term_form_repository.find(params[:id])
+    edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else
@@ -52,7 +63,6 @@ class TermsController < AdminController
   def deprecate
     @term = term_form_repository.find(params[:id])
   end
-
 
   private
 

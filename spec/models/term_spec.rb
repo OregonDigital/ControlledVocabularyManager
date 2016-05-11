@@ -39,6 +39,30 @@ RSpec.describe Term do
     end
   end
 
+  describe "#deprecated_vocab?" do
+    context "when vocabulary is deprecated" do
+      before do
+        resource.type = Vocabulary.type
+        resource.is_replaced_by = ["test"]
+        resource.persist!
+      end
+      it "should return true" do
+        expect(resource.deprecated_vocab?).to be true
+      end
+    end
+    context "when vocabulary is active" do
+      before do
+        resource.type = Vocabulary.type
+        resource.is_replaced_by = []
+        resource.persist!
+      end
+
+      it "should return true" do
+        expect(resource.deprecated_vocab?).to be false
+      end
+    end
+  end
+
   describe "#fields" do
     it "should return all available fields" do
       expect(resource.fields).to include(:comment, :modified, :label, :issued)

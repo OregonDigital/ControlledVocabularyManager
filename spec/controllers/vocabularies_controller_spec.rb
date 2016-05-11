@@ -105,6 +105,54 @@ RSpec.describe VocabulariesController do
     end
   end
 
+  describe "PATCH 'deprecate_only'" do
+    let(:vocabulary) { vocabulary_mock }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
+    let(:params) do
+      {
+        :comment => ["Test"],
+        :label => ["Test"],
+        :is_replaced_by => ["test"],
+        :language => {
+          :label => ["en"],
+          :comment => ["en"]
+        },
+      }
+    end
+    let(:persist_success) { true }
+
+    before do
+      allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+      allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
+
+      allow(vocabulary).to receive(:attributes=)
+      allow(vocabulary).to receive(:is_replaced_by=)
+      allow(vocabulary).to receive(:persist!).and_return(persist_success)
+      allow(vocabulary_form).to receive(:valid?).and_return(true)
+      allow(vocabulary).to receive(:attributes).and_return(params)
+      allow(vocabulary).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
+      patch :deprecate_only, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+    end
+
+    context "when the fields are edited" do
+      it "should update the replaced_by property" do
+        expect(vocabulary).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
+      end
+      it "should redirect to the updated term" do
+        expect(response).to redirect_to("/ns/#{vocabulary.id}")
+      end
+    end
+
+    context "when the fields are edited and the update fails" do
+      let(:persist_success) { false }
+      it "should show the edit form" do
+        expect(assigns(:term)).to eq vocabulary_form
+        expect(response).to render_template("edit")
+      end
+    end
+  end
+
+
   describe "GET 'index'" do
     context "when there are vocabularies" do
       let(:injector) { VocabularyInjector.new }

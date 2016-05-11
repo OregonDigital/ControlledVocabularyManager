@@ -19,7 +19,9 @@ Rails.application.routes.draw do
   end
 
   get '/ns/*id', :to => "terms#show", :as => "term"
+  patch 'terms/*id/deprecate_only', :to => "terms#deprecate_only", :as => "deprecate_only_term"
   patch 'terms/*id', :to => "terms#update", :as => "update_term"
+  patch 'vocabularies/*id/deprecate_only', :to => "vocabularies#deprecate_only", :as => "deprecate_only_vocabulary"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
   patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
