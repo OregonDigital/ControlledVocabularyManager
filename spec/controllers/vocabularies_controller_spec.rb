@@ -107,7 +107,7 @@ RSpec.describe VocabulariesController do
 
   describe "PATCH 'deprecate_only'" do
     let(:vocabulary) { vocabulary_mock }
-    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
+    let(:vocabulary_form) { DeprecateVocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
     let(:params) do
       {
         :comment => ["Test"],
@@ -122,7 +122,7 @@ RSpec.describe VocabulariesController do
     let(:persist_success) { true }
 
     before do
-      allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+      allow_any_instance_of(DeprecateVocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
 
       allow(vocabulary).to receive(:attributes=)
@@ -147,7 +147,7 @@ RSpec.describe VocabulariesController do
       let(:persist_success) { false }
       it "should show the edit form" do
         expect(assigns(:term)).to eq vocabulary_form
-        expect(response).to render_template("edit")
+        expect(response).to render_template("deprecate")
       end
     end
   end

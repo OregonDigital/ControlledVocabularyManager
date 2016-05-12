@@ -29,4 +29,14 @@ module Sanitize
     end
     message
   end
+
+  def verify_uri(string)
+    begin
+      uri = URI.parse(string)
+      resp = uri.kind_of?(URI::HTTP)
+    rescue URI::InvalidURIError
+      resp = false
+    end
+    resp
+  end
 end
