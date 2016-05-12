@@ -1,11 +1,18 @@
 require 'rails_helper'
+require 'rugged'
+require 'support/test_git_setup'
 
 RSpec.describe PredicatesController do
+  include TestGitSetup
   let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
 
   before do
     #allow(controller).to receive(:check_auth).and_return(true) if logged_in
     sign_in(user) if user
+    setup_git
+  end
+  after do
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   describe "Get 'new'" do
@@ -43,7 +50,10 @@ RSpec.describe PredicatesController do
 
   describe "PATCH 'update'" do
     let(:predicate) { predicate_mock }
-    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(predicate), Predicate) }
+    let(:injector) { PredicateInjector.new }
+    let(:twc) { TermWithChildren.new(predicate, injector.child_node_finder)}
+    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(twc), Predicate) }
+    let(:predicate_params) { {:id => "blah"} }
     let(:params) do
       {
         :comment => ["Test"],
@@ -57,8 +67,12 @@ RSpec.describe PredicatesController do
     let(:persist_success) { true }
 
     before do
+      stub_repository
       allow_any_instance_of(PredicateFormRepository).to receive(:find).and_return(predicate_form)
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+      full_graph = instance_double("RDF::Graph")
+      allow(full_graph).to receive(:dump).and_return("blah")
+      allow(predicate_form).to receive(:full_graph).and_return(full_graph)
       allow(predicate).to receive(:attributes=)
       allow(predicate).to receive(:persist!).and_return(persist_success)
       allow(predicate_form).to receive(:valid?).and_return(true)
@@ -134,8 +148,10 @@ RSpec.describe PredicatesController do
   end
 
   describe "POST create" do
+    let(:term_id) {"blah"}
     let(:predicate_params) do
       {
+        :id => term_id,
         :label => ["Test1"],
         :comment => ["Test2"],
         :language => {
@@ -144,13 +160,21 @@ RSpec.describe PredicatesController do
           }
       }
     end
+    let(:injector) { PredicateInjector.new }
+    let(:twc) { TermWithChildren.new(predicate, injector.child_node_finder)}
+
     let(:predicate) { instance_double("Predicate") }
-    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(predicate), Predicate) }
+    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(twc), Predicate) }
     let(:result) { post 'create', :predicate => predicate_params, :vocabulary => predicate_params }
     let(:save_success) { true }
     before do
+      stub_repository
       allow_any_instance_of(PredicateFormRepository).to receive(:new).and_return(predicate_form)
       allow(predicate_form).to receive(:save).and_return(save_success)
+      full_graph = instance_double("RDF::Graph")
+      allow(full_graph).to receive(:dump).and_return("blah")
+      allow(predicate_form).to receive(:full_graph).and_return(full_graph)
+
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(predicate).to receive(:id).and_return("test")
       allow(predicate).to receive(:attributes=)

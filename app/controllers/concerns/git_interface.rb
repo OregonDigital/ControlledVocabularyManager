@@ -94,7 +94,7 @@ module GitInterface
       else
         entry = nil
       end
-    else #vocabulary or predicate
+    else # predicate
       entry = commit.tree[path]
     end
     parent = commit.parents[0]
