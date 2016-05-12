@@ -72,6 +72,20 @@ RSpec.describe DeprecateVocabularyForm do
         expect(subject.errors[:is_replaced_by]).to include "can't be blank"
       end
     end
+    context "when is_replaced_by is invalid" do
+      let(:params) do
+        {
+          :comment => ["Comment"],
+          :label => ["Label"],
+          :is_replaced_by => []
+        }
+      end
+
+      it "should not be valid" do
+        expect(subject).not_to be_valid
+        expect(subject.errors[:is_replaced_by]).to include "can't be blank"
+      end
+    end
   end
 
   describe "#save" do
