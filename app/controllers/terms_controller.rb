@@ -1,5 +1,6 @@
 class TermsController < AdminController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
+  delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
 
@@ -50,13 +51,13 @@ class TermsController < AdminController
   end
 
   def deprecate_only
-    edit_term_form = term_form_repository.find(params[:id])
+    edit_term_form = deprecate_term_form_repository.find(params[:id])
     edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
     if edit_term_form.save
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_term_form
-      render "edit"
+      render "deprecate"
     end
   end
 
@@ -76,6 +77,10 @@ class TermsController < AdminController
 
   def injector
     @injector ||= TermInjector.new(params)
+  end
+
+  def deprecate_injector
+    @injector ||= DeprecateTermInjector.new(params)
   end
 
   def find_term

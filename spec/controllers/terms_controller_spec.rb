@@ -308,7 +308,7 @@ RSpec.describe TermsController do
 
     describe "PATCH deprecate_only" do
       let(:term) { term_mock }
-      let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+      let(:term_form) { DeprecateTermForm.new(SetsAttributes.new(term), Term) }
       let(:params) do
         {
           :label => ["Test"],
@@ -323,7 +323,7 @@ RSpec.describe TermsController do
       let(:persist_failure) { false }
 
       before do
-        allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        allow_any_instance_of(DeprecateTermFormRepository).to receive(:find).and_return(term_form)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:is_replaced_by=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -350,7 +350,7 @@ RSpec.describe TermsController do
         end
         it "should show the edit form" do
           expect(assigns(:term)).to eq term_form
-          expect(response).to render_template("edit")
+          expect(response).to render_template("deprecate")
         end
       end
     end
