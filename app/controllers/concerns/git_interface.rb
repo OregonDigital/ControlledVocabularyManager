@@ -4,7 +4,6 @@ module GitInterface
   
   def rugged_create (id,string,action)
     repo = setup
-
     #find/create branch and check it out
     branch = repo.branches[id]
     if branch.nil?
@@ -17,10 +16,11 @@ module GitInterface
     index.read_tree(repo.head.target.tree)
     index.add(:path => id, :oid => oid, :mode => 0100644)
     #commit
+    name = current_user.email.split('@').first
     options = {}
     options[:tree] = index.write_tree(repo)
-    options[:author] = {:email => "author@uoregon.edu",:name => 'hayao', :time => Time.now }
-    options[:committer] = {:email => "author@uoregon.edu", :name => 'hayao', :time => Time.now }
+    options[:author] = {:email => current_user.email,:name => name, :time => Time.now }
+    options[:committer] = {:email => current_user.email, :name => name, :time => Time.now }
     options[:message] = action + ": " + id
     options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
     options[:update_ref] = 'HEAD'
@@ -47,11 +47,12 @@ module GitInterface
       # conflicts. deal with them
     else
       # no conflicts
+      name = current_user.email.split('@').first
       commit_tree = merge_index.write_tree(repo)
       options = {}
       options[:tree] = commit_tree
-      options[:author] = { :email => 'reviewer@uoregon.edu', :name => 'toshio', :time => Time.now }
-      options[:committer] = { :email => "reviewer@uoregon.edu", :name => 'toshio', :time => Time.now }
+      options[:author] = { :email => current_user.email, :name => name, :time => Time.now }
+      options[:committer] = { :email => current_user.email, :name => name, :time => Time.now }
       options[:message] ||= "Merge #{from_branch} into #{into_branch}"
       options[:parents] = [repo.head.target, our_commit]
       options[:update_ref] = 'HEAD'
@@ -71,11 +72,10 @@ module GitInterface
 
   #put this in config?
   def setup
-    repo = Rugged::Repository.new('/home/lsato/test-rugged')
+    repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   def get_history(id)
-   #for now
     repo = setup
     info = commit_info_rugged(repo, id)
     formatted = format_response(info)
@@ -94,7 +94,7 @@ module GitInterface
       else
         entry = nil
       end
-    else
+    else #vocabulary or predicate
       entry = commit.tree[path]
     end
     parent = commit.parents[0]
@@ -132,18 +132,27 @@ module GitInterface
     walker.push(repo.last_commit)
     walker.inject([]) do |a, c|
       if entry_changed? c, path, repo
-         a << {author: c.author, date: c.time, hash: c.oid}
+         a << {author: c.author, date: c.time, hash: c.oid, message: c.message}
       end
       a
     end
   end
 
   def format_response(results)
+
     if results.empty?
       return
     else
-      formatted = {:author => results.last[:author][:name],
-          :reviewer => results.first[:author][:name], :date_modified => results.first[:date] }
+      formatted = { :date_modified => results.first[:date] }
+      results.each do |commit|
+        if commit[:message].include? "Merge"
+          formatted[:reviewer] = commit[:author][:name]
+        else
+          formatted[:author] = commit[:author][:name]
+        end
+        break if formatted.key?(:author) && formatted.key?(:reviewer)
+      end
+      formatted
     end
   end
 

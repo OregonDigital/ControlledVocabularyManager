@@ -37,4 +37,7 @@ Rails.application.configure do
 
   # Devise install recommendation
   config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+
+  #Location of local git repo
+  config.rugged_repo = "git_dev"
 end
