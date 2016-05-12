@@ -1,5 +1,6 @@
 class VocabulariesController < AdminController
   delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
+  delegate :deprecate_vocabulary_form_repository, :to => :deprecate_injector
   skip_before_filter :check_auth, :only => [:index]
 
   def index
@@ -45,14 +46,14 @@ class VocabulariesController < AdminController
   end
 
   def deprecate_only
-    edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
+    edit_vocabulary_form = deprecate_vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.is_replaced_by = vocabulary_params[:is_replaced_by]
 
     if edit_vocabulary_form.save
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_vocabulary_form
-      render "edit"
+      render "deprecate"
     end
   end
 
@@ -65,5 +66,9 @@ class VocabulariesController < AdminController
 
   def injector
     @injector ||= VocabularyInjector.new(params)
+  end
+
+  def deprecate_injector
+    @injector ||= DeprecateVocabularyInjector.new(params)
   end
 end
