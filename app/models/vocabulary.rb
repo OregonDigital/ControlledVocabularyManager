@@ -2,6 +2,8 @@ class Vocabulary < Term
   configure :type => RDF::URI("http://purl.org/dc/dcam/VocabularyEncodingScheme")
   property :title, :predicate => RDF::DC.title
   property :publisher, :predicate => RDF::DC.publisher
+  property :sub_property_of, :predicate => RDF::RDFS.subPropertyOf
+  property :range, :predicate => RDF::RDFS.range
 
   def self.option_text
     "Vocabulary"
