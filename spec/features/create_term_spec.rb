@@ -1,11 +1,13 @@
 require 'rails_helper'
-
+require 'support/test_git_setup'
 RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
+  include TestGitSetup
   given(:user) { User.create(:email => 'admin@example.com', :password => 'admin123', :role => "admin") }
   background do
     allow_any_instance_of(ApplicationController).to receive(:current_user) {user}
   end
   scenario "succesfully creating a term" do
+    setup_git
     vocabulary_create_page = VocabularyCreatePage.new
     visit "/vocabularies/new"
 
@@ -23,7 +25,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
 
     expect(get_term_statement_list[3].object.language).to eq :en
     expect(term_show_page).to be_visible
-
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   scenario "succesfully creating a term with multiple labels and languages" do
@@ -44,6 +46,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
   end
 
   def when_creating_new_vocabulary
+    setup_git
     visit "/vocabularies/new"
     fill_in('ID', with: 'TestVocab')
     fill_in "vocabulary[label][]", :with => "Hello world"
@@ -56,6 +59,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
     end
     find_button('Create Vocabulary').trigger('click')
     sleep 1
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
 end

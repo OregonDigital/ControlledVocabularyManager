@@ -329,9 +329,13 @@ RSpec.describe TermsController do
 
     describe "PATCH deprecate_only" do
       let(:term) { term_mock }
-      let(:term_form) { DeprecateTermForm.new(SetsAttributes.new(term), Term) }
+      let(:term_form) { DeprecateTermForm.new(SetsAttributes.new(twc), Term) }
+      let(:injector) { TermInjector.new }
+      let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
+      let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
       let(:params) do
         {
+          :id => "blah",
           :label => ["Test"],
           :comment => ["Comment"],
           :is_replaced_by => ["test"],
@@ -344,7 +348,13 @@ RSpec.describe TermsController do
       let(:persist_failure) { false }
 
       before do
+
         allow_any_instance_of(DeprecateTermFormRepository).to receive(:find).and_return(term_form)
+
+        stub_repository
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump).and_return("blah")
+        allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:is_replaced_by=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])

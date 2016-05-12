@@ -45,6 +45,8 @@ class TermsController < AdminController
     edit_term_form.attributes = vocab_params
     edit_term_form.set_languages(params[:vocabulary])
     if edit_term_form.save
+      rugged_create(params[:id], edit_term_form.full_graph.dump(:ntriples), "updating")
+      rugged_merge(params[:id])
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_term_form
