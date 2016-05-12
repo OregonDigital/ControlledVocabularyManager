@@ -37,3 +37,5 @@ config/settings/*.local.yml
 config/environments/*.local.yml
 config/god.conf
 config/config.yml
+
+git_dev

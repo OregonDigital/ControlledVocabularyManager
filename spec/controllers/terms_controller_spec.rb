@@ -1,6 +1,10 @@
 require 'rails_helper'
+require 'rugged'
+require 'support/test_git_setup'
 
 RSpec.describe TermsController do
+  include TestGitSetup
+
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { term_mock }
   let(:injector) { TermInjector.new }
@@ -10,6 +14,10 @@ RSpec.describe TermsController do
   before do
     #allow(controller).to receive(:check_auth).and_return(true) if logged_in
     sign_in(user) if user
+    setup_git
+  end
+  after do
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   describe '#show' do
