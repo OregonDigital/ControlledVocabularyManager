@@ -3,9 +3,10 @@ require 'rugged'
 
 module TestGitSetup
   def setup_git
-    unless Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
-       Dir.mkdir ControlledVocabularyManager::Application::config.rugged_repo
+    if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
+      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
     end
+    Dir.mkdir ControlledVocabularyManager::Application::config.rugged_repo
     repo = Rugged::Repository.init_at(ControlledVocabularyManager::Application::config.rugged_repo)
     oid = repo.write("initial", :blob)
     index = repo.index
