@@ -4,6 +4,7 @@ class Term < ActiveTriples::Resource
 
   configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
   configure :repository => :default
+  configure :type => RDF::URI("http://www.w3.org/2004/02/skos/core#Concept")
 
   property :label, :predicate => RDF::RDFS.label
   property :alternate_name, :predicate => RDF::URI("http://schema.org/alternateName")
@@ -20,11 +21,11 @@ class Term < ActiveTriples::Resource
   validate :not_blank_node
 
   def self.option_text
-    "Generic Term"
+    "Concept"
   end
 
   def self.uri
-    ""
+    self.type.to_s
   end
 
   def self.visible_form_fields

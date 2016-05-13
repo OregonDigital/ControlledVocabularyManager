@@ -21,7 +21,7 @@ RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
     expect(term_create_page).to be_visible
     term_show_page = term_create_page.create
 
-    expect(get_term_statement_list[2].object.language).to eq :en
+    expect(get_term_statement_list[3].object.language).to eq :en
     expect(term_show_page).to be_visible
 
   end
@@ -69,7 +69,7 @@ def get_vocab_statement_list
 end
 def capybara_login(user)
   visit new_user_registration_path
-  page.fill_in 'user_email', :with => user.email 
+  page.fill_in 'user_email', :with => user.email
   page.fill_in 'user_password', :with => user.password
   page.fill_in 'user_password_confirmation', :with => user.password
   sleep(5)
