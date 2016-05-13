@@ -10,7 +10,7 @@ RSpec.describe GraphToTerms do
 
   describe "#type_of_graph" do
     context "each type of terms" do
-      [Vocabulary, Predicate, Term, Concept, CorporateName, Geographic, PersonalName, Title, Topic].each do |x|
+      [Vocabulary, Predicate, Term, CorporateName, Geographic, PersonalName, Title, Topic].each do |x|
         let(:klass) { x }
         it "#{x} should return the proper class" do
           subject.type_of_graph(triples)

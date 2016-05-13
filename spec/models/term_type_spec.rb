@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe TermType do
-  it "should return 7 models" do
-    expect(TermType.models.length).to eq(7)
+  it "should return 6 models" do
+    expect(TermType.models.length).to eq(6)
   end
-  it "should return 7 names" do
-    expect(TermType.names.length).to eq(7)
+  it "should return 6 names" do
+    expect(TermType.names.length).to eq(6)
   end
   it "should show all models having field 'date'" do
-    expect(TermType.models_having_visible_property('date').length).to eq(7)
+    expect(TermType.models_having_visible_property('date').length).to eq(6)
   end
   context "when evaluating a vocabulary" do
     let(:term) { Vocabulary.new }
@@ -24,7 +24,7 @@ RSpec.describe TermType do
     it "should not be a vocabulary" do
       expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
     end
-    it "should return 'Generic Term'" do
+    it "should return 'Concept'" do
       expect(TermType.name_for(term.type[0].to_s)).to eq(Term.option_text)
     end
     it "should return '' for its url" do
@@ -41,18 +41,6 @@ RSpec.describe TermType do
     end
     it "should return its url" do
       expect(TermType.url_for("CorporateName")).to eq(CorporateName.uri)
-    end
-  end
-  context "when evaluating a Concept" do
-    let(:term) { Concept.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return its option_text" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(Concept.option_text)
-    end
-    it "should return its url" do
-      expect(TermType.url_for("Concept")).to eq(Concept.uri)
     end
   end
   context "when evaluating a Geographic" do

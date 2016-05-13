@@ -20,8 +20,6 @@ class GraphToTerms < Struct.new(:resource_factory, :graph)
           @klass = Vocabulary
         when Predicate.type
           @klass = Predicate
-        when Concept.type
-          @klass = Concept
         when CorporateName.type
           @klass = CorporateName
         when Geographic.type
