@@ -1,5 +1,6 @@
 class PredicatesController < ApplicationController
   delegate :predicate_form_repository, :all_preds_query, :to => :injector
+  delegate :deprecate_predicate_form_repository, :to => :deprecate_injector
   skip_before_filter :check_auth, :only => [:index]
 
   def index
@@ -22,6 +23,7 @@ class PredicatesController < ApplicationController
       render "new"
     end
   end
+
   def edit
     @term = predicate_form_repository.find(params[:id])
   end
@@ -38,14 +40,37 @@ class PredicatesController < ApplicationController
     end
   end
 
+  def deprecate
+    @term = predicate_form_repository.find(params[:id])
+  end
+
+  def deprecate_only
+    edit_predicate_form = deprecate_predicate_form_repository.find(params[:id])
+    edit_predicate_form.is_replaced_by = vocabulary_params[:is_replaced_by]
+    if edit_predicate_form.save
+      redirect_to term_path(:id => params[:id])
+    else
+      @term = edit_predicate_form
+      render "deprecate"
+    end
+  end
+
 private
+
   def predicate_params
     ParamCleaner.call(params[:predicate])
   end
+
   def vocabulary_params
     ParamCleaner.call(params[:vocabulary])
   end
+
   def injector
     @injector ||= PredicateInjector.new(params)
   end
+
+  def deprecate_injector
+    @injector ||= DeprecatePredicateInjector.new(params)
+  end
+
 end
