@@ -11,8 +11,10 @@
 // about supported directives.
 //
 //= require jquery
-//= require bootstrap-sprockets
 //= require jquery_ujs
+//= require jquery-ui
+//= require bootstrap-sprockets
+//= require add_date_field
 //= require manage_repeating_fields
 //= require multi_value_fields
 //= require analytics
