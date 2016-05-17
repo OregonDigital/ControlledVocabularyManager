@@ -12,7 +12,7 @@ RSpec.describe GraphToImportableTermList do
     before do
       expect(StandardRepository).to receive(:new).and_return(repository)
       expect(GraphToTerms).to receive(:new).and_return(graph_to_terms)
-      expect(graph_to_terms).to receive(:run).and_return(terms)
+      expect(graph_to_terms).to receive(:terms).and_return(terms)
       expect(ImportableTermList).to receive(:new).with(terms).and_return(termlist)
     end
 

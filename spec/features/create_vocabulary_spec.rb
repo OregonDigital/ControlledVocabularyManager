@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature do
+  include TestGitSetup
+
   given(:user) { User.create(:email => 'admin@example.com', :password => 'admin123', :role => "admin") }
   background do
     allow_any_instance_of(ApplicationController).to receive(:current_user) {user}
@@ -12,6 +14,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
 
   it "should create and update a vocabulary" do
     WebMock.allow_net_connect!
+    setup_git
 
     visit "/vocabularies/new"
     fill_in('ID', with: vocabulary_id)
@@ -39,5 +42,9 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
       click_button("Remove", :match => :first)
     end
     expect(page).not_to have_xpath("//input[@value='Hello world']")
+
+    if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
+      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    end
   end
 end

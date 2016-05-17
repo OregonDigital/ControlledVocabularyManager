@@ -5,7 +5,7 @@ RSpec.describe TermWithoutChildren do
     describe "sort_stringify" do
       let(:term) { term_mock }
       let(:injector) { VocabularyInjector.new }
-      let(:twc) { TermWithoutChildren.new(term, injector.node_finder) }
+      let(:twc) { TermWithoutChildren.new(term) }
       let(:graph) { RDF::Graph.new }
       let(:subj) { RDF::URI.new("http://opaquenamespace.org/ns/blip") }
       let(:pred1) { RDF::URI.new("http://purl.org/dc/terms/date") }

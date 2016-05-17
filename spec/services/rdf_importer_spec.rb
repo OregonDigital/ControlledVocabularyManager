@@ -1,5 +1,4 @@
 require 'rails_helper'
-WebMock.allow_net_connect!
 
 RSpec.describe RdfImporter do
   let(:jsonld) { '{
@@ -42,7 +41,7 @@ RSpec.describe RdfImporter do
 
   describe "#run for RDF URL" do
     before do
-      #stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
+      WebMock.allow_net_connect!
 
       RdfLoader.load_url(url)
       allow(graph_to_termlist).to receive(:run).with(no_args).and_return(termlist)
@@ -113,6 +112,8 @@ RSpec.describe RdfImporter do
     let(:importer) { RdfImporter.new(errors, rdf_string: jsonld, validators: [validator]) }
 
     before do
+      WebMock.allow_net_connect!
+
       allow(graph_to_termlist).to receive(:run).with(no_args).and_return(termlist)
       allow(termlist).to receive(:valid?).and_return(true)
       allow(importer).to receive(:validators).and_return([validator_class])

@@ -24,11 +24,6 @@ class VocabularyInjector < Struct.new(:params)
     @child_node_finder ||= ChildNodeFinder.new(sparql_client)
   end
 
-  def node_finder
-    sparql = sparql_client.select.graph("#{Settings.marmotta.url}/context/#{Rails.env}")
-    @node_finder ||= NodeFinder.new(StandardRepository.new, sparql)
-  end
-
   def params
     super || {}
   end
@@ -39,7 +34,7 @@ class VocabularyInjector < Struct.new(:params)
       SetsModified,
       SetsIssued,
       DecoratorWithArguments.new(TermWithChildren, child_node_finder),
-      DecoratorWithArguments.new(TermWithoutChildren, node_finder)
+      DecoratorWithArguments.new(TermWithoutChildren)
     )
   end
 end

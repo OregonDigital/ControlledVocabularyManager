@@ -14,6 +14,6 @@ class GraphToImportableTermList < Struct.new(:graph)
   end
 
   def terms
-    @terms ||= GraphToTerms.new(repository, graph).run
+    @terms ||= GraphToTerms.new(repository, graph).terms
   end
 end

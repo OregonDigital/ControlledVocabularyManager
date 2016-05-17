@@ -1,13 +1,6 @@
 class GraphToTerms < Struct.new(:resource_factory, :graph)
   attr_reader :klass
 
-  def run
-    graph.each_statement.group_by(&:subject).map do |subject, triples|
-      type_of_graph(triples)
-      build_term(subject, triples)
-    end
-  end
-
   def terms
     graph.each_statement.group_by(&:subject).map do |subject, triples|
       type_of_graph(triples)

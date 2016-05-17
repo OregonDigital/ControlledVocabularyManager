@@ -49,9 +49,7 @@ RSpec.describe PredicatesController do
 
   describe "PATCH 'update'" do
     let(:predicate) { predicate_mock }
-    let(:injector) { PredicateInjector.new }
-    let(:twc) { TermWithChildren.new(predicate, injector.child_node_finder)}
-    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(twc), Predicate) }
+    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(TermWithoutChildren.new(predicate)), Predicate) }
     let(:predicate_params) { {:id => "blah"} }
     let(:params) do
       {
@@ -66,12 +64,11 @@ RSpec.describe PredicatesController do
     let(:persist_success) { true }
 
     before do
-      stub_repository
       allow_any_instance_of(PredicateFormRepository).to receive(:find).and_return(predicate_form)
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       full_graph = instance_double("RDF::Graph")
       allow(predicate_form).to receive(:sort_stringify).and_return("blah")
-      allow(predicate_form).to receive(:full_graph).and_return(full_graph)
+      allow(predicate_form).to receive(:single_graph).and_return(full_graph)
       allow(predicate).to receive(:attributes=)
       allow(predicate).to receive(:persist!).and_return(persist_success)
       allow(predicate_form).to receive(:valid?).and_return(true)
@@ -204,11 +201,8 @@ RSpec.describe PredicatesController do
         }
       }
     end
-    let(:injector) { PredicateInjector.new }
-    let(:twc) { TermWithChildren.new(predicate, injector.child_node_finder)}
-
     let(:predicate) { instance_double("Predicate") }
-    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(twc), Predicate) }
+    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(TermWithoutChildren.new(predicate)), Predicate) }
     let(:result) { post 'create', :predicate => predicate_params, :vocabulary => predicate_params }
     let(:save_success) { true }
     before do
@@ -217,7 +211,7 @@ RSpec.describe PredicatesController do
       allow(predicate_form).to receive(:save).and_return(save_success)
       full_graph = instance_double("RDF::Graph")
       allow(predicate_form).to receive(:sort_stringify).and_return("blah")
-      allow(predicate_form).to receive(:full_graph).and_return(full_graph)
+      allow(predicate_form).to receive(:single_graph).and_return(full_graph)
 
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(predicate).to receive(:id).and_return("test")

@@ -16,11 +16,6 @@ class PredicateInjector < Struct.new(:params)
     @sparql_client ||= SPARQL::Client.new("#{Settings.triplestore_adapter.url}")
   end
 
-  def child_node_finder
-    sparql = sparql_client.select.graph("#{Settings.marmotta.url}/context/#{Rails.env}")
-    @child_node_finder ||= ChildNodeFinder.new(StandardRepository.new, sparql)
-  end
-
   def params
     super || {}
   end
@@ -29,10 +24,7 @@ class PredicateInjector < Struct.new(:params)
     DecoratorList.new(
       SetsAttributes,
       SetsModified,
-      SetsIssued,
-      DecoratorWithArguments.new(TermWithChildren, child_node_finder)
+      SetsIssued
     )
   end
-
 end
-
