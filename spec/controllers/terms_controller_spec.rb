@@ -145,8 +145,8 @@ RSpec.describe TermsController do
         allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
         allow(term_form).to receive(:save).and_return(save_success)
         full_graph = instance_double("RDF::Graph")
-        allow(full_graph).to receive(:dump).and_return("blah")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
+        allow_any_instance_of(TermsController).to receive(:stringify).and_return("blah")
         allow(term).to receive(:id).and_return(term_id)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -296,7 +296,7 @@ RSpec.describe TermsController do
         stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
         full_graph = instance_double("RDF::Graph")
-        allow(full_graph).to receive(:dump).and_return("blah")
+        allow_any_instance_of(TermsController).to receive(:stringify).and_return("blah")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -353,7 +353,7 @@ RSpec.describe TermsController do
 
         stub_repository
         full_graph = instance_double("RDF::Graph")
-        allow(full_graph).to receive(:dump).and_return("blah")
+        allow_any_instance_of(TermsController).to receive(:stringify).and_return("blah")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:is_replaced_by=)
