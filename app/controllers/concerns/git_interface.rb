@@ -14,7 +14,7 @@ module GitInterface
     oid = repo.write(string,:blob)
     index = repo.index
     index.read_tree(repo.head.target.tree)
-    index.add(:path => id, :oid => oid, :mode => 0100644)
+    index.add(:path => "#{id}.nt", :oid => oid, :mode => 0100644)
     #commit
     name = current_user.email.split('@').first
     options = {}
