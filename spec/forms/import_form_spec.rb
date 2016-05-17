@@ -1,6 +1,5 @@
 require 'rails_helper'
-
-WebMock.allow_net_connect!
+require 'rdf_loader'
 
 RSpec.describe ImportForm do
   let(:url) { "http://opaquenamespace.org/ns/workType/aibanprints" }
@@ -11,6 +10,7 @@ RSpec.describe ImportForm do
   let(:form) { ImportForm.new(url, preview, rdfimporter) }
 
   before do
+    WebMock.allow_net_connect!
     RdfLoader.load_url(url)
   end
 

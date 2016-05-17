@@ -1,7 +1,6 @@
 class DeprecateVocabularyForm < SimpleDelegator
   include ActiveModel::Validations
-  validates_with *(TermValidations)
-  validates_with IsValidIsReplacedBy
+  validates_with *(IsReplacedByValidations)
 
   attr_reader :repository
   def initialize(term, repository)
