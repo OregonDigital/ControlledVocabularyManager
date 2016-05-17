@@ -4,6 +4,7 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
+    <%= f.input :name, :required => true, :hint => "Please provide your first and last name" %>
     <%= f.input :email, required: true, autofocus: true %>
     <div class="institution-dropdown">
       <select name="user[institution]">

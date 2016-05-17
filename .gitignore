@@ -32,6 +32,9 @@ marmotta
 # Ignore coverage
 /coverage
 
+#Ignore dev git 
+/git_dev
+
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
