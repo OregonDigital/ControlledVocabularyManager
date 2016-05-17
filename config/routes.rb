@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   patch 'terms/*id', :to => "terms#update", :as => "update_term"
   patch 'vocabularies/*id/deprecate_only', :to => "vocabularies#deprecate_only", :as => "deprecate_only_vocabulary"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
+  patch 'predicates/*id/deprecate_only', :to => "predicates#deprecate_only", :as => "deprecate_only_predicate"
   patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
   resources :vocabularies, :only => [:index, :new, :create, :edit]
@@ -32,6 +33,7 @@ Rails.application.routes.draw do
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
   get 'vocabularies/*id/deprecate', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
+  get 'predicates/*id/deprecate', :to => "predicates#deprecate", :as => "deprecate_predicate"
 
 
   get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"

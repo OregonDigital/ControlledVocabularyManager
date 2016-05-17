@@ -1,0 +1,6 @@
+<h1>Deprecate Predicate</h1>
+<div class="deprecate_form">
+<%= simple_form_for(@term, :url => deprecate_only_predicate_path(:id => @term.id)) do |f| %>
+  <%= render "deprecate_form", :f => f, :term => @term %>
+<% end %>
+</div>

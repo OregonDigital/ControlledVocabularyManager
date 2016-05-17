@@ -97,6 +97,51 @@ RSpec.describe PredicatesController do
       end
     end
   end
+
+  describe "PATCH deprecate_only" do
+    let(:predicate) { predicate_mock }
+    let(:predicate_form) { DeprecatePredicateForm.new(SetsAttributes.new(predicate), Predicate) }
+    let(:params) do
+      {
+        :comment => ["Test"],
+        :label => ["Test"],
+        :is_replaced_by => ["test"],
+        :language => {
+          :label => ["en"],
+          :comment => ["en"]
+        }
+      }
+    end
+    let(:persist_success) { true }
+
+    before do
+      allow_any_instance_of(DeprecatePredicateFormRepository).to receive(:find).and_return(predicate_form)
+      allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
+      allow(predicate).to receive(:attributes=)
+      allow(predicate).to receive(:is_replaced_by=)
+      allow(predicate).to receive(:persist!).and_return(persist_success)
+      allow(predicate_form).to receive(:valid?).and_return(true)
+      allow(predicate).to receive(:attributes).and_return(params)
+      allow(predicate).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
+      patch :deprecate_only, :id => predicate.id, :predicate => params, :vocabulary => params
+    end
+
+    context "when the fields are edited" do
+      it "should update the is_replaced_by property" do
+        expect(predicate).to have_received(:is_replaced_by=).with(params[:is_replaced_by]).exactly(1).times
+      end
+      it "should redirect to the updated term" do
+        expect(response).to redirect_to("/ns/#{predicate.id}")
+      end
+    end
+    context "when the fields are edited and the update fails" do
+      let(:persist_success) { false }
+      it "should show the edit form" do
+        expect(assigns(:term)).to eq predicate_form
+        expect(response).to render_template("deprecate")
+      end
+    end
+  end
   describe "GET 'index'" do
     context "when there are predicates" do
       let(:injector) { PredicateInjector.new }
@@ -139,9 +184,9 @@ RSpec.describe PredicatesController do
         :label => ["Test1"],
         :comment => ["Test2"],
         :language => {
-            :label => ["en"],
-            :comment => ["en"]
-          }
+          :label => ["en"],
+          :comment => ["en"]
+        }
       }
     end
     let(:predicate) { instance_double("Predicate") }

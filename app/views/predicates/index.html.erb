@@ -11,6 +11,11 @@
     <tr>
       <td><%= link_to pred.rdf_label.first, term_path(:id => pred.id) %></td>
       <td><span class="uri"><%= link_to pred.rdf_subject, term_path(:id => pred.id) %></span></td>
+      <td>
+        <% if pred.deprecated? %>
+          <span class="label label-warning">Deprecated</span>
+        <% end %>
+      </td>
     </tr>
   <% end %>
 </table>
