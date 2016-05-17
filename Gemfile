@@ -55,6 +55,8 @@ gem 'jettywrapper'
 gem 'devise'
 gem 'cancan'
 
+gem 'font-awesome-rails'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'

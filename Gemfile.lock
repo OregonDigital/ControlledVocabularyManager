@@ -167,6 +167,8 @@ GEM
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.8)
+    font-awesome-rails (4.6.1.0)
+      railties (>= 3.2, < 5.1)
     formulaic (0.1.3)
       activesupport
       capybara
@@ -483,6 +485,7 @@ DEPENDENCIES
   devise
   dotenv-rails
   factory_girl_rails
+  font-awesome-rails
   formulaic
   iso-639
   jazz_hands!
