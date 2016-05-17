@@ -84,5 +84,17 @@ RSpec.configure do |config|
     # test failures related to randomization by passing the same `--seed` value
     # as the one that triggered the failure.
     Kernel.srand config.seed
+
+    original_stderr = $stderr
+    original_stdout = $stdout
+    config.before(:all) do
+      # Redirect stderr and stdout
+      $stderr = File.new(File.join(File.dirname(__FILE__), '../log', 'test.stderr.log'), 'w')
+      $stdout = File.new(File.join(File.dirname(__FILE__), '../log', 'test.stdout.log'), 'w')
+    end
+    config.after(:all) do
+      $stderr = original_stderr
+      $stdout = original_stdout
+    end
   end
 end
