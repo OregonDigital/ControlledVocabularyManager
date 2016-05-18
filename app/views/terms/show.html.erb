@@ -29,7 +29,7 @@
 
 <p><br/><strong>Other Formats:</strong> <%= link_to "N-Triples", request.original_url + '.nt'  %>, <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
 
-<% if !@term.vocabulary? && !@term.commit_history.nil? %>
+<% if !@term.commit_history.nil? %>
   <%= render :partial => "terms/history", locals: {:term => @term} %>
 <% end %>
 

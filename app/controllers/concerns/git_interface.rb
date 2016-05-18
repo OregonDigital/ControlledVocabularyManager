@@ -65,7 +65,7 @@ module GitInterface
       options[:strategy] = :force
       repo.checkout_head(options)
       #repo.push('origin', [repo.head.name], { credentials: @cred })
-      #repo.branches.delete(from_branch)
+      repo.branches.delete(from_branch)
       #close branch
     end
   end
@@ -77,7 +77,8 @@ module GitInterface
 
   def get_history(id)
     repo = setup
-    info = commit_info_rugged(repo, id)
+    path = id + ".nt"
+    info = commit_info_rugged(repo, path)
     formatted = format_response(info)
    end
 
