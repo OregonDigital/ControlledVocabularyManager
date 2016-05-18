@@ -59,7 +59,9 @@ RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
     end
     find_button('Create Vocabulary').trigger('click')
     sleep 1
-    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
+      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    end
   end
 
 end
