@@ -9,6 +9,10 @@ class TermWithChildren < SimpleDelegator
     @children ||= node_finder.find_children(self)
   end
 
+  def sort_stringify(graph)
+    graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
+  end
+
   def full_graph
     (children << self).inject(RDF::Graph.new, :<<)
   end

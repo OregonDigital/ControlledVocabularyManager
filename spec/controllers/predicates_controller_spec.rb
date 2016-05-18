@@ -71,7 +71,7 @@ RSpec.describe PredicatesController do
       allow_any_instance_of(PredicateFormRepository).to receive(:find).and_return(predicate_form)
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       full_graph = instance_double("RDF::Graph")
-      allow(full_graph).to receive(:dump).and_return("blah")
+      allow(predicate_form).to receive(:sort_stringify).and_return("blah")
       allow(predicate_form).to receive(:full_graph).and_return(full_graph)
       allow(predicate).to receive(:attributes=)
       allow(predicate).to receive(:persist!).and_return(persist_success)
@@ -217,7 +217,7 @@ RSpec.describe PredicatesController do
       allow_any_instance_of(PredicateFormRepository).to receive(:new).and_return(predicate_form)
       allow(predicate_form).to receive(:save).and_return(save_success)
       full_graph = instance_double("RDF::Graph")
-      allow(full_graph).to receive(:dump).and_return("blah")
+      allow(predicate_form).to receive(:sort_stringify).and_return("blah")
       allow(predicate_form).to receive(:full_graph).and_return(full_graph)
 
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])

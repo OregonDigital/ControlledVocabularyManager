@@ -26,7 +26,7 @@ class TermsController < AdminController
     term_form.attributes = vocab_params.except(:id)
     term_form.set_languages(params[:vocabulary])
     if term_form.save
-      triples = stringify(term_form.full_graph)
+      triples = term_form.sort_stringify(term_form.full_graph)
       rugged_create(combined_id.to_s, triples, "creating")
       rugged_merge(combined_id.to_s)
       redirect_to term_path(:id => term_form.id)
@@ -45,7 +45,7 @@ class TermsController < AdminController
     edit_term_form.attributes = vocab_params
     edit_term_form.set_languages(params[:vocabulary])
     if edit_term_form.save
-      triples = stringify(edit_term_form.full_graph)
+      triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
       rugged_create(params[:id], triples, "updating")
       rugged_merge(params[:id])
       redirect_to term_path(:id => params[:id])
@@ -59,7 +59,7 @@ class TermsController < AdminController
     edit_term_form = deprecate_term_form_repository.find(params[:id])
     edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
     if edit_term_form.save
-      triples = stringify(edit_term_form.full_graph)
+      triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
       rugged_create(params[:id], triples, "updating")
       rugged_merge(params[:id])
       redirect_to term_path(:id => params[:id])
@@ -71,10 +71,6 @@ class TermsController < AdminController
 
   def deprecate
     @term = term_form_repository.find(params[:id])
-  end
-
-  def stringify (graph)
-    graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
   end
 
   private

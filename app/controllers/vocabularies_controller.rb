@@ -17,7 +17,7 @@ class VocabulariesController < AdminController
     vocabulary_form.attributes = vocabulary_params.except(:id)
     vocabulary_form.set_languages(params[:vocabulary])
     if vocabulary_form.save
-      triples = stringify(vocabulary_form.single_graph)
+      triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
       rugged_create(vocabulary_params[:id], triples, "creating")
       rugged_merge(vocabulary_params[:id])
 
@@ -41,7 +41,7 @@ class VocabulariesController < AdminController
     edit_vocabulary_form.attributes = vocabulary_params
     edit_vocabulary_form.set_languages(params[:vocabulary])
     if edit_vocabulary_form.save
-      triples = stringify(edit_vocabulary_form.single_graph)
+      triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
       rugged_create(params[:id], triples, "updating")
       rugged_merge(params[:id])
 
@@ -57,7 +57,7 @@ class VocabulariesController < AdminController
     edit_vocabulary_form.is_replaced_by = vocabulary_params[:is_replaced_by]
 
     if edit_vocabulary_form.save
-      triples = stringify(edit_vocabulary_form.single_graph)
+      triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
       rugged_create(params[:id], triples, "creating")
       rugged_merge(params[:id])
 
@@ -67,7 +67,6 @@ class VocabulariesController < AdminController
       render "deprecate"
     end
   end
-
 
   private
 
@@ -81,10 +80,6 @@ class VocabulariesController < AdminController
 
   def deprecate_injector
     @injector ||= DeprecateVocabularyInjector.new(params)
-  end
-
-  def stringify (graph)
-    graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
   end
 
 end

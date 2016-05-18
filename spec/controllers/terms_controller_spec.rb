@@ -146,7 +146,7 @@ RSpec.describe TermsController do
         allow(term_form).to receive(:save).and_return(save_success)
         full_graph = instance_double("RDF::Graph")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
-        allow_any_instance_of(TermsController).to receive(:stringify).and_return("blah")
+        allow(term_form).to receive(:sort_stringify).and_return("blah")
         allow(term).to receive(:id).and_return(term_id)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -296,7 +296,7 @@ RSpec.describe TermsController do
         stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
         full_graph = instance_double("RDF::Graph")
-        allow_any_instance_of(TermsController).to receive(:stringify).and_return("blah")
+        allow(term_form).to receive(:sort_stringify).and_return("blah")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -353,7 +353,7 @@ RSpec.describe TermsController do
 
         stub_repository
         full_graph = instance_double("RDF::Graph")
-        allow_any_instance_of(TermsController).to receive(:stringify).and_return("blah")
+        allow(term_form).to receive(:sort_stringify).and_return("blah")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:is_replaced_by=)
@@ -383,22 +383,6 @@ RSpec.describe TermsController do
           expect(assigns(:term)).to eq term_form
           expect(response).to render_template("deprecate")
         end
-      end
-    end
-    describe "stringify" do
-      let(:tc) { TermsController.new }
-      let(:graph) { RDF::Graph.new }
-      let(:subj) { RDF::URI.new("http://opaquenamespace.org/ns/blip") }
-      let(:pred1) { RDF::URI.new("http://purl.org/dc/terms/date") }
-      let(:pred2) { RDF::URI.new("http://www.w3.org/2000/01/rdf-schema#label") }
-      before do
-        graph << RDF::Statement.new(subj, pred2, "blippity")
-        graph << RDF::Statement.new(subj, pred1, "2016-05-04")
-      end
-      it "should sort the triples" do
-        result = tc.stringify(graph)
-        parts = result.split(' . ')
-        expect(parts.first).to include("date")
       end
     end
 end

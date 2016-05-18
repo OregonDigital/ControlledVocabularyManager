@@ -76,7 +76,7 @@ RSpec.describe VocabulariesController do
       stub_repository
       allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
       single_graph = instance_double("RDF::Graph")
-      allow_any_instance_of(VocabulariesController).to receive(:stringify).and_return("blah")
+      allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
 
@@ -142,7 +142,7 @@ RSpec.describe VocabulariesController do
       allow_any_instance_of(DeprecateVocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
       stub_repository
       single_graph = instance_double("RDF::Graph")
-      allow_any_instance_of(VocabulariesController).to receive(:stringify).and_return("blah")
+      allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
 
@@ -237,7 +237,7 @@ RSpec.describe VocabulariesController do
       stub_repository
       single_graph = instance_double("RDF::Graph")
       allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
-      allow_any_instance_of(VocabulariesController).to receive(:stringify).and_return("blah")
+      allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow_any_instance_of(VocabularyFormRepository).to receive(:new).and_return(vocabulary_form)
       allow(vocabulary_form).to receive(:save).and_return(save_success)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
