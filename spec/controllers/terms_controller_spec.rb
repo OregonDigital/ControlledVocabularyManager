@@ -1,6 +1,10 @@
 require 'rails_helper'
+require 'rugged'
+require 'support/test_git_setup'
 
 RSpec.describe TermsController do
+  include TestGitSetup
+
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) { term_mock }
   let(:injector) { TermInjector.new }
@@ -10,6 +14,10 @@ RSpec.describe TermsController do
   before do
     #allow(controller).to receive(:check_auth).and_return(true) if logged_in
     sign_in(user) if user
+    setup_git
+  end
+  after do
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   describe '#show' do
@@ -19,6 +27,7 @@ RSpec.describe TermsController do
       full_graph = instance_double("RDF::Graph")
       allow(full_graph).to receive(:dump)
       allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
+      allow(resource).to receive(:commit_history=)
       allow_any_instance_of(DecoratingRepository).to receive(:find).with("bla").and_return(decorated_resource)
     end
 
@@ -108,7 +117,9 @@ RSpec.describe TermsController do
   end
 
   describe "POST create" do
-    let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+    let(:injector) { TermInjector.new }
+    let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
+    let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
     let(:term) { instance_double("Term") }
     let(:term_id) { "blah" }
     let(:params) do
@@ -130,8 +141,12 @@ RSpec.describe TermsController do
       let(:save_success) { true }
       let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
       before do
+        stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
         allow(term_form).to receive(:save).and_return(save_success)
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump).and_return("blah")
+        allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:id).and_return(term_id)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -262,7 +277,9 @@ RSpec.describe TermsController do
 
     describe "PATCH update" do
       let(:term) { term_mock }
-      let(:term_form) { TermForm.new(SetsAttributes.new(term), Term) }
+      let(:injector) { TermInjector.new }
+      let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
+      let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
       let(:params) do
         {
           :label => ["Test"],
@@ -276,7 +293,11 @@ RSpec.describe TermsController do
       let(:persist_failure) { false }
 
       before do
+        stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump).and_return("blah")
+        allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
         allow(term).to receive(:attributes).and_return(params)
@@ -308,9 +329,13 @@ RSpec.describe TermsController do
 
     describe "PATCH deprecate_only" do
       let(:term) { term_mock }
-      let(:term_form) { DeprecateTermForm.new(SetsAttributes.new(term), Term) }
+      let(:term_form) { DeprecateTermForm.new(SetsAttributes.new(twc), Term) }
+      let(:injector) { TermInjector.new }
+      let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
+      let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
       let(:params) do
         {
+          :id => "blah",
           :label => ["Test"],
           :comment => ["Comment"],
           :is_replaced_by => ["test"],
@@ -323,7 +348,13 @@ RSpec.describe TermsController do
       let(:persist_failure) { false }
 
       before do
+
         allow_any_instance_of(DeprecateTermFormRepository).to receive(:find).and_return(term_form)
+
+        stub_repository
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump).and_return("blah")
+        allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term).to receive(:attributes=)
         allow(term).to receive(:is_replaced_by=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])

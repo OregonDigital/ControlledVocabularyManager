@@ -3,10 +3,10 @@ class TermsController < AdminController
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   skip_before_filter :check_auth, :only => [:show]
-
+  include GitInterface
   def show
     @term = find_term
-
+    @term.commit_history = get_history(@term.id)
     respond_to do |format|
       format.html
       format.nt { render body: @term.full_graph.dump(:ntriples), :content_type => Mime::NT }
@@ -27,6 +27,8 @@ class TermsController < AdminController
     term_form.set_languages(params[:vocabulary])
 
     if term_form.save
+      rugged_create(combined_id.to_s, term_form.full_graph.dump(:ntriples), "creating")
+      rugged_merge(combined_id.to_s)
       redirect_to term_path(:id => term_form.id)
     else
       @term = term_form
@@ -43,6 +45,8 @@ class TermsController < AdminController
     edit_term_form.attributes = vocab_params
     edit_term_form.set_languages(params[:vocabulary])
     if edit_term_form.save
+      rugged_create(params[:id], edit_term_form.full_graph.dump(:ntriples), "updating")
+      rugged_merge(params[:id])
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_term_form
@@ -54,6 +58,8 @@ class TermsController < AdminController
     edit_term_form = deprecate_term_form_repository.find(params[:id])
     edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
     if edit_term_form.save
+      rugged_create(params[:id], edit_term_form.full_graph.dump(:ntriples), "updating")
+      rugged_merge(params[:id])
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_term_form

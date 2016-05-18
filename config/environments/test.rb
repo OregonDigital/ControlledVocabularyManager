@@ -36,4 +36,8 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  #Location of local git repo
+  config.rugged_repo = "tmp/git_test"
+
 end
