@@ -73,6 +73,10 @@ class TermsController < AdminController
     @term = term_form_repository.find(params[:id])
   end
 
+  def stringify (graph)
+    graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
+  end
+
   private
 
   def term_params
@@ -108,11 +112,6 @@ class TermsController < AdminController
 
   def vocabulary
     @vocabulary ||= Vocabulary.find(params[:vocabulary_id])
-  end
-
-  def stringify (graph)
-    binding.pry
-    graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
   end
 
 end
