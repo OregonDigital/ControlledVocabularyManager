@@ -1,6 +1,6 @@
 <p><%= term.rdf_subject %></p>
 
-<% if term.vocabulary? == false %>
+<% unless term.vocabulary? || term.predicate? %>
   <%= render :partial => "terms/term_types_select", :locals => { :disabled => true, :term => term } %>
 <% end %>
 <% term.editable_fields.each do |attribute| %>
