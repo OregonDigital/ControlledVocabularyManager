@@ -2,7 +2,7 @@ class PredicatesController < ApplicationController
   delegate :predicate_form_repository, :all_preds_query, :to => :injector
   delegate :deprecate_predicate_form_repository, :to => :deprecate_injector
   skip_before_filter :check_auth, :only => [:index]
-
+  include GitInterface
   def index
     @predicates = all_preds_query.call
     @predicates.sort_by! {|v| v[:label]}
@@ -17,6 +17,10 @@ class PredicatesController < ApplicationController
     predicate_form.attributes = vocabulary_params.except(:id)
     predicate_form.set_languages(params[:vocabulary])
     if predicate_form.save
+      triples = predicate_form.sort_stringify(predicate_form.full_graph)
+      rugged_create(predicate_params[:id], triples, "creating")
+      rugged_merge(predicate_params[:id])
+
       redirect_to term_path(:id => predicate_form.id)
     else
       @predicate = predicate_form
@@ -33,6 +37,10 @@ class PredicatesController < ApplicationController
     edit_predicate_form.attributes = vocabulary_params
     edit_predicate_form.set_languages(params[:vocabulary])
     if edit_predicate_form.save
+      triples = edit_predicate_form.sort_stringify(edit_predicate_form.full_graph)
+      rugged_create(params[:id], triples, "updating")
+      rugged_merge(params[:id])
+
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_predicate_form

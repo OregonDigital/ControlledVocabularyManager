@@ -1,10 +1,17 @@
 require 'rails_helper'
+require 'rugged'
+require 'support/test_git_setup'
 
 RSpec.describe VocabulariesController do
+  include TestGitSetup
   let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
 
   before do
-    sign_in(user) if user 
+    sign_in(user) if user
+    setup_git
+  end
+  after do
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   describe "GET 'new'" do
@@ -49,9 +56,12 @@ RSpec.describe VocabulariesController do
 
   describe "PATCH 'update'" do
     let(:vocabulary) { vocabulary_mock }
-    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
+    let(:injector) { VocabularyInjector.new }
+    let(:twc) { TermWithoutChildren.new(vocabulary, injector.node_finder) }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
     let(:params) do
       {
+        :id => "blah",
         :comment => ["Test"],
         :label => ["Test"],
         :language => {
@@ -63,7 +73,11 @@ RSpec.describe VocabulariesController do
     let(:persist_success) { true }
 
     before do
+      stub_repository
       allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+      single_graph = instance_double("RDF::Graph")
+      allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
+      allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
 
       allow(vocabulary).to receive(:attributes=)
@@ -107,9 +121,12 @@ RSpec.describe VocabulariesController do
 
   describe "PATCH 'deprecate_only'" do
     let(:vocabulary) { vocabulary_mock }
-    let(:vocabulary_form) { DeprecateVocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
+    let(:injector) { VocabularyInjector.new }
+    let(:twc) { TermWithoutChildren.new(vocabulary, injector.node_finder) }
+    let(:vocabulary_form) { DeprecateVocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
     let(:params) do
       {
+        :id => "blah",
         :comment => ["Test"],
         :label => ["Test"],
         :is_replaced_by => ["test"],
@@ -123,6 +140,10 @@ RSpec.describe VocabulariesController do
 
     before do
       allow_any_instance_of(DeprecateVocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+      stub_repository
+      single_graph = instance_double("RDF::Graph")
+      allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
+      allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
 
       allow(vocabulary).to receive(:attributes=)
@@ -197,6 +218,7 @@ RSpec.describe VocabulariesController do
   describe "POST create" do
     let(:vocabulary_params) do
         {
+          :id => "blah",
           :label => ["test"],
           :comment => ["blah"],
           :language => {
@@ -205,11 +227,17 @@ RSpec.describe VocabulariesController do
           }
         }
     end
+    let(:injector) { VocabularyInjector.new }
+    let(:twc) { TermWithoutChildren.new(vocabulary, injector.node_finder) }
     let(:vocabulary) { instance_double("Vocabulary") }
-    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(vocabulary), Vocabulary) }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
     let(:result) { post 'create', :vocabulary => vocabulary_params }
     let(:save_success) { true }
     before do
+      stub_repository
+      single_graph = instance_double("RDF::Graph")
+      allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
+      allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow_any_instance_of(VocabularyFormRepository).to receive(:new).and_return(vocabulary_form)
       allow(vocabulary_form).to receive(:save).and_return(save_success)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
@@ -224,6 +252,7 @@ RSpec.describe VocabulariesController do
     context "when blank arrays are passed in" do
       let(:vocabulary_params) do
         {
+          :id => "blah",
           :label => ["test"],
           :comment => [""],
           :language => {

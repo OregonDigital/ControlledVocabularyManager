@@ -2,7 +2,7 @@ class VocabulariesController < AdminController
   delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
   delegate :deprecate_vocabulary_form_repository, :to => :deprecate_injector
   skip_before_filter :check_auth, :only => [:index]
-
+  include GitInterface
   def index
     @vocabularies = all_vocabs_query.call
     @vocabularies.sort_by! {|v| v[:label]}
@@ -17,6 +17,10 @@ class VocabulariesController < AdminController
     vocabulary_form.attributes = vocabulary_params.except(:id)
     vocabulary_form.set_languages(params[:vocabulary])
     if vocabulary_form.save
+      triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
+      rugged_create(vocabulary_params[:id], triples, "creating")
+      rugged_merge(vocabulary_params[:id])
+
       redirect_to term_path(:id => vocabulary_form.id)
     else
       @vocabulary = vocabulary_form
@@ -36,8 +40,11 @@ class VocabulariesController < AdminController
     edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.attributes = vocabulary_params
     edit_vocabulary_form.set_languages(params[:vocabulary])
-
     if edit_vocabulary_form.save
+      triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
+      rugged_create(params[:id], triples, "updating")
+      rugged_merge(params[:id])
+
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_vocabulary_form
@@ -50,13 +57,16 @@ class VocabulariesController < AdminController
     edit_vocabulary_form.is_replaced_by = vocabulary_params[:is_replaced_by]
 
     if edit_vocabulary_form.save
+      triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
+      rugged_create(params[:id], triples, "creating")
+      rugged_merge(params[:id])
+
       redirect_to term_path(:id => params[:id])
     else
       @term = edit_vocabulary_form
       render "deprecate"
     end
   end
-
 
   private
 
@@ -71,4 +81,5 @@ class VocabulariesController < AdminController
   def deprecate_injector
     @injector ||= DeprecateVocabularyInjector.new(params)
   end
+
 end
