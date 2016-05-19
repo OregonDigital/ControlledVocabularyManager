@@ -5,7 +5,7 @@
 var set_field_visibility = function(selector){
   var selected_model = $(selector).val();
   var $labels = $("label.toggle-model-visibility");
-  console.log("Selected '" + selected_model + "', displaying only related LABEL and form-group DIVs.");
+  //console.log("Selected '" + selected_model + "', displaying only related LABEL and form-group DIVs.");
   $labels.hide();
   $labels.next(".form-group").hide();
   var $labels_to_show = $labels.filter(function(i, el){
