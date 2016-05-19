@@ -24,7 +24,8 @@ class PredicateInjector < Struct.new(:params)
     DecoratorList.new(
       SetsAttributes,
       SetsModified,
-      SetsIssued
+      SetsIssued,
+      DecoratorWithArguments.new(TermWithoutChildren)
     )
   end
 end
