@@ -1,2 +1,3 @@
 triplestore_adapter:
-  url: "http://localhost:9999/blazegraph/namespace/staging/sparql"
+  type: <%= "#{ENV['CVM_TRIPLESTORE_TYPE']}" %>
+  url: <%= "#{ENV['CVM_TRIPLESTORE_URL']}" %>
