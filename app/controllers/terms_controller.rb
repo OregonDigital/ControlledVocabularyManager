@@ -2,7 +2,6 @@ class TermsController < AdminController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
-  skip_before_filter :check_auth, :only => [:show]
   include GitInterface
   def show
     @term = find_term
