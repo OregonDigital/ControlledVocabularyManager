@@ -1,7 +1,6 @@
 class PredicatesController < ApplicationController
   delegate :predicate_form_repository, :all_preds_query, :to => :injector
   delegate :deprecate_predicate_form_repository, :to => :deprecate_injector
-  skip_before_filter :check_auth, :only => [:index]
   include GitInterface
   def index
     @predicates = all_preds_query.call
