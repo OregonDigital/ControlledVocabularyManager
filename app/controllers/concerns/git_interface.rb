@@ -139,6 +139,7 @@ module GitInterface
     end
   end
 
+  #returns an array of triple as strings with "added" or "deleted" prefixes
   def get_diff(commit1)
     answer = []
     repo = setup
