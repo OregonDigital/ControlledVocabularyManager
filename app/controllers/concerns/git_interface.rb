@@ -173,7 +173,14 @@ module GitInterface
       results.each do |commit|
         if commit[:message].include? "updating"
           diffs = get_diff(commit[:hash])
-          item = {:date => commit[:date], :author => commit[:author][:name], :diff => diffs }
+          newdiffs = []
+          #remove subject
+          diffs.each do |diff|
+            parts = diff.split("<")
+            newparts = parts.slice(0,1).concat(parts.slice(2, parts.length-1))
+            newdiffs << newparts.join("<")
+          end
+          item = {:date => commit[:date], :author => commit[:author][:name], :diff => newdiffs }
           formatted << item
           num_items = num_items + 1
         end

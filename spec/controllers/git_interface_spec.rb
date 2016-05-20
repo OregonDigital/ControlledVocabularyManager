@@ -19,14 +19,15 @@ RSpec.describe GitInterface do
   end
 
   describe "git process" do
-    let(:triple1) { "<http://opaquenamespace.org/ns/blah/foo><http://purl.org/dc/terms/date> '2016-05-04' .\n" }
-    let(:triple2) { "<http://opaquenamespace.org/ns/blah/foo><http://www.w3.org/2000/01/rdf-schema#label> 'foo' ." }
-    let(:triple3) { "<http://opaquenamespace.org/ns/blah/foo><http://www.w3.org/2000/01/rdf-schema#label> 'fooness' ." }
+    let(:subj) { "<http://opaquenamespace.org/ns/blah/foo>" }
+    let(:triple1) { "<http://purl.org/dc/terms/date> '2016-05-04' .\n" }
+    let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> 'foo' ." }
+    let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> 'fooness' ." }
 
     it "should commit, merge, and provide history" do
       #create blah/foo
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user1)
-      dummy_class.rugged_create("blah/foo",triple1+triple2,"creating")
+      dummy_class.rugged_create("blah/foo",subj+triple1+subj+triple2,"creating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("creating: blah/foo")
@@ -38,7 +39,7 @@ RSpec.describe GitInterface do
 
       #update blah/foo and merge
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
-      dummy_class.rugged_create("blah/foo", triple1+triple3, "updating")
+      dummy_class.rugged_create("blah/foo", subj+triple1+subj+triple3, "updating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("updating: blah/foo")
