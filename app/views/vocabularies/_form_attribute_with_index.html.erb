@@ -2,11 +2,11 @@
   <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
     <% if form.object.blacklisted_language_properties.include?(attribute) %>
       <div class="col-sm-12">
-        <input type="text" class="form-control <%= "#{attribute.to_s}" %>" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+        <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
       </div>
     <% else %>
       <div class="col-sm-9">
-        <input type="text" class="form-control <%= "#{attribute.to_s}" %>" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+        <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
       </div>
       <div class="col-sm-3">
         <%= render "vocabularies/language_select", :form => form, :attribute => attribute, :index => index %>
