@@ -1,5 +1,10 @@
 <div>
-<p>Term Author: <%= @term.commit_history[:author] %><br>
-Reviewed by: <%= @term.commit_history[:reviewer] %><br>
-Last modified: <%= @term.commit_history[:date_modified] %></p>
+<h3>Recent changes: </h3>
+<% @term.commit_history.each do |commit| %>
+  <p><%= commit[:date] %><br>
+     <%commit[:diff].each do |triple|%>
+    &nbsp;<%=triple%><br>
+    <% end %>
+    &nbsp; <%= commit[:author] %></p>
+<% end %>
 </div>

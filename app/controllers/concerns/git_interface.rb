@@ -139,19 +139,48 @@ module GitInterface
     end
   end
 
+  def get_diff(commit1)
+    answer = []
+    repo = setup
+    child = repo.lookup(commit1)
+    commits = child.parents[0].diff(child)
+    commits.each_patch { |patch|
+      file = patch.delta.old_file[:path]
+
+      patch.each_hunk { |hunk|
+        hunk.each_line { |line|
+          case line.line_origin
+          when :addition
+            answer << "added: " + line.content
+          when :deletion
+            answer << "deleted: " + line.content
+          when :context
+            #do nothing
+          end
+        }
+      }
+    }
+    answer
+  end
+
   def format_response(results)
 
     if results.empty?
       return
     else
-      formatted = { :date_modified => results.first[:date] }
+      formatted = []
+      num_items = 1
       results.each do |commit|
-        if commit[:message].include? "Merge"
-          formatted[:reviewer] = commit[:author][:name]
-        else
-          formatted[:author] = commit[:author][:name]
+        if commit[:message].include? "updating"
+          diffs = get_diff(commit[:hash])
+          item = {:date => commit[:date], :author => commit[:author][:name], :diff => diffs }
+          formatted << item
+          num_items = num_items + 1
         end
-        break if formatted.key?(:author) && formatted.key?(:reviewer)
+        break if num_items > 3
+      end
+      if formatted.empty?
+        return nil
       end
       formatted
     end
