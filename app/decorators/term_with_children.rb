@@ -10,7 +10,8 @@ class TermWithChildren < SimpleDelegator
   end
 
   def sort_stringify(graph)
-    graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
+    triples = graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
+    triples.gsub!(" . ", " .\n")
   end
 
   def full_graph
