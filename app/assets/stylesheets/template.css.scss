@@ -66,6 +66,9 @@ textarea.tall {
   min-height: 350px;
 }
 
+.commit_hist, .commit_hist_diffs {
+  list-style-type: none;
+}
 /* Bootstrapified spinner */
 .glyphicon.spinning {
   margin-right: 10px;

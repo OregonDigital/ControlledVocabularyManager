@@ -1,10 +1,12 @@
 <div>
 <h3>Recent changes: </h3>
 <% @term.commit_history.each do |commit| %>
-  <p><%= commit[:date] %><br>
-     <%commit[:diff].each do |triple|%>
-    &nbsp;<%=triple%><br>
+  <ul class="commit_hist"><li><%= commit[:date] %></li>
+     <ul class="commit_hist_diffs">
+     <% commit[:diff].each do |triple| %>
+    <li><%= triple %></li>
     <% end %>
-    &nbsp; <%= commit[:author] %></p>
+    </ul>
+    <li><%= commit[:author] %></li></ul>
 <% end %>
 </div>

@@ -145,11 +145,11 @@ module GitInterface
     repo = setup
     child = repo.lookup(commit1)
     commits = child.parents[0].diff(child)
-    commits.each_patch { |patch|
+    commits.each_patch do |patch|
       file = patch.delta.old_file[:path]
 
-      patch.each_hunk { |hunk|
-        hunk.each_line { |line|
+      patch.each_hunk do |hunk|
+        hunk.each_line do |line|
           case line.line_origin
           when :addition
             answer << "added: " + line.content
@@ -158,9 +158,9 @@ module GitInterface
           when :context
             #do nothing
           end
-        }
-      }
-    }
+        end
+      end
+    end
     answer
   end
 
