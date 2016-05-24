@@ -139,19 +139,56 @@ module GitInterface
     end
   end
 
+  #returns an array of triple as strings with "added" or "deleted" prefixes
+  def get_diff(commit1)
+    answer = []
+    repo = setup
+    child = repo.lookup(commit1)
+    commits = child.parents[0].diff(child)
+    commits.each_patch do |patch|
+      file = patch.delta.old_file[:path]
+
+      patch.each_hunk do |hunk|
+        hunk.each_line do |line|
+          case line.line_origin
+          when :addition
+            answer << "added: " + line.content
+          when :deletion
+            answer << "deleted: " + line.content
+          when :context
+            #do nothing
+          end
+        end
+      end
+    end
+    answer
+  end
+
   def format_response(results)
 
     if results.empty?
       return
     else
-      formatted = { :date_modified => results.first[:date] }
+      formatted = []
+      num_items = 1
       results.each do |commit|
-        if commit[:message].include? "Merge"
-          formatted[:reviewer] = commit[:author][:name]
-        else
-          formatted[:author] = commit[:author][:name]
+        if commit[:message].include? "updating"
+          diffs = get_diff(commit[:hash])
+          newdiffs = []
+          #remove subject
+          diffs.each do |diff|
+            parts = diff.split("<")
+            newparts = parts.slice(0,1).concat(parts.slice(2, parts.length-1))
+            newdiffs << newparts.join("<")
+          end
+          item = {:date => commit[:date], :author => commit[:author][:name], :diff => newdiffs }
+          formatted << item
+          num_items = num_items + 1
         end
-        break if formatted.key?(:author) && formatted.key?(:reviewer)
+        break if num_items > 3
+      end
+      if formatted.empty?
+        return nil
       end
       formatted
     end
