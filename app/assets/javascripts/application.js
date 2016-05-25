@@ -17,5 +17,4 @@
 //= require add_date_field
 //= require manage_repeating_fields
 //= require multi_value_fields
-//= require analytics
 //= require_tree .

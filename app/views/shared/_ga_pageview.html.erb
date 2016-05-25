@@ -1,0 +1,5 @@
+<% if Rails.env.production? %>
+  <script>
+    ga('send', 'pageview', '<%= request.path %>');
+  </script>
+<% end %>
