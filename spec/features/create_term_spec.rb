@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'support/test_git_setup'
 RSpec.feature "Creating a vocabulary & term", :js => true, :type => :feature do
   include TestGitSetup
-  given(:user) { User.create(:email => 'admin@example.com', :password => 'admin123', :role => "admin") }
+  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin") }
   background do
     allow_any_instance_of(ApplicationController).to receive(:current_user) {user}
   end
@@ -76,9 +76,10 @@ end
 def capybara_login(user)
   visit new_user_registration_path
   page.fill_in 'user_email', :with => user.email
+  page.fill_in 'user_name', :with => user.name
   page.fill_in 'user_password', :with => user.password
   page.fill_in 'user_password_confirmation', :with => user.password
-  sleep(5)
+  sleep(8)
   page.click_button "Sign up"
   expect(current_path).to eq root_path
 end

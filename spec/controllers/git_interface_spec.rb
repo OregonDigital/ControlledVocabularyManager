@@ -7,8 +7,8 @@ class DummyController < AdminController
 end
 RSpec.describe GitInterface do
   include TestGitSetup
-  let(:user1) { User.create(:email => 'george@blah.com', :password => "admin123",:role => "admin")}
-  let(:user2) { User.create(:email => 'ira@blah.com', :password => "admin123",:role => "admin")}
+  let(:user1) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin")}
+  let(:user2) { User.create(:email => 'ira@blah.com', :name => 'Ira Jones', :password => "admin123",:role => "admin")}
   let(:dummy_class) { DummyController.new }
 
   before do
@@ -49,7 +49,7 @@ RSpec.describe GitInterface do
 
       #get history of blah/foo
       results = dummy_class.get_history("blah/foo")
-      expect(results[0][:author]).to eq("ira")
+      expect(results[0][:author]).to eq("Ira Jones")
       expect(results[0][:diff][0]).to eq("deleted: " + triple2)
       expect(results[0][:diff][1]).to eq("added: " + triple3)
 

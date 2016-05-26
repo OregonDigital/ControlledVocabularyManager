@@ -16,11 +16,10 @@ module GitInterface
     index.read_tree(repo.head.target.tree)
     index.add(:path => "#{id}.nt", :oid => oid, :mode => 0100644)
     #commit
-    name = current_user.email.split('@').first
     options = {}
     options[:tree] = index.write_tree(repo)
-    options[:author] = {:email => current_user.email,:name => name, :time => Time.now }
-    options[:committer] = {:email => current_user.email, :name => name, :time => Time.now }
+    options[:author] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
+    options[:committer] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
     options[:message] = action + ": " + id
     options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
     options[:update_ref] = 'HEAD'
@@ -47,12 +46,11 @@ module GitInterface
       # conflicts. deal with them
     else
       # no conflicts
-      name = current_user.email.split('@').first
       commit_tree = merge_index.write_tree(repo)
       options = {}
       options[:tree] = commit_tree
-      options[:author] = { :email => current_user.email, :name => name, :time => Time.now }
-      options[:committer] = { :email => current_user.email, :name => name, :time => Time.now }
+      options[:author] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
+      options[:committer] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
       options[:message] ||= "Merge #{from_branch} into #{into_branch}"
       options[:parents] = [repo.head.target, our_commit]
       options[:update_ref] = 'HEAD'
