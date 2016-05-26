@@ -105,9 +105,10 @@ module GitInterface
       return entry != nil
     end
     if term
-      if !parent.tree[pathchild].nil?
-        parenttree = repo.lookup(commit.parents[0].tree[pathchild][:oid])
+      if !parent.tree[path].nil?
+        parenttree = repo.lookup(commit.parents[0].tree[path][:oid])
         parent_entry = parenttree[pathchild]
+
       else
         parent_entry = nil
       end
