@@ -1,6 +1,10 @@
 <h3>Edit Users Administrative Status</h3>
-User Email: <%= @user.email %>
+
 <%= simple_form_for(@user, url: admin_user_path(@user)) do |f| %>
+
+  <%= f.input :name %><br>
+  <%= f.input :email %><br>
+
     <input type="checkbox" name="user[role][]" value="admin" <%= "checked" if @user.admin? %>>admin<br>
     <input type="checkbox" name="user[role][]" value="reviewer" <%= "checked" if @user.reviewer? %>>reviewer<br>
     <input type="checkbox" name="user[role][]" value="editor" <%= "checked" if @user.editor? %>>editor<br>

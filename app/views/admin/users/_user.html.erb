@@ -1,5 +1,6 @@
 <% @users.each do |user| %>
   <div class="panel panel-body" id="userstatus-<%= user.id %>">
+    <p><b>Name:</b> <%= user.name %></p>
     <p><b>Email:</b> <%= user.email %></p>
     <p><b>Status</b> <span class="status"><%= user.role %></span></p>
     <p><b>Institution</b> <span class="institution"><%= user.institution %></span></p>

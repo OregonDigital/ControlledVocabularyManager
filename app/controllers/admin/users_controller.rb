@@ -27,7 +27,7 @@ class Admin::UsersController < AdminController
   private 
 
     def user_params
-      params.require(:user).permit(:email, :role, :institution)
+      params.require(:user).permit(:name, :email, :role, :institution)
     end
 
     def transform_params
