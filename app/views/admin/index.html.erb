@@ -1,11 +1,16 @@
-<div class="container" align="center">
+ <% content_for :title do %>
+  Admin / Dashboard
+<% end %>
+
+
+<div class="contai er" align="center">
   <div class="row">
     <div class="col-xs-8 col-xs-offset-2">
       <div class="panel panel-default" id="dashboard">
         <div class="panel panel-heading"> Administration Dashboard </div>
         <div class="panel panel-body">
           <p><%= link_to "Import External RDF", import_rdf_path %></p>
-          <p><%= link_to "Update User Permissions", admin_users_path %></p>
+          <p><%= link_to "Manage Users", admin_users_path %></p>
         </div>
       </div>
     </div>
