@@ -46,7 +46,8 @@ class Term < ActiveTriples::Resource
       :is_replaced_by,
       :date,
       :same_as,
-      :is_defined_by
+      :is_defined_by,
+      :range
     ]
   end
 
