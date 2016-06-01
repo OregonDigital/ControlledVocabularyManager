@@ -1,17 +1,17 @@
-<h3>Edit Users Administrative Status</h3>
+<h3>Edit User</h3>
 
 <%= simple_form_for(@user, url: admin_user_path(@user)) do |f| %>
 
   <%= f.input :name %><br>
   <%= f.input :email %><br>
 
+  <label class="email optional control-label" for="user_email">Role</label><br>
     <input type="checkbox" name="user[role][]" value="admin" <%= "checked" if @user.admin? %>>admin<br>
     <input type="checkbox" name="user[role][]" value="reviewer" <%= "checked" if @user.reviewer? %>>reviewer<br>
     <input type="checkbox" name="user[role][]" value="editor" <%= "checked" if @user.editor? %>>editor<br>
-    <select name="user[institution]">
-      <option value="Oregon State University">Oregon State University</option>
-      <option value="University of Oregon">University of Oregon</option>
-    </select>
+  <br>
+
+  <%= f.input :institution, collection: ["Oregon State University", "University of Oregon"], as: :radio_buttons, selected: @user.institution %><br>
 
   <%= f.button :submit %>
 <% end %>
