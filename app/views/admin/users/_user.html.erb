@@ -1,8 +1,24 @@
-<% @users.each do |user| %>
-  <div class="panel panel-body" id="userstatus-<%= user.id %>">
-    <p><b>Email:</b> <%= user.email %></p>
-    <p><b>Status</b> <span class="status"><%= user.role %></span></p>
-    <p><b>Institution</b> <span class="institution"><%= user.institution %></span></p>
-    <p><%= link_to "Edit", edit_admin_user_path(user) %>
-  </div>
-<% end %>
+<table class="table">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Role</th>
+      <th>Institution</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <% @users.each do |user| %>
+    <tr>
+      <td><%= user.id %></td>
+      <td><%= user.name %></td>
+      <td><%= user.email %></td>
+      <td><%= user.role %></td>
+      <td><%= user.institution %></td>
+      <td><%= link_to "Edit", edit_admin_user_path(user) %></td>
+    </tr>
+
+  <% end %>
+</table>

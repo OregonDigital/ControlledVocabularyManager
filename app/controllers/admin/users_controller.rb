@@ -12,8 +12,8 @@ class Admin::UsersController < AdminController
 
   def update
     @user = User.find(params[:id])
-    if current_user.id == @user.id
-      flash[:error] = "You can't change your own status."
+    if current_user.id == @user.id and !@user.admin?
+      flash[:error] = "You can't change your own user profile."
     else
       transform_params
       @user.update_attributes(user_params)
@@ -27,7 +27,7 @@ class Admin::UsersController < AdminController
   private 
 
     def user_params
-      params.require(:user).permit(:email, :role, :institution)
+      params.require(:user).permit(:name, :email, :role, :institution)
     end
 
     def transform_params

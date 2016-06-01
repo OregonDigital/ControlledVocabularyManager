@@ -4,14 +4,11 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :name, :required => true, :hint => "Please provide your first and last name" %>
+    <%= f.input :name, required: true, hint: "Please provide your first and last name" %>
     <%= f.input :email, required: true, autofocus: true %>
-    <div class="institution-dropdown">
-      <select name="user[institution]">
-        <option value="Oregon State University">Oregon State University</option>
-        <option value="University of Oregon">University of Oregon</option>
-      </select>
-    </div>
+
+    <%= f.input :institution, collection: ["Oregon State University", "University of Oregon"], as: :radio_buttons, required: true %>
+
     <%= f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length) %>
     <%= f.input :password_confirmation, required: true %>
   </div>
@@ -20,5 +17,7 @@
     <%= f.button :submit, "Sign up" %>
   </div>
 <% end %>
+
+<br>
 
 <%= render "devise/shared/links" %>
