@@ -15,9 +15,6 @@ class TriplestoreRepository
 
   # Inserting the statements related to the model posted from the form
   def <<(model)
-    #sanitize model
-    # NOT A PERMANENT FIX TODO: Find where this method is being called and see 
-    # what model is
     @triplestore.store(model.each_statement.to_a)
   end
 
