@@ -5,7 +5,6 @@
     <div class="input-group col-sm-12">
       <select class="form-control" id="term_type" name="term_type" <%= disabled == true ? "disabled='disabled'" : "" %>>
         <% TermType.models.each do |model| %>
-          <%# binding.pry %>
           <option value="<%= model.constantize %>"
                   data-url="<%= model.constantize.uri %>"
                   <%= term.type[0].to_s == model.constantize.uri ? "selected='selected'" : "" %>><%= model.constantize.option_text %></option>
