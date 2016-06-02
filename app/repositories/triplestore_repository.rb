@@ -15,13 +15,21 @@ class TriplestoreRepository
 
   # Inserting the statements related to the model posted from the form
   def <<(model)
+    #sanitize model
+    # NOT A PERMANENT FIX TODO: Find where this method is being called and see 
+    # what model is
     @triplestore.store(model.each_statement.to_a)
   end
 
   # Repository pattern suggests that when updating a term, delete occurs prior
   # to inserting (<<) the model posted from the form
   def delete(*args)
-    @triplestore.delete(*args)
+    if args.is_a?(Array)
+      url = args.flatten.first.scheme + "://" + args.flatten.first.host + args.flatten.first.path
+      @triplestore.delete(url)
+    else
+      @triplestore.delete(*args)
+    end
   end
 
   def clear_statements
@@ -40,7 +48,8 @@ class TriplestoreRepository
   # get an enumerable of the statements related to the rdf_statement
   def statements
     begin
-      @triplestore.fetch(@rdf_statement.subject.to_s)
+      subject = @rdf_statement.subject.to_s 
+      @triplestore.fetch(subject)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
       RDF::Graph.new
