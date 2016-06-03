@@ -18,7 +18,7 @@
         <% if t[1] == "Language Not Found" %>
           <li><%= "#{t[0].value}" %> </li>
         <% else %>
-          <li><%= "#{t[0].value} (#{t[1]}/#{t[0].language})" %></li>
+          <li><%= "#{t[0].value}" %> <span class="label label-default"><%= "#{t[1]} [#{t[0].language}]" %></span></li>
         <% end %>
       <% end %>
     <% end %>
