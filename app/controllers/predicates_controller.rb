@@ -16,7 +16,7 @@ class PredicatesController < ApplicationController
     predicate_form.attributes = vocabulary_params.except(:id)
     predicate_form.set_languages(params[:vocabulary])
     if predicate_form.save
-      triples = predicate_form.sort_stringify(predicate_form.full_graph)
+      triples = predicate_form.sort_stringify(predicate_form.single_graph)
       rugged_create(predicate_params[:id], triples, "creating")
       rugged_merge(predicate_params[:id])
 
@@ -36,7 +36,7 @@ class PredicatesController < ApplicationController
     edit_predicate_form.attributes = vocabulary_params
     edit_predicate_form.set_languages(params[:vocabulary])
     if edit_predicate_form.save
-      triples = edit_predicate_form.sort_stringify(edit_predicate_form.full_graph)
+      triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
       rugged_create(params[:id], triples, "updating")
       rugged_merge(params[:id])
 

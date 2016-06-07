@@ -33,4 +33,4 @@
   <%= render :partial => "terms/history", locals: {:term => @term} %>
 <% end %>
 
-<%= render("vocab_children", :vocabulary => @term) if @term.vocabulary? %>
+<%= render("terms/vocab_children", :vocabulary => @term) if @term.vocabulary? %>

@@ -30,7 +30,7 @@ RSpec.describe RdfImporter do
                     "@language": "en"
               }
   }'}
-  let(:url) { "http://opaquenamespace.org/ns/workType" }
+  let(:url) { "http://opaquenamespace.org/ns/workType/aibanprints" }
   let(:errors) { instance_double("ActiveModel::Errors") }
   let(:importer) { RdfImporter.new(errors, url: url, validators: [validator]) }
   let(:rdf_loader) { RdfLoader }
@@ -41,8 +41,9 @@ RSpec.describe RdfImporter do
 
   describe "#run for RDF URL" do
     before do
-      stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
+      WebMock.allow_net_connect!
 
+      RdfLoader.load_url(url)
       allow(graph_to_termlist).to receive(:run).with(no_args).and_return(termlist)
       allow(termlist).to receive(:valid?).and_return(true)
       allow(importer).to receive(:validators).and_return([validator_class])
@@ -80,6 +81,7 @@ RSpec.describe RdfImporter do
 
       context "when there is no error on the first call" do
         before do
+          stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
           expect(errors).to receive(:any?).and_return(false, true)
         end
 
@@ -92,9 +94,10 @@ RSpec.describe RdfImporter do
     end
 
     context "when an empty graph is returned" do
-      let(:url) { "blah" }
       before do
+        stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
         allow(errors).to receive(:any?).and_return(false, true)
+        allow(rdf_loader).to receive(:load_url).and_return(RDF::Graph.new)
       end
 
       it "should add an error" do
@@ -109,6 +112,8 @@ RSpec.describe RdfImporter do
     let(:importer) { RdfImporter.new(errors, rdf_string: jsonld, validators: [validator]) }
 
     before do
+      WebMock.allow_net_connect!
+
       allow(graph_to_termlist).to receive(:run).with(no_args).and_return(termlist)
       allow(termlist).to receive(:valid?).and_return(true)
       allow(importer).to receive(:validators).and_return([validator_class])
@@ -158,7 +163,7 @@ RSpec.describe RdfImporter do
     end
 
     context "when an empty graph is returned" do
-      let(:jsonld) { "blah" }
+      let(:jsonld) { "not-blank-not-valid" }
       before do
         allow(errors).to receive(:any?).and_return(false, true)
       end

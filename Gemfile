@@ -39,19 +39,17 @@ gem 'iso-639'
 
 # Active Triples for RDF resources.
 gem 'active-triples', '~> 0.6.0'
-gem 'json-ld'
-gem 'rdf-marmotta', :github => "terrellt/rdf-marmotta", :branch => "feature/UseSparqlRepository"
-gem "sparql-client", :github => "ruby-rdf/sparql-client", :branch => "develop"
+gem "sparql-client", '~> 1.99'
+gem 'triplestore-adapter', :github => "osulp/triplestore-adapter"
+gem 'json-ld', '~> 1.99'
 
 gem 'warden-github-rails'
 gem 'rugged'
 
+gem 'config'
 gem 'simple_form'
 gem 'coveralls'
-gem 'rails_config'
-gem 'marmotta'
 gem 'passenger'
-gem 'jettywrapper'
 
 gem 'devise'
 gem 'cancan'

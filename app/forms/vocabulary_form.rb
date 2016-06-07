@@ -12,5 +12,4 @@ class VocabularyForm < SimpleDelegator
     return false unless valid?
     self.persist!
   end
-
 end

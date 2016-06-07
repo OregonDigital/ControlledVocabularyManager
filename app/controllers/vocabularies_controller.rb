@@ -4,7 +4,7 @@ class VocabulariesController < AdminController
   include GitInterface
   def index
     @vocabularies = all_vocabs_query.call
-    @vocabularies.sort_by! {|v| v[:label]}
+    @vocabularies.sort_by! {|v| v.rdf_label.first.downcase }
   end
 
   def new

@@ -1,3 +1,5 @@
+require 'rdf_loader'
+
 # Imports RDF from an externally hosted URL, or using a supplied valid string of
 # RDF
 class RdfImporter
@@ -30,14 +32,14 @@ class RdfImporter
   private
 
   def build_graph
-    if rdf_string.blank?
-      @graph = RdfLoader.load_url(url)
+    if @rdf_string.blank?
+      @graph = RdfLoader.load_url(@url)
       if @graph.empty?
         errors.add(:url, "must resolve to valid RDF")
         errors.add(:base, "URL is not valid.")
       end
     else
-      @graph = RdfLoader.load_string(rdf_string)
+      @graph = RdfLoader.load_string(@rdf_string)
       if @graph.empty?
         errors.add(:rdf_string, "invalid RDF")
         errors.add(:base, "Text contains invalid RDF.")

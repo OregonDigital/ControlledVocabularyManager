@@ -1,15 +1,19 @@
 class VocabularyCreatePage
   include Capybara::DSL
 
+  def self.id
+    "TestVocab"
+  end
+
   def visible?
     has_content? "Create New Vocabulary"
   end
 
   def create
-    fill_in "ID", :with => "TestVocab"
+    fill_in "ID", :with => VocabularyCreatePage.id
     fill_in "vocabulary[label][]", :with => "test"
     find(:xpath, "//input[@name = 'commit']").trigger("click")
-    sleep 1
-    VocabularyShowPage.new("TestVocab")
+    sleep 2
+    VocabularyShowPage.new(VocabularyCreatePage.id)
   end
 end

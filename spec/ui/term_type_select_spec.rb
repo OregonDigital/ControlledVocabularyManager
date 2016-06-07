@@ -11,12 +11,15 @@ RSpec.feature "Using the term type SELECT", :js => true do
 
   scenario "hide fields which aren't specifically configured as visible for the model" do
     setup_git
+    WebMock.allow_net_connect!
+
     vocabulary_create_page = VocabularyCreatePage.new
     visit "/vocabularies/new"
     vocabulary_create_page.create
+    sleep 2
 
     allow(CorporateName).to receive(:visible_form_fields).and_return(%w[label date])
-    visit "/vocabularies/TestVocab/new"
+    visit "/vocabularies/#{VocabularyCreatePage.id}/new"
     within('div.term_type') do
       find("select#term_type option[value='CorporateName']").select_option
       expect(find("select#term_type option[value='CorporateName']")).to be_selected

@@ -1,9 +1,14 @@
 machine:
   ruby:
-    version: 2.1.3
+    version: 2.2.2
 dependencies:
+  cache_directories:
+    - "tmp"
   post:
-    - "RAILS_ENV=development bundle exec rake jetty:clean"
-    - cd jetty && java -Djetty.port=8983 -Dsolr.solr.home=/home/ubuntu/ControlledVocabularyManager/jetty/solr -XX:MaxPermSize=128m -Xmx256m -Dmarmotta.home=/home/ubuntu/ControlledVocabularyManager/marmotta -jar start.jar:
+    - "RAILS_ENV=test bundle exec rake triplestore_adapter:blazegraph:setup"
+    - "RAILS_ENV=test bundle exec rake triplestore_adapter:blazegraph:clean"
+    - "RAILS_ENV=test bundle exec rake triplestore_adapter:blazegraph:download"
+    - java -server -Xmx4g -Dbigdata.propertyFile=config/triplestore_adapter/blazegraph/blazegraph.properties -Dlog4j.configuration=file:config/triplestore_adapter/blazegraph/log4j.properties -jar blazegraph/blazegraph.jar:
         background: true
-    - sleep 10
+    - sleep 5
+    - "RAILS_ENV=test bundle exec rake triplestore_adapter:blazegraph:build_namespace"

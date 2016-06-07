@@ -20,7 +20,7 @@ test:
   <<: *default
   database: db/test.sqlite3
 
-production:
+production: &production
   adapter: <%= ENV['CVM_ADAPTER'] || "sqlite3" %>
   database: <%= ENV['CVM_DB'] || 'db/production.sqlite3' %>
   encoding: utf8
@@ -31,3 +31,7 @@ production:
   port: <%= ENV['CVM_DB_PORT'] || 3306 %>
   pool: 5
   timeout: 5000
+
+staging:
+  <<: *production
+  database: db/staging.sqlite3

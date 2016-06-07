@@ -57,7 +57,7 @@ RSpec.describe VocabulariesController do
   describe "PATCH 'update'" do
     let(:vocabulary) { vocabulary_mock }
     let(:injector) { VocabularyInjector.new }
-    let(:twc) { TermWithoutChildren.new(vocabulary, injector.node_finder) }
+    let(:twc) { TermWithoutChildren.new(vocabulary) }
     let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
     let(:params) do
       {
@@ -122,7 +122,7 @@ RSpec.describe VocabulariesController do
   describe "PATCH 'deprecate_only'" do
     let(:vocabulary) { vocabulary_mock }
     let(:injector) { VocabularyInjector.new }
-    let(:twc) { TermWithoutChildren.new(vocabulary, injector.node_finder) }
+    let(:twc) { TermWithoutChildren.new(vocabulary) }
     let(:vocabulary_form) { DeprecateVocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
     let(:params) do
       {
@@ -228,7 +228,7 @@ RSpec.describe VocabulariesController do
         }
     end
     let(:injector) { VocabularyInjector.new }
-    let(:twc) { TermWithoutChildren.new(vocabulary, injector.node_finder) }
+    let(:twc) { TermWithoutChildren.new(vocabulary) }
     let(:vocabulary) { instance_double("Vocabulary") }
     let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
     let(:result) { post 'create', :vocabulary => vocabulary_params }
