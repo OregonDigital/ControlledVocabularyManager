@@ -46,7 +46,6 @@ class TriplestoreRepository
   def statements
     begin
       subject = @rdf_statement.subject.to_s
-      binding.pry
       remote_graph = subject.include?(Term.base_uri) == false
       @triplestore.fetch(subject, :from_remote => remote_graph)
     rescue TriplestoreAdapter::TriplestoreException => e
