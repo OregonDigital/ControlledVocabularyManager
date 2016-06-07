@@ -49,10 +49,10 @@ class TriplestoreRepository
       @triplestore.fetch(subject)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
-      raise ActiveTriples::NotFound
+      []
     rescue => e
       puts "[ERROR] TriplestoreRepository.statements failed with exception: #{e.message}"
-      raise ActiveTriples::NotFound
+      []
     end
   end
 end

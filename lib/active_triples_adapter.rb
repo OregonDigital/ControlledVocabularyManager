@@ -12,6 +12,8 @@ module ActiveTriplesAdapter
       result = new(uri)
       result.orig_reload
       relevant_triples = result.statements.to_a
+      raise ActiveTriples::NotFound if relevant_triples.length == 0
+
       if type
         relevant_triples.select!{|x| !(x.predicate == RDF.type && x.object.to_s == type.to_s)}
       end
