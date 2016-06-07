@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/osulp/triplestore-adapter.git
-  revision: 647dc09337781a77be57001baf7ef58e461c3e12
+  revision: 46f2d7ca2027030cea49e1951d33f059559b4ba2
   specs:
     triplestore-adapter (0.0.3)
       json-ld (~> 1.99)

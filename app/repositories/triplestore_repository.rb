@@ -46,7 +46,9 @@ class TriplestoreRepository
   def statements
     begin
       subject = @rdf_statement.subject.to_s
-      @triplestore.fetch(subject, from_remote: (subject.include?(Term.base_uri) == false))
+      binding.pry
+      remote_graph = subject.include?(Term.base_uri) == false
+      @triplestore.fetch(subject, :from_remote => remote_graph)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
       RDF::Graph.new
