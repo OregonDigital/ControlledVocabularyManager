@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/osulp/triplestore-adapter.git
-  revision: f42fd1144b3bed82ef742336f3e4e4963438a9d5
+  revision: 3352d7353e6ad3bc6b5edd78ecad0f9e1fa7d15f
   specs:
     triplestore-adapter (0.0.3)
       json-ld (~> 1.99)
@@ -219,7 +219,7 @@ GEM
     mime-types (1.25.1)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
-    multi_json (1.12.0)
+    multi_json (1.12.1)
     multipart-post (2.0.0)
     mysql2 (0.4.4)
     net-http-persistent (2.9.4)
