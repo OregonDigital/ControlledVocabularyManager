@@ -49,10 +49,10 @@ class TriplestoreRepository
       @triplestore.fetch(subject)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
-      []
+      RDF::Graph.new
     rescue => e
       puts "[ERROR] TriplestoreRepository.statements failed with exception: #{e.message}"
-      []
+      RDF::Graph.new
     end
   end
 end
