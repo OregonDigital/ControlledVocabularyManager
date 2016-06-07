@@ -45,14 +45,14 @@ class TriplestoreRepository
   # get an enumerable of the statements related to the rdf_statement
   def statements
     begin
-      subject = @rdf_statement.subject.to_s 
+      subject = @rdf_statement.subject.to_s
       @triplestore.fetch(subject)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
-      RDF::Graph.new
+      raise ActiveTriples::NotFound
     rescue => e
       puts "[ERROR] TriplestoreRepository.statements failed with exception: #{e.message}"
-      RDF::Graph.new
+      raise ActiveTriples::NotFound
     end
   end
 end
