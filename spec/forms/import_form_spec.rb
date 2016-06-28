@@ -11,7 +11,7 @@ RSpec.describe ImportForm do
 
   before do
     WebMock.allow_net_connect!
-    RdfLoader.load_url(url)
+    #RdfLoader.load_url(url)
   end
 
   describe "#valid?" do
