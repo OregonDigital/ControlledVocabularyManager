@@ -17,7 +17,7 @@ RSpec.describe RdfLoader do
     context "when loading raises an error" do
       let(:new_graph) { instance_double("RDF::Graph") }
       before do
-        allow_any_instance_of(TriplestoreAdapter::Triplestore).to receive(:fetch) { raise StandardError.new }
+        allow_any_instance_of(TriplestoreAdapter::Triplestore).to receive(:fetch) { raise TriplestoreAdapter::TriplestoreException }
         expect(RDF::Graph).to receive(:new).and_return(new_graph)
       end
 

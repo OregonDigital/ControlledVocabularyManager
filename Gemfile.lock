@@ -6,9 +6,10 @@ GIT
 
 GIT
   remote: git://github.com/osulp/triplestore-adapter.git
-  revision: 3352d7353e6ad3bc6b5edd78ecad0f9e1fa7d15f
+  revision: d612b6c02dedf238127ef5fec0588c94db207120
+  branch: 0.1.0
   specs:
-    triplestore-adapter (0.0.3)
+    triplestore-adapter (0.1.0)
       json-ld (~> 1.99)
       rdf (~> 1.99)
       rdf-blazegraph (= 0.0.2)
@@ -69,9 +70,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.4.0)
     arel (5.0.1.20140414130214)
-    autoprefixer-rails (6.3.6)
+    autoprefixer-rails (6.3.6.2)
       execjs
-    awesome_print (1.6.1)
+    awesome_print (1.7.0)
     bcp47 (0.3.3)
       i18n
     bcrypt (3.1.11)
@@ -85,7 +86,7 @@ GEM
       columnize (~> 0.3)
       debugger-linecache (~> 1.2)
     cancan (1.6.10)
-    capistrano (2.15.7)
+    capistrano (2.15.9)
       highline
       net-scp (>= 1.0.0)
       net-sftp (>= 2.0.0)
@@ -98,7 +99,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-screenshot (1.0.12)
+    capybara-screenshot (1.0.13)
       capybara (>= 1.0, < 3)
       launchy
     cliver (0.3.2)
@@ -111,7 +112,7 @@ GEM
       execjs
     coffee-script-source (1.10.0)
     columnize (0.9.0)
-    config (1.2.0)
+    config (1.2.1)
       activesupport (>= 3.0)
       deep_merge (~> 1.0, >= 1.0.1)
     coolline (0.5.0)
@@ -130,7 +131,7 @@ GEM
     deep_merge (1.0.1)
     deprecation (0.2.2)
       activesupport
-    devise (4.1.0)
+    devise (4.1.1)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 4.1.0, < 5.1)
@@ -149,7 +150,7 @@ GEM
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     erubis (2.7.0)
-    execjs (2.6.0)
+    execjs (2.7.0)
     factory_girl (4.7.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.7.0)
@@ -157,7 +158,7 @@ GEM
       railties (>= 3.0.0)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
-    font-awesome-rails (4.6.1.0)
+    font-awesome-rails (4.6.3.1)
       railties (>= 3.2, < 5.1)
     formulaic (0.3.0)
       activesupport
@@ -175,8 +176,8 @@ GEM
     hirb (0.7.3)
     htmlentities (4.3.4)
     i18n (0.7.0)
-    iso-639 (0.2.6)
-    jbuilder (2.4.1)
+    iso-639 (0.2.8)
+    jbuilder (2.5.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
     jquery-rails (3.1.4)
@@ -217,27 +218,29 @@ GEM
       mime-types (>= 1.16, < 4)
     method_source (0.8.2)
     mime-types (1.25.1)
-    mini_portile2 (2.0.0)
-    minitest (5.8.4)
+    mini_portile2 (2.1.0)
+    minitest (5.9.0)
     multi_json (1.12.1)
     multipart-post (2.0.0)
-    mysql2 (0.4.4)
+    mysql2 (0.3.21)
     net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
-    net-ssh (3.1.1)
+    net-ssh (3.2.0)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    nokogiri (1.6.7.2)
-      mini_portile2 (~> 2.0.0.rc2)
+    nokogiri (1.6.8)
+      mini_portile2 (~> 2.1.0)
+      pkg-config (~> 1.1.7)
     octokit (4.3.0)
       sawyer (~> 0.7.0, >= 0.5.3)
     orm_adapter (0.5.0)
-    passenger (5.0.28)
+    passenger (5.0.29)
       rack
       rake (>= 0.8.1)
+    pkg-config (1.1.7)
     poltergeist (1.9.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -285,7 +288,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     raindrops (0.16.0)
-    rake (11.1.2)
+    rake (11.2.2)
     rdf (1.99.1)
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (1.99.0)
@@ -437,11 +440,11 @@ GEM
     warden-github-rails (1.2.3)
       railties (>= 3.1)
       warden-github (~> 1.1, >= 1.1.1)
-    webmock (2.0.1)
+    webmock (2.1.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    websocket-driver (0.6.3)
+    websocket-driver (0.6.4)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
     xpath (2.0.0)
@@ -475,7 +478,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   json-ld (~> 1.99)
-  mysql2
+  mysql2 (~> 0.3.13)
   passenger
   poltergeist (~> 1.9.0)
   rails (= 4.1.7)

@@ -5,7 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '4.1.7'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.13'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Bootstrap 
@@ -40,7 +40,7 @@ gem 'iso-639'
 # Active Triples for RDF resources.
 gem 'active-triples', '~> 0.6.0'
 gem "sparql-client", '~> 1.99'
-gem 'triplestore-adapter', :github => "osulp/triplestore-adapter"
+gem 'triplestore-adapter', :github => "osulp/triplestore-adapter", :branch => "0.1.0"
 gem 'json-ld', '~> 1.99'
 
 gem 'warden-github-rails'

@@ -7,8 +7,8 @@ class RdfLoader
   def self.load_url(url)
     begin
       @triplestore = TriplestoreAdapter::Triplestore.new(TriplestoreAdapter::Client.new(Settings.triplestore_adapter.type, Settings.triplestore_adapter.url))
-      @triplestore.fetch(url.to_s)
-    rescue => e
+      @triplestore.fetch(url.to_s, from_remote: true)
+    rescue TriplestoreAdapter::TriplestoreException
       RDF::Graph.new
     end
   end
