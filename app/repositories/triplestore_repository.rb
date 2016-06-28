@@ -45,8 +45,9 @@ class TriplestoreRepository
   # get an enumerable of the statements related to the rdf_statement
   def statements
     begin
-      subject = @rdf_statement.subject.to_s 
-      @triplestore.fetch(subject)
+      subject = @rdf_statement.subject.to_s
+      remote_graph = subject.include?(Term.base_uri) == false
+      @triplestore.fetch(subject, :from_remote => remote_graph)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
       RDF::Graph.new

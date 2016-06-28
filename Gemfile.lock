@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/osulp/triplestore-adapter.git
-  revision: 3352d7353e6ad3bc6b5edd78ecad0f9e1fa7d15f
+  revision: 46f2d7ca2027030cea49e1951d33f059559b4ba2
   specs:
     triplestore-adapter (0.0.3)
       json-ld (~> 1.99)
@@ -221,7 +221,7 @@ GEM
     minitest (5.8.4)
     multi_json (1.12.1)
     multipart-post (2.0.0)
-    mysql2 (0.4.4)
+    mysql2 (0.3.21)
     net-http-persistent (2.9.4)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
@@ -475,7 +475,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   json-ld (~> 1.99)
-  mysql2
+  mysql2 (~> 0.3.0)
   passenger
   poltergeist (~> 1.9.0)
   rails (= 4.1.7)
