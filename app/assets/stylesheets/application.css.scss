@@ -21,6 +21,9 @@
 @import "bootstrap";
 @import "font-awesome";
 
+a { color: #1b0ddf; }
+a:hover { color: #262695; }
+
 ul { padding: 0; margin: 0; }
 select#term_type { margin-bottom: 10px; }
 
