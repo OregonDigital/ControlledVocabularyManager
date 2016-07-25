@@ -4,6 +4,7 @@ class Vocabulary < Term
   property :publisher, :predicate => RDF::DC.publisher
   property :sub_property_of, :predicate => RDF::RDFS.subPropertyOf
   property :range, :predicate => RDF::RDFS.range
+  property :domain, :predicate => RDF::RDFS.domain
 
   def self.option_text
     "Vocabulary"
