@@ -15,7 +15,7 @@ class Vocabulary < Term
   end
 
   def self.visible_form_fields
-    %w[label alternate_name date comment is_replaced_by is_defined_by same_as modified issued title publisher]
+    %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued title publisher sub_property_of range domain]
   end
 
   def allow_vocab_deprecate?
@@ -24,7 +24,7 @@ class Vocabulary < Term
 
   # Update the fields method with any new properties added to this model
   def fields
-    [:title, :publisher] | super
+    [:title, :publisher, :sub_property_of, :range, :domain] | super
   end
 
   private
