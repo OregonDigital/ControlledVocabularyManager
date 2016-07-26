@@ -50,6 +50,7 @@ class Term < ActiveTriples::Resource
       :same_as,
       :is_defined_by,
       :range,
+      :domain,
       :sub_property_of
     ]
   end
