@@ -13,6 +13,7 @@ class Term < ActiveTriples::Resource
   property :date, :predicate => RDF::DC.date
   property :comment, :predicate => RDF::RDFS.comment
   property :is_replaced_by, :predicate => RDF::DC.isReplacedBy
+  property :see_also, :predicate => RDF::RDFS.seeAlso
   property :is_defined_by, :predicate => RDF::RDFS.isDefinedBy
   property :same_as, :predicate => RDF::OWL.sameAs
   property :modified, :predicate => RDF::DC.modified
@@ -31,7 +32,7 @@ class Term < ActiveTriples::Resource
   end
 
   def self.visible_form_fields
-    %w[label alternate_name date comment is_replaced_by is_defined_by same_as modified issued]
+    %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued]
   end
 
   def default_language
@@ -43,6 +44,7 @@ class Term < ActiveTriples::Resource
       :id,
       :issued,
       :modified,
+      :see_also,
       :is_replaced_by,
       :date,
       :same_as,
@@ -78,7 +80,7 @@ class Term < ActiveTriples::Resource
   end
 
   def editable_fields_deprecate
-    fields - [:issued, :modified, :label, :comment, :date, :is_defined_by, :same_as, :alternate_name]
+    fields - [:issued, :modified, :label, :comment, :date, :see_also, :is_defined_by, :same_as, :alternate_name]
   end
 
   def to_param
