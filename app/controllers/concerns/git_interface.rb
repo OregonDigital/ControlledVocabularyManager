@@ -193,4 +193,111 @@ module GitInterface
     end
   end
 
+ def branch_list
+    repo = setup
+    branches = repo.branches.each_name(:local).sort
+    branches = branches.reject{|branch| branch == 'master'}
+  end
+
+  #retrieve the data from git
+  #for use in review queue/show
+  def commit_content(branchname)
+    repo = setup
+    repo.checkout(branchname)
+    lastcom = repo.lookup(repo.last_commit.oid)
+    if(branchname.include?"/")
+      parts = branchname.split("/")
+      childtree = repo.lookup(lastcom.tree[parts[0]][:oid])
+      commit = repo.lookup(childtree[parts[1]+ ".nt"][:oid])
+    else
+      parts = branchname.split("_")
+      commit = repo.lookup(lastcom.tree[parts[0] + ".nt"][:oid])
+    end
+    commit.content
+  end
+
+  #creates an array of terms
+  #for use in review process
+  def review_list
+
+    repo = setup
+    terms = []
+    branches = branch_list
+    branches.each do |branch|
+      repo.checkout(branch)
+      content = commit_content(branch)
+      graph = triples_string_to_graph(content)
+      label_state = graph.query([nil, RDF::RDFS.label, nil])
+      terms << {:id => branch, :uri => label_state.first.subject.to_s, :label => label_state.first.object.to_s}
+    end
+    repo.checkout('master')
+    terms
+  end
+
+  #takes string and converts to rdf statement
+  def triple_string_to_statement(tstring)
+    RDF::Reader.for(:ntriples).new(tstring) do |reader|
+      reader.each_statement do |statement|
+        return statement
+      end
+    end
+  end
+
+  #takes string .nt and converts to graph
+  def triples_string_to_graph(tstring)
+    graph = RDF::Graph.new
+    RDF::Reader.for(:ntriples).new(tstring) do |reader|
+      reader.each_statement do |statement|
+        graph << statement
+      end
+    end
+    graph
+  end
+
+
+  def get_graph(branchname)
+    content = commit_content(branchname)
+    graph = triples_string_to_graph(content)
+  end
+
+  #reassembles rdf graph from git
+  def reassemble(branchname)
+    graph = get_graph(branchname)
+    types = graph.query(:predicate=>RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))
+    if types.first.object == RDF::URI("http://purl.org/dc/dcam/VocabularyEncodingScheme")
+      sr = StandardRepository.new(nil, Vocabulary)
+    elsif
+      types.first.object == RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate")
+      sr = StandardRepository.new(nil, Predicate)
+    else
+      sr = StandardRepository.new(nil, Term)
+    end
+    results = GraphToTerms.new(sr, graph).terms
+    results.first
+  end
+
+  #reassembles params from git
+  # for repopulating edit forms
+  def edit_params (branchname)
+    term = reassemble(branchname)
+    proplangs = Hash.new
+    vocabhash = Hash.new
+    Term.properties.each do |property|
+      results = []
+      if !term.blacklisted_language_properties.include? property[0].to_sym
+        term.query(:predicate=> property[1].predicate ).each_statement {|s,p,o| results << o }
+        if !results.empty?
+          if results.first.respond_to? :language
+            proplangs[property.first.to_s] = [results.first.language.to_s]
+          end
+          vocabhash[property.first.to_sym] = [results.first.object.to_s]
+        end
+      end
+    end
+    vocabhash[:language] = proplangs
+    params = Hash.new
+    params[:vocabulary] = vocabhash
+    params
+  end
+
 end
