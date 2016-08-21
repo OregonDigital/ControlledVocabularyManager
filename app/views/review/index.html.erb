@@ -1,0 +1,13 @@
+<% content_for :title do %>
+  Review
+<% end %>
+<h1>Review</h1>
+<table class="table table-striped">
+  <% @terms.each do |term| %>
+    <tr>
+
+      <td><%= link_to term[:label], review_term_path(term[:id] ) %></td>
+      <td><span class="uri"><%= link_to term[:uri], review_term_path(term[:id]) %></span></td>
+    </tr>
+  <% end %>
+</table>

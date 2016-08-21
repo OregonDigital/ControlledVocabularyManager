@@ -1,6 +1,12 @@
 require 'rails_helper'
+require 'support/test_git_setup'
+
+class DummyController < AdminController
+    include GitInterface
+end
 
 RSpec.describe "terms/show" do
+  include TestGitSetup
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
   let(:resource) do 
     Term.new(uri).tap do |t|
@@ -9,7 +15,7 @@ RSpec.describe "terms/show" do
     end
   end
   let(:children) {}
-
+  let(:dummy_class) { DummyController.new }
   before do
     assign(:term, resource)
     allow(resource).to receive(:fields).and_return([:label])
@@ -102,6 +108,8 @@ RSpec.describe "terms/show" do
       t.comment = ["comment"]
       t
     }
+    let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin")}
+
     it "should display all fields" do
 
       render
@@ -109,7 +117,18 @@ RSpec.describe "terms/show" do
       resource.fields.each do |field|
         expect(rendered).to have_content(field)
       end
-
+    end
+    before do
+      allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
+      setup_for_show_test(dummy_class)
+      allow(resource).to receive(:commit_history).and_return(get_history("blah"))
+    end
+    after do
+      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    end
+    it "should display the diff if it exists" do
+      render
+      expect(rendered).to have_content("added: <http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .")
     end
   end
 end
