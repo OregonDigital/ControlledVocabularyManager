@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe GraphToTerms do
   let(:klass) { Vocabulary }
-  let(:rdf_statement) { RDF::Statement.new(nil, nil, klass.type)}
+  let(:predicate) { RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") }
+  let(:rdf_statement) { RDF::Statement.new(nil, predicate, klass.type)}
   let(:graph) { instance_double("RDF::Graph") }
   let(:repository) { instance_double("StandardRepository") }
   let(:triples) { [rdf_statement]}

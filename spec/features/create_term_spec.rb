@@ -24,6 +24,9 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     fill_in('vocabulary[id]', with: vocabulary_id)
     find_button('Create Vocabulary').trigger('click')
     sleep 2
+    visit "/review/#{vocabulary_id}"
+    find_link('review').click
+    sleep 2
 
     visit "/vocabularies/#{vocabulary_id}/new"
     fill_in "ID", :with => TermCreatePage.id
@@ -31,6 +34,15 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     fill_in "vocabulary[comment][]", :with => "Test comment"
     find_button('Create Term').trigger('click')
     sleep 2
+
+    visit '/review'
+    term_review_index_page = TermReviewIndexPage.new("#{vocabulary_id}/TestTerm")
+    expect (term_review_index_page).has_content? "Test label"
+
+    term_review_show_page = term_review_index_page.select
+    expect (term_review_show_page).has_content? "Test comment"
+    term_review_show_page.mark
+    expect(page).to have_content "#{vocabulary_id}/TestTerm has been saved and is ready for use."
 
     term_statement_list = Term.find("#{vocabulary_id}/#{TermCreatePage.id}").statements.each.map { |x| x }
     expect(term_statement_list[2].object.value).to eq "Test comment"

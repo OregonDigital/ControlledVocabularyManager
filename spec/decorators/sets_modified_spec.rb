@@ -7,38 +7,34 @@ RSpec.describe SetsModified do
   before do
     stub_repository
     allow(term).to receive(:modified=)
-    allow(term).to receive(:persist!)
+    #allow(term).to receive(:persist!)
     allow(term).to receive(:attributes=)
     allow(term).to receive(:attributes)
-
     allow(term).to receive(:valid?).and_return(true)
   end
 
-  describe "#persist!" do
-    context "when it's persisted" do
+  describe "#set_modified" do
+    context "when it's modified" do
       before do
-        subject.persist!
+        subject.set_modified #change to subject.save or ...?
       end
       it "should set modified to current day" do
         expect(term).to have_received(:modified=).with(RDF::Literal::Date.new(Time.now))
-      end
-      it "should persist" do
-        expect(term).to have_received(:persist!)
       end
     end
     context "when not valid" do
       before do
         allow(term).to receive(:valid?).and_return(false)
-        subject.persist!
+        subject.set_modified
       end
       it "should not set modified" do
         expect(term).not_to have_received(:modified=)
       end
     end
-    context "when persisted twice" do
+    context "when modified twice" do
       before do
-        subject.persist!
-        subject.persist!
+        subject.set_modified
+        subject.set_modified
       end
       it "should set modified twice" do
         expect(term).to have_received(:modified=).with(RDF::Literal::Date.new(Time.now)).exactly(2).times

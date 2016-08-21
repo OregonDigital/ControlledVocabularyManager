@@ -15,8 +15,8 @@ class GraphToTerms < Struct.new(:resource_factory, :graph)
     # type of vocabulary, predicate, or term this graph is representing so
     # that the proper type of repository can be persisted
     @klass = nil
-    triples.each do |t|
-      @klass = TermType.class_from_types([t.object]) if @klass.nil?
-    end
+    statements = triples.select { |s| s.predicate == RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") && s.object !=  RDF::URI("http://www.w3.org/2000/01/rdf-schema#Resource") }
+    uris = statements.map { |s| s.object }
+    @klass = TermType.class_from_types(uris) unless statements.empty?
   end
 end

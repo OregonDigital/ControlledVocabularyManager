@@ -9,7 +9,7 @@ class TermWithoutChildren < SimpleDelegator
 
   def sort_stringify(graph)
     triples = graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + " " + element.to_s}
-    triples.gsub!(" . ", " .\n")
+    "#{triples.to_s.gsub!(" . ", " .\n")}\n"
   end
 
 end

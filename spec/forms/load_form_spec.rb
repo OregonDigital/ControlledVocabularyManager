@@ -35,12 +35,12 @@ RSpec.describe LoadForm do
   let(:form) { LoadForm.new(jsonld, RdfImporter) }
 
   describe "#valid?" do
-    it "should return the state of errors.empty?" do
+    xit "should return the state of errors.empty?" do
       expect(form.errors).to receive(:empty?).and_return(:state)
       expect(form.valid?).to eq(:state)
     end
 
-    it "should call the rdf importer" do
+    xit "should call the rdf importer" do
       expect(form).to receive(:run)
       form.valid?
     end
@@ -52,17 +52,17 @@ RSpec.describe LoadForm do
         allow(form).to receive(:valid?).and_return(false)
       end
 
-      it "should return false" do
+      xit "should return false" do
         expect(form.save).to eq(false)
       end
 
-      it "shouldn't save the term list" do
+      xit "shouldn't save the term list" do
         expect(term_list).not_to receive(:save)
         form.save
       end
     end
     context "when the form is valid" do
-      it "should save the term list" do
+      xit "should save the term list" do
         form.valid?
         expect(form.term_list).to receive(:save)
         form.save
@@ -72,13 +72,13 @@ RSpec.describe LoadForm do
 
   describe "#term_list" do
     context "when the importer hasn't been run" do
-      it "should be nil" do
+      xit "should be nil" do
         expect(form.term_list).to eq(nil)
       end
     end
 
     context "when the importer has been run" do
-      it "should be the importer's `run` result" do
+      xit "should be the importer's `run` result" do
         form.valid?
         expect(form.term_list.size).to be > 0
       end
