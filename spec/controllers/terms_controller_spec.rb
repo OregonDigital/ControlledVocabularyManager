@@ -5,7 +5,7 @@ require 'support/test_git_setup'
 RSpec.describe TermsController do
   include TestGitSetup
 
-  let(:uri) { "http://opaquenamespace.org/ns/bla" }
+  let(:uri) { "http://opaquenamespace.org/ns/test/bla" }
   let(:resource) { term_mock }
   let(:injector) { TermInjector.new }
   let(:decorated_resource) { TermWithChildren.new(resource, injector.child_node_finder) }
@@ -27,7 +27,7 @@ RSpec.describe TermsController do
       allow(full_graph).to receive(:dump)
       allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
       allow(resource).to receive(:commit_history=)
-      allow_any_instance_of(DecoratingRepository).to receive(:find).with("bla").and_return(decorated_resource)
+      allow_any_instance_of(DecoratingRepository).to receive(:find).with("test/bla").and_return(decorated_resource)
     end
 
     context "when the resource exists" do
@@ -117,7 +117,10 @@ RSpec.describe TermsController do
 
   describe "POST create" do
     let(:injector) { TermInjector.new }
-    let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
+    let(:term_form) { TermForm.new(SetsAttributes.new(term_res), Term) }
+    let(:term_res) { AddResource.new(term_iss) }
+    let(:term_iss) { SetsIssued.new(term_mod) }
+    let(:term_mod) { SetsModified.new(twc) }
     let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
     let(:term) { instance_double("Term") }
     let(:term_id) { "blah" }
@@ -137,31 +140,36 @@ RSpec.describe TermsController do
           :comment => ["en"]}}
         }
       end
-      let(:save_success) { true }
+      #let(:save_success) { true }
       let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
       before do
         stub_repository
         allow_any_instance_of(TermFormRepository).to receive(:new).and_return(term_form)
-        allow(term_form).to receive(:save).and_return(save_success)
         full_graph = instance_double("RDF::Graph")
         allow(term_form).to receive(:full_graph).and_return(full_graph)
         allow(term_form).to receive(:sort_stringify).and_return("blah")
+        allow(term).to receive(:term_uri_leaf).and_return(term_id)
+        allow(term).to receive(:term_uri_vocabulary_id).and_return("test")
         allow(term).to receive(:id).and_return(term_id)
+        allow(term).to receive(:new_record?).and_return("true")
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
         allow(term).to receive(:attributes).and_return(params[:vocabulary])
+        allow(term).to receive(:valid?)
         allow(Vocabulary).to receive(:find)
-        post :create, params
       end
       context "when logged out" do
         let(:user) { }
+        before do
+          post :create, params
+        end
         it "should require login" do
           expect(response.body).to have_content("Only admin can access")
         end
       end
-      it "should save term form" do
-        expect(term_form).to have_received(:save)
-      end
+      #it "should save term form" do
+      #  expect(term_form).to have_received(:save)
+      #end
       context "when blank arrays are passed in" do
         let(:term_id) { "blah" }
         let(:params) do
@@ -180,22 +188,29 @@ RSpec.describe TermsController do
             }
           }
         end
+        before do
+          post :create, params
+        end
         it "should not pass them to Term" do
           expect(term).to have_received(:attributes=).with({"label" => []})
         end
       end
-      context "when save fails" do
-        let(:save_success) { false }
-        it "should render new template" do
-          expect(response).to render_template("new")
-        end
-        it "should assign @term" do
-          expect(assigns(:term)).to eq term_form
-        end
-      end
+      #context "when save fails" do
+      #  let(:save_success) { false }
+      #  it "should render new template" do
+      #    expect(response).to render_template("new")
+      #  end
+      #  it "should assign @term" do
+      #    expect(assigns(:term)).to eq term_form
+      #  end
+      #end
       context "when all goes well" do
-        it "should redirect to the term" do
-          expect(response).to redirect_to("/ns/#{term.id}")
+        before do
+          allow(term_form).to receive(:is_valid?).and_return(true)
+          post :create, params
+        end
+        it "should redirect to the vocab page" do
+          expect(response).to redirect_to("/ns/test")
         end
       end
       context "when vocabulary isn't found" do
@@ -217,18 +232,18 @@ RSpec.describe TermsController do
         end
         before do
           allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
+          post :create, params
         end
         it "should return a 404" do
           expect(post(:create, params).code).to eq "404"
         end
         it "doesn't call TermForm" do
           expect(TermForm).not_to receive(:new)
-          post :create, params
+
         end
       end
-      context "when term is not utf-8 valid" do
-        let(:term_id) {"R\u00E9sum\u00E9".encode!(Encoding::ISO_8859_1)}
-        let(:save_success) { false }
+      context "when term has special chars" do
+        let(:term_id) {"test/howsitgoin?"}
         let(:params) do
           {
             :term => {
@@ -244,6 +259,9 @@ RSpec.describe TermsController do
               }
             }
           }
+        end
+        before do
+          post :create, params
         end
         it "should show the term form again" do
           expect(response).to render_template("new")
@@ -251,7 +269,6 @@ RSpec.describe TermsController do
       end
       context "when term has spaces in it" do
         let(:term_id) {"bad term"}
-        let(:save_success) { false }
         let(:params) do
           {
             :term => {
@@ -267,6 +284,9 @@ RSpec.describe TermsController do
               }
             }
           }
+        end
+        before do
+          post :create, params
         end
         it "should show the term form again" do
           expect(response).to render_template("new")
@@ -278,7 +298,8 @@ RSpec.describe TermsController do
       let(:term) { term_mock }
       let(:injector) { TermInjector.new }
       let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
-      let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
+      let(:term_form) { TermForm.new(SetsAttributes.new(term_mod), Term) }
+      let(:term_mod) { SetsModified.new(twc) }
       let(:params) do
         {
           :label => ["Test"],
@@ -300,8 +321,8 @@ RSpec.describe TermsController do
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
         allow(term).to receive(:attributes).and_return(params)
-        allow(term).to receive(:persist!).and_return(persist_success)
         allow(term_form).to receive(:valid?).and_return(true)
+        allow(term).to receive(:valid?)
         patch :update, :id => term.id, :vocabulary => params
       end
 
@@ -309,14 +330,14 @@ RSpec.describe TermsController do
         it "should update the properties" do
           expect(term).to have_received(:attributes=).with(params.except(:language))
         end
-        it "should redirect to the updated term" do
-          expect(response).to redirect_to("/ns/#{term.id}")
+        it "should redirect to the vocab" do
+          expect(response).to redirect_to("/ns/test")
         end
       end
 
-      context "when the fields are edited and the update fails" do
+      context "when the fields are edited and the check fails" do
         before do
-          allow(term).to receive(:persist!).and_return(persist_failure)
+          allow(term_form).to receive(:valid?).and_return(false)
           patch :update, :id => term.id, :vocabulary => params
         end
         it "should show the edit form" do
@@ -324,6 +345,44 @@ RSpec.describe TermsController do
           expect(response).to render_template("edit")
         end
       end
+    end
+
+    describe "mark_reviewed" do
+      let(:term) { term_mock }
+      let(:term_id) { "blah" }
+      let(:params) do
+      {
+        :id => "test/" + term_id,
+        :vocabulary_id => "test",
+        :term_type => "Term",
+        :vocabulary => {
+          :id => "testing",
+          :label => ["Test"],
+          :comment => ["Comment"],
+          :language => {
+            :label => ["en"],
+          :comment => ["en"]}}
+        }
+      end
+      let(:save_success) { true }
+      let(:term_form) { TermForm.new(term, StandardRepository.new(nil,Term))}
+      before do
+        allow(term).to receive(:new_record?).and_return(true)
+        allow_any_instance_of(TermForm).to receive(:save).and_return(save_success)
+        allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(term)
+        allow_any_instance_of(GitInterface).to receive(:rugged_merge)
+        allow(term).to receive(:term_uri_leaf).and_return(term_id)
+        allow(term).to receive(:term_uri_vocabulary_id).and_return("test")
+        get :mark_reviewed, :id =>params[:id]
+
+      end
+      context "when the item has been reviewed" do
+        it "will redirect to review queue if asset is saved" do
+          expect(flash[:notice]).to include("test/blah has been saved")
+          expect(response).to redirect_to("/review")
+        end
+      end
+
     end
 
     describe "PATCH deprecate_only" do
@@ -334,7 +393,7 @@ RSpec.describe TermsController do
       let(:term_form) { TermForm.new(SetsAttributes.new(twc), Term) }
       let(:params) do
         {
-          :id => "blah",
+          :id => "test/blah",
           :label => ["Test"],
           :comment => ["Comment"],
           :is_replaced_by => ["test"],
@@ -368,14 +427,15 @@ RSpec.describe TermsController do
         it "should update the is_replaced_by property" do
           expect(term).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
         end
-        it "should redirect to the updated term" do
-          expect(response).to redirect_to("/ns/#{term.id}")
+        it "should redirect to the vocab" do
+          parts = term.id.split("/")
+          expect(response).to redirect_to("/ns/#{parts[0]}")
         end
       end
 
       context "when the fields are edited and the update fails" do
         before do
-          allow(term).to receive(:persist!).and_return(persist_failure)
+          allow(term_form).to receive(:is_valid?).and_return(false)
           patch :deprecate_only, :id => term.id, :vocabulary => params
         end
         it "should show the edit form" do

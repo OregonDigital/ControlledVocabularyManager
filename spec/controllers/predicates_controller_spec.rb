@@ -49,7 +49,9 @@ RSpec.describe PredicatesController do
 
   describe "PATCH 'update'" do
     let(:predicate) { predicate_mock }
-    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(TermWithoutChildren.new(predicate)), Predicate) }
+    let(:twc) { TermWithoutChildren.new(predicate)}
+    let(:pred_mod) { SetsModified.new(twc) }
+    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(pred_mod), Predicate) }
     let(:predicate_params) { {:id => "blah"} }
     let(:params) do
       {
@@ -64,15 +66,16 @@ RSpec.describe PredicatesController do
     let(:persist_success) { true }
 
     before do
+      stub_repository
       allow_any_instance_of(PredicateFormRepository).to receive(:find).and_return(predicate_form)
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       full_graph = instance_double("RDF::Graph")
       allow(predicate_form).to receive(:sort_stringify).and_return("blah")
       allow(predicate_form).to receive(:single_graph).and_return(full_graph)
       allow(predicate).to receive(:attributes=)
-      allow(predicate).to receive(:persist!).and_return(persist_success)
       allow(predicate_form).to receive(:valid?).and_return(true)
       allow(predicate).to receive(:attributes).and_return(params)
+      allow(predicate).to receive(:valid?)
       patch :update, :id => predicate.id, :predicate => params, :vocabulary => params
     end
 
@@ -80,8 +83,8 @@ RSpec.describe PredicatesController do
       it "should update the properties" do
          expect(predicate).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :label=>[RDF::Literal("Test", :language => :en)]}).exactly(1).times
       end
-      it "should redirect to the updated term" do
-        expect(response).to redirect_to("/ns/#{predicate.id}")
+      it "should redirect to the predicates index" do
+        expect(response).to redirect_to("/predicates")
       end
       context "and there are blank fields" do
         let(:params) do
@@ -98,9 +101,11 @@ RSpec.describe PredicatesController do
         end
       end
     end
-
-    context "when the fields are edited and the update fails" do
-      let(:persist_success) { false }
+    context "when the fields are edited and the check fails" do
+      before do
+        allow(predicate_form).to receive(:valid?).and_return(false)
+        patch :update, :id => predicate.id, :predicate => params, :vocabulary => params
+      end
       it "should show the edit form" do
         expect(assigns(:term)).to eq predicate_form
         expect(response).to render_template("edit")
@@ -110,7 +115,8 @@ RSpec.describe PredicatesController do
 
   describe "PATCH deprecate_only" do
     let(:predicate) { predicate_mock }
-    let(:predicate_form) { DeprecatePredicateForm.new(SetsAttributes.new(predicate), Predicate) }
+    let(:twc) {TermWithoutChildren.new(predicate) }
+    let(:predicate_form) { DeprecatePredicateForm.new(SetsAttributes.new(twc), Predicate) }
     let(:params) do
       {
         :comment => ["Test"],
@@ -126,11 +132,14 @@ RSpec.describe PredicatesController do
 
     before do
       allow_any_instance_of(DeprecatePredicateFormRepository).to receive(:find).and_return(predicate_form)
+      stub_repository
+      full_graph = instance_double("RDF::Graph")
+      allow(predicate_form).to receive(:sort_stringify).and_return("blah")
+      allow(predicate_form).to receive(:single_graph).and_return(full_graph)
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(predicate).to receive(:attributes=)
       allow(predicate).to receive(:is_replaced_by=)
-      allow(predicate).to receive(:persist!).and_return(persist_success)
-      allow(predicate_form).to receive(:valid?).and_return(true)
+      allow(predicate_form).to receive(:is_valid?).and_return(true)
       allow(predicate).to receive(:attributes).and_return(params)
       allow(predicate).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
       patch :deprecate_only, :id => predicate.id, :predicate => params, :vocabulary => params
@@ -140,12 +149,15 @@ RSpec.describe PredicatesController do
       it "should update the is_replaced_by property" do
         expect(predicate).to have_received(:is_replaced_by=).with(params[:is_replaced_by]).exactly(1).times
       end
-      it "should redirect to the updated term" do
-        expect(response).to redirect_to("/ns/#{predicate.id}")
+      it "should redirect to predicates index" do
+        expect(response).to redirect_to("/predicates")
       end
     end
     context "when the fields are edited and the update fails" do
-      let(:persist_success) { false }
+      before do
+        allow(predicate_form).to receive(:is_valid?).and_return(false)
+        patch :deprecate_only, :id => predicate.id, :predicate => params, :vocabulary => params
+      end
       it "should show the edit form" do
         expect(assigns(:term)).to eq predicate_form
         expect(response).to render_template("deprecate")
@@ -201,31 +213,32 @@ RSpec.describe PredicatesController do
         }
       }
     end
+    let(:twc) { TermWithoutChildren.new(predicate)}
+    let(:pred_iss) { SetsIssued.new(twc) }
+    let(:pred_mod) { SetsModified.new(pred_iss) }
+    let(:pred_res) { AddResource.new(pred_mod) }
     let(:predicate) { instance_double("Predicate") }
-    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(TermWithoutChildren.new(predicate)), Predicate) }
+    let(:predicate_form) { PredicateForm.new(SetsAttributes.new(pred_res), Predicate) }
     let(:result) { post 'create', :predicate => predicate_params, :vocabulary => predicate_params }
-    let(:save_success) { true }
     before do
       stub_repository
       allow_any_instance_of(PredicateFormRepository).to receive(:new).and_return(predicate_form)
-      allow(predicate_form).to receive(:save).and_return(save_success)
       full_graph = instance_double("RDF::Graph")
       allow(predicate_form).to receive(:sort_stringify).and_return("blah")
       allow(predicate_form).to receive(:single_graph).and_return(full_graph)
-
+      allow(predicate_form).to receive(:is_valid?).and_return(true)
+      allow(predicate).to receive(:new_record?).and_return("true")
       allow(predicate).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(predicate).to receive(:id).and_return("test")
       allow(predicate).to receive(:attributes=)
       allow(predicate).to receive(:attributes).and_return(predicate_params)
+      allow(predicate).to receive(:valid?)
       post 'create', :predicate => predicate_params, :vocabulary => predicate_params
-    end
-    it "should save term form" do
-      expect(predicate_form).to have_received(:save)
     end
 
     context "when all goes well" do
-      it "should redirect to the term" do
-        expect(response).to redirect_to("/ns/#{predicate.id}")
+      it "should redirect to the index" do
+        expect(response).to redirect_to("/predicates")
       end
     end
 
