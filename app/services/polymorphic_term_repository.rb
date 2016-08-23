@@ -23,13 +23,7 @@ class PolymorphicTermRepository
     return repository_type unless repository_type.nil?
 
     term = Term.find(id)
-    if term.vocabulary?
-      Vocabulary
-    elsif term.predicate?
-      Predicate
-    else
-      Term
-    end
+    term.term_type
   end
 
 end

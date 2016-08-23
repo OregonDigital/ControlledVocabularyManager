@@ -7,7 +7,7 @@
         <% TermType.models.each do |model| %>
           <option value="<%= model.constantize %>"
                   data-url="<%= model.constantize.uri %>"
-                  <%= term.type[0].to_s == model.constantize.uri ? "selected='selected'" : "" %>><%= model.constantize.option_text %></option>
+                  <%= TermType.class_from_types(term.type) == model.constantize ? "selected='selected'" : "" %>><%= model.constantize.option_text %></option>
         <% end %>
       </select>
     </div>

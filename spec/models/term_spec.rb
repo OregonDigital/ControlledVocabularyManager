@@ -245,4 +245,18 @@ RSpec.describe Term do
       expect(resource.language_from_symbol(:zu)).to eq "Zulu"
     end
   end
+
+  describe "self.class_from_types" do
+    let(:types) { [ type, RDF::URI('https://www.w3.org/2000/01/rdf-schema#Resource') ] }
+
+    [Vocabulary, Predicate, CorporateName, Geographic, Title, Topic, PersonalName, Term].each do |k|
+      context "when passing a #{k} type" do
+        let(:type) { k.type }
+        it "should return the #{k} class" do
+          expect(TermType.class_from_types(types)).to eq k
+        end
+
+      end
+    end
+  end
 end

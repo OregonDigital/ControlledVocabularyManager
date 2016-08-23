@@ -10,85 +10,41 @@ RSpec.describe TermType do
   it "should show all models having field 'date'" do
     expect(TermType.models_having_visible_property('date').length).to eq(6)
   end
-  context "when evaluating a vocabulary" do
-    let(:term) { Vocabulary.new }
-    it "should be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_truthy
-    end
-    it "should return 'Vocabulary'" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(Vocabulary.option_text)
-    end
-  end
-  context "when evaluating a Term" do
-    let(:term) { Term.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return 'Concept'" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(Term.option_text)
-    end
-    it "should return '' for its url" do
-      expect(TermType.url_for("Term")).to eq(Term.uri)
-    end
-  end
-  context "when evaluating a CorporateName" do
-    let(:term) { CorporateName.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return its option_text" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(CorporateName.option_text)
-    end
-    it "should return its url" do
-      expect(TermType.url_for("CorporateName")).to eq(CorporateName.uri)
-    end
-  end
-  context "when evaluating a Geographic" do
-    let(:term) { Geographic.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return its option_text" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(Geographic.option_text)
-    end
-    it "should return its url" do
-      expect(TermType.url_for("Geographic")).to eq(Geographic.uri)
-    end
-  end
-  context "when evaluating a PersonalName" do
-    let(:term) { PersonalName.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return its option_text" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(PersonalName.option_text)
-    end
-    it "should return its url" do
-      expect(TermType.url_for("PersonalName")).to eq(PersonalName.uri)
-    end
-  end
-  context "when evaluating a Title" do
-    let(:term) { Title.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return its option_text" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(Title.option_text)
-    end
-    it "should return its url" do
-      expect(TermType.url_for("Title")).to eq(Title.uri)
-    end
-  end
-  context "when evaluating a Topic" do
-    let(:term) { Topic.new }
-    it "should not be a vocabulary" do
-      expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
-    end
-    it "should return its option_text" do
-      expect(TermType.name_for(term.type[0].to_s)).to eq(Topic.option_text)
-    end
-    it "should return its url" do
-      expect(TermType.url_for("Topic")).to eq(Topic.uri)
+
+
+  # Run through all of the TermType related models as well as Vocabulary and Predicate
+  TermType.models.concat(%w[Vocabulary Predicate]).each do |m|
+    context "when evaluating #{m}" do
+      let(:klass) { m.constantize }
+      let(:term) { klass.new }
+      if m == 'Vocabulary'
+        it "should be a Vocabulary" do
+          expect(TermType.vocabulary?(term.type[0].to_s)).to be_truthy
+          expect(TermType.predicate?(term.type[0].to_s)).to be_falsey
+        end
+      elsif m == 'Predicate'
+        it "should be a Predicate" do
+          expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
+          expect(TermType.predicate?(term.type[0].to_s)).to be_truthy
+        end
+      else
+        it "should not be a Vocabulary or a Predicate" do
+          expect(TermType.vocabulary?(term.type[0].to_s)).to be_falsey
+          expect(TermType.predicate?(term.type[0].to_s)).to be_falsey
+        end
+      end
+
+      it "should return its name" do
+        expect(TermType.name_for(term.type[0].to_s)).to eq(klass.option_text)
+      end
+
+      it "should return its url" do
+        expect(TermType.url_for(m)).to eq(klass.uri)
+      end
+
+      it "should return the proper class" do
+        expect(TermType.class_from_types(term.type)).to eq(klass)
+      end
     end
   end
 end

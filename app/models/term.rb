@@ -57,23 +57,31 @@ class Term < ActiveTriples::Resource
 
   def id
     return nil if rdf_subject.node?
-    rdf_subject.to_s.gsub(self.class.base_uri,"")
+    rdf_subject.to_s.gsub(self.class.base_uri, "")
   end
 
+  ##
+  # Is this term currently deprecated?
+  #
+  # @return [Boolean] true if this terms property :is_replaced_by has a value
   def deprecated?
     !values_for_property(:is_replaced_by).empty?
   end
 
+  ##
+  # Is this vocabulary currently deprecated?
+  #
+  # @return [Boolean] true if this vocabulary is deprecated
   def deprecated_vocab?
     Term.find(vocab_subject_uri).deprecated? if Term.exists?(vocab_subject_uri)
   end
 
   def vocabulary?
-    type.include?(*Array(Vocabulary.type))
+    self.term_type == Vocabulary
   end
 
   def predicate?
-    type.include?(*Array(Predicate.type))
+    self.term_type == Predicate
   end
 
   def editable_fields
@@ -105,10 +113,12 @@ class Term < ActiveTriples::Resource
     @repository ||= TriplestoreRepository.new(rdf_statement, Settings.triplestore_adapter.type, Settings.triplestore_adapter.url)
   end
 
-  #Returns a multi-dimensional array with translated language for a given
-  #property.
+  ##
+  # Returns a multi-dimensional array with translated language for a given property.
+  #
+  # @param property_name [Symbol] the property name to get language for
   def literal_language_list_for_property(property_name)
-    self.get_values(property_name.to_s, :literal => true).map{ |literal| [literal, language_from_symbol(literal.language)]}
+    self.get_values(property_name.to_s, :literal => true).map { |literal| [literal, language_from_symbol(literal.language)] }
   end
 
   def language_from_symbol(language_symbol)
@@ -117,6 +127,62 @@ class Term < ActiveTriples::Resource
 
   def translator
     ControlledVocabManager::IsoLanguageTranslator
+  end
+
+  ##
+  # The friendly text 'titleize'd, ie. "Personal Name"
+  # @return [String] the term type
+  def titleized_type
+    self.term_type.option_text.titleize
+  end
+
+  ##
+  # The friendly text 'parameterize'd, ie. "personalname"
+  # @return [String] the term type
+  def parameterized_type
+    self.term_type.option_text.parameterize
+  end
+
+  ##
+  # Get the full graph of this term, after its term type is updated so that the serialized details of the term do not
+  # have unnecessary term types (Term base class) included
+  #
+  # @return [RDF::Graph] an RDF graph of this whole term
+  def full_graph
+    self.term_type = TermType.class_from_types(self.type)
+    (self).inject(RDF::Graph.new, :<<)
+  end
+
+  ##
+  # Sort the graph statements and prepare for display, such as the git history of recent changes
+  # @param graph [RDF::Graph] an RDF graph to sort
+  # @return [Array<String>] a sorted array of statements
+  def sort_stringify(graph)
+    triples = graph.statements.to_a.sort_by { |x| x.predicate }.inject { |collector, element| collector.to_s + " " + element.to_s }
+    triples.to_s.gsub!(" . ", " .\n")
+  end
+
+  ##
+  # Update this instance of the terms type, see the getter and setter for details
+  def set_term_type
+    self.term_type = self.term_type
+  end
+
+  ##
+  # Return the class of a term that best matches this instances set type. (type is an additive array in ActiveTriples
+  # so each model which inherits from Term.rb includes its type, which is undesirable)
+  #
+  # @return [Class] the class of this instance of a term
+  def term_type
+    TermType.class_from_types(self.type)
+  end
+
+  ##
+  # Remove the Term.type from this instances array unless this instance is actually a Term
+  #
+  # @param value [Class] this instances type
+  def term_type=(type)
+    self[:type] = self.type - [Term.type] unless type == Term
   end
 
   private
