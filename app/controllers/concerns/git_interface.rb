@@ -2,12 +2,12 @@ module GitInterface
   extend ActiveSupport::Concern
   require 'rugged'
   
-  def rugged_create (id,string,action)
+  def rugged_create (id, branch_id, string, action)
     repo = setup
     #find/create branch and check it out
-    branch = repo.branches[id]
+    branch = repo.branches[branch_id]
     if branch.nil?
-      branch = repo.branches.create(id, "HEAD")
+      branch = repo.branches.create(branch_id, "HEAD")
     end
     repo.checkout(branch)
     #add blob
@@ -31,12 +31,12 @@ module GitInterface
     repo.checkout('master')
   end
 
-  def rugged_merge (id)
+  def rugged_merge (id, branch_id)
     repo = setup
     repo.checkout('master')
     #merge
     into_branch = 'master'
-    from_branch = id
+    from_branch = branch_id
     their_commit = repo.branches[into_branch].target_id
     our_commit = repo.branches[from_branch].target_id
 
@@ -219,7 +219,6 @@ module GitInterface
   #creates an array of terms
   #for use in review process
   def review_list
-
     repo = setup
     terms = []
     branches = branch_list
@@ -228,7 +227,7 @@ module GitInterface
       content = commit_content(branch)
       graph = triples_string_to_graph(content)
       label_state = graph.query([nil, RDF::RDFS.label, nil])
-      terms << {:id => branch, :uri => label_state.first.subject.to_s, :label => label_state.first.object.to_s}
+      terms << {:branch => branch, :uri => label_state.first.subject.to_s, :label => label_state.first.object.to_s}
     end
     repo.checkout('master')
     terms
