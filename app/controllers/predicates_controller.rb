@@ -82,7 +82,7 @@ class PredicatesController < ApplicationController
     end
     predicate_form.set_languages(params[:vocabulary])
     predicate_form.set_modified
-    predicate_form.reset_issued(params[:vocabulary][:issued])
+    predicate_form.reset_issued(params[:issued])
 
     if predicate_form.is_valid?
       triples = predicate_form.sort_stringify(predicate_form.single_graph)

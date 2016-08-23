@@ -66,7 +66,7 @@ class VocabulariesController < AdminController
     end
     vocabulary_form.set_languages(params[:vocabulary])
     vocabulary_form.set_modified
-    vocabulary_form.reset_issued(params[:vocabulary][:issued])
+    vocabulary_form.reset_issued(params[:issued])
 
     if vocabulary_form.is_valid?
       triples = vocabulary_form.sort_stringify(vocabulary_form.full_graph)

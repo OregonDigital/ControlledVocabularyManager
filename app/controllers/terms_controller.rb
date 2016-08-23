@@ -72,7 +72,7 @@ class TermsController < AdminController
     end
     term_form.set_languages(params[:vocabulary])
     term_form.set_modified
-    term_form.reset_issued(params[:vocabulary][:issued])
+    term_form.reset_issued(params[:issued])
 
     if term_form.is_valid?
       triples = term_form.sort_stringify(term_form.full_graph)

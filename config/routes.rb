@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   post '/vocabularies/*vocabulary_id', :to => "terms#create", :as => "create_term"
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
+  post 'terms/*id/commit', :to => "terms#commit", :as => "commit_term"
   get 'vocabularies/*id/deprecate', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
   get 'predicates/*id/deprecate', :to => "predicates#deprecate", :as => "deprecate_predicate"
 
