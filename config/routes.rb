@@ -24,18 +24,25 @@ Rails.application.routes.draw do
   patch 'vocabularies/*id/deprecate_only', :to => "vocabularies#deprecate_only", :as => "deprecate_only_vocabulary"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
   patch 'predicates/*id/deprecate_only', :to => "predicates#deprecate_only", :as => "deprecate_only_predicate"
+  post 'predicates/*id/commit', :to => "predicates#commit", :as => "commit_predicate"
   patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
   resources :vocabularies, :only => [:index, :new, :create, :edit]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
   resources :predicates, :only => [:index, :new, :create, :edit]
+  post 'vocabularies/*id/commit', :to => "vocabularies#commit", :as => "commit_vocabulary"
   post '/vocabularies/*vocabulary_id', :to => "terms#create", :as => "create_term"
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
   get 'vocabularies/*id/deprecate', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
   get 'predicates/*id/deprecate', :to => "predicates#deprecate", :as => "deprecate_predicate"
 
-
+  get "/vocabularies/*id/mark", :to => "vocabularies#mark_reviewed", :as => "mark_vocabulary"
+  get "/predicates/*id/mark", :to =>"predicates#mark_reviewed", :as => "mark_predicate"
+  get "/terms/*id/mark", :to => "terms#mark_reviewed", :as => "mark_term"
+  get "/review", :to => "review#index", :as => "review_queue"
+  get "/review/*id/edit", :to => "review#edit", :as => "review_edit"
+  get "/review/*branch", :to => "review#show", :as => "review_term"
   get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"
   post "/import_rdf", :to => "import_rdf#import", :as => "import_rdf"
   get "/load_rdf", :to => "import_rdf#load", :as => "load_rdf_form"
