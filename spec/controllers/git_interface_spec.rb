@@ -20,7 +20,7 @@ RSpec.describe GitInterface do
 
   describe "git process" do
     let(:subj) { "<http://opaquenamespace.org/ns/blah/foo>" }
-    let(:triple1) { "<http://purl.org/dc/terms/date> '2016-05-04' .\n" }
+    let(:triple1) { "<http://purl.org/dc/terms/date> \"2016-05-04\" .\n" }
     let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foo\"@en .\n" }
     let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .\n" }
     let(:triple4) { "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#PersonalName> .\n" }
@@ -32,7 +32,16 @@ RSpec.describe GitInterface do
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("creating: blah/foo")
- 
+
+      #review_list
+      repo.checkout("master")
+      terms = dummy_class.review_list
+      expect(terms.first[:branch]).to eq("blah/foo")
+
+      #edit_params
+      params = dummy_class.edit_params("blah/foo")
+      expect(params[:vocabulary][:label].first).to eq("foo")
+
       #merge blah/foo
       repo.checkout("master")
       dummy_class.rugged_merge("blah/foo", "blah/foo")

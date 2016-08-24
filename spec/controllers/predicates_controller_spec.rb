@@ -244,4 +244,37 @@ RSpec.describe PredicatesController do
 
   end
 
+  describe "mark_reviewed" do
+    let(:predicate) { predicate_mock }
+    let(:pred_id) { "blah" }
+    let(:params) do
+    {
+      :id => pred_id,
+      :vocabulary => {
+        :label => ["Test"],
+        :comment => ["Comment"],
+        :language => {
+          :label => ["en"],
+        :comment => ["en"]}}
+      }
+    end
+    let(:save_success) { true }
+    let(:pred_form) { PredicateForm.new(term, StandardRepository.new(nil,Predicate))}
+    before do
+      allow(predicate).to receive(:new_record?).and_return(true)
+      allow_any_instance_of(PredicateForm).to receive(:save).and_return(save_success)
+      allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(predicate)
+      allow_any_instance_of(GitInterface).to receive(:rugged_merge)
+      get :mark_reviewed, :id =>params[:id]
+
+    end
+    context "when the item has been reviewed" do
+      it "will redirect to review queue if asset is saved" do
+        expect(flash[:notice]).to include("blah has been saved")
+        expect(response).to redirect_to("/review")
+      end
+    end
+  end
+
+
 end

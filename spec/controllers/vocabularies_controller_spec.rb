@@ -292,4 +292,35 @@ RSpec.describe VocabulariesController do
       end
     end
   end
+  describe "mark_reviewed" do
+    let(:vocabulary) { vocabulary_mock }
+    let(:vocab_id) { "blah" }
+    let(:params) do
+    {
+      :id => vocab_id,
+      :vocabulary => {
+        :label => ["Test"],
+        :comment => ["Comment"],
+        :language => {
+          :label => ["en"],
+        :comment => ["en"]}}
+      }
+    end
+    let(:save_success) { true }
+    let(:vocab_form) { VocabularyForm.new(term, StandardRepository.new(nil,Vocabulary))}
+    before do
+      allow(vocabulary).to receive(:new_record?).and_return(true)
+      allow_any_instance_of(VocabularyForm).to receive(:save).and_return(save_success)
+      allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(vocabulary)
+      allow_any_instance_of(GitInterface).to receive(:rugged_merge)
+      get :mark_reviewed, :id =>params[:id]
+
+    end
+    context "when the item has been reviewed" do
+      it "will redirect to review queue if asset is saved" do
+        expect(flash[:notice]).to include("blah has been saved")
+        expect(response).to redirect_to("/review")
+      end
+    end
+  end
 end
