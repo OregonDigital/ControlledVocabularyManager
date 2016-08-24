@@ -40,6 +40,7 @@ class TermsController < AdminController
 
   def edit
     @term = term_form_repository.find(params[:id])
+    @disable = true
   end
 
   def update

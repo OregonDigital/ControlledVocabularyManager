@@ -10,8 +10,8 @@ include GitInterface
   end
 
   def edit
-    #@update lets edit_form know whether or not to enable term type selector
-    Term.exists? params[:id] ? @update = true : false
+    #@disable lets edit_form know whether or not to enable term type selector
+    @disable = Term.exists? params[:id]
     if !params[:id].include? "/"
       @term = reassemble(params[:id] + "_branch")
     else
