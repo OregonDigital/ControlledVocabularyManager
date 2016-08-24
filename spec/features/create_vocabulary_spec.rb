@@ -26,10 +26,12 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
       fill_in "vocabulary[label][]", :with => "Hola mundo"
       find(".language-select").find("option[value='es']").select_option
     end
-    find_button('Create Vocabulary').trigger('click')
+    find('input[name="commit"]').click
     sleep 2
-
-    expect(page).to have_content("http://opaquenamespace.org/ns/#{vocabulary_id}")
+    expect(page).to have_content("#{vocabulary_id} has been saved and added to the review queue")
+    visit "/review/#{vocabulary_id}_branch"
+    find_link('review').click
+    sleep 2
 
     vocab_statement_list = Vocabulary.find(vocabulary_id).statements.each.map { |x| x }
     expect(vocab_statement_list[2].object.value).to eq "Hello world"

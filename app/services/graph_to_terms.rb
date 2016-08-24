@@ -32,10 +32,11 @@ class GraphToTerms < Struct.new(:resource_factory, :graph)
           @klass = Title
         when Topic.type
           @klass = Topic
-        else
-          @klass = Term
         end
       end
+    end
+    if @klass.nil?
+      @klass = Term
     end
   end
 

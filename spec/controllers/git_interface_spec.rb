@@ -20,32 +20,42 @@ RSpec.describe GitInterface do
 
   describe "git process" do
     let(:subj) { "<http://opaquenamespace.org/ns/blah/foo>" }
-    let(:triple1) { "<http://purl.org/dc/terms/date> '2016-05-04' .\n" }
-    let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> 'foo' ." }
-    let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> 'fooness' ." }
+    let(:triple1) { "<http://purl.org/dc/terms/date> \"2016-05-04\" .\n" }
+    let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foo\"@en .\n" }
+    let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .\n" }
+    let(:triple4) { "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#PersonalName> .\n" }
 
     it "should commit, merge, and provide history" do
       #create blah/foo
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user1)
-      dummy_class.rugged_create("blah/foo",subj+triple1+subj+triple2,"creating")
+      dummy_class.rugged_create("blah/foo", "blah/foo", subj+triple1+subj+triple2+subj+triple4,"creating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("creating: blah/foo")
- 
+
+      #review_list
+      repo.checkout("master")
+      terms = dummy_class.review_list
+      expect(terms.first[:branch]).to eq("blah/foo")
+
+      #edit_params
+      params = dummy_class.edit_params("blah/foo")
+      expect(params[:vocabulary][:label].first).to eq("foo")
+
       #merge blah/foo
       repo.checkout("master")
-      dummy_class.rugged_merge("blah/foo")
+      dummy_class.rugged_merge("blah/foo", "blah/foo")
       expect(repo.last_commit.message).to include("Merge blah/foo into master")
 
       #update blah/foo and merge
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
-      dummy_class.rugged_create("blah/foo", subj+triple1+subj+triple3, "updating")
+      dummy_class.rugged_create("blah/foo", "blah/foo", subj+triple1+subj+triple3+subj+triple4, "updating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("updating: blah/foo")
 
       repo.checkout("master")
-      dummy_class.rugged_merge("blah/foo")
+      dummy_class.rugged_merge("blah/foo", "blah/foo")
 
       #get history of blah/foo
       results = dummy_class.get_history("blah/foo")

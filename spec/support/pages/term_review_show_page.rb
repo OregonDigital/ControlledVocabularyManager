@@ -1,0 +1,13 @@
+class TermReviewShowPage < Struct.new(:vocabulary_id)
+  include Capybara::DSL
+
+  def mark
+    find_link('review').click
+    sleep 2
+
+  end
+
+  def id
+    "#{vocabulary_id}/banana"
+  end
+end

@@ -15,12 +15,15 @@ class VocabulariesController < AdminController
     vocabulary_form = vocabulary_form_repository.new(vocabulary_params[:id])
     vocabulary_form.attributes = vocabulary_params.except(:id)
     vocabulary_form.set_languages(params[:vocabulary])
-    if vocabulary_form.save
+    vocabulary_form.set_modified
+    vocabulary_form.set_issued
+    if vocabulary_form.is_valid?
+      vocabulary_form.add_resource
       triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
-      rugged_create(vocabulary_params[:id], triples, "creating")
-      rugged_merge(vocabulary_params[:id])
+      rugged_create(vocabulary_params[:id], vocabulary_params[:id] + "_branch", triples, "creating")
+      flash[:notice] = "#{vocabulary_params[:id]} has been saved and added to the review queue"
+      redirect_to "/vocabularies"
 
-      redirect_to term_path(:id => vocabulary_form.id)
     else
       @vocabulary = vocabulary_form
       render "new"
@@ -39,28 +42,74 @@ class VocabulariesController < AdminController
     edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.attributes = vocabulary_params
     edit_vocabulary_form.set_languages(params[:vocabulary])
-    if edit_vocabulary_form.save
+    edit_vocabulary_form.set_modified
+    if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      rugged_merge(params[:id])
-
-      redirect_to term_path(:id => params[:id])
+      rugged_create(params[:id], params[:id] + "_branch", triples, "updating")
+      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      redirect_to "/vocabularies"
     else
       @term = edit_vocabulary_form
       render "edit"
     end
   end
 
-  def deprecate_only
+  def commit
+    if Term.exists? params[:id]
+      vocabulary_form = vocabulary_form_repository.find(params[:id])
+      vocabulary_form.attributes = vocabulary_params.except(:issued)
+      action = "edit"
+    else
+      vocabulary_form = vocabulary_form_repository.new(params[:id], Vocabulary)
+      vocabulary_form.attributes = vocabulary_params.except(:id, :issued)
+      action = "new"
+    end
+    vocabulary_form.set_languages(params[:vocabulary])
+    vocabulary_form.set_modified
+    vocabulary_form.reset_issued(params[:issued])
+
+    if vocabulary_form.is_valid?
+      triples = vocabulary_form.sort_stringify(vocabulary_form.full_graph)
+      rugged_create(params[:id], params[:id] + "_branch", triples, "updating")
+      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      redirect_to review_queue_path
+    else
+      @vocabulary = vocabulary_form
+      @term = vocabulary_form
+      render action
+    end
+  end
+
+  def mark_reviewed
+    if Term.exists? params[:id]
+      e_params = edit_params(params[:id] + "_branch")
+      vocabulary_form = vocabulary_form_repository.find(params[:id])
+      vocabulary_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
+      vocabulary_form.set_languages(e_params[:vocabulary])
+    else
+      @vocabulary = reassemble(params[:id] + "_branch")
+      vocabulary_form = VocabularyForm.new(@vocabulary, StandardRepository.new(nil, Vocabulary))
+    end
+    if vocabulary_form.save
+      rugged_merge(params[:id], params[:id] + "_branch")
+      flash[:notice] = "#{params[:id]} has been saved and is ready for use."
+      redirect_to review_queue_path
+    else
+      flash[:notice] = "Something went wrong, and term was not saved."
+      redirect_to review_term_path(params[:id])
+    end
+  end
+
+
+ def deprecate_only
     edit_vocabulary_form = deprecate_vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.is_replaced_by = vocabulary_params[:is_replaced_by]
 
-    if edit_vocabulary_form.save
+    if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
-      rugged_create(params[:id], triples, "creating")
-      rugged_merge(params[:id])
-
-      redirect_to term_path(:id => params[:id])
+      rugged_create(params[:id], params[:id], triples, "updating")
+      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      redirect_to "/vocabularies"
     else
       @term = edit_vocabulary_form
       render "deprecate"

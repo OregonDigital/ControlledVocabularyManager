@@ -24,11 +24,14 @@ class TermsController < AdminController
     term_form = term_form_repository.new(combined_id, params[:term_type].constantize)
     term_form.attributes = vocab_params.except(:id)
     term_form.set_languages(params[:vocabulary])
-    if term_form.save
+    term_form.set_modified
+    term_form.set_issued
+    if term_form.is_valid?
+      term_form.add_resource
       triples = term_form.sort_stringify(term_form.full_graph)
-      rugged_create(combined_id.to_s, triples, "creating")
-      rugged_merge(combined_id.to_s)
-      redirect_to term_path(:id => term_form.id)
+      rugged_create(combined_id.to_s, combined_id.to_s, triples, "creating")
+      flash[:notice] = "#{combined_id.to_s} has been saved and added to the review queue."
+      redirect_to term_path(:id => params[:vocabulary_id])
     else
       @term = term_form
       render "new"
@@ -37,31 +40,81 @@ class TermsController < AdminController
 
   def edit
     @term = term_form_repository.find(params[:id])
+    @disable = true
   end
 
   def update
     edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = vocab_params
     edit_term_form.set_languages(params[:vocabulary])
-    if edit_term_form.save
+    edit_term_form.set_modified
+    if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      rugged_create(params[:id], triples, "updating")
-      rugged_merge(params[:id])
-      redirect_to term_path(:id => params[:id])
+      rugged_create(params[:id], params[:id], triples, "updating")
+      flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+      id_parts = params[:id].split("/")
+      redirect_to term_path(:id => id_parts[0])
+
     else
       @term = edit_term_form
       render "edit"
     end
   end
 
+  def commit
+    if Term.exists? params[:id]
+      term_form = term_form_repository.find(params[:id])
+      term_form.attributes = vocab_params
+      action = "edit"
+    else
+      term_form = term_form_repository.new(params[:id], Term)
+      term_form.attributes = vocab_params.except(:id)
+       action = "new"
+    end
+    term_form.set_languages(params[:vocabulary])
+    term_form.set_modified
+    term_form.reset_issued(params[:issued])
+
+    if term_form.is_valid?
+      triples = term_form.sort_stringify(term_form.full_graph)
+      rugged_create(params[:id], params[:id], triples, "updating")
+      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      redirect_to review_queue_path
+    else
+      @term = term_form
+      render action
+    end
+  end
+
+  def mark_reviewed
+    if Term.exists? params[:id]
+      e_params = edit_params(params[:id])
+      term_form = term_form_repository.find(params[:id])
+      term_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
+      term_form.set_languages(e_params[:vocabulary])
+    else
+      @term = reassemble(params[:id])
+      term_form = TermForm.new(@term, StandardRepository.new(nil, Term))
+    end
+    if term_form.save
+      rugged_merge(params[:id], params[:id])
+      flash[:notice] = "#{params[:id]} has been saved and is ready for use."
+      redirect_to review_queue_path
+    else
+      flash[:notice] = "Something went wrong, and term was not saved."
+      redirect_to review_term_path(params[:id])
+    end
+  end
+
   def deprecate_only
     edit_term_form = deprecate_term_form_repository.find(params[:id])
     edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
-    if edit_term_form.save
+    if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      rugged_create(params[:id], triples, "updating")
-      rugged_merge(params[:id])
-      redirect_to term_path(:id => params[:id])
+      rugged_create(params[:id], params[:id], triples, "updating")
+      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      id_parts = params[:id].split("/")
+      redirect_to term_path(:id => id_parts[0])
     else
       @term = edit_term_form
       render "deprecate"

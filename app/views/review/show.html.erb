@@ -1,0 +1,33 @@
+<% content_for :title do %>
+  <%= @term.id %>
+<% end %>
+
+<h2><%= @term.rdf_label.first %></h2>
+<h3 class="uri"><%= @term.rdf_subject %></h3>
+
+<table class="table table-condensed" style="margin-top: 20px;">
+  <% @term.fields.each do |field| %>
+    <%= render :partial => "terms/term_row", locals: {:field => field} %>
+  <% end %>
+</table>
+
+
+  <% if current_user && current_user.admin? %>
+    <% if @term.vocabulary? %>
+      <%= link_to "Mark as reviewed", mark_vocabulary_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+
+    <% elsif @term.predicate? %>
+      <%= link_to "Mark as reviewed", mark_predicate_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+
+    <% else %>
+      <%= link_to "Mark as reviewed", mark_term_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+    <% end %>
+
+    <%= link_to "Edit", review_edit_path(@term.id), {:class=>'btn btn-default', :value=>'edit'} %>
+
+  <% end %>
+
+  <%= link_to "Return to Review Queue", review_queue_path  %>
+
+
+
