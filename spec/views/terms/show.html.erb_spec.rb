@@ -26,7 +26,7 @@ RSpec.describe "terms/show" do
       render
     end
     context "when logged in" do
-      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
       before do
         sign_in(user) if user
       end
@@ -64,7 +64,7 @@ RSpec.describe "terms/show" do
     end
   end
   context "when logged in" do
-    let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+    let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
 
     before do
       sign_in(user) if user

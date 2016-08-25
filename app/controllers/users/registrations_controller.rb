@@ -8,9 +8,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # POST /resource
-  # def create
-  #   super
-  # end
+  def create
+    params[:user][:role] = "default"
+    super
+  end
 
   # GET /resource/edit
   # def edit
@@ -18,9 +19,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    params[:user].delete(:role)
+    super
+  end
 
   # DELETE /resource
   # def destroy
@@ -40,7 +42,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # If you have extra params to permit, append them to the sanitizer.
    def configure_sign_up_params
-     devise_parameter_sanitizer.for(:sign_up) << [:institution, :name]
+     devise_parameter_sanitizer.for(:sign_up) << [:institution, :name, :role]
    end
 
   # If you have extra params to permit, append them to the sanitizer.

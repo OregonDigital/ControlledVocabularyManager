@@ -78,7 +78,7 @@ group :test do
   gem 'poltergeist', '~> 1.9.0'
   gem 'database_cleaner'
   gem 'formulaic'
-  gem 'shoulda-matchers', require: false
+  gem 'shoulda-matchers'
   gem 'timecop'
   gem 'webmock'
 end
