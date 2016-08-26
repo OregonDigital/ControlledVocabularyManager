@@ -15,6 +15,7 @@ class TermWithChildren < SimpleDelegator
   end
 
   def full_graph
+    children.each { |c| c.set_term_type } unless children.empty?
     (children << self).inject(RDF::Graph.new, :<<)
   end
 end

@@ -2,11 +2,11 @@ class TermInjector < Struct.new(:params)
   delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
 
   def term_form_repository
-    TermFormRepository.new(decorators)
+    TermFormRepository.new(@klass)
   end
 
   def term_repository
-    StandardRepository.new(decorators, nil)
+    StandardRepository.new(decorators, @klass)
   end
 
   def params
@@ -16,7 +16,13 @@ class TermInjector < Struct.new(:params)
   private
 
   def decorators
-    vocabulary_injector.decorators
+    DecoratorList.new(
+      SetsTermType,
+      SetsAttributes,
+      SetsModified,
+      SetsIssued,
+      DecoratorWithArguments.new(TermWithChildren, child_node_finder),
+      DecoratorWithArguments.new(TermWithoutChildren))
   end
 
   def vocabulary_injector

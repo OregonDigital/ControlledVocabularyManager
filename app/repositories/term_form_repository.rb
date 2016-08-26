@@ -3,18 +3,27 @@
 class TermFormRepository < Struct.new(:decorators, :repository_type)
   delegate :new, :find, :exists?, :to => :repository
 
+  def initialize(klass)
+    @klass = klass || Term
+  end
+
   def repository
-    DecoratingRepository.new(decorators, Term)
+    DecoratingRepository.new(decorators, @klass)
   end
 
   private
 
   def decorators
-    result = super || NullDecorator.new
-    DecoratorList.new(result, term_form_decorator)
+    DecoratorList.new(
+      SetsTermType,
+      SetsAttributes,
+      SetsModified,
+      SetsIssued,
+      term_form_decorator
+    )
   end
 
   def term_form_decorator
-    DecoratorWithArguments.new(TermForm, StandardRepository.new(nil, Term))
+    DecoratorWithArguments.new(TermForm, StandardRepository.new(nil, @klass))
   end
 end

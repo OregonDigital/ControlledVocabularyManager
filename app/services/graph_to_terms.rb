@@ -16,37 +16,7 @@ class GraphToTerms < Struct.new(:resource_factory, :graph)
     # that the proper type of repository can be persisted
     @klass = nil
     triples.each do |t|
-      if @klass.nil?
-        case t.object
-        when Vocabulary.type
-          @klass = Vocabulary
-        when Predicate.type
-          @klass = Predicate
-        when CorporateName.type
-          @klass = CorporateName
-        when Geographic.type
-          @klass = Geographic
-        when PersonalName.type
-          @klass = PersonalName
-        when Title.type
-          @klass = Title
-        when Topic.type
-          @klass = Topic
-        else
-          @klass = Term
-        end
-      end
+      @klass = TermType.class_from_types([t.object]) if @klass.nil?
     end
-  end
-
-  private
-
-  def build_term(subject, triples)
-    # sets the class that the PolymorphicTermRepository will use to determine
-    # how to persist the data to the triplestore
-    resource_factory.repository_type = klass
-    t = resource_factory.new(subject)
-    t.insert(*triples)
-    t
   end
 end

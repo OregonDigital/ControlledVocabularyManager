@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "terms/new", type: :view do
   let(:id) { "Creator" }
   let(:vocabulary) { Vocabulary.new(id) }
-  let(:term) { TermFormRepository.new.new }
+  let(:term) { TermFormRepository.new(Term).new }
   let(:parameters) {
     {
       :vocabulary_id => "test"
