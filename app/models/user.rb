@@ -4,6 +4,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  validates :name, :presence => true
+  validates :role, :presence => true
+  validates :institution, :presence => true
+
   def admin?
     return false if role.nil?
     role.include?("admin")
