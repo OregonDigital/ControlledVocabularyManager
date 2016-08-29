@@ -35,41 +35,9 @@ module GitInterface
     end
   end
 
-  require 'thread'
-  require 'rugged'
-  class LockedRepo
-    attr_accessor :repo
-
-    def initialize
-      self.repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
-    end
-
-    class << self
-
-      #private :new
-      undef :new
-
-      def lock
-        @lock ||= Mutex.new
-      end
-
-      def instance
-        unless @instance
-          lock.synchronize do
-            unless @instance
-              new_instance = allocate
-              new_instance.send(:initialize)
-              @instance = new_instance
-            end
-          end
-        end
-        return @instance
-      end
-    end
-  end
-
-  def rugged_merge (repo, id, branch_id)
+  def rugged_merge (id, branch_id)
     begin
+      repo = setup
       repo.checkout('master')
       #merge
       into_branch = 'master'
@@ -107,8 +75,9 @@ module GitInterface
     end
   end
 
-  def rugged_delete_branch(repo, branch_id)
+  def rugged_delete_branch(branch_id)
     begin
+      repo = setup
       repo.checkout('master')
       repo.branches.delete(branch_id)
     rescue
@@ -116,11 +85,11 @@ module GitInterface
     end
   end
 
-  def rugged_rollback (repo, branch_commit)
+  def rugged_rollback (branch_commit)
     begin
+      repo = setup
       repo.checkout('master')
       if branch_commit == repo.last_commit.parents[1].oid
-        #binding.pry
         oid = repo.last_commit.parents[0].oid
         repo.reset(oid, :hard)
       else

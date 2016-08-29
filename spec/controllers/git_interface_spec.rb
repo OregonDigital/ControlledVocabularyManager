@@ -47,21 +47,20 @@ RSpec.describe GitInterface do
       expect(params[:vocabulary][:label].first).to eq("foo")
 
       #merge blah/foo
-      lockedrepo = GitInterface::LockedRepo.instance
-      lockedrepo.repo.checkout("master")
-      dummy_class.rugged_merge(lockedrepo.repo, "blah/foo", "blah/foo")
-      expect(lockedrepo.repo.last_commit.message).to include("Merge blah/foo into master")
+      repo.checkout("master")
+      dummy_class.rugged_merge("blah/foo", "blah/foo")
+      expect(repo.last_commit.message).to include("Merge blah/foo into master")
 
       #delete branch
       branches = dummy_class.branch_list
       expect(branches).to include("blah/foo")
-      dummy_class.rugged_delete_branch(lockedrepo.repo, "blah/foo")
+      dummy_class.rugged_delete_branch("blah/foo")
       branches = dummy_class.branch_list
       expect(branches).not_to include("blah/foo")
 
       #create and merge blah/zoo
       dummy_class.rugged_create("blah/zoo", "blah/zoo", subj2+triple1+subj2+triple5+subj2+triple4,"creating")
-      branch_commit2 = dummy_class.rugged_merge(lockedrepo.repo, "blah/zoo", "blah/zoo")
+      branch_commit2 = dummy_class.rugged_merge("blah/zoo", "blah/zoo")
 
       #update blah/foo and merge, switch to Ira
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
@@ -69,8 +68,8 @@ RSpec.describe GitInterface do
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("updating: blah/foo")
-      lockedrepo.repo.checkout("master")
-      branch_commit = dummy_class.rugged_merge(lockedrepo.repo, "blah/foo", "blah/foo")
+      repo.checkout("master")
+      branch_commit = dummy_class.rugged_merge("blah/foo", "blah/foo")
 
       #get history of blah/foo
       results = dummy_class.get_history("blah/foo")
@@ -79,38 +78,14 @@ RSpec.describe GitInterface do
       expect(results[0][:diff][1]).to eq("added: " + triple3)
 
       #rollback blah/zoo, expect fail
-      dummy_class.rugged_rollback(lockedrepo.repo, branch_commit2)
+      dummy_class.rugged_rollback(branch_commit2)
       expect(repo.last_commit.author[:name]).to eq("Ira Jones")
 
       #rollback blah/foo, expect success
-      dummy_class.rugged_rollback(lockedrepo.repo, branch_commit)
+      dummy_class.rugged_rollback(branch_commit)
       results = dummy_class.get_history("blah/foo")
       expect(results).to be_nil
       expect(repo.last_commit.author[:name]).to eq("George Smith")
-
-      #lock the repo
-      t1 = Thread.new{
-        lockedrepo = GitInterface::LockedRepo.instance
-        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user1)
-        dummy_class.rugged_create("blah/foo", "blah/foo", subj+triple1+subj+triple5+subj+triple4,"updating")
-        branch_commit = dummy_class.rugged_merge(lockedrepo.repo, "blah/foo", "blah/foo")
-        b = 0
-        for i in 0..100000
-          b = b + 1
-        end
-        dummy_class.rugged_rollback(lockedrepo.repo, branch_commit)
-      }
-      t2 = Thread.new{
-        lockedrepo = GitInterface::LockedRepo.instance
-        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
-        dummy_class.rugged_create("blah/zoo", "blah/zoo", subj2+triple1+subj2+triple6+subj2+triple4,"upadating")
-        dummy_class.rugged_merge(lockedrepo.repo, "blah/zoo", "blah/zoo")
-      }
-      t1.join
-      t2.join
-      results = dummy_class.get_history("blah/foo")
-      expect(results).to be_nil
-      expect(repo.last_commit.author[:name]).to eq("Ira Jones")
 
     end
   end
