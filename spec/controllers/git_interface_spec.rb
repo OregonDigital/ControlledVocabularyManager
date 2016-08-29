@@ -1,6 +1,7 @@
 require 'rails_helper'
 require 'rugged'
 require 'support/test_git_setup'
+require 'thread'
 
 class DummyController < AdminController
     include GitInterface
@@ -20,10 +21,13 @@ RSpec.describe GitInterface do
 
   describe "git process" do
     let(:subj) { "<http://opaquenamespace.org/ns/blah/foo>" }
+    let(:subj2) { "<http://opaquenamespace.org/ns/blah/zoo>" }
     let(:triple1) { "<http://purl.org/dc/terms/date> \"2016-05-04\" .\n" }
     let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foo\"@en .\n" }
     let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .\n" }
     let(:triple4) { "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#PersonalName> .\n" }
+    let(:triple5) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foobiz\" @en .\n" }
+    let(:triple6) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foobuzz\" @en .\n" }
 
     it "should commit, merge, and provide history" do
       #create blah/foo
@@ -43,9 +47,17 @@ RSpec.describe GitInterface do
       expect(params[:vocabulary][:label].first).to eq("foo")
 
       #merge blah/foo
-      repo.checkout("master")
-      dummy_class.rugged_merge("blah/foo", "blah/foo")
-      expect(repo.last_commit.message).to include("Merge blah/foo into master")
+      lockedrepo = GitInterface::LockedRepo.instance
+      lockedrepo.repo.checkout("master")
+      dummy_class.rugged_merge(lockedrepo.repo, "blah/foo", "blah/foo")
+      expect(lockedrepo.repo.last_commit.message).to include("Merge blah/foo into master")
+
+      #delete branch
+      branches = dummy_class.branch_list
+      expect(branches).to include("blah/foo")
+      dummy_class.rugged_delete_branch(lockedrepo.repo, "blah/foo")
+      branches = dummy_class.branch_list
+      expect(branches).not_to include("blah/foo")
 
       #update blah/foo and merge
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
@@ -53,15 +65,44 @@ RSpec.describe GitInterface do
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo")
       expect(repo.last_commit.message).to include("updating: blah/foo")
-
-      repo.checkout("master")
-      dummy_class.rugged_merge("blah/foo", "blah/foo")
+      lockedrepo.repo.checkout("master")
+      branch_commit = dummy_class.rugged_merge(lockedrepo.repo, "blah/foo", "blah/foo")
 
       #get history of blah/foo
       results = dummy_class.get_history("blah/foo")
       expect(results[0][:author]).to eq("Ira Jones")
       expect(results[0][:diff][0]).to eq("deleted: " + triple2)
       expect(results[0][:diff][1]).to eq("added: " + triple3)
+
+      #rollback
+      dummy_class.rugged_rollback(lockedrepo.repo, branch_commit)
+      results = dummy_class.get_history("blah/foo")
+      expect(results).to be_nil
+      expect(repo.last_commit.author[:name]).to eq("George Smith")
+
+      #lock the repo
+      t1 = Thread.new{
+        lockedrepo = GitInterface::LockedRepo.instance
+        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user1)
+        dummy_class.rugged_create("blah/foo", "blah/foo", subj+triple1+subj+triple5+subj+triple4,"updating")
+        branch_commit = dummy_class.rugged_merge(lockedrepo.repo, "blah/foo", "blah/foo")
+        b = 0
+        for i in 0..100000
+          b = b + 1
+        end
+        dummy_class.rugged_rollback(lockedrepo.repo, branch_commit)
+      }
+      t2 = Thread.new{
+        lockedrepo = GitInterface::LockedRepo.instance
+        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
+        dummy_class.rugged_create("blah/zoo", "blah/zoo", subj2+triple1+subj2+triple6+subj2+triple4,"creating")
+        dummy_class.rugged_merge(lockedrepo.repo, "blah/zoo", "blah/zoo")
+      }
+      t1.join
+      t2.join
+      results = dummy_class.get_history("blah/foo")
+      expect(results).to be_nil
+      expect(repo.last_commit.author[:name]).to eq("Ira Jones")
 
     end
   end

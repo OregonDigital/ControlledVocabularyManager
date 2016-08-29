@@ -3,68 +3,131 @@ module GitInterface
   require 'rugged'
   
   def rugged_create (id, branch_id, string, action)
-    repo = setup
-    #find/create branch and check it out
-    branch = repo.branches[branch_id]
-    if branch.nil?
-      branch = repo.branches.create(branch_id, "HEAD")
-    end
-    repo.checkout(branch)
-    #add blob
-    oid = repo.write(string,:blob)
-    index = repo.index
-    index.read_tree(repo.head.target.tree)
-    index.add(:path => "#{id}.nt", :oid => oid, :mode => 0100644)
-    #commit
-    options = {}
-    options[:tree] = index.write_tree(repo)
-    options[:author] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
-    options[:committer] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
-    options[:message] = action + ": " + id
-    options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
-    options[:update_ref] = 'HEAD'
-    Rugged::Commit.create(repo, options)
-    index.write
-    options = {}
-    options[:strategy] = :force
-    repo.checkout_head(options)
-    repo.checkout('master')
-  end
-
-  def rugged_merge (id, branch_id)
-    repo = setup
-    repo.checkout('master')
-    #merge
-    into_branch = 'master'
-    from_branch = branch_id
-    their_commit = repo.branches[into_branch].target_id
-    our_commit = repo.branches[from_branch].target_id
-
-    merge_index = repo.merge_commits(our_commit, their_commit)
-
-    if merge_index.conflicts?
-      # conflicts. deal with them
-    else
-      # no conflicts
-      commit_tree = merge_index.write_tree(repo)
-      options = {}
-      options[:tree] = commit_tree
-      options[:author] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
-      options[:committer] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
-      options[:message] ||= "Merge #{from_branch} into #{into_branch}"
-      options[:parents] = [repo.head.target, our_commit]
-      options[:update_ref] = 'HEAD'
-
-      Rugged::Commit.create(repo, options)
-      repo.checkout_tree(commit_tree)
+    begin
+      repo = setup
+      #find/create branch and check it out
+      branch = repo.branches[branch_id]
+      if branch.nil?
+        branch = repo.branches.create(branch_id, "HEAD")
+      end
+      repo.checkout(branch)
+      #add blob
+      oid = repo.write(string,:blob)
       index = repo.index
+      index.read_tree(repo.head.target.tree)
+      index.add(:path => "#{id}.nt", :oid => oid, :mode => 0100644)
+      #commit
+      options = {}
+      options[:tree] = index.write_tree(repo)
+      options[:author] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
+      options[:committer] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
+      options[:message] = action + ": " + id
+      options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
+      options[:update_ref] = 'HEAD'
+      Rugged::Commit.create(repo, options)
       index.write
       options = {}
       options[:strategy] = :force
       repo.checkout_head(options)
-      #repo.push('origin', [repo.head.name], { credentials: @cred })
-      repo.branches.delete(from_branch)
-      #close branch
+      repo.checkout('master')
+    rescue
+      logger.error = ("Git create failed. Refer to " + branch_id)
+    end
+  end
+
+  require 'thread'
+  require 'rugged'
+  class LockedRepo
+    attr_accessor :repo
+
+    def initialize
+      self.repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
+    end
+
+    class << self
+
+      #private :new
+      undef :new
+
+      def lock
+        @lock ||= Mutex.new
+      end
+
+      def instance
+        unless @instance
+          lock.synchronize do
+            unless @instance
+              new_instance = allocate
+              new_instance.send(:initialize)
+              @instance = new_instance
+            end
+          end
+        end
+        return @instance
+      end
+    end
+  end
+
+  def rugged_merge (repo, id, branch_id)
+    begin
+      repo.checkout('master')
+      #merge
+      into_branch = 'master'
+      from_branch = branch_id
+      their_commit = repo.branches[into_branch].target_id
+      our_commit = repo.branches[from_branch].target_id
+
+      merge_index = repo.merge_commits(our_commit, their_commit)
+
+      if merge_index.conflicts?
+        logger.error('merge conflict with branch: ' + branch_id)
+        raise 'merge conflict'
+      else
+        commit_tree = merge_index.write_tree(repo)
+        options = {}
+        options[:tree] = commit_tree
+        options[:author] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
+        options[:committer] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
+        options[:message] ||= "Merge #{from_branch} into #{into_branch}"
+        options[:parents] = [repo.head.target, our_commit]
+        options[:update_ref] = 'HEAD'
+
+        Rugged::Commit.create(repo, options)
+        repo.checkout_tree(commit_tree)
+        index = repo.index
+        index.write
+        options = {}
+        options[:strategy] = :force
+        repo.checkout_head(options)
+        #repo.push('origin', [repo.head.name], { credentials: @cred })
+      end
+    return our_commit
+    rescue
+      return 0
+    end
+  end
+
+  def rugged_delete_branch(repo, branch_id)
+    begin
+      repo.checkout('master')
+      repo.branches.delete(branch_id)
+    rescue
+      logger.error('delete_branch failed, refer to: ' + branch_id)
+    end
+  end
+
+  def rugged_rollback (repo, branch_commit)
+    begin
+      repo.checkout('master')
+      if branch_commit == repo.last_commit.parents[1].oid
+        #binding.pry
+        oid = repo.last_commit.parents[0].oid
+        repo.reset(oid, :hard)
+      else
+        logger.error('rollback not attempted. refer to: ' + branch_commit)
+      end
+    rescue
+      logger.error('rollback failed. refer to: ' + branch_commit)
     end
   end
 
@@ -227,7 +290,14 @@ module GitInterface
       content = commit_content(branch)
       graph = triples_string_to_graph(content)
       label_state = graph.query([nil, RDF::RDFS.label, nil])
-      terms << {:branch => branch, :uri => label_state.first.subject.to_s, :label => label_state.first.object.to_s}
+      if !label_state.blank?
+        label = label_state.first.object.to_s
+        uri = label_state.first.subject.to_s
+      else
+        uri = graph.first.subject.to_s
+        label = graph.first.subject.to_s
+      end
+      terms << {:branch => branch, :uri => uri, :label => label}
     end
     repo.checkout('master')
     terms

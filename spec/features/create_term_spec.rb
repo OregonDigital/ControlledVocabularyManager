@@ -31,8 +31,8 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     find_button('Create Term').trigger('click')
     sleep 2
 
-    term_review_index_page = TermReviewIndexPage.new("#{vocabulary_id}/TestTerm")
     visit '/review'
+    term_review_index_page = TermReviewIndexPage.new("#{vocabulary_id}/TestTerm")
     expect (term_review_index_page).has_content? "Test label"
 
     term_review_show_page = term_review_index_page.select

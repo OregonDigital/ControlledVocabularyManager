@@ -106,12 +106,20 @@ class PredicatesController < ApplicationController
       @predicate = reassemble(params[:id] + "_branch")
       predicate_form = PredicateForm.new(@predicate, StandardRepository.new(nil, Predicate))
     end
-    if predicate_form.save
-      rugged_merge(params[:id], params[:id] + "_branch")
-      flash[:notice] = "#{params[:id]} has been saved and is ready for use."
-      redirect_to review_queue_path
+    repo = LockedRepo.instance
+    branch_commit = rugged_merge(params[:id], params[:id] + "_branch")
+    if branch_commit != 0
+      if predicate_form.save
+        rugged_merge(params[:id], params[:id] + "_branch")
+        flash[:notice] = "#{params[:id]} has been saved and is ready for use."
+        redirect_to review_queue_path
+      else
+        rugged_rollback(repo.repo, branch_commit)
+        flash[:notice] = "Something went wrong, and the term was not saved."
+        redirect_to review_term_path(params[:id])
+      end
     else
-      flash[:notice] = "Something went wrong, and term was not saved."
+      flash[:notice] = "Something went wrong. Please notify a systems administrator."
       redirect_to review_term_path(params[:id])
     end
   end

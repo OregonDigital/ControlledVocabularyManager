@@ -96,13 +96,21 @@ class TermsController < AdminController
       @term = reassemble(params[:id])
       term_form = TermForm.new(@term, StandardRepository.new(nil, Term))
     end
-    if term_form.save
-      rugged_merge(params[:id], params[:id])
-      flash[:notice] = "#{params[:id]} has been saved and is ready for use."
-      redirect_to review_queue_path
+    repo = LockedRepo.instance
+    branch_commit = rugged_merge(repo.repo, params[:id], params[:id])
+    if branch_commit != 0
+      if term_form.save
+        rugged_delete_branch(repo.repo, params[:id])
+        flash[:notice] = "#{params[:id]} has been saved and is ready for use."
+        redirect_to review_queue_path
+      else
+        rugged_rollback(repo.repo, branch_commit)
+        flash[:notice] = "Something went wrong, and term was not saved."
+        redirect_to review_queue_path
+      end
     else
-      flash[:notice] = "Something went wrong, and term was not saved."
-      redirect_to review_term_path(params[:id])
+      flash[:notice] = "Something went wrong, please notify a system administrator."
+      redirect_to review_queue_path
     end
   end
 
