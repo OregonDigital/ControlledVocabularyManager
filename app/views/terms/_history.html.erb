@@ -1,10 +1,11 @@
 <div>
-<h3>Recent changes: </h3>
+  <h3>Recent changes: </h3>
+
 <% @term.commit_history.each do |commit| %>
   <ul class="commit_hist"><li><%= commit[:date] %></li>
      <ul class="commit_hist_diffs">
      <% commit[:diff].each do |triple| %>
-    <li><%= triple %></li>
+    <li><%= triple.dup.force_encoding(Encoding::UTF_8)%></li>
     <% end %>
     </ul>
     <li><%= commit[:author] %></li></ul>

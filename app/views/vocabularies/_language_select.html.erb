@@ -1,5 +1,5 @@
 <select class="form-control language-select"
-name="<%= "vocabulary[language][#{attribute.to_s}][]" %>"
+        name="<%= "vocabulary[language][#{attribute.to_s}][]" %>"
         id="<%= "#{attribute}_select_#{index}" %>"
         data-default-language="<%= form.object.default_language %>" >
         <% ControlledVocabManager::IsoLanguageTranslator.sorted_language_list.each_pair do |symbol, string| %>
