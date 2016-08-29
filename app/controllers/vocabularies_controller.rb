@@ -94,6 +94,7 @@ class VocabulariesController < AdminController
     branch_commit = rugged_merge(repo.repo, params[:id], params[:id] + "_branch")
     if branch_commit != 0
       if vocabulary_form.save
+        rugged_delete_branch(repo.repo, params[:id] + "_branch")
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else

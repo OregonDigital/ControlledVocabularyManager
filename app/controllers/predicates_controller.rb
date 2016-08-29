@@ -107,10 +107,10 @@ class PredicatesController < ApplicationController
       predicate_form = PredicateForm.new(@predicate, StandardRepository.new(nil, Predicate))
     end
     repo = LockedRepo.instance
-    branch_commit = rugged_merge(params[:id], params[:id] + "_branch")
+    branch_commit = rugged_merge(repo.repo, params[:id], params[:id] + "_branch")
     if branch_commit != 0
       if predicate_form.save
-        rugged_merge(params[:id], params[:id] + "_branch")
+        rugged_delete_branch(repo.repo, params[:id], params[:id] + "_branch")
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
