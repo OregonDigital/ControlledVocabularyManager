@@ -59,7 +59,11 @@ RSpec.describe GitInterface do
       branches = dummy_class.branch_list
       expect(branches).not_to include("blah/foo")
 
-      #update blah/foo and merge
+      #create and merge blah/zoo
+      dummy_class.rugged_create("blah/zoo", "blah/zoo", subj2+triple1+subj2+triple5+subj2+triple4,"creating")
+      branch_commit2 = dummy_class.rugged_merge(lockedrepo.repo, "blah/zoo", "blah/zoo")
+
+      #update blah/foo and merge, switch to Ira
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
       dummy_class.rugged_create("blah/foo", "blah/foo", subj+triple1+subj+triple3+subj+triple4, "updating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
@@ -74,7 +78,11 @@ RSpec.describe GitInterface do
       expect(results[0][:diff][0]).to eq("deleted: " + triple2)
       expect(results[0][:diff][1]).to eq("added: " + triple3)
 
-      #rollback
+      #rollback blah/zoo, expect fail
+      dummy_class.rugged_rollback(lockedrepo.repo, branch_commit2)
+      expect(repo.last_commit.author[:name]).to eq("Ira Jones")
+
+      #rollback blah/foo, expect success
       dummy_class.rugged_rollback(lockedrepo.repo, branch_commit)
       results = dummy_class.get_history("blah/foo")
       expect(results).to be_nil
@@ -95,7 +103,7 @@ RSpec.describe GitInterface do
       t2 = Thread.new{
         lockedrepo = GitInterface::LockedRepo.instance
         allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
-        dummy_class.rugged_create("blah/zoo", "blah/zoo", subj2+triple1+subj2+triple6+subj2+triple4,"creating")
+        dummy_class.rugged_create("blah/zoo", "blah/zoo", subj2+triple1+subj2+triple6+subj2+triple4,"upadating")
         dummy_class.rugged_merge(lockedrepo.repo, "blah/zoo", "blah/zoo")
       }
       t1.join
