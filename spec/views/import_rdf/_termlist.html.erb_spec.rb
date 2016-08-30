@@ -8,19 +8,19 @@ RSpec.describe "import_rdf/_termlist.html.erb" do
     render :partial => "import_rdf/termlist", :locals => {:term => term, :namespace => namespace}
   end
 
-  it "renders the ID with the vocabulary's namespaced converted to '...'" do
+  xit "renders the ID with the vocabulary's namespaced converted to '...'" do
     dorender
     expect(rendered).to have_content(".../bar")
   end
 
-  it "renders the labels" do
+  xit "renders the labels" do
     term.label << "label 1"
     term.label << "label 2"
     dorender
     expect(rendered).to have_content("label 1, label 2")
   end
 
-  it "renders the comments" do
+  xit "renders the comments" do
     term.comment << "comment 1"
     term.comment << "comment 2"
     dorender
