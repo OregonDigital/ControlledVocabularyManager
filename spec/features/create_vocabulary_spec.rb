@@ -1,12 +1,10 @@
 require 'rails_helper'
-
 RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature do
   include TestGitSetup
 
   given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin") }
   background do
     allow_any_instance_of(ApplicationController).to receive(:current_user) {user}
-    allow_any_instance_of(AdminController).to receive(:current_user) {user}
   end
 
   let(:datetime_now) { DateTime.now.strftime('%Y%m%dT%H%M%S') }
@@ -17,7 +15,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     setup_git
 
     visit "/vocabularies/new"
-    fill_in('ID', with: vocabulary_id)
+    fill_in('vocabulary[id]', with: vocabulary_id)
     fill_in "vocabulary[label][]", :with => "Hello world"
     within('.vocabulary_label') do
       click_button("Add", :match => :first)
