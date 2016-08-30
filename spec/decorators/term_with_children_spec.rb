@@ -45,4 +45,10 @@ RSpec.describe TermWithChildren do
       end
     end
   end
+
+  describe "#sort_stringify" do
+   it "should return a sorted stringified graph" do
+     expect(subject.sort_stringify(subject.full_graph)).to be_a String
+   end
+  end
 end

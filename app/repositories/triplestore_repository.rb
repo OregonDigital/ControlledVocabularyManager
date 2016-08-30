@@ -20,32 +20,32 @@ class TriplestoreRepository
 
   # Repository pattern suggests that when updating a term, delete occurs prior
   # to inserting (<<) the model posted from the form
-  def delete(*args)
+  def delete(args)
     if args.is_a?(Array)
       url = args.flatten.first.scheme + "://" + args.flatten.first.host + args.flatten.first.path
       @triplestore.delete(url)
     else
-      @triplestore.delete(*args)
+      @triplestore.delete(args)
     end
   end
 
   def clear_statements
-    @triplestore.delete_statements
+    @triplestore.delete_all_statements
   end
 
   def build_namespace
-    @triplestore.client.build_namespace(Rails.env.downcase)
+    @triplestore.client.provider.build_namespace(Rails.env.downcase)
   end
 
   def delete_namespace
     raise "No deleting the production namespace!" if Rails.env.downcase == 'production'
-    @triplestore.client.delete_namespace(Rails.env.downcase)
+    @triplestore.client.provider.delete_namespace(Rails.env.downcase)
   end
 
   # get an enumerable of the statements related to the rdf_statement
   def statements
     begin
-      subject = @rdf_statement.subject.to_s 
+      subject = @rdf_statement.subject.to_s
       @triplestore.fetch(subject)
     rescue TriplestoreAdapter::TriplestoreException => e
       puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
