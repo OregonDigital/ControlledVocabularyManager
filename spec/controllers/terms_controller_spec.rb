@@ -140,7 +140,7 @@ RSpec.describe TermsController do
           :comment => ["en"]}}
         }
       end
-      #let(:save_success) { true }
+
       let (:term_form_decorator) {DecoratorWithArguments.new(term_form, StandardRepository.new(nil, Term))}
       before do
         stub_repository
@@ -167,9 +167,6 @@ RSpec.describe TermsController do
           expect(response.body).to have_content("Only admin can access")
         end
       end
-      #it "should save term form" do
-      #  expect(term_form).to have_received(:save)
-      #end
       context "when blank arrays are passed in" do
         let(:term_id) { "blah" }
         let(:params) do
@@ -195,15 +192,6 @@ RSpec.describe TermsController do
           expect(term).to have_received(:attributes=).with({"label" => []})
         end
       end
-      #context "when save fails" do
-      #  let(:save_success) { false }
-      #  it "should render new template" do
-      #    expect(response).to render_template("new")
-      #  end
-      #  it "should assign @term" do
-      #    expect(assigns(:term)).to eq term_form
-      #  end
-      #end
       context "when all goes well" do
         before do
           allow(term_form).to receive(:is_valid?).and_return(true)

@@ -274,11 +274,8 @@ module GitInterface
 
   #takes string and converts to rdf statement
   def triple_string_to_statement(tstring)
-    RDF::Reader.for(:ntriples).new(tstring) do |reader|
-      reader.each_statement do |statement|
-        return statement
-      end
-    end
+    reader = RDF::Reader.for(:ntriples).new(tstring)
+    reader.first
   end
 
   #takes string .nt and converts to graph

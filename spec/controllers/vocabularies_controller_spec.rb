@@ -255,9 +255,6 @@ RSpec.describe VocabulariesController do
       allow(vocabulary).to receive(:valid?)
       post 'create', :vocabulary => vocabulary_params
     end
-#    it "should save term form" do
-#      expect(vocabulary_form).to have_received(:save)
-#    end
     context "when blank arrays are passed in" do
       let(:vocabulary_params) do
         {
