@@ -1,0 +1,24 @@
+<% content_for :title do %>
+  Edit <%= @term.id %>
+<% end %>
+
+<h1>Edit</h1>
+
+<% if @term.vocabulary? %>
+  <%= simple_form_for(@term, :url => {:controller => "vocabularies", :action => "commit", :id => @term.id}) do |f| %>
+    <%= render "terms/edit_form", :f => f, :term => @term %>
+  <% end %>
+
+
+<% elsif @term.predicate? %>
+  <%= simple_form_for(@term, :url => {:controller => "predicates", :action => "commit", :id => @term.id}) do |f| %>
+    <%= render "terms/edit_form", :f => f, :term => @term %>
+  <% end %>
+
+
+<% else %>
+  <%= simple_form_for(@term, :url => {:controller => "terms", :action => "commit", :id => @term.id }) do |f| %>
+    <%= render "terms/edit_form", :f => f, :term => @term %>
+  <% end %>
+
+<% end %>

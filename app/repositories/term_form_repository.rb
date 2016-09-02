@@ -19,6 +19,7 @@ class TermFormRepository < Struct.new(:decorators, :repository_type)
       SetsAttributes,
       SetsModified,
       SetsIssued,
+      AddResource,
       term_form_decorator
     )
   end

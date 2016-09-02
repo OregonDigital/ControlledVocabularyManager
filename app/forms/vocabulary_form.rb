@@ -8,6 +8,10 @@ class VocabularyForm < SimpleDelegator
     __setobj__(term)
   end
 
+  def is_valid?
+    valid?
+  end
+
   def save
     return false unless valid?
     self.persist!
