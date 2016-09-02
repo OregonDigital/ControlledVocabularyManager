@@ -483,6 +483,7 @@ DEPENDENCIES
   passenger
   poltergeist (~> 1.9.0)
   rails (= 4.1.7)
+  rdf-vocab
   rspec-rails
   rugged
   sass-rails (~> 4.0.3)
