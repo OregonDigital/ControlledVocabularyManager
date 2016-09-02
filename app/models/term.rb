@@ -10,14 +10,14 @@ class Term < ActiveTriples::Resource
 
   property :label, :predicate => RDF::RDFS.label
   property :alternate_name, :predicate => RDF::URI("http://schema.org/alternateName")
-  property :date, :predicate => RDF::DC.date
+  property :date, :predicate => RDF::Vocab::DC.date
   property :comment, :predicate => RDF::RDFS.comment
-  property :is_replaced_by, :predicate => RDF::DC.isReplacedBy
+  property :is_replaced_by, :predicate => RDF::Vocab::DC.isReplacedBy
   property :see_also, :predicate => RDF::RDFS.seeAlso
   property :is_defined_by, :predicate => RDF::RDFS.isDefinedBy
   property :same_as, :predicate => RDF::OWL.sameAs
-  property :modified, :predicate => RDF::DC.modified
-  property :issued, :predicate => RDF::DC.issued
+  property :modified, :predicate => RDF::Vocab::DC.modified
+  property :issued, :predicate => RDF::Vocab::DC.issued
 
   delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
 
