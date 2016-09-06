@@ -5,8 +5,8 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
   include TestGitSetup
   given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin") }
   background do
-    allow_any_instance_of(ApplicationController).to receive(:current_user) {user}
-    allow_any_instance_of(AdminController).to receive(:current_user) {user}
+    allow_any_instance_of(AdminController).to receive(:current_user).and_return(user)
+    allow(user).to receive(:admin?).and_return(true)
   end
 
   let(:datetime_now) { DateTime.now.strftime('%Y%m%dT%H%M%S') }
