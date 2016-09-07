@@ -2,7 +2,9 @@ require 'rails_helper'
 RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature do
   include TestGitSetup
 
-  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin") }
+  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University") }
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University"} }
+
   background do
     allow_any_instance_of(AdminController).to receive(:current_user) {user}
     allow(user).to receive(:admin?).and_return(true)
@@ -15,6 +17,8 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     WebMock.allow_net_connect!
     setup_git
 
+    user
+    capybara_login(user_params)
     visit "/vocabularies/new"
     fill_in('vocabulary[id]', with: vocabulary_id)
     fill_in "vocabulary[label][]", :with => "Hello world"
