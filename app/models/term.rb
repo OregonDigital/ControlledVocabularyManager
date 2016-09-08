@@ -118,7 +118,9 @@ class Term < ActiveTriples::Resource
   #
   # @param property_name [Symbol] the property name to get language for
   def literal_language_list_for_property(property_name)
-    self.get_values(property_name.to_s, :literal => true).map { |literal| [literal, language_from_symbol(literal.language)] }
+    self.get_values(property_name.to_s, :literal => true).map { 
+      |literal| [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))] 
+    }
   end
 
   def language_from_symbol(language_symbol)

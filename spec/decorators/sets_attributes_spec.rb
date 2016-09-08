@@ -5,6 +5,7 @@ RSpec.describe SetsAttributes do
   let(:term) { term_mock }
   let(:test_param) {{
     :label => ["blah"],
+    :see_also => ["http://id.loc.gov/authorities/subjects/sh85145447"],
     :language => {
       :label => ['en']
     }

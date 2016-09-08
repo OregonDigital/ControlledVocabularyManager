@@ -13,14 +13,19 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
   let(:datetime_now) { DateTime.now.strftime('%Y%m%dT%H%M%S') }
   let(:vocabulary_id) { VocabularyCreatePage.id + datetime_now }
 
+  before do
+    user
+    capybara_login(user_params)
+  end
+
   it "should create and update a vocabulary" do
     WebMock.allow_net_connect!
     setup_git
 
-    user
-    capybara_login(user_params)
     visit "/vocabularies/new"
-    fill_in('vocabulary[id]', with: vocabulary_id)
+    sleep 2
+    expect(page).to have_content("ID")
+    fill_in('vocabulary_id', with: vocabulary_id)
     fill_in "vocabulary[label][]", :with => "Hello world"
     within('.vocabulary_label') do
       click_button("Add", :match => :first)
@@ -31,9 +36,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     end
     find_button('Create Vocabulary').trigger('click')
     sleep 2
-
     expect(page).to have_content("http://opaquenamespace.org/ns/#{vocabulary_id}")
-
     vocab_statement_list = Vocabulary.find(vocabulary_id).statements.each.map { |x| x }
     expect(vocab_statement_list[2].object.value).to eq "Hello world"
     expect(vocab_statement_list[2].object.language).to eq :en
@@ -41,7 +44,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     expect(vocab_statement_list[3].object.language).to eq :es
 
     visit "/vocabularies/#{vocabulary_id}/edit"
-    within('.edit_vocabulary > .multi-value-field ul.listing li:first-child') do
+    within('form.edit_vocabulary > .multi-value-field ul.listing li:first-child') do
       click_button("Remove", :match => :first)
     end
     expect(page).not_to have_xpath("//input[@value='Hello world']")
@@ -50,4 +53,27 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
       FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
     end
   end
+
+  it "should create a vocabulary with uri field" do
+    WebMock.allow_net_connect!
+    setup_git
+
+    visit "/vocabularies/new"
+    sleep 2
+    expect(page).to have_content("ID")
+    fill_in('vocabulary_id', with: vocabulary_id)
+    fill_in "vocabulary[see_also][]", :with => "http://id.loc.gov/authorities/subjects/sh85145447"
+    find_button('Create Vocabulary').trigger('click')
+    sleep 2
+    expect(page).to have_link("http://id.loc.gov/authorities/subjects/sh85145447")
+    expect(page).to have_content("http://opaquenamespace.org/ns/#{vocabulary_id}")
+    visit "/vocabularies/#{vocabulary_id}/edit"
+    expect(page).to have_xpath("//input[@value='http://id.loc.gov/authorities/subjects/sh85145447']")
+
+    if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
+      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    end
+
+  end
+
 end

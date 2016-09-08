@@ -4,7 +4,7 @@ class PredicatesController < ApplicationController
   include GitInterface
   def index
     @predicates = all_preds_query.call
-    @predicates.sort_by! {|v| v[:label]}
+    @predicates.sort_by! { |v| (v.respond_to?(:rdf_label)) ? v.rdf_label.first.to_s : v[:label] }
   end
 
   def new

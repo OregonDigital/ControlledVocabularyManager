@@ -8,17 +8,27 @@
           is by checking if a terms value responds to rdf_label. We need to fix this as we are enabling rdf to
           work for the whole system -->
         <% if term.respond_to?(:rdf_label) %>
-          <li><%= term.rdf_label.first %></li>
+          <li><a href="<%= term.rdf_label.first %>" target="_blank"><%= term.rdf_label.first %></a></li>
+        <% elsif MaybeURI.new(term).uri? %>
+          <li><a href="<%= term %>" target="_blank"><%= term %></a></li>
         <% else %>
           <li><%= term %></li>
         <% end %>
       <% end %>
     <% else %>
       <% @term.literal_language_list_for_property(field).each do |t| %>
-        <% if t[1] == "Language Not Found" %>
-          <li><%= "#{t[0].value}" %> </li>
+        <% if (t.respond_to?(:rdf_label)) %>
+          <li><%= link_to t.rdf_label.first, t.rdf_label.first %></li>
         <% else %>
-          <li><%= "#{t[0].value}" %> <span class="label label-default"><%= "#{t[1]} [#{t[0].language}]" %></span></li>
+          <% if (t[0].respond_to?(:rdf_label)) %>
+            <li><%= link_to t[0].rdf_label.first, t[0].rdf_label.first %></li>
+          <% else %>
+            <% if t[1] == "Language Not Found" %>
+              <li><%= "#{t[0].value}" %> </li>
+            <% else %>
+              <li><%= "#{t[0].value}" %> <span class="label label-default"><%= "#{t[1]} [#{t[0].language}]" %></span></li>
+            <% end %>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>

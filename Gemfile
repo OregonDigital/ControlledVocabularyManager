@@ -57,6 +57,8 @@ gem 'cancan'
 
 gem 'font-awesome-rails'
 
+gem 'attr_extras'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'capistrano', '~> 2.0'
