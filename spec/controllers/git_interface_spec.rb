@@ -20,38 +20,70 @@ RSpec.describe GitInterface do
 
   describe "git process" do
     let(:subj) { "<http://opaquenamespace.org/ns/blah/foo>" }
-    let(:triple1) { "<http://purl.org/dc/terms/date> '2016-05-04' .\n" }
-    let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> 'foo' ." }
-    let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> 'fooness' ." }
+    let(:subj2) { "<http://opaquenamespace.org/ns/blah/zoo>" }
+    let(:triple1) { "<http://purl.org/dc/terms/date> \"2016-05-04\" .\n" }
+    let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foo\"@en .\n" }
+    let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .\n" }
+    let(:triple4) { "<http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://www.w3.org/2004/02/skos/core#PersonalName> .\n" }
+    let(:triple5) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foobiz\" @en .\n" }
+    let(:triple6) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foobuzz\" @en .\n" }
 
     it "should commit, merge, and provide history" do
       #create blah/foo
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user1)
-      dummy_class.rugged_create("blah/foo",subj+triple1+subj+triple2,"creating")
+      dummy_class.rugged_create("blah/foo", subj+triple1+subj+triple2+subj+triple4,"creating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
-      repo.checkout("blah/foo")
+      repo.checkout("blah/foo_review")
       expect(repo.last_commit.message).to include("creating: blah/foo")
- 
+
+      #review_list
+      repo.checkout("master")
+      terms = dummy_class.review_list
+      expect(terms.first[:id]).to eq("blah/foo")
+
+      #edit_params
+      params = dummy_class.edit_params("blah/foo")
+      expect(params[:vocabulary][:label].first).to eq("foo")
       #merge blah/foo
       repo.checkout("master")
       dummy_class.rugged_merge("blah/foo")
-      expect(repo.last_commit.message).to include("Merge blah/foo into master")
+      expect(repo.last_commit.message).to include("Merge blah/foo_review into master")
 
-      #update blah/foo and merge
+      #delete branch
+      branches = dummy_class.branch_list
+      expect(branches).to include("blah/foo_review")
+      dummy_class.rugged_delete_branch("blah/foo")
+      branches = dummy_class.branch_list
+      expect(branches).not_to include("blah/foo_review")
+
+      #create and merge blah/zoo
+      dummy_class.rugged_create("blah/zoo", subj2+triple1+subj2+triple5+subj2+triple4,"creating")
+      branch_commit2 = dummy_class.rugged_merge("blah/zoo")
+
+      #update blah/foo and merge, switch to Ira
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user2)
-      dummy_class.rugged_create("blah/foo", subj+triple1+subj+triple3, "updating")
+      dummy_class.rugged_create("blah/foo", subj+triple1+subj+triple3+subj+triple4, "updating")
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
-      repo.checkout("blah/foo")
+      repo.checkout("blah/foo_review")
       expect(repo.last_commit.message).to include("updating: blah/foo")
-
       repo.checkout("master")
-      dummy_class.rugged_merge("blah/foo")
+      branch_commit = dummy_class.rugged_merge("blah/foo")
 
       #get history of blah/foo
       results = dummy_class.get_history("blah/foo")
       expect(results[0][:author]).to eq("Ira Jones")
       expect(results[0][:diff][0]).to eq("deleted: " + triple2)
       expect(results[0][:diff][1]).to eq("added: " + triple3)
+
+      #rollback blah/zoo, expect fail
+      dummy_class.rugged_rollback(branch_commit2)
+      expect(repo.last_commit.author[:name]).to eq("Ira Jones")
+
+      #rollback blah/foo, expect success
+      dummy_class.rugged_rollback(branch_commit)
+      results = dummy_class.get_history("blah/foo")
+      expect(results).to be_nil
+      expect(repo.last_commit.author[:name]).to eq("George Smith")
 
     end
   end

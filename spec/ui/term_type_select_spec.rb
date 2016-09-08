@@ -3,19 +3,26 @@ require 'corporate_name'
 require 'support/test_git_setup'
 RSpec.feature "Using the term type SELECT", :js => true do
   include TestGitSetup
-  let(:user1) { User.create(:email => 'george@blah.com', :name => 'George Jones', :password => "admin123",:role => "admin")}
+  let(:user1) { User.create(:email => 'admin@example.com', :name => 'Jane Admin', :password => "admin123",:role => "admin", :institution => "Oregon State University")}
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University"} }
+
   background do
-    allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
-    allow_any_instance_of(VocabulariesController).to receive(:current_user).and_return(user1)
+    allow_any_instance_of(AdminController).to receive(:current_user).and_return(user1)
+    allow(user1).to receive(:admin?).and_return(true)
   end
 
   scenario "hide fields which aren't specifically configured as visible for the model" do
     setup_git
     WebMock.allow_net_connect!
-
+    user1
+    capybara_login(user_params)
     vocabulary_create_page = VocabularyCreatePage.new
     visit "/vocabularies/new"
+    sleep 2
     vocabulary_create_page.create
+    sleep 2
+    visit "/review/#{VocabularyCreatePage.id}"
+    find_link('review').click
     sleep 2
 
     allow(CorporateName).to receive(:visible_form_fields).and_return(%w[label date])

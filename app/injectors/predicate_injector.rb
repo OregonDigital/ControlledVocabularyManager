@@ -5,7 +5,7 @@ class PredicateInjector < Struct.new(:params)
   end
 
   def predicate_repository
-    @predicate_repository ||= StandardRepository.new(decorators,nil)
+    @predicate_repository ||= StandardRepository.new(decorators,Predicate)
   end
 
   def all_preds_query
@@ -25,6 +25,8 @@ class PredicateInjector < Struct.new(:params)
       SetsAttributes,
       SetsModified,
       SetsIssued,
+      SetsTermType,
+      AddResource,
       DecoratorWithArguments.new(TermWithoutChildren)
     )
   end

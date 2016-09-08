@@ -19,6 +19,9 @@
       <ul class="nav navbar-nav">
         <li><%= link_to "Vocabularies", vocabularies_path %></li>
         <li><%= link_to "Predicates", predicates_path %></li>
+        <% if current_user && current_user.admin?%>
+          <li><%= link_to "Review", review_queue_path %></li>
+        <% end %>
       </ul>
 
       <% if current_user %>

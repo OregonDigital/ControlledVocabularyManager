@@ -15,6 +15,8 @@
   <% if @term.vocabulary? %>
     <%= link_to "Create Term", new_term_path(:vocabulary_id => @term.id), { :class => 'btn btn-default' } %>
     <%= link_to "Edit", edit_vocabulary_path(@term), { :class => 'btn btn-default' } %>
+  <% elsif @term.predicate? %>
+    <%= link_to "Edit", edit_predicate_path(@term), { :class => 'btn btn-default' } %>
   <% else %>
     <%= link_to "Edit", edit_term_path(@term), { :class => 'btn btn-default' } %>
   <% end %>

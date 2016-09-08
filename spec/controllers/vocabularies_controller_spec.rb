@@ -58,7 +58,8 @@ RSpec.describe VocabulariesController do
     let(:vocabulary) { vocabulary_mock }
     let(:injector) { VocabularyInjector.new }
     let(:twc) { TermWithoutChildren.new(vocabulary) }
-    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
+    let(:voc_mod) { SetsModified.new(twc) }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(voc_mod), Vocabulary) }
     let(:params) do
       {
         :id => "blah",
@@ -79,11 +80,10 @@ RSpec.describe VocabulariesController do
       allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
-
       allow(vocabulary).to receive(:attributes=)
-      allow(vocabulary).to receive(:persist!).and_return(persist_success)
-      allow(vocabulary_form).to receive(:valid?).and_return(true)
+      allow(vocabulary_form).to receive(:is_valid?).and_return(true)
       allow(vocabulary).to receive(:attributes).and_return(params)
+      allow(vocabulary).to receive(:valid?)
       patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
     end
 
@@ -91,8 +91,8 @@ RSpec.describe VocabulariesController do
       it "should update the properties" do
         expect(vocabulary).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :label=>[RDF::Literal("Test", :language => :en)]}).exactly(1).times
       end
-      it "should redirect to the updated term" do
-        expect(response).to redirect_to("/ns/#{vocabulary.id}")
+      it "should redirect to the index" do
+        expect(response).to redirect_to("/vocabularies")
       end
       context "and there are blank fields" do
         let(:params) do
@@ -111,7 +111,10 @@ RSpec.describe VocabulariesController do
     end
 
     context "when the fields are edited and the update fails" do
-      let(:persist_success) { false }
+      before do
+        allow(vocabulary_form).to receive(:is_valid?).and_return(false)
+        patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+      end
       it "should show the edit form" do
         expect(assigns(:term)).to eq vocabulary_form
         expect(response).to render_template("edit")
@@ -145,7 +148,6 @@ RSpec.describe VocabulariesController do
       allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified, :is_replaced_by,:date, :same_as, :is_defined_by])
-
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:is_replaced_by=)
       allow(vocabulary).to receive(:persist!).and_return(persist_success)
@@ -159,13 +161,16 @@ RSpec.describe VocabulariesController do
       it "should update the replaced_by property" do
         expect(vocabulary).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
       end
-      it "should redirect to the updated term" do
-        expect(response).to redirect_to("/ns/#{vocabulary.id}")
+      it "should redirect to the index" do
+        expect(response).to redirect_to("/vocabularies")
       end
     end
 
     context "when the fields are edited and the update fails" do
-      let(:persist_success) { false }
+      before do
+        allow(vocabulary_form).to receive(:is_valid?).and_return(false)
+        patch :deprecate_only, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+      end
       it "should show the edit form" do
         expect(assigns(:term)).to eq vocabulary_form
         expect(response).to render_template("deprecate")
@@ -229,8 +234,11 @@ RSpec.describe VocabulariesController do
     end
     let(:injector) { VocabularyInjector.new }
     let(:twc) { TermWithoutChildren.new(vocabulary) }
+    let(:voc_iss) { SetsIssued.new(twc) }
+    let(:voc_mod) { SetsModified.new(voc_iss) }
+    let(:voc_res) { AddResource.new(voc_mod) }
     let(:vocabulary) { instance_double("Vocabulary") }
-    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(twc), Vocabulary) }
+    let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(voc_res), Vocabulary) }
     let(:result) { post 'create', :vocabulary => vocabulary_params }
     let(:save_success) { true }
     before do
@@ -239,15 +247,13 @@ RSpec.describe VocabulariesController do
       allow(vocabulary_form).to receive(:single_graph).and_return(single_graph)
       allow(vocabulary_form).to receive(:sort_stringify).and_return("blah")
       allow_any_instance_of(VocabularyFormRepository).to receive(:new).and_return(vocabulary_form)
-      allow(vocabulary_form).to receive(:save).and_return(save_success)
+      allow(vocabulary_form).to receive(:is_valid?).and_return(true)
       allow(vocabulary).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
       allow(vocabulary).to receive(:id).and_return("test")
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:attributes).and_return(vocabulary_params)
+      allow(vocabulary).to receive(:valid?)
       post 'create', :vocabulary => vocabulary_params
-    end
-    it "should save term form" do
-      expect(vocabulary_form).to have_received(:save)
     end
     context "when blank arrays are passed in" do
       let(:vocabulary_params) do
@@ -265,8 +271,11 @@ RSpec.describe VocabulariesController do
         expect(vocabulary).to have_received(:attributes=).with({"label" => ["test"], "comment" => []})
       end
     end
-    context "when save fails" do
-      let(:save_success) { false }
+    context "when check fails" do
+      before do
+        allow(vocabulary_form).to receive(:is_valid?).and_return(false)
+        post 'create', :vocabulary => vocabulary_params
+      end
       it "should render new template" do
         expect(response).to render_template("new")
       end
@@ -275,8 +284,39 @@ RSpec.describe VocabulariesController do
       end
     end
     context "when all goes well" do
-      it "should redirect to the term" do
-        expect(response).to redirect_to("/ns/#{vocabulary.id}")
+      it "should redirect to the index" do
+        expect(response).to redirect_to("/vocabularies")
+      end
+    end
+  end
+  describe "mark_reviewed" do
+    let(:vocabulary) { vocabulary_mock }
+    let(:vocab_id) { "blah" }
+    let(:params) do
+    {
+      :id => vocab_id,
+      :vocabulary => {
+        :label => ["Test"],
+        :comment => ["Comment"],
+        :language => {
+          :label => ["en"],
+        :comment => ["en"]}}
+      }
+    end
+    let(:save_success) { true }
+    let(:vocab_form) { VocabularyForm.new(term, StandardRepository.new(nil,Vocabulary))}
+    before do
+      allow(vocabulary).to receive(:new_record?).and_return(true)
+      allow_any_instance_of(VocabularyForm).to receive(:save).and_return(save_success)
+      allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(vocabulary)
+      allow_any_instance_of(GitInterface).to receive(:rugged_merge)
+      get :mark_reviewed, :id =>params[:id]
+
+    end
+    context "when the item has been reviewed" do
+      it "will redirect to review queue if asset is saved" do
+        expect(flash[:notice]).to include("blah has been saved")
+        expect(response).to redirect_to("/review")
       end
     end
   end

@@ -34,14 +34,18 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
       fill_in "vocabulary[label][]", :with => "Hola mundo"
       find(".language-select").find("option[value='es']").select_option
     end
-    find_button('Create Vocabulary').trigger('click')
+    find('input[name="commit"]').click
     sleep 2
-    expect(page).to have_content("http://opaquenamespace.org/ns/#{vocabulary_id}")
+    expect(page).to have_content("#{vocabulary_id} has been saved and added to the review queue")
+    visit "/review/#{vocabulary_id}"
+    find_link('review').click
+    sleep 2
+    expect(page).to have_content("#{vocabulary_id}")
+
     vocab_statement_list = Vocabulary.find(vocabulary_id).statements.each.map { |x| x }
-    expect(vocab_statement_list[2].object.value).to eq "Hello world"
-    expect(vocab_statement_list[2].object.language).to eq :en
-    expect(vocab_statement_list[3].object.value).to eq "Hola mundo"
-    expect(vocab_statement_list[3].object.language).to eq :es
+    labels = vocab_statement_list.select { |s| s.predicate == "http://www.w3.org/2000/01/rdf-schema#label" }
+    expect(labels.any? {|l| l.object.value == "Hello world" && l.object.language == :en }).to be_truthy
+    expect(labels.any? {|l| l.object.value == "Hola mundo" && l.object.language == :es }).to be_truthy
 
     visit "/vocabularies/#{vocabulary_id}/edit"
     within('form.edit_vocabulary > .multi-value-field ul.listing li:first-child') do
@@ -65,10 +69,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     fill_in "vocabulary[see_also][]", :with => "http://id.loc.gov/authorities/subjects/sh85145447"
     find_button('Create Vocabulary').trigger('click')
     sleep 2
-    expect(page).to have_link("http://id.loc.gov/authorities/subjects/sh85145447")
-    expect(page).to have_content("http://opaquenamespace.org/ns/#{vocabulary_id}")
-    visit "/vocabularies/#{vocabulary_id}/edit"
-    expect(page).to have_xpath("//input[@value='http://id.loc.gov/authorities/subjects/sh85145447']")
+    expect(page).to have_content("#{vocabulary_id}")
 
     if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
       FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
