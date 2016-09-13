@@ -45,6 +45,7 @@ RSpec.describe DeprecateVocabularyForm do
     end
     it "should be valid by default" do
       expect(subject).to be_valid
+      expect(subject.is_valid?).to be_truthy
     end
     context "when the term already exists" do
       before do
@@ -52,6 +53,7 @@ RSpec.describe DeprecateVocabularyForm do
       end
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:id]).to include "already exists in the repository"
       end
     end
@@ -59,6 +61,7 @@ RSpec.describe DeprecateVocabularyForm do
       let(:id) {""}
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:id]).to include "can't be blank"
       end
     end
@@ -73,6 +76,7 @@ RSpec.describe DeprecateVocabularyForm do
 
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:is_replaced_by]).to include "can't be blank"
       end
     end
@@ -87,6 +91,7 @@ RSpec.describe DeprecateVocabularyForm do
 
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:is_replaced_by]).to include "can't be blank"
       end
     end

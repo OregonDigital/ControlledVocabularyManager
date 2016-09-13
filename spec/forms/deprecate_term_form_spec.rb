@@ -29,10 +29,12 @@ RSpec.describe DeprecateTermForm do
   describe "validations" do
     it "should not be valid by default" do
       expect(subject).not_to be_valid
+      expect(subject.is_valid?).not_to be_truthy
     end
     context "when is_replaced_by is blank" do
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:is_replaced_by]).to include "can't be blank"
       end
     end
@@ -46,6 +48,7 @@ RSpec.describe DeprecateTermForm do
       end
       it "should be valid" do
         expect(subject).to be_valid
+        expect(subject.is_valid?).to be_truthy
         expect(subject.errors[:is_replaced_by]).not_to include "can't be blank"
       end
     end
@@ -60,6 +63,7 @@ RSpec.describe DeprecateTermForm do
 
       it "should be invalid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:is_replaced_by]).to include "invalid uri"
       end
     end
@@ -67,7 +71,28 @@ RSpec.describe DeprecateTermForm do
       let(:vocabulary_exists) { false }
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:id]).to include "is in a non existent vocabulary"
+      end
+    end
+  end
+  describe "#save" do
+    context "when valid" do
+      let(:params) do
+        {
+          :comment => ["Comment"],
+          :label => ["Label"],
+          :is_replaced_by => ["http://bla.com/"]
+        }
+      end
+      it "should return true" do
+        expect(subject.save).to eq true
+      end
+    end
+    context "when invalid" do
+      let(:id) {""}
+      it "should return false" do
+        expect(subject.save).to eq false
       end
     end
   end

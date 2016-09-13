@@ -4,7 +4,7 @@ class DeprecatePredicateFormRepository < Struct.new(:decorators, :repository_typ
   delegate :new, :find, :exists?, :to => :repository
 
   def repository
-    DecoratingRepository.new(decorators, Term)
+    DecoratingRepository.new(decorators, Predicate)
   end
 
   private
@@ -15,6 +15,6 @@ class DeprecatePredicateFormRepository < Struct.new(:decorators, :repository_typ
   end
 
   def term_form_decorator
-    DecoratorWithArguments.new(DeprecatePredicateForm, StandardRepository.new(nil, Term))
+    DecoratorWithArguments.new(DeprecatePredicateForm, StandardRepository.new(nil, Predicate))
   end
 end

@@ -6,7 +6,7 @@ class DeprecatePredicateInjector < Struct.new(:params)
   end
 
   def deprecate_predicate_repository
-    StandardRepository.new(decorators, nil)
+    StandardRepository.new(decorators, Predicate)
   end
 
   def params
