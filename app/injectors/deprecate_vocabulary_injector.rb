@@ -4,7 +4,7 @@ class DeprecateVocabularyInjector < Struct.new(:params)
   end
 
   def deprecate_vocabulary_repository
-    @vocabulary_repository ||= StandardRepository.new(decorators, nil)
+    @vocabulary_repository ||= StandardRepository.new(decorators, Vocabulary)
   end
 
   def params

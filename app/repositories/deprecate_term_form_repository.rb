@@ -3,7 +3,7 @@
 class DeprecateTermFormRepository < Struct.new(:decorators, :repository_type)
   delegate :new, :find, :exists?, :to => :repository
 
-  def initialize(klass)
+  def initialize(decorators, klass)
     @klass = klass || Term
   end
 

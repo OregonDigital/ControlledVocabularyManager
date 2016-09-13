@@ -29,10 +29,12 @@ RSpec.describe DeprecatePredicateForm do
   describe "validations" do
     it "should not be valid by default" do
       expect(subject).not_to be_valid
+      expect(subject.is_valid?).not_to be_truthy
     end
     context "when is_replaced_by is blank" do
       it "should not be valid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:is_replaced_by]).to include "can't be blank"
       end
     end
@@ -46,6 +48,7 @@ RSpec.describe DeprecatePredicateForm do
       end
       it "should be valid" do
         expect(subject).to be_valid
+        expect(subject.is_valid?).to be_truthy
         expect(subject.errors[:is_replaced_by]).not_to include "can't be blank"
         expect(subject.errors[:is_replaced_by]).not_to include "invalid uri"
       end
@@ -61,6 +64,7 @@ RSpec.describe DeprecatePredicateForm do
 
       it "should be invalid" do
         expect(subject).not_to be_valid
+        expect(subject.is_valid?).not_to be_truthy
         expect(subject.errors[:is_replaced_by]).to include "invalid uri"
       end
     end

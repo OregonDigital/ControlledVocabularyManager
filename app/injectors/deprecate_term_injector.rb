@@ -2,11 +2,11 @@ class DeprecateTermInjector < Struct.new(:params)
   delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
 
   def deprecate_term_form_repository
-    DeprecateTermFormRepository.new(decorators)
+    DeprecateTermFormRepository.new(decorators, Term)
   end
 
   def deprecate_term_repository
-    StandardRepository.new(decorators, nil)
+    StandardRepository.new(decorators, Term)
   end
 
   def params
