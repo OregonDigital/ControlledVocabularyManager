@@ -78,6 +78,7 @@ class PredicatesController < ApplicationController
     else
       predicate_form = predicate_form_repository.new(params[:id], Predicate)
       predicate_form.attributes = vocabulary_params.except(:id, :issued)
+      predicate_form.add_resource
       action = "new"
     end
     predicate_form.set_languages(params[:vocabulary])

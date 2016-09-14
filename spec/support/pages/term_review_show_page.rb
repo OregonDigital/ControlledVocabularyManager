@@ -7,6 +7,11 @@ class TermReviewShowPage < Struct.new(:vocabulary_id)
 
   end
 
+  def edit
+    find_link('Edit').click
+    sleep 2
+  end
+
   def id
     "#{vocabulary_id}/banana"
   end

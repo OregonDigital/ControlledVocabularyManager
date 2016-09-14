@@ -32,6 +32,9 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     fill_in "ID", :with => TermCreatePage.id
     fill_in "vocabulary[label][]", :with => "Test label"
     fill_in "vocabulary[comment][]", :with => "Test comment"
+    within('div.term_type') do
+      find("select#term_type option[value='PersonalName']").select_option
+    end
     find_button('Create Term').trigger('click')
     sleep 2
 
@@ -41,14 +44,24 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
 
     term_review_show_page = term_review_index_page.select
     expect (term_review_show_page).has_content? "Test comment"
+    term_review_show_page.edit
+    fill_in "vocabulary[alternate_name][]", :with => "Test alt"
+    find_button('Create Personal name').trigger('click')
+    sleep 2
+
+    term_review_show_page = term_review_index_page.select
+
     term_review_show_page.mark
     expect(page).to have_content "#{vocabulary_id}/TestTerm has been saved and is ready for use."
-
     term_statement_list = Term.find("#{vocabulary_id}/#{TermCreatePage.id}").statements.each.map { |x| x }
-    expect(term_statement_list[2].object.value).to eq "Test comment"
-    expect(term_statement_list[2].object.language).to eq :en
-    expect(term_statement_list[3].object.value).to eq "Test label"
-    expect(term_statement_list[3].object.language).to eq :en
+    comments = term_statement_list.select { |s| s.predicate == "http://www.w3.org/2000/01/rdf-schema#comment" }
+    expect(comments.any? {|c| c.object.value == "Test comment" && c.object.language == :en }).to be_truthy
+    labels = term_statement_list.select { |s| s.predicate == "http://www.w3.org/2000/01/rdf-schema#label" }
+    expect(labels.any? {|l| l.object.value == "Test label" && l.object.language == :en }).to be_truthy
+
+    types = term_statement_list.select { |s| s.predicate == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type" }
+    expect(types.any? {|t| t.object.to_s == "http://www.w3.org/2004/02/skos/core#PersonalName" }).to be_truthy
+    expect(types.any? {|t| t.object.to_s == "http://www.w3.org/2000/01/rdf-schema#Resource" }).to be_truthy
 
     if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
       FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
