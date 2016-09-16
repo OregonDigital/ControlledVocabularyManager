@@ -54,7 +54,7 @@ class VocabulariesController < AdminController
     end
   end
 
-  def commit
+  def review_update
     if Term.exists? params[:id]
       vocabulary_form = vocabulary_form_repository.find(params[:id])
       vocabulary_form.attributes = vocabulary_params.except(:issued)
