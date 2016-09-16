@@ -62,6 +62,7 @@ class VocabulariesController < AdminController
     else
       vocabulary_form = vocabulary_form_repository.new(params[:id], Vocabulary)
       vocabulary_form.attributes = vocabulary_params.except(:id, :issued)
+      vocabulary_form.add_resource
       action = "new"
     end
     vocabulary_form.set_languages(params[:vocabulary])

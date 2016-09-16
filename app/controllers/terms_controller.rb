@@ -67,8 +67,9 @@ class TermsController < AdminController
       term_form.attributes = vocab_params
       action = "edit"
     else
-      term_form = term_form_repository.new(params[:id], Term)
+      term_form = term_form_repository.new(params[:id], params[:term_type].constantize)
       term_form.attributes = vocab_params.except(:id)
+      term_form.add_resource
       action = "new"
     end
     term_form.set_languages(params[:vocabulary])
@@ -94,7 +95,15 @@ class TermsController < AdminController
       term_form.set_languages(e_params[:vocabulary])
     else
       @term = reassemble(params[:id])
-      term_form = TermForm.new(@term, StandardRepository.new(nil, Term))
+      type = Term
+      if !@term.type.blank?
+        @term.type.each do |t|
+          if t.to_s != "http://www.w3.org/2000/01/rdf-schema#Resource"
+            type = t.object[:fragment].constantize
+          end
+        end
+      end
+      term_form = TermForm.new(@term, StandardRepository.new(nil, type))
     end
     branch_commit = rugged_merge(params[:id])
     if branch_commit != 0
