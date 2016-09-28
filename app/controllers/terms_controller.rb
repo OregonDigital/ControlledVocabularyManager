@@ -61,7 +61,7 @@ class TermsController < AdminController
     end
   end
 
-  def commit
+  def review_update
     if Term.exists? params[:id]
       term_form = term_form_repository.find(params[:id])
       term_form.attributes = vocab_params
@@ -98,8 +98,9 @@ class TermsController < AdminController
       type = Term
       if !@term.type.blank?
         @term.type.each do |t|
-          if t.to_s != "http://www.w3.org/2000/01/rdf-schema#Resource"
+          if t.to_s != "http://www.w3.org/2000/01/rdf-schema#Resource" && t.to_s != "http://www.w3.org/2004/02/skos/core#Concept"
             type = t.object[:fragment].constantize
+            break
           end
         end
       end

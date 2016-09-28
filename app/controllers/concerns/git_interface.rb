@@ -18,13 +18,10 @@ module GitInterface
       index.read_tree(repo.head.target.tree)
       index.add(:path => "#{id}.nt", :oid => oid, :mode => 0100644)
       #commit
-      options = {}
+      options = get_base_options
       options[:tree] = index.write_tree(repo)
-      options[:author] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
-      options[:committer] = {:email => current_user.email, :name => current_user.name, :time => Time.now }
       options[:message] = action + ": " + id
       options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
-      options[:update_ref] = 'HEAD'
       Rugged::Commit.create(repo, options)
       index.write
       options = {}
@@ -34,6 +31,14 @@ module GitInterface
     rescue
       logger.error("Git create failed. Refer to " + branch_id)
     end
+  end
+
+  def get_base_options
+    options = {}
+    options[:author] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
+    options[:committer] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
+    options[:update_ref] = 'HEAD'
+    options
   end
 
   def rugged_merge (id)
@@ -53,13 +58,10 @@ module GitInterface
         raise 'merge conflict'
       else
         commit_tree = merge_index.write_tree(repo)
-        options = {}
+        options = get_base_options
         options[:tree] = commit_tree
-        options[:author] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
-        options[:committer] = { :email => current_user.email, :name => current_user.name, :time => Time.now }
         options[:message] ||= "Merge #{from_branch} into #{into_branch}"
         options[:parents] = [repo.head.target, our_commit]
-        options[:update_ref] = 'HEAD'
 
         Rugged::Commit.create(repo, options)
         repo.checkout_tree(commit_tree)
@@ -117,47 +119,29 @@ module GitInterface
     formatted
    end
 
+  #refer to rugged issue 343
   def entry_changed?(commit, path, repo)
-    term = path.include? "/"
-    if term
-      arr = path.split "/"
-      path = arr[0]
-      pathchild = arr[1]
-      if !commit.tree[path].nil?
-        childtree = repo.lookup(commit.tree[path][:oid])
-        entry = childtree[pathchild]
-      else
-        entry = nil
-      end
-    else # predicate
-      entry = commit.tree[path]
-    end
-    parent = commit.parents[0]
-    # if at a root commit, consider it changed if we have this file;
-    # i.e. if we added it in the initial commit
-    if not parent
-      return entry != nil
-    end
-    if term
-      if !parent.tree[path].nil?
-        parenttree = repo.lookup(commit.parents[0].tree[path][:oid])
-        parent_entry = parenttree[pathchild]
-
-      else
-        parent_entry = nil
-      end
+    if path.include? "/"
+      term = WalkerTerm.new(commit, path, repo)
     else
-      parent_entry = parent.tree[path]
+      term = WalkerVocab.new(commit, path, repo)
     end
-    # does exist in either, no change
-    if not entry and not parent_entry
+
+    # if at a root commit, consider it changed if we have the file
+    # i.e. if we added it in the initial commit
+    if not term.parent
+      return term.record != nil
+    end
+
+    # does not exist in either, no change
+    if not term.record and not term.parent_record
       false
-    # only in one of them, change
-    elsif not entry or not parent_entry then
+    # exists only in one of them, change
+    elsif not term.record or not term.parent_record then
       true
     # otherwise it's changed if their ids aren't the same
     else
-      entry[:oid] != parent_entry[:oid]
+      term.record[:oid] != term.parent_record[:oid]
     end
   end
 
@@ -351,6 +335,42 @@ module GitInterface
       branch.slice(0..-8)
     else
       branch
+    end
+  end
+
+  class WalkerTerm
+    attr_reader :record, :parent, :parent_record
+
+    def initialize (commit, path, repo)
+      arr = path.split "/"
+      voc_id = arr[0]
+      term_id = arr[1]
+      if !commit.tree[voc_id].nil?
+        childtree = repo.lookup(commit.tree[voc_id][:oid])
+        @record = childtree[term_id]
+      else
+        @record = nil
+      end
+      @parent = commit.parents[0]
+      if !@parent.nil? && !@parent.tree[voc_id].nil?
+        parenttree = repo.lookup(@parent.tree[voc_id][:oid])
+        @parent_record = parenttree[term_id]
+      else
+        @parent_record = nil
+      end
+    end
+  end
+
+  class WalkerVocab
+    attr_reader :record, :parent, :parent_record
+
+    def initialize(commit, path, repo)
+      voc_id = path
+      @record = commit.tree[voc_id]
+      @parent = commit.parents[0]
+      if !@parent.nil?
+        @parent_record = parent.tree[voc_id]
+      end
     end
   end
 

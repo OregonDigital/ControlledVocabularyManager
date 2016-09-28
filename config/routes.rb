@@ -24,17 +24,17 @@ Rails.application.routes.draw do
   patch 'vocabularies/*id/deprecate_only', :to => "vocabularies#deprecate_only", :as => "deprecate_only_vocabulary"
   patch 'vocabularies/*id', :to => "vocabularies#update", :as => "update_vocabulary"
   patch 'predicates/*id/deprecate_only', :to => "predicates#deprecate_only", :as => "deprecate_only_predicate"
-  post 'predicates/*id/commit', :to => "predicates#commit", :as => "commit_predicate"
+  post 'predicates/*id/review_update', :to => "predicates#review_update", :as => "review_update_predicate"
   patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
   resources :vocabularies, :only => [:index, :new, :create, :edit]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
   resources :predicates, :only => [:index, :new, :create, :edit]
-  post 'vocabularies/*id/commit', :to => "vocabularies#commit", :as => "commit_vocabulary"
+  post 'vocabularies/*id/review_update', :to => "vocabularies#review_update", :as => "review_update_vocabulary"
   post '/vocabularies/*vocabulary_id', :to => "terms#create", :as => "create_term"
   get 'terms/*id/edit', :to => "terms#edit", :as => "edit_term"
   get 'terms/*id/deprecate', :to => "terms#deprecate", :as => "deprecate_term"
-  post 'terms/*id/commit', :to => "terms#commit", :as => "commit_term"
+  post 'terms/*id/review_update', :to => "terms#review_update", :as => "review_update_term"
   get 'vocabularies/*id/deprecate', :to => "vocabularies#deprecate", :as => "deprecate_vocabulary"
   get 'predicates/*id/deprecate', :to => "predicates#deprecate", :as => "deprecate_predicate"
 

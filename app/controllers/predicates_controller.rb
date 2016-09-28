@@ -70,7 +70,7 @@ class PredicatesController < ApplicationController
   end
 
 
-  def commit
+  def review_update
     if Term.exists? params[:id]
       predicate_form = predicate_form_repository.find(params[:id])
       predicate_form.attributes = vocabulary_params.except(:id, :issued)
