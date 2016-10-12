@@ -102,20 +102,19 @@ module GitInterface
     end
   end
 
-  #put this in config?
   def setup
     repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
-    repo.checkout('master')
+    if !repo.head.name.include? "master"
+      repo.checkout('master')
+    end
     repo
   end
 
   def get_history(id, branch="master")
     repo = setup
-    repo.checkout(branch)
     path = id + ".nt"
-    info = commit_info_rugged(repo, path)
+    info = commit_info_rugged(repo, path, branch)
     formatted = format_response(info)
-    repo.checkout("master")
     formatted
    end
 
@@ -145,11 +144,16 @@ module GitInterface
     end
   end
 
-  def commit_info_rugged(repo, path)
+  def commit_info_rugged(repo, path, branch_name)
 
     walker = Rugged::Walker.new(repo)
     walker.sorting(Rugged::SORT_DATE)
-    walker.push(repo.last_commit)
+    if branch_name != "master"
+      branch = repo.lookup(repo.branches[branch_name].target_id)
+    else
+      branch = repo.last_commit
+    end
+    walker.push(branch)
     walker.inject([]) do |a, c|
       if entry_changed? c, path, repo
          a << {author: c.author, date: c.time, hash: c.oid, message: c.message}
@@ -222,18 +226,18 @@ module GitInterface
   #retrieve the data from git
   #for use in review queue/show
   def commit_content(branchname)
+
     begin
       repo = setup
-      repo.checkout(branchname)
       id = unbranchify(branchname)
+      branch = repo.lookup(repo.branches[branchname].target_id)
       if(id.include?"/")
         parts = id.split("/")
-        vocabtree = repo.lookup(repo.last_commit.tree[parts[0]][:oid])
+        vocabtree = repo.lookup(branch.tree[parts[0]][:oid])
         commit = repo.lookup(vocabtree[parts[1]+ ".nt"][:oid])
       else
-        commit = repo.lookup(repo.last_commit.tree[id + ".nt"][:oid])
+        commit = repo.lookup(branch.tree[id + ".nt"][:oid])
       end
-      repo.checkout("master")
       commit.content
     rescue
       nil
