@@ -308,25 +308,37 @@ module GitInterface
 
   #reassembles params from git
   # for repopulating edit forms
+  #
+  # @returns data structure to represent the vocabulary property/values with languages if appropriate
+  # ie: {
+  #       vocabulary: {
+  #         my_property: ['value1','value2'],
+  #         other_property: ['other_value'],
+  #         language: {
+  #           my_property: ['en', 'zu']
+  #         }
+  #       }
+  #     }
   def edit_params (id)
     term = reassemble(id)
-    proplangs = Hash.new
-    vocabhash = Hash.new
-    Vocabulary.properties.each do |property|
+    params = Hash.new
+    params[:vocabulary] = Hash.new
+    Vocabulary.properties.each_pair do |k,triple|
       results = []
-      term.query(:predicate=> property[1].predicate ).each_statement {|s,p,o| results << o }
-      if !results.empty?
-        if !term.blacklisted_language_properties.include? property[0].to_sym
-          if results.first.respond_to? :language
-            proplangs[property.first.to_s] = [results.first.language.to_s]
-          end
+      term.query(:predicate=> triple.predicate ).each_statement {|s,p,o| results << o }
+      results.each do |result|
+        # set the language hash with stringified property name (set_languages depends on this)
+        # add the array of languages that relate to the object string set below
+        if !term.blacklisted_language_properties.include? k.to_sym
+          params[:vocabulary][:language] ||= Hash.new
+          params[:vocabulary][:language][k.to_s] ||= []
+          params[:vocabulary][:language][k.to_s] << result.language.to_s if result.respond_to?(:language)
         end
-        vocabhash[property.first.to_sym] = [results.first.object.to_s]
+        # set the symbolized property name array and include the object string
+        params[:vocabulary][k.to_sym] ||= []
+        params[:vocabulary][k.to_sym] << result.object.to_s
       end
     end
-    vocabhash[:language] = proplangs
-    params = Hash.new
-    params[:vocabulary] = vocabhash
     params
   end
 
