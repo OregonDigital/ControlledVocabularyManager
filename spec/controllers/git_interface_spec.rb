@@ -92,6 +92,11 @@ RSpec.describe GitInterface do
       branch_commit = dummy_class.rugged_merge("blah/shoe")
       expect(branch_commit).to eq(0)
       File.unlink(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      #handle git index locked during create
+      FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      returnval = dummy_class.rugged_create("blah/shoe", subj+triple1+subj+triple2+subj+triple4,"creating")
+      expect(returnval).to be false
+      File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
 
     end
   end

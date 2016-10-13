@@ -20,8 +20,12 @@ class VocabulariesController < AdminController
     if vocabulary_form.is_valid?
       vocabulary_form.add_resource
       triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
-      rugged_create(vocabulary_params[:id], triples, "creating")
-      flash[:notice] = "#{vocabulary_params[:id]} has been saved and added to the review queue"
+      check = rugged_create(vocabulary_params[:id], triples, "creating")
+      if check
+        flash[:notice] = "#{vocabulary_params[:id]} has been saved and added to the review queue"
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to "/vocabularies"
 
     else
@@ -45,8 +49,12 @@ class VocabulariesController < AdminController
     edit_vocabulary_form.set_modified
     if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to "/vocabularies"
     else
       @term = edit_vocabulary_form
@@ -71,8 +79,12 @@ class VocabulariesController < AdminController
 
     if vocabulary_form.is_valid?
       triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to review_queue_path
     else
       @vocabulary = vocabulary_form
@@ -115,8 +127,12 @@ class VocabulariesController < AdminController
 
     if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to "/vocabularies"
     else
       @term = edit_vocabulary_form
