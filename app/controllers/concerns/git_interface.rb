@@ -43,7 +43,10 @@ module GitInterface
 
   def rugged_merge (id)
     begin
-    branch_id = branchify(id)
+      branch_id = branchify(id)
+      if is_git_locked
+        raise 'git is locked'
+      end
       repo = setup
       #merge
       into_branch = 'master'
@@ -72,9 +75,25 @@ module GitInterface
         repo.checkout_head(options)
         #repo.push('origin', [repo.head.name], { credentials: @cred })
       end
-    return our_commit
+      return our_commit
     rescue
       return 0
+    end
+  end
+
+  def is_git_locked
+    retries = 0
+    while retries < 2
+      if File.exists?(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock" )
+        if retries < 1
+          sleep 1
+          retries = retries + 1
+        else
+          return true
+        end
+      else
+        return false
+      end
     end
   end
 
@@ -103,15 +122,23 @@ module GitInterface
   end
 
   def setup
-    repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
-    if !repo.head.name.include? "master"
-      repo.checkout('master')
+    begin
+      repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
+      if !repo.head.name.include? "master"
+        repo.checkout('master')
+      end
+      repo
+    rescue
+      logger.error('repo setup fail')
+      return nil
     end
-    repo
   end
 
   def get_history(id, branch="master")
     repo = setup
+    if repo.nil?
+      return nil
+    end
     path = id + ".nt"
     info = commit_info_rugged(repo, path, branch)
     formatted = format_response(info)
@@ -166,6 +193,9 @@ module GitInterface
   def get_diff(commit1)
     answer = []
     repo = setup
+    if repo.nil?
+      return answer
+    end
     child = repo.lookup(commit1)
     commits = child.parents[0].diff(child)
     commits.each_patch do |patch|
@@ -219,6 +249,9 @@ module GitInterface
 
  def branch_list
     repo = setup
+    if repo.nil?
+      return nil
+    end
     branches = repo.branches.each_name(:local).sort
     branches = branches.reject{|branch| branch == 'master'}
   end
@@ -249,6 +282,9 @@ module GitInterface
   def review_list
     terms = []
     branches = branch_list
+    if branches.nil?
+      return nil
+    end
     branches.each do |branch|
       content = commit_content(branch)
       if !content.blank?

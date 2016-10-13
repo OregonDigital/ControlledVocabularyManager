@@ -44,4 +44,15 @@ module TestGitSetup
     dummy_class.rugged_merge("blah")
   end
 
+  def lock_git_index
+    repo = Rugged::Repository.init_at(ControlledVocabularyManager::Application::config.rugged_repo)
+    branch = repo.branches.create("fake_branch", "HEAD")
+    repo.checkout(branch)
+    FileUtils.touch (ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+  end
+  def release_git_index
+    File.unlink(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+    repo = Rugged::Repository.init_at(ControlledVocabularyManager::Application::config.rugged_repo)
+    repo.checkout('master')
+  end
 end
