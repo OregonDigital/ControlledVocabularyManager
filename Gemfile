@@ -60,6 +60,7 @@ gem 'font-awesome-rails'
 gem 'attr_extras'
 
 gem 'capistrano', '~> 2.0'
+gem 'newrelic_rpm'
 
 group :development do
   gem 'spring-commands-rspec'
