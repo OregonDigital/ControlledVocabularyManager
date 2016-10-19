@@ -11,7 +11,21 @@ module GitInterface
       if branch.nil?
         branch = repo.branches.create(branch_id, "HEAD")
       end
-      repo.checkout(branch)
+
+      retries = 0
+      while retries < 2
+        checkout = repo.checkout(branch)
+        if checkout.nil?
+          if test_checkout < 1
+            sleep 1
+            retries = retries + 1
+          else
+            raise 'possible index.lock problem'
+          end
+        else
+          break
+        end
+      end
       #add blob
       oid = repo.write(string,:blob)
       index = repo.index
@@ -28,8 +42,10 @@ module GitInterface
       options[:strategy] = :force
       repo.checkout_head(options)
       repo.checkout('master')
+      return true
     rescue
       logger.error("Git create failed. Refer to " + branch_id)
+      return false
     end
   end
 

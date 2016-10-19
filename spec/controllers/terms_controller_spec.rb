@@ -201,6 +201,19 @@ RSpec.describe TermsController do
           expect(response).to redirect_to("/ns/test")
         end
       end
+      context "when index.lock exists and rugged returns false" do
+        before do
+          FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+          allow(term_form).to receive(:is_valid?).and_return(true)
+          post :create, params
+        end
+        after do
+          File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        end
+        it "should flash something went wrong" do
+          expect(flash[:notice]).to include("Something went wrong")
+        end
+      end
       context "when vocabulary isn't found" do
         let(:params) do
           {
@@ -309,17 +322,31 @@ RSpec.describe TermsController do
         allow(term).to receive(:attributes=)
         allow(term).to receive(:blacklisted_language_properties).and_return([:id, :issued, :modified])
         allow(term).to receive(:attributes).and_return(params)
-        allow(term_form).to receive(:valid?).and_return(true)
         allow(term).to receive(:valid?)
-        patch :update, :id => term.id, :vocabulary => params
       end
-
       context "when the fields are edited" do
+        before do
+          allow(term_form).to receive(:valid?).and_return(true)
+          patch :update, :id => term.id, :vocabulary => params
+        end
         it "should update the properties" do
           expect(term).to have_received(:attributes=).with(params.except(:language))
         end
         it "should redirect to the vocab" do
           expect(response).to redirect_to("/ns/test")
+        end
+      end
+      context "when index.lock exists and rugged returns false" do
+        before do
+          FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+          allow(term_form).to receive(:is_valid?).and_return(true)
+          patch :update, :id => term.id, :vocabulary => params
+        end
+        after do
+          File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        end
+        it "should flash something went wrong" do
+          expect(flash[:notice]).to include("Something went wrong")
         end
       end
 
@@ -429,6 +456,19 @@ RSpec.describe TermsController do
         it "should redirect to the vocab" do
           parts = term.id.split("/")
           expect(response).to redirect_to("/ns/#{parts[0]}")
+        end
+      end
+      context "when index.lock exists and rugged returns false" do
+        before do
+          FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+          allow(term_form).to receive(:is_valid?).and_return(true)
+          patch :deprecate_only, :id => term.id, :vocabulary => params
+        end
+        after do
+          File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        end
+        it "should flash something went wrong" do
+          expect(flash[:notice]).to include("Something went wrong")
         end
       end
 

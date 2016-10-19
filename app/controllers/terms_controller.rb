@@ -29,8 +29,12 @@ class TermsController < AdminController
     if term_form.is_valid?
       term_form.add_resource
       triples = term_form.sort_stringify(term_form.full_graph)
-      rugged_create(combined_id.to_s, triples, "creating")
-      flash[:notice] = "#{combined_id.to_s} has been saved and added to the review queue."
+      check = rugged_create(combined_id.to_s, triples, "creating")
+      if check
+        flash[:notice] = "#{combined_id.to_s} has been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to term_path(:id => params[:vocabulary_id])
     else
       @term = term_form
@@ -50,11 +54,14 @@ class TermsController < AdminController
     edit_term_form.set_modified
     if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+      else
+       flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       id_parts = params[:id].split("/")
       redirect_to term_path(:id => id_parts[0])
-
     else
       @term = edit_term_form
       render "edit"
@@ -78,8 +85,12 @@ class TermsController < AdminController
 
     if term_form.is_valid?
       triples = term_form.sort_stringify(term_form.full_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to review_queue_path
     else
       @term = term_form
@@ -128,8 +139,12 @@ class TermsController < AdminController
     edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
     if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       id_parts = params[:id].split("/")
       redirect_to term_path(:id => id_parts[0])
     else

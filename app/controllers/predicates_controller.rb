@@ -20,10 +20,13 @@ class PredicatesController < ApplicationController
     if predicate_form.is_valid?
       predicate_form.add_resource
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
-      rugged_create(predicate_params[:id], triples, "creating")
-      flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+      check = rugged_create(predicate_params[:id], triples, "creating")
+      if check
+        flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to "/predicates"
-
     else
       @predicate = predicate_form
       render "new"
@@ -41,8 +44,12 @@ class PredicatesController < ApplicationController
     edit_predicate_form.set_modified
     if edit_predicate_form.is_valid?
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to "/predicates"
     else
       @term = edit_predicate_form
@@ -59,8 +66,12 @@ class PredicatesController < ApplicationController
     edit_predicate_form.is_replaced_by = vocabulary_params[:is_replaced_by]
     if edit_predicate_form.is_valid?
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue." 
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue." 
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to "/predicates"
 
     else
@@ -87,8 +98,12 @@ class PredicatesController < ApplicationController
 
     if predicate_form.is_valid?
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
-      rugged_create(params[:id], triples, "updating")
-      flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      check = rugged_create(params[:id], triples, "updating")
+      if check
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+      else
+        flash[:notice] = "Something went wrong, please notify a systems administrator."
+      end
       redirect_to review_queue_path
     else
       @predicate = predicate_form

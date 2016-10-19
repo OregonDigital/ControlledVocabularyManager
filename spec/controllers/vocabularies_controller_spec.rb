@@ -84,10 +84,13 @@ RSpec.describe VocabulariesController do
       allow(vocabulary_form).to receive(:is_valid?).and_return(true)
       allow(vocabulary).to receive(:attributes).and_return(params)
       allow(vocabulary).to receive(:valid?)
-      patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+
     end
 
     context "when the fields are edited" do
+      before do
+        patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+      end
       it "should update the properties" do
         expect(vocabulary).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :label=>[RDF::Literal("Test", :language => :en)]}).exactly(1).times
       end
@@ -107,6 +110,18 @@ RSpec.describe VocabulariesController do
         it "should ignore them" do
           expect(vocabulary).to have_received(:attributes=).with(:comment => [], :label => ["Test"])
         end
+      end
+    end
+    context "when index.lock exists and rugged returns false" do
+      before do
+        FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+      end
+      after do
+        File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      end
+      it "should flash something went wrong" do
+        expect(flash[:notice]).to include("Something went wrong")
       end
     end
 
@@ -154,15 +169,30 @@ RSpec.describe VocabulariesController do
       allow(vocabulary_form).to receive(:valid?).and_return(true)
       allow(vocabulary).to receive(:attributes).and_return(params)
       allow(vocabulary).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
-      patch :deprecate_only, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+
     end
 
     context "when the fields are edited" do
+      before do
+        patch :deprecate_only, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+      end
       it "should update the replaced_by property" do
         expect(vocabulary).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
       end
       it "should redirect to the index" do
         expect(response).to redirect_to("/vocabularies")
+      end
+    end
+    context "when index.lock exists and rugged returns false" do
+      before do
+        FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        patch :deprecate_only, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
+      end
+      after do
+        File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      end
+      it "should flash something went wrong" do
+        expect(flash[:notice]).to include("Something went wrong")
       end
     end
 
@@ -253,7 +283,7 @@ RSpec.describe VocabulariesController do
       allow(vocabulary).to receive(:attributes=)
       allow(vocabulary).to receive(:attributes).and_return(vocabulary_params)
       allow(vocabulary).to receive(:valid?)
-      post 'create', :vocabulary => vocabulary_params
+
     end
     context "when blank arrays are passed in" do
       let(:vocabulary_params) do
@@ -266,6 +296,9 @@ RSpec.describe VocabulariesController do
             :comment => ["en"]
           }
         }
+      end
+      before do
+        post 'create', :vocabulary => vocabulary_params
       end
       it "should not pass them to vocabulary" do
         expect(vocabulary).to have_received(:attributes=).with({"label" => ["test"], "comment" => []})
@@ -284,10 +317,26 @@ RSpec.describe VocabulariesController do
       end
     end
     context "when all goes well" do
+      before do
+        post 'create', :vocabulary => vocabulary_params
+      end
       it "should redirect to the index" do
         expect(response).to redirect_to("/vocabularies")
       end
     end
+    context "when index.lock exists and rugged returns false" do
+      before do
+        FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        post 'create', :vocabulary => vocabulary_params
+      end
+      after do
+        File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      end
+      it "should flash something went wrong" do
+        expect(flash[:notice]).to include("Something went wrong")
+      end
+    end
+
   end
   describe "mark_reviewed" do
     let(:vocabulary) { vocabulary_mock }

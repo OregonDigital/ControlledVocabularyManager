@@ -76,10 +76,13 @@ RSpec.describe PredicatesController do
       allow(predicate_form).to receive(:valid?).and_return(true)
       allow(predicate).to receive(:attributes).and_return(params)
       allow(predicate).to receive(:valid?)
-      patch :update, :id => predicate.id, :predicate => params, :vocabulary => params
+
     end
 
     context "when the fields are edited" do
+      before do
+        patch :update, :id => predicate.id, :predicate => params, :vocabulary => params
+      end
       it "should update the properties" do
          expect(predicate).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :label=>[RDF::Literal("Test", :language => :en)]}).exactly(1).times
       end
@@ -88,17 +91,29 @@ RSpec.describe PredicatesController do
       end
       context "and there are blank fields" do
         let(:params) do
-          {
-            :comment => [""],
-            :label => ["Test"],
-            :language => {
-              :label => ["en"]
-            }
+        {
+          :comment => [""],
+          :label => ["Test"],
+          :language => {
+          :label => ["en"]
           }
+        }
         end
         it "should ignore them" do
           expect(predicate).to have_received(:attributes=).with(:comment => [], :label => ["Test"])
         end
+      end
+    end
+    context "when index.lock exists and rugged returns false" do
+      before do
+        FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        patch :update, :id => predicate.id, :predicate => params, :vocabulary => params
+      end
+      after do
+        File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      end
+      it "should flash something went wrong" do
+        expect(flash[:notice]).to include("Something went wrong")
       end
     end
     context "when the fields are edited and the check fails" do
@@ -142,15 +157,30 @@ RSpec.describe PredicatesController do
       allow(predicate_form).to receive(:is_valid?).and_return(true)
       allow(predicate).to receive(:attributes).and_return(params)
       allow(predicate).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
-      patch :deprecate_only, :id => predicate.id, :predicate => params, :vocabulary => params
+
     end
 
     context "when the fields are edited" do
+      before do
+        patch :deprecate_only, :id => predicate.id, :predicate => params, :vocabulary => params
+      end
       it "should update the is_replaced_by property" do
         expect(predicate).to have_received(:is_replaced_by=).with(params[:is_replaced_by]).exactly(1).times
       end
       it "should redirect to predicates index" do
         expect(response).to redirect_to("/predicates")
+      end
+    end
+    context "when index.lock exists and rugged returns false" do
+      before do
+        FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        patch :deprecate_only, :id => predicate.id, :predicate => params, :vocabulary => params
+      end
+      after do
+        File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      end
+      it "should flash something went wrong" do
+        expect(flash[:notice]).to include("Something went wrong")
       end
     end
     context "when the fields are edited and the update fails" do
@@ -233,15 +263,29 @@ RSpec.describe PredicatesController do
       allow(predicate).to receive(:attributes=)
       allow(predicate).to receive(:attributes).and_return(predicate_params)
       allow(predicate).to receive(:valid?)
-      post 'create', :predicate => predicate_params, :vocabulary => predicate_params
     end
 
     context "when all goes well" do
+      before do
+        post 'create', :predicate => predicate_params, :vocabulary => predicate_params
+      end
       it "should redirect to the index" do
         expect(response).to redirect_to("/predicates")
       end
     end
-
+    context "when index.lock exists and rugged returns false" do
+      before do
+        FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+        #allow(term_form).to receive(:is_valid?).and_return(true)
+        post 'create', :predicate => predicate_params, :vocabulary => predicate_params
+      end
+      after do
+        File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      end
+      it "should flash something went wrong" do
+        expect(flash[:notice]).to include("Something went wrong")
+      end
+    end
   end
 
   describe "mark_reviewed" do
