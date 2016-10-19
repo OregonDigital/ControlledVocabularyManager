@@ -3,6 +3,11 @@ include GitInterface
   
   def index
     @terms = review_list
+    if @terms.nil?
+      flash[:notice] = "Something went wrong, please notify a system administrator."
+      @terms = []
+    end
+    @terms
   end
 
   def show

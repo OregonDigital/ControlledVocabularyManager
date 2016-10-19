@@ -21,6 +21,7 @@ RSpec.describe GitInterface do
   describe "git process" do
     let(:subj) { "<http://opaquenamespace.org/ns/blah/foo>" }
     let(:subj2) { "<http://opaquenamespace.org/ns/blah/zoo>" }
+    let(:subj3) { "<http://opaquenamespace.org/ns/blah/shoe>" }
     let(:triple1) { "<http://purl.org/dc/terms/date> \"2016-05-04\" .\n" }
     let(:triple2) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foo\"@en .\n" }
     let(:triple3) { "<http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .\n" }
@@ -46,7 +47,7 @@ RSpec.describe GitInterface do
       expect(params[:vocabulary][:label].first).to eq("foo")
       #merge blah/foo
       repo.checkout("master")
-      dummy_class.rugged_merge("blah/foo")
+      branch_commit = dummy_class.rugged_merge("blah/foo")
       expect(repo.last_commit.message).to include("Merge blah/foo_review into master")
 
       #delete branch
@@ -84,6 +85,13 @@ RSpec.describe GitInterface do
       results = dummy_class.get_history("blah/foo")
       expect(results).to be_nil
       expect(repo.last_commit.author[:name]).to eq("George Smith")
+
+      #handle git index locked in merge
+      dummy_class.rugged_create("blah/shoe", subj2+triple1+subj2+triple5+subj2+triple4,"creating")
+      FileUtils.touch(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
+      branch_commit = dummy_class.rugged_merge("blah/shoe")
+      expect(branch_commit).to eq(0)
+      File.unlink(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
 
     end
   end

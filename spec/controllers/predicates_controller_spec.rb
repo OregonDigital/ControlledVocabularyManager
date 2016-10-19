@@ -264,16 +264,27 @@ RSpec.describe PredicatesController do
       allow(predicate).to receive(:new_record?).and_return(true)
       allow_any_instance_of(PredicateForm).to receive(:save).and_return(save_success)
       allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(predicate)
-      allow_any_instance_of(GitInterface).to receive(:rugged_merge)
-      get :mark_reviewed, :id =>params[:id]
-
     end
     context "when the item has been reviewed" do
+      before do
+        allow_any_instance_of(GitInterface).to receive(:rugged_merge)
+        get :mark_reviewed, :id =>params[:id]
+      end
       it "will redirect to review queue if asset is saved" do
         expect(flash[:notice]).to include("blah has been saved")
         expect(response).to redirect_to("/review")
       end
     end
+    context "when an error is raised inside rugged_merge" do
+      before do
+        allow_any_instance_of(GitInterface).to receive(:rugged_merge).and_return(0)
+        get :mark_reviewed, :id =>params[:id]
+      end
+      it "should show the flash error" do
+        expect(flash[:notice]).to include("Something went wrong")
+      end
+    end
+
   end
 
 

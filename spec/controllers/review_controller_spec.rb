@@ -19,16 +19,32 @@ RSpec.describe ReviewController do
       before do
         allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
         setup_for_review_test(dummy_class)
-        get :index
       end
       after do
         FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
       end
-      it "should work" do
-        expect(response).to be_success
-        expect(response).to render_template "index"
+      context "when things are ok" do
+        before do
+          get :index
+        end
+        it "should work" do
+          expect(response).to be_success
+          expect(response).to render_template "index"
+        end
       end
-
+      context "when git index is locked" do
+        before do
+          lock_git_index
+          get :index
+        end
+        after do
+          release_git_index
+        end
+        it "should handle it gracefully" do
+          expect(response).to be_success
+          expect(flash[:notice]).to include("Something went wrong")
+        end
+      end
     end
   end
 
