@@ -28,9 +28,7 @@
   <% unless @term.vocabulary? || @term.predicate? %>
     <%= render partial: "terms/term_row_type", locals: { type: @term.titleized_type } %>
   <% end %>
-  <% @term.fields.each do |field| %>
-    <%= render :partial => "terms/term_row", locals: { :field => field } %>
-  <% end %>
+  <%= render partial: 'terms/term_row', collection: @term.fields, cache: true, as: :field %>
 </table>
 
 <p>
@@ -40,8 +38,15 @@
   , <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
 </p>
 
-<% if !@term.commit_history.nil? %>
-  <%= render :partial => "terms/history", locals: { :term => @term } %>
-<% end %>
+<%# TODO: Replace commit history functionality, currently very slow and causes memory leakage %>
+<%# if !@term.commit_history.nil? %>
+<%#= render :partial => "terms/history", locals: { :term => @term } %>
+<%# end %>
 
-<%= render("terms/vocab_children", :vocabulary => @term) if @term.vocabulary? %>
+<% if @term.vocabulary? %>
+  <h3><%= I18n.t("vocabulary.children_header") %></h3>
+
+  <table class="table table-striped">
+    <%= render partial: 'terms/vocab_child', collection: @term.children, cache: true, as: :child %>
+  </table>
+<% end %>
