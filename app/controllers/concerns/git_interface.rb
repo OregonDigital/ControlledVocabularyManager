@@ -339,6 +339,7 @@ module GitInterface
 
   def get_graph(branchname)
     content = commit_content(branchname)
+    return nil if content.blank?
     graph = triples_string_to_graph(content)
   end
 
@@ -346,6 +347,7 @@ module GitInterface
   def reassemble(id)
     branchname = branchify(id)
     graph = get_graph(branchname)
+    return nil if graph.blank?
     statements = graph.query(:predicate=>RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"))
     if statements.any? { |s| s.object == RDF::URI("http://purl.org/dc/dcam/VocabularyEncodingScheme") }
       sr = StandardRepository.new(nil, Vocabulary)
@@ -373,6 +375,7 @@ module GitInterface
   #     }
   def edit_params (id)
     term = reassemble(id)
+    return nil if term.blank?
     params = Hash.new
     params[:vocabulary] = Hash.new
     Vocabulary.properties.each_pair do |k,triple|

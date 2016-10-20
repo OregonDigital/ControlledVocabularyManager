@@ -13,7 +13,12 @@ include GitInterface
 
   def show
     @term = reassemble(params[:id])
-    @term.commit_history = get_history(@term.id, params[:id] + "_review")
+    if @term.blank?
+      flash[:notice] = "#{params[:id]} could not be found in items for review."
+      redirect_to review_queue_path
+    else
+      @term.commit_history = get_history(@term.id, params[:id] + "_review")
+    end
   end
 
   def edit
@@ -23,6 +28,10 @@ include GitInterface
       @term = reassemble(params[:id])
     else
       @term = reassemble(params[:id])
+    end
+    if @term.blank?
+      flash[:notice] = "#{params[:id]} could not be found in items for review."
+      redirect_to review_queue_path
     end
   end
 

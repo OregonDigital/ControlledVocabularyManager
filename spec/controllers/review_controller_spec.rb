@@ -74,10 +74,18 @@ RSpec.describe ReviewController do
         expect(response).to be_success
         expect(response).to render_template "show"
       end
+
       context "when logged out" do
         let(:user) { }
         it "should require login" do
           expect(response.body).to have_content("Only admin can access")
+        end
+      end
+      context "term is not under review" do
+        it "should handle it gracefully" do
+          get :show, :id => "foo"
+          expect(response).to redirect_to("/review")
+          expect(flash[:notice]).to include("foo could not be found")
         end
       end
     end
@@ -102,6 +110,13 @@ RSpec.describe ReviewController do
       it "should work" do
         expect(response).to be_success
         expect(response).to render_template "edit"
+      end
+      context "term is not under review" do
+        it "should handle it gracefully" do
+          get :edit, :id => "foo"
+          expect(response).to redirect_to("/review")
+          expect(flash[:notice]).to include("foo could not be found")
+        end
       end
     end
   end
