@@ -1,6 +1,7 @@
 class ReviewController < AdminController
 include GitInterface
-  
+  before_filter :require_admin
+
   def index
     @terms = review_list
     if @terms.nil?
