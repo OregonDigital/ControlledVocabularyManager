@@ -8,10 +8,10 @@ end
 RSpec.describe "terms/show" do
   include TestGitSetup
   let(:uri) { "http://opaquenamespace.org/ns/bla" }
-  let(:resource) do 
+  let(:resource) do
     Term.new(uri).tap do |t|
       t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
-      t.label = ["a_label"] 
+      t.label = ["a_label"]
     end
   end
   let(:children) {}
@@ -56,8 +56,8 @@ RSpec.describe "terms/show" do
       end
     end
     context "with children" do
-      let(:child) { 
-        t = Term.new(uri.to_s+"/banana") 
+      let(:child) {
+        t = Term.new(uri.to_s+"/banana")
         t.label = "BananaChild"
         t
       }
@@ -83,8 +83,8 @@ RSpec.describe "terms/show" do
 
 
   context "when term is deprecated" do
-    let(:resource) { 
-      t = Term.new(uri) 
+    let(:resource) {
+      t = Term.new(uri)
       t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
       t
     }
@@ -101,8 +101,8 @@ RSpec.describe "terms/show" do
     end
   end
   context "when visiting the show page" do
-    let(:resource) { 
-      t = Term.new(uri) 
+    let(:resource) {
+      t = Term.new(uri)
       t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
       t.label = ["a_label", "another_label"]
       t.comment = ["comment"]
@@ -126,7 +126,8 @@ RSpec.describe "terms/show" do
     after do
       FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
     end
-    it "should display the diff if it exists" do
+    #TODO: Test disabled while the functionality is disabled due to memory leak and slowness
+    xit "should display the diff if it exists" do
       render
       expect(rendered).to have_content("added: <http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .")
     end

@@ -5,7 +5,9 @@ class TermsController < AdminController
   include GitInterface
   def show
     @term = find_term
-    @term.commit_history = get_history(@term.id)
+
+    # TODO: replace functionality, this causes memory leak and slowness currently.
+    #@term.commit_history = get_history(@term.id)
     respond_to do |format|
       format.html
       format.nt { render body: @term.full_graph.dump(:ntriples), :content_type => Mime::NT }
