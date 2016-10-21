@@ -3,6 +3,9 @@ class TermsController < AdminController
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   include GitInterface
+
+  caches_page :show
+
   def show
     @term = find_term
 
@@ -122,6 +125,8 @@ class TermsController < AdminController
     branch_commit = rugged_merge(params[:id])
     if branch_commit != 0
       if term_form.save
+        expire_page action: 'show', id: params[:id]
+        expire_page action: 'show', id: @term.term_uri_vocabulary_id if @term.term_id.hasParent?
         rugged_delete_branch(params[:id])
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
