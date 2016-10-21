@@ -384,6 +384,7 @@ RSpec.describe TermsController do
       before do
         allow(term).to receive(:new_record?).and_return(true)
         allow(term).to receive(:type).and_return(nil)
+        allow(term).to receive(:term_id).and_return(TermID.new(term_id))
         allow_any_instance_of(TermForm).to receive(:save).and_return(save_success)
         allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(term)
         allow(term).to receive(:term_uri_leaf).and_return(term_id)
