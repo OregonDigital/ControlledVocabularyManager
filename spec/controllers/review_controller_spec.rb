@@ -14,10 +14,9 @@ RSpec.describe ReviewController do
       let(:uri) { "http://opaquenamespace.org/ns/blah" }
       let(:resource) { instance_double("Vocabulary") }
       let(:dummy_class) { DummyController.new }
-      let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin")}
-
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
       before do
-        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
+        sign_in(user) if user
         setup_for_review_test(dummy_class)
       end
       after do
@@ -45,6 +44,13 @@ RSpec.describe ReviewController do
           expect(flash[:notice]).to include("Something went wrong")
         end
       end
+      context "when logged out" do
+        let(:user) { }
+        it "should require login" do
+          get :index
+          expect(response.body).to have_content("Only admin can access")
+        end
+      end
     end
   end
 
@@ -53,9 +59,10 @@ RSpec.describe ReviewController do
       let(:uri) { "http://opaquenamespace.org/ns/blah" }
       let(:resource) { instance_double("Vocabulary") }
       let(:dummy_class) { DummyController.new }
-      let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin")}
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
 
       before do
+        sign_in(user) if user
         allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
         setup_for_review_test(dummy_class)
         get :show, :id => "blah"
@@ -67,7 +74,12 @@ RSpec.describe ReviewController do
         expect(response).to be_success
         expect(response).to render_template "show"
       end
-
+      context "when logged out" do
+        let(:user) { }
+        it "should require login" do
+          expect(response.body).to have_content("Only admin can access")
+        end
+      end
     end
   end
 
