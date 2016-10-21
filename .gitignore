@@ -41,3 +41,6 @@ config/config.yml
 
 git_dev
 blazegraph*
+
+# Ignore the page caching directory incase it was enabled on development for testing
+public/ns*
