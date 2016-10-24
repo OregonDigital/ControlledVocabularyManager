@@ -10,7 +10,7 @@
     <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= render :partial => 'shared/analytics' %>
-    <%= csrf_meta_tags %>
+    <%= csrf_meta_tags unless @skip_render %>
   </head>
 
   <body>

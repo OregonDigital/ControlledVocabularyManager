@@ -4,6 +4,7 @@ class TermsController < AdminController
   rescue_from ActiveTriples::NotFound, :with => :render_404
   include GitInterface
 
+  before_filter :skip_render_on_cached_page, only: :show
   caches_page :show
 
   def show
@@ -109,6 +110,7 @@ class TermsController < AdminController
       term_form = term_form_repository.find(params[:id])
       term_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
       term_form.set_languages(e_params[:vocabulary])
+      @term = term_form
     else
       @term = reassemble(params[:id])
       type = Term
@@ -125,8 +127,12 @@ class TermsController < AdminController
     branch_commit = rugged_merge(params[:id])
     if branch_commit != 0
       if term_form.save
-        expire_page action: 'show', id: params[:id]
-        expire_page action: 'show', id: @term.term_uri_vocabulary_id if @term.term_id.hasParent?
+        expire_page action: 'show', id: params[:id], format: :html
+        expire_page action: 'show', id: params[:id], format: :jsonld
+        expire_page action: 'show', id: params[:id], format: :nt
+        expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :html if @term.term_id.hasParent?
+        expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :jsonld if @term.term_id.hasParent?
+        expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :nt if @term.term_id.hasParent?
         rugged_delete_branch(params[:id])
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path

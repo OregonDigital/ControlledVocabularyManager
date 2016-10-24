@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'support/test_git_setup'
 
 class DummyController < AdminController
-    include GitInterface
+  include GitInterface
 end
 
 RSpec.describe "terms/show" do
@@ -31,29 +31,13 @@ RSpec.describe "terms/show" do
       allow(vocabulary).to receive(:persisted?).and_return(true)
       render
     end
-    context "when logged in" do
-      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
-      before do
-        sign_in(user) if user
-      end
-      it "should have a link to create a resource" do
-         render
-         expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
-      end
-      it "should have a link to edit the vocabulary" do
-        render
-        expect(rendered).to have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
-      end
+    it "should have a link to create a resource" do
+      render
+      expect(rendered).to have_link "Create Term", :href => "/vocabularies/bla/new"
     end
-    context "when not logged in" do
-      it "should not have a link to create a resource" do
-         render
-         expect(rendered).to_not have_link "Create Term", :href => "/vocabularies/bla/new"
-      end
-      it "should not have a link to edit the vocabulary" do
-        render
-        expect(rendered).to_not have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
-      end
+    it "should have a link to edit the vocabulary" do
+      render
+      expect(rendered).to have_link "Edit", :href => edit_vocabulary_path(:id => resource.id)
     end
     context "with children" do
       let(:child) {
@@ -69,8 +53,9 @@ RSpec.describe "terms/show" do
       end
     end
   end
+
   context "when logged in" do
-    let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+    let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123", :role => "admin", :institution => "Oregon State University", :name => "Test") }
 
     before do
       sign_in(user) if user
@@ -80,7 +65,6 @@ RSpec.describe "terms/show" do
       expect(rendered).to have_link "Edit", :href => edit_term_path(:id => resource.id)
     end
   end
-
 
   context "when term is deprecated" do
     let(:resource) {
@@ -94,12 +78,6 @@ RSpec.describe "terms/show" do
     end
   end
 
-  context "when not logged in" do
-    it "should not have a link to edit the term" do
-      render
-      expect(rendered).to_not have_link "Edit", :href => edit_term_path(:id => resource.id)
-    end
-  end
   context "when visiting the show page" do
     let(:resource) {
       t = Term.new(uri)
@@ -108,12 +86,10 @@ RSpec.describe "terms/show" do
       t.comment = ["comment"]
       t
     }
-    let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin")}
+    let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123", :role => "admin") }
 
     it "should display all fields" do
-
       render
-
       resource.fields.each do |field|
         expect(rendered).to have_content(field)
       end
