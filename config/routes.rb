@@ -53,4 +53,7 @@ Rails.application.routes.draw do
   get "/review", :to => "review#index", :as => "review_queue"
   get "/review/*id/edit", :to => "review#edit", :as => "review_edit"
   get "/review/*id", :to => "review#show", :as => "review_term"
+
+  get "/nav", :to => "home#nav", :as => "nav"
+  get "/is_admin", :to => "home#admin", :as => "is_admin"
  end

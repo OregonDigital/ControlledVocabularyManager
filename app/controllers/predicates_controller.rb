@@ -68,7 +68,7 @@ class PredicatesController < ApplicationController
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue." 
+        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
         flash[:notice] = "Something went wrong, please notify a systems administrator."
       end
@@ -125,6 +125,9 @@ class PredicatesController < ApplicationController
     branch_commit = rugged_merge(params[:id])
     if branch_commit != 0
       if predicate_form.save
+        expire_page controller: 'terms', action: 'show', id: params[:id], format: :html
+        expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
+        expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path

@@ -17,4 +17,5 @@
 //= require add_date_field
 //= require manage_repeating_fields
 //= require multi_value_fields
+//= require update_user_data_on_cached_page
 //= require_tree .

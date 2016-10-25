@@ -106,6 +106,9 @@ class VocabulariesController < AdminController
     branch_commit = rugged_merge(params[:id])
     if branch_commit != 0
       if vocabulary_form.save
+        expire_page controller: 'terms', action: 'show', id: params[:id], format: :html
+        expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
+        expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
