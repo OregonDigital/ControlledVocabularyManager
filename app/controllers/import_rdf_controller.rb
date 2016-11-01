@@ -1,14 +1,16 @@
 class ImportRdfController < AdminController
   delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
   before_filter :require_admin
-  
+  include GitInterface
+
   def index
     @form = ImportForm.new(*form_params)
   end
 
   def import
+
     @form = ImportForm.new(*form_params)
-    unless @form.save
+    unless @form.valid?
       render :index
       return
     end
@@ -18,6 +20,12 @@ class ImportRdfController < AdminController
       @terms = @form.term_list.terms
       @vocabulary = @terms.shift
       render :preview_import
+      return
+    end
+
+    check = add_to_repo_and_persist(@form.term_list)
+    unless check
+      render :index
       return
     end
 
@@ -33,7 +41,13 @@ class ImportRdfController < AdminController
   # save to the triplestore
   def save
     @form = LoadForm.new(*load_form_params)
-    unless @form.save
+    unless @form.valid?
+      render :load
+      return
+    end
+
+    check = add_to_repo_and_persist(@form.term_list)
+    unless check
       render :load
       return
     end
@@ -43,6 +57,30 @@ class ImportRdfController < AdminController
   end
 
   private
+
+  def add_to_repo_and_persist(term_list)
+
+    term_list.terms.each do |term|
+      triples = term.sort_stringify(term)
+      check = rugged_create(term.id, triples, "create")
+      if !check
+        flash[:notice] = "Something went wrong with creating #{term.id}."
+        return false
+      end
+      branch_commit = rugged_merge(term.id)
+      if !branch_commit
+        flash[:notice] = "Something went wrong with merging #{term.id}."
+        return false
+      end
+      if !term.persist!
+        rugged_rollback(branch_commit)
+        flash[:notice] = "Something went wrong with saving #{term.id}."
+        return false
+      end
+      rugged_delete_branch(term.id)
+    end
+    true
+  end
 
   def form_params
     key = ImportForm.model_name.param_key

@@ -168,7 +168,7 @@ class TriplestoreLoader
     begin
       @triplestore.fetch(uri, from_remote: true)
     rescue TriplestoreAdapter::TriplestoreException => e
-      return RDF::Graph.new if e.to_s.include?("Not Found(404)")
+      return RDF::Graph.new if e.to_s.include?("404")
       nil
     rescue
       nil

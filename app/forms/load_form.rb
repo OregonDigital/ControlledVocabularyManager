@@ -12,11 +12,6 @@ class LoadForm
     errors.empty?
   end
 
-  def save
-    return false unless valid?
-    term_list.save
-  end
-
   private
 
   def run

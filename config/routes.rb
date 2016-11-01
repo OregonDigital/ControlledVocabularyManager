@@ -42,10 +42,10 @@ Rails.application.routes.draw do
   #TODO: Test the importing and its ability to synchronize with the triple
   #store and with the git repo for the triples.
   #
-  # get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"
-  # post "/import_rdf", :to => "import_rdf#import", :as => "import_rdf"
-  # get "/load_rdf", :to => "import_rdf#load", :as => "load_rdf_form"
-  # post "/load_rdf", :to => "import_rdf#save", :as => "save_rdf"
+  get "/import_rdf", :to => "import_rdf#index", :as => "import_rdf_form"
+  post "/import_rdf", :to => "import_rdf#import", :as => "import_rdf"
+  get "/load_rdf", :to => "import_rdf#load", :as => "load_rdf_form"
+  post "/load_rdf", :to => "import_rdf#save", :as => "save_rdf"
 
   get "/vocabularies/*id/mark", :to => "vocabularies#mark_reviewed", :as => "mark_vocabulary"
   get "/predicates/*id/mark", :to =>"predicates#mark_reviewed", :as => "mark_predicate"
