@@ -4,7 +4,7 @@ module GitInterface
 
   def rugged_create (id, string, action)
     begin
-    branch_id = branchify(id)
+      branch_id = branchify(id)
       repo = setup
       #find/create branch and check it out
       branch = repo.branches[branch_id]
@@ -46,6 +46,8 @@ module GitInterface
     rescue
       logger.error("Git create failed. Refer to " + branch_id)
       return false
+    ensure
+      repo.close unless repo.nil?
     end
   end
 
@@ -94,6 +96,8 @@ module GitInterface
       return our_commit
     rescue
       return 0
+    ensure
+      repo.close unless repo.nil?
     end
   end
 
@@ -120,6 +124,8 @@ module GitInterface
       repo.branches.delete(branch_id)
     rescue
       logger.error('delete_branch failed, refer to: ' + branch_id)
+    ensure
+      repo.close unless repo.nil?
     end
   end
 
@@ -134,6 +140,8 @@ module GitInterface
       end
     rescue
       logger.error('rollback failed. refer to: ' + branch_commit)
+    ensure
+      repo.close unless repo.nil?
     end
   end
 
@@ -145,21 +153,26 @@ module GitInterface
       end
       repo
     rescue
+      repo.close unless repo.nil?
       logger.error('repo setup fail')
       return nil
     end
   end
 
   def get_history(id, branch="master")
-    repo = setup
-    if repo.nil?
-      return nil
+    begin
+      repo = setup
+      if repo.nil?
+        return nil
+      end
+      path = id + ".nt"
+      info = commit_info_rugged(repo, path, branch)
+      formatted = format_response(info)
+      formatted
+    ensure
+      repo.close unless repo.nil?
     end
-    path = id + ".nt"
-    info = commit_info_rugged(repo, path, branch)
-    formatted = format_response(info)
-    formatted
-   end
+  end
 
   #refer to rugged issue 343
   def entry_changed?(commit, path, repo)
@@ -207,34 +220,37 @@ module GitInterface
 
   #returns an array of triple as strings with "added" or "deleted" prefixes
   def get_diff(commit1)
-    answer = []
-    repo = setup
-    if repo.nil?
-      return answer
-    end
-    child = repo.lookup(commit1)
-    commits = child.parents[0].diff(child)
-    commits.each_patch do |patch|
-      file = patch.delta.old_file[:path]
+    begin
+      answer = []
+      repo = setup
+      if repo.nil?
+        return answer
+      end
+      child = repo.lookup(commit1)
+      commits = child.parents[0].diff(child)
+      commits.each_patch do |patch|
+        file = patch.delta.old_file[:path]
 
-      patch.each_hunk do |hunk|
-        hunk.each_line do |line|
-          case line.line_origin
-          when :addition
-            answer << "added: " + line.content
-          when :deletion
-            answer << "deleted: " + line.content
-          when :context
-            #do nothing
+        patch.each_hunk do |hunk|
+          hunk.each_line do |line|
+            case line.line_origin
+              when :addition
+                answer << "added: " + line.content
+              when :deletion
+                answer << "deleted: " + line.content
+              when :context
+                #do nothing
+            end
           end
         end
       end
+      answer
+    ensure
+      repo.close unless repo.nil?
     end
-    answer
   end
 
   def format_response(results)
-
     if results.empty?
       return
     else
@@ -264,18 +280,21 @@ module GitInterface
   end
 
  def branch_list
+   begin
     repo = setup
     if repo.nil?
       return nil
     end
     branches = repo.branches.each_name(:local).sort
     branches = branches.reject{|branch| branch == 'master'}
+   ensure
+     repo.close unless repo.nil?
+   end
   end
 
   #retrieve the data from git
   #for use in review queue/show
   def commit_content(branchname)
-
     begin
       repo = setup
       id = unbranchify(branchname)
@@ -290,6 +309,8 @@ module GitInterface
       commit.content
     rescue
       nil
+    ensure
+      repo.close unless repo.nil?
     end
   end
 
