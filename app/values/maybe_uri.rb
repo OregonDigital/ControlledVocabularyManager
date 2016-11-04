@@ -10,7 +10,7 @@ class MaybeURI
   end
 
   def uri?
-    String === raw_value && !uri.scheme.blank? && !uri.host.blank?
+    String === raw_value && !uri.scheme.blank? && !uri.host.blank? && !uri.invalid?
   end
 
   private
