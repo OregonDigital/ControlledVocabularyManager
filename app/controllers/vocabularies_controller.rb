@@ -2,6 +2,8 @@ class VocabulariesController < AdminController
   delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
   delegate :deprecate_vocabulary_form_repository, :to => :deprecate_injector
   include GitInterface
+  skip_before_filter :require_admin, :only => [:review_update, :mark_reviewed]
+
   def index
     @vocabularies = all_vocabs_query.call
     @vocabularies.sort_by! {|v| v.rdf_label.first.to_s.downcase }

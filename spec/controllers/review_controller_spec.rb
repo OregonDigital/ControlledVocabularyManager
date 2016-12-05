@@ -14,7 +14,7 @@ RSpec.describe ReviewController do
       let(:uri) { "http://opaquenamespace.org/ns/blah" }
       let(:resource) { instance_double("Vocabulary") }
       let(:dummy_class) { DummyController.new }
-      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin reviewer editor", :institution => "Oregon State University", :name => "Test")}
       before do
         sign_in(user) if user
         setup_for_review_test(dummy_class)
@@ -48,7 +48,7 @@ RSpec.describe ReviewController do
         let(:user) { }
         it "should require login" do
           get :index
-          expect(response.body).to have_content("Only admin can access")
+          expect(response.body).to have_content("Only a user with proper permissions can access")
         end
       end
     end
@@ -59,7 +59,7 @@ RSpec.describe ReviewController do
       let(:uri) { "http://opaquenamespace.org/ns/blah" }
       let(:resource) { instance_double("Vocabulary") }
       let(:dummy_class) { DummyController.new }
-      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University", :name => "Test")}
 
       before do
         sign_in(user) if user
@@ -78,7 +78,7 @@ RSpec.describe ReviewController do
       context "when logged out" do
         let(:user) { }
         it "should require login" do
-          expect(response.body).to have_content("Only admin can access")
+          expect(response.body).to have_content("Only a user with proper permissions can access")
         end
       end
       context "term is not under review" do
@@ -96,7 +96,7 @@ RSpec.describe ReviewController do
       let(:uri) { "http://opaquenamespace.org/ns/blah" }
       let(:resource) { instance_double("Vocabulary") }
       let(:dummy_class) { DummyController.new }
-      let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin", :institution => "Oregon State University")}
+      let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University")}
 
       before do
         sign_in(user) if user

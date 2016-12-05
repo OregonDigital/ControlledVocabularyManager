@@ -15,17 +15,19 @@
   <%= render :partial => "history", locals: {:term => @term} %>
 <% end %>
 
-  <% if current_user && current_user.admin? %>
-    <% if @term.vocabulary? %>
-      <%= link_to "Mark as reviewed", mark_vocabulary_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+  <% if current_user && current_user.administrative? %>
+    <% if current_user.reviewer? || current_user.admin? %>
+      <% if @term.vocabulary? %>
+        <%= link_to "Mark as reviewed", mark_vocabulary_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
 
-    <% elsif @term.predicate? %>
-      <%= link_to "Mark as reviewed", mark_predicate_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+      <% elsif @term.predicate? %>
+        <%= link_to "Mark as reviewed", mark_predicate_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
 
-    <% else %>
-      <%= link_to "Mark as reviewed", mark_term_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+      <% else %>
+        <%= link_to "Mark as reviewed", mark_term_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
+      <% end %>
     <% end %>
-
+    
     <%= link_to "Edit", review_edit_path(@term.id), {:class=>'btn btn-default', :value=>'edit'} %>
 
   <% end %>
