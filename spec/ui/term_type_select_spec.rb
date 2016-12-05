@@ -3,8 +3,8 @@ require 'corporate_name'
 require 'support/test_git_setup'
 RSpec.feature "Using the term type SELECT", :js => true do
   include TestGitSetup
-  let(:user1) { User.create(:email => 'admin@example.com', :name => 'Jane Admin', :password => "admin123",:role => "admin", :institution => "Oregon State University")}
-  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University"} }
+  let(:user1) { User.create(:email => 'admin@example.com', :name => 'Jane Admin', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University")}
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin editor reviewer", :institution => "Oregon State University"} }
 
   background do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user1)

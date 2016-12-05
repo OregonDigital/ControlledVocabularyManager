@@ -23,4 +23,9 @@ class User < ActiveRecord::Base
     role.include?("editor")
   end
 
+  def administrative?
+    return false if role.nil?
+    admin? || editor? || reviewer?
+  end
+
 end

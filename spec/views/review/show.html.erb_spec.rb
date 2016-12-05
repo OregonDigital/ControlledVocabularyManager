@@ -56,7 +56,41 @@ RSpec.describe "review/show" do
       end
     end
   end
-   context "when visiting the show page" do
+  context "when visiting the show page" do
+    context "as an admin" do
+      let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin reviewer editor", :institution => "Oregon State University")}
+      let(:resource) { 
+        t = Term.new(uri) 
+        t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+        t.label = ["a_label", "another_label"]
+        t.comment = ["comment"]
+        t
+      }
+      it "should display all fields" do
+        render
+        resource.fields.each do |field|
+          expect(rendered).to have_content(field)
+        end
+      end
+      before do
+        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
+        setup_for_review_test(dummy_class)
+        allow(resource).to receive(:commit_history).and_return(get_history("blah", "blah_review"))
+      end
+      after do
+        FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+      end
+      it "should display the diff if it exists" do 
+        render
+        expect(rendered).to have_content("added: <http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .")
+      end
+    end
+  end
+  context "as a reviewer" do
+    before do
+      sign_in(user) if user
+    end
+    let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "reviewer editor", :institution => "Oregon State University")}
     let(:resource) { 
       t = Term.new(uri) 
       t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
@@ -64,24 +98,28 @@ RSpec.describe "review/show" do
       t.comment = ["comment"]
       t
     }
-    let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin", :institution => "Oregon State University")}
-    it "should display all fields" do
+    it "should display the edit and review links" do
       render
-      resource.fields.each do |field|
-        expect(rendered).to have_content(field)
-      end
+      expect(rendered).to have_content("Edit")
+      expect(rendered).to have_content("Mark as reviewed")
     end
+  end
+  context "as a reviewer" do
     before do
-      allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
-      setup_for_review_test(dummy_class)
-      allow(resource).to receive(:commit_history).and_return(get_history("blah", "blah_review"))
+      sign_in(user) if user
     end
-    after do
-      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
-    end
-    it "should display the diff if it exists" do 
+    let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "editor", :institution => "Oregon State University")}
+    let(:resource) { 
+      t = Term.new(uri) 
+      t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+      t.label = ["a_label", "another_label"]
+      t.comment = ["comment"]
+      t
+    }
+    it "should display the edit and review links" do
       render
-      expect(rendered).to have_content("added: <http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .")
+      expect(rendered).to have_content("Edit")
+      expect(rendered).to_not have_content("Mark as reviewed")
     end
   end
 end

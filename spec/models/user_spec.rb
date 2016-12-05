@@ -59,4 +59,63 @@ RSpec.describe User, :type => :model do
       expect(user.editor?).to be_truthy
     end
   end
+
+  context "#administrative" do
+    context "when a user has the admin role" do
+      let(:user_params) { {
+        :name => "Test User",
+        :role => "admin reviewer editor",
+        :email => "test@testuser.com",
+        :institution => "Oregon State University",
+        :password => "TestTest",
+        :password_confirmation => "TestTest"
+      }
+      }
+      it "Should return a truthy value" do
+        expect(user.administrative?).to be_truthy
+      end
+    end
+    context "when a user has the reviewer role" do
+      let(:user_params) { {
+        :name => "Test User",
+        :role => "reviewer editor",
+        :email => "test@testuser.com",
+        :institution => "Oregon State University",
+        :password => "TestTest",
+        :password_confirmation => "TestTest"
+      }
+      }
+      it "Should return a truthy value" do
+        expect(user.administrative?).to be_truthy
+      end
+    end
+    context "when a user has the reviewer role" do
+      let(:user_params) { {
+        :name => "Test User",
+        :role => "editor",
+        :email => "test@testuser.com",
+        :institution => "Oregon State University",
+        :password => "TestTest",
+        :password_confirmation => "TestTest"
+      }
+      }
+      it "Should return a truthy value" do
+        expect(user.administrative?).to be_truthy
+      end
+    end
+    context "when a user has the default role" do
+      let(:user_params) { {
+        :name => "Test User",
+        :role => "default",
+        :email => "test@testuser.com",
+        :institution => "Oregon State University",
+        :password => "TestTest",
+        :password_confirmation => "TestTest"
+      }
+      }
+      it "Should return a falsey value" do
+        expect(user.administrative?).to be_falsey
+      end
+    end
+  end
 end

@@ -2,8 +2,8 @@ require 'rails_helper'
 RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature do
   include TestGitSetup
 
-  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University") }
-  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University"} }
+  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin editor reviewer", :institution => "Oregon State University") }
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin editor reviewer", :institution => "Oregon State University"} }
 
   background do
     allow_any_instance_of(AdminController).to receive(:current_user) {user}
