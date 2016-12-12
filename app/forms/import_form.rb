@@ -17,12 +17,6 @@ class ImportForm
     errors.empty?
   end
 
-  def save
-    return false unless valid?
-    return true if preview?
-    @term_list.save
-  end
-
   private
 
   def run

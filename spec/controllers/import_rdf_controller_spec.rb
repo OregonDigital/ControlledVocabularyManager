@@ -1,6 +1,10 @@
 require 'rails_helper'
+require 'rugged'
+require 'support/test_git_setup'
 
 RSpec.describe ImportRdfController, :type => :controller do
+  include TestGitSetup
+
     let(:jsonld) { '{
     "@context": {
       "dc": "http://purl.org/dc/terms/",
@@ -43,36 +47,40 @@ RSpec.describe ImportRdfController, :type => :controller do
     {:load_form => {:rdf_string => jsonld}}
   end
   before do
+    setup_git
     allow(ImportForm).to receive(:new).with(url, preview, RdfImporter).and_return(form)
     allow(LoadForm).to receive(:new).with(jsonld, RdfImporter).and_return(load_form)
+  end
+  after do
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 
   describe "GET 'index'" do
     context "when logged out" do
-      xit "should require login" do
+      it "should require login" do
         get :index
         expect(response.body).to have_content("Only admin can access")
       end
 
-      xit "shouldn't create the ImportForm" do
+      it "shouldn't create the ImportForm" do
         expect(ImportForm).not_to receive(:new)
         get :index
       end
     end
 
     context "when logged in" do
-      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
       before do
-        allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
+        sign_in(user) if user
         expect(ImportForm).to receive(:new).with(nil, nil, RdfImporter).and_return(form)
       end
 
-      xit "should render the index template" do
+      it "should render the index template" do
         get :index
         expect(response).to render_template("index")
       end
 
-      xit "should assign the new form for the view to use" do
+      it "should assign the new form for the view to use" do
         get :index
         expect(assigns[:form]).to eq(form)
       end
@@ -81,28 +89,37 @@ RSpec.describe ImportRdfController, :type => :controller do
 
   describe "POST 'import'" do
     context "when logged out" do
-      xit "should require login" do
+       it "should require login" do
         post :import, params
         expect(response.body).to have_content("Only admin can access")
       end
     end
 
     context "when logged in" do
-      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin")}
+      let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+      let(:termlist) { instance_double("ImportableTermList") }
+      let(:terms) { [term1] }
+      let(:term1) { instance_double("Vocabulary", :id => "vocab") }
+
       before do
-        allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
+        sign_in(user) if user
       end
       context "and the form doesn't save" do
         before do
-          expect(form).to receive(:save).and_return(false)
+          allow(form).to receive(:term_list).and_return(termlist)
+          expect(form).to receive(:preview?).and_return(false)
+          expect(form).to receive(:valid?).and_return(true)
+          #have sort_stringify return nothing, the create will fail
+          expect(term1).to receive(:sort_stringify)
+          expect(termlist).to receive(:terms).and_return(terms)
           post :import, params
         end
 
-        xit "should assign the form" do
+         it "should assign the form" do
           expect(assigns(:form)).to eq(form)
         end
 
-        xit "should render the index" do
+        it "should render the index" do
           expect(response).to render_template("index")
         end
       end
@@ -116,22 +133,23 @@ RSpec.describe ImportRdfController, :type => :controller do
         let(:termlist) { instance_double("ImportableTermList") }
 
         before do
-          expect(form).to receive(:save).and_return(true)
-          expect(form).to receive(:term_list).and_return(termlist)
-          expect(termlist).to receive(:terms).and_return(terms)
+          allow(form).to receive(:term_list).and_return(termlist)
+          allow(termlist).to receive(:terms).and_return(terms)
+          allow(termlist).to receive(:each).and_return(term1)
         end
 
         context "and the form is requesting a preview" do
           before do
+            expect(form).to receive(:valid?).and_return(true)
             expect(form).to receive(:preview?).and_return(true)
             post :import, params
           end
 
-          xit "should render the preview page" do
+          it "should render the preview page" do
             expect(response).to render_template("preview_import")
           end
 
-          xit "should assign terms and vocabulary" do
+          it "should assign terms and vocabulary" do
             expect(assigns[:vocabulary]).to eq(term1)
             expect(assigns[:terms]).to eq([term2, term3, term4])
           end
@@ -140,10 +158,20 @@ RSpec.describe ImportRdfController, :type => :controller do
         context "and the form is not requesting a preview" do
           before do
             expect(form).to receive(:preview?).and_return(false)
+          expect(term1).to receive(:persist!).and_return(true)
+          expect(term2).to receive(:persist!).and_return(true)
+          expect(term3).to receive(:persist!).and_return(true)
+          expect(term4).to receive(:persist!).and_return(true)
+          expect(form).to receive(:valid?).and_return(true)
+          expect(term1).to receive(:sort_stringify).and_return("blah")
+          expect(term2).to receive(:sort_stringify).and_return("blah")
+          expect(term3).to receive(:sort_stringify).and_return("blah")
+          expect(term4).to receive(:sort_stringify).and_return("blah")
+
             post :import, params
           end
 
-          xit "should show the first term imported" do
+          it "should show the first term imported" do
             expect(response).to redirect_to term_path(term1.id)
           end
         end
@@ -153,12 +181,12 @@ RSpec.describe ImportRdfController, :type => :controller do
   describe "GET 'load'" do
     context "when logged out" do
       let(:logged_in) { false }
-      xit "should require login" do
+      it "should require login" do
         get :load
         expect(response.body).to eq("Only admin can access")
       end
 
-      xit "shouldn't create the LoadForm" do
+      it "shouldn't create the LoadForm" do
         expect(LoadForm).not_to receive(:new)
         get :load
       end
@@ -170,12 +198,12 @@ RSpec.describe ImportRdfController, :type => :controller do
         expect(LoadForm).to receive(:new).with(nil, RdfImporter).and_return(load_form)
       end
 
-      xit "should render the load template" do
+      it "should render the load template" do
         get :load
         expect(response).to render_template("load")
       end
 
-      xit "should assign the new form for the view to use" do
+      it "should assign the new form for the view to use" do
         get :load
         expect(assigns[:form]).to eq(load_form)
       end
@@ -184,7 +212,7 @@ RSpec.describe ImportRdfController, :type => :controller do
   describe "POST 'save'" do
     context "when logged out" do
       let(:logged_in) { false }
-      xit "should require login" do
+      it "should require login" do
         post :save, load_params
         expect(response.body).to eq("Only admin can access")
       end
@@ -192,17 +220,25 @@ RSpec.describe ImportRdfController, :type => :controller do
 
     context "when logged in" do
       context "and the form doesn't save" do
+        let(:termlist) { instance_double("ImportableTermList") }
+        let(:term1) { instance_double("Vocabulary", :id => "vocab") }
+        let(:terms) { [term1] }
+
         before do
           allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
-          expect(load_form).to receive(:save).and_return(false)
+          expect(load_form).to receive(:term_list).and_return(termlist)
+          expect(load_form).to receive(:valid?).and_return(true)
+          expect(termlist).to receive(:terms).and_return(terms)
+          #have sort_stringify return nothing, create will fail
+          expect(term1).to receive(:sort_stringify)
           post :save, load_params
         end
 
-        xit "should assign the form" do
+        it "should assign the form" do
           expect(assigns(:form)).to eq(load_form)
         end
 
-        xit "should render the load" do
+        it "should render the load" do
           expect(response).to render_template("load")
         end
       end
@@ -211,15 +247,19 @@ RSpec.describe ImportRdfController, :type => :controller do
         let(:term1) { instance_double("Vocabulary", :id => "vocab") }
         let(:terms) { [term1] }
         let(:termlist) { instance_double("ImportableTermList") }
+        let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+
         context "and the form is posted with valid jsonld" do
           before do
-            allow_any_instance_of(AdminController).to receive(:require_admin).and_return(true)
-            expect(load_form).to receive(:save).and_return(true)
-            expect(load_form).to receive(:term_list).and_return(termlist)
-            expect(termlist).to receive(:terms).and_return(terms)
+            sign_in(user) if user
+            allow(load_form).to receive(:term_list).and_return(termlist)
+            expect(load_form).to receive(:valid?).and_return(true)
+            expect(term1).to receive(:sort_stringify).and_return("blah")
+            allow(termlist).to receive(:terms).and_return(terms)
+            expect(term1).to receive(:persist!).and_return(true)
           end
 
-          xit "should show the first term imported" do
+          it "should show the first term imported" do
             post :save, load_params
             expect(response).to redirect_to term_path(terms.first.id)
           end

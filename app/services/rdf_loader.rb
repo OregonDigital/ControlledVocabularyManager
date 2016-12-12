@@ -1,28 +1,30 @@
 require 'json/ld'
 require 'rdf'
 require 'rdf/ntriples'
+require 'rest_client'
 
 # Wraps RDF::Graph.load for consistent return: on meaningless data, an empty
 # graph is returned, so we do the same when an exception occurs
 class RdfLoader
 
   ##
-  # Use the triplestore adapter to load the graph from an URL into a graph, or an empty graph is fetching failed
+  # Fetch content from url and try forming a graph
   #
   # @param url [String] the URL endpoint of the RDF graph to load
   # @return [RDF::Graph]
+
   def self.load_url(url)
     begin
-      @triplestore = TriplestoreAdapter::Triplestore.new(TriplestoreAdapter::Client.new(Settings.triplestore_adapter.type, Settings.triplestore_adapter.url))
-      @triplestore.fetch(url.to_s, from_remote: true)
-    rescue TriplestoreAdapter::TriplestoreException => e
-      Rails.logger.fatal("RdfLoader.load_url(#{url}) failed with #{e.message}")
-      RDF::Graph.new
+      response = fetch_data(url)
+      input = JSON.parse(response)
+      graph = RDF::Graph.new << JSON::LD::API.toRdf(input)
+      graph
     rescue => e
       Rails.logger.fatal("RdfLoader.load_url(#{url}) failed with #{e.message}")
       RDF::Graph.new
     end
   end
+
 
   ##
   # Load a JSON-LD encoded string into an RDF:Graph, or an empty graph if parsing failed
@@ -54,4 +56,11 @@ class RdfLoader
       RDF::Graph.new
     end
   end
+
+  private
+
+  def self.fetch_data(url)
+    response = RestClient.get url, {accept: :json}
+  end
+
 end

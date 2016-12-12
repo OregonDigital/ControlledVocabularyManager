@@ -19,18 +19,18 @@ RSpec.describe "import_rdf/preview_import.html.erb" do
     render
   end
 
-  xit "renders the form with the form" do
+  it "renders the form with the form" do
     expect(view).to render_template(:partial => "form", :locals => {:form => form})
   end
 
-  xit "displays the vocabulary" do
+  it "displays the vocabulary" do
     expect(rendered).to have_css("dd", :text => %r|\Anewthing\Z|)
     expect(rendered).to have_css("dd", :text => %r|\Ahttp://opaquenamespace.org/ns/newthing\Z|)
     expect(rendered).to have_css("dd", :text => %r|\AVocab title\Z|)
     expect(rendered).to have_css("dd", :text => %r|\AFake Publishing, Ltd.\Z|)
   end
 
-  xit "renders the terms" do
+  it "renders the terms" do
     terms.each do |term|
       expect(view).to render_template(:partial => "termlist", :locals => {:namespace => "newthing", :term => term})
     end

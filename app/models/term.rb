@@ -161,7 +161,7 @@ class Term < ActiveTriples::Resource
   # @return [Array<String>] a sorted array of statements
   def sort_stringify(graph)
     triples = graph.statements.to_a.sort_by { |x| x.predicate }.inject { |collector, element| collector.to_s + " " + element.to_s }
-    "#{triples.to_s.gsub!(" . ", " .\n")}\n"
+    "#{triples.to_s.gsub(" . ", " .\n")}\n"
   end
 
   ##

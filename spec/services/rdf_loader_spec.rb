@@ -5,34 +5,24 @@ RSpec.describe RdfLoader do
     let(:empty_graph) { RDF::Graph.new }
 
     describe "when loading a url" do
-      let(:url) { "http://opaquenamespace.org/ns/workType/aibanprints" }
+      let(:url) { "http://opaquenamespace.org/ns/workType/aibanprints.jsonld" }
       before do
         WebMock.allow_net_connect!
       end
       context "when the graph loads" do
         let(:graph) { RdfLoader.load_url(url) }
-        xit "returns a graph" do
+        it "returns a graph" do
           expect(graph).to be_an_instance_of(RDF::Graph)
           expect(graph.each_statement.to_a.length).to be > 0
         end
       end
 
-      context "when loading raises a TriplestoreException" do
-        before do
-          allow_any_instance_of(TriplestoreAdapter::Triplestore).to receive(:fetch) { raise TriplestoreAdapter::TriplestoreException }
-        end
-
-        xit "returns a blank graph on exceptions" do
-          expect(RdfLoader.load_url(url)).to eq empty_graph
-        end
-      end
-
       context "when loading raises a standard error" do
         before do
-          allow_any_instance_of(TriplestoreAdapter::Triplestore).to receive(:fetch) { raise StandardError }
+          allow(RestClient).to receive(:get) { raise StandardError }
         end
 
-        xit "returns a blank graph on exceptions" do
+        it "returns a blank graph on exceptions" do
           expect(RdfLoader.load_url(url)).to eq empty_graph
         end
       end
@@ -64,14 +54,14 @@ RSpec.describe RdfLoader do
       }
       let(:graph) { RdfLoader.load_file(filename) }
 
-      xit "reads the file" do
+      it "reads the file" do
         expect(graph.each_statement.to_a.length).to be > 0
         expect(graph).to eq expected_graph
       end
 
       context "with an invalid filename" do
         let(:filename) { "/tmp/bogus-filename-#{DateTime.now.to_s}" }
-        xit "should return an empty graph for an invalid file" do
+        it "should return an empty graph for an invalid file" do
           expect(graph.each_statement.to_a.length).to eq 0
           expect(graph).not_to eq expected_graph
         end
@@ -84,7 +74,7 @@ RSpec.describe RdfLoader do
         after do
           File.chmod(0666, filename)
         end
-        xit "should return an empty graph" do
+        it "should return an empty graph" do
           expect(graph.each_statement.to_a.length).to eq 0
           expect(graph).not_to eq expected_graph
         end
@@ -131,7 +121,7 @@ RSpec.describe RdfLoader do
       let(:graph) { RdfLoader.load_string(jsonld) }
 
       context "when the graph loads" do
-        xit "returns the graph" do
+        it "returns the graph" do
           expect(graph).to be_an_instance_of(RDF::Graph)
           expect(graph.each_statement.to_a.length).to be > 0
         end
@@ -142,7 +132,7 @@ RSpec.describe RdfLoader do
           allow_any_instance_of(RDF::Graph).to receive(:<<) { raise StandardError }
         end
 
-        xit "returns a blank graph on exceptions" do
+        it "returns a blank graph on exceptions" do
           expect(RdfLoader.load_string(jsonld).each_statement.to_a.length).to eq 0
         end
       end
