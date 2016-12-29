@@ -19,6 +19,9 @@ class ReviewController < AdminController
       redirect_to review_queue_path
     else
       @term.commit_history = get_history(@term.id, params[:id] + "_review")
+      if @term.commit_history.blank?
+        @author = get_author(params[:id] + "_review")
+      end
     end
   end
 

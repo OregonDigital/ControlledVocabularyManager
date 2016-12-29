@@ -13,6 +13,8 @@
 
 <% if !@term.commit_history.nil? %>
   <%= render :partial => "history", locals: {:term => @term} %>
+<% elsif !@author.nil? %>
+  <div><p>Author: <%= @author %> </p></div>
 <% end %>
 
   <% if current_user && current_user.administrative? %>

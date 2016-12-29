@@ -72,17 +72,30 @@ RSpec.describe "review/show" do
           expect(rendered).to have_content(field)
         end
       end
-      before do
-        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
-        setup_for_review_test(dummy_class)
-        allow(resource).to receive(:commit_history).and_return(get_history("blah", "blah_review"))
+      context "if the term has history" do
+        before do
+          allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
+          setup_for_review_test(dummy_class)
+          allow(resource).to receive(:commit_history).and_return(get_history("blah", "blah_review"))
+        end
+        after do
+          FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+        end
+        it "should display the diff if it exists" do
+          render
+          expect(rendered).to have_content("added: <http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .")
+        end
       end
-      after do
-        FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
-      end
-      it "should display the diff if it exists" do 
-        render
-        expect(rendered).to have_content("added: <http://www.w3.org/2000/01/rdf-schema#label> \"fooness\" @en .")
+      context "if the term doesn't have a history" do
+        let(:author_name) { "George Jones, Jr." }
+        before do
+          allow(resource).to receive(:commit_history).and_return(nil)
+          assign(:author, author_name)
+        end
+        it "should show the author" do
+          render
+          expect(rendered).to have_content("Author: George Jones, Jr.")
+        end
       end
     end
   end
