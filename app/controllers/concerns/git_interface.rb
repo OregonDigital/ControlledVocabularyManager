@@ -314,6 +314,17 @@ module GitInterface
     end
   end
 
+  def get_author(branch)
+    begin
+      repo = setup
+      repo.branches[branch].target.author[:name]
+    rescue
+      nil
+    ensure
+      repo.close unless repo.nil?
+    end
+  end
+
   #creates an array of terms
   #for use in review process
   def review_list
@@ -334,7 +345,7 @@ module GitInterface
           uri = graph.first.subject.to_s
           label = graph.first.subject.to_s
         end
-        terms << {:id => unbranchify(branch), :uri => uri, :label => label}
+        terms << {:id => unbranchify(branch), :uri => uri, :label => label, :author => get_author(branch)}
       end
     end
     terms
