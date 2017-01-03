@@ -286,7 +286,7 @@ module GitInterface
       return nil
     end
     branches = repo.branches.each_name(:local).sort
-    branches = branches.reject{|branch| branch == 'master'}
+    branches = branches.reject{|branch| !branch.include? "review"}
    ensure
      repo.close unless repo.nil?
    end

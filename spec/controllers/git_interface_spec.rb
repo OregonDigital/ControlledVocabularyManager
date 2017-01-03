@@ -39,8 +39,12 @@ RSpec.describe GitInterface do
 
       #review_list
       repo.checkout("master")
+      branch = repo.branches.create("badbranch", "HEAD")
+      dummy_class.rugged_create("blah/empty", "", "creating")
       terms = dummy_class.review_list
-      expect(terms.first[:id]).to eq("blah/foo")
+      expect(terms.inspect).not_to include("badbranch")
+      expect(terms.inspect).not_to include("blah/empty_review")
+      expect(terms.inspect).to include("blah/foo")
 
       #edit_params
       params = dummy_class.edit_params("blah/foo")
