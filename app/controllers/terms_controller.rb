@@ -50,8 +50,17 @@ class TermsController < AdminController
   end
 
   def edit
-    @term = term_form_repository.find(params[:id])
-    @disable = true
+    if in_review(params[:id])
+      if current_user.reviewer?
+        redirect_to review_term_path(:id => params[:id])
+      else
+        flash[:notice] = "This term is under review and currently locked for editing"
+        redirect_to term_path(:id => params[:id])
+      end
+    else
+      @term = term_form_repository.find(params[:id])
+      @disable = true
+    end
   end
 
   def update

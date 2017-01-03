@@ -279,17 +279,26 @@ module GitInterface
     end
   end
 
- def branch_list
-   begin
-    repo = setup
-    if repo.nil?
-      return nil
+  def in_review(term)
+    terms = branch_list
+    if !terms.blank?
+      terms.inspect.include? term
+    else
+      false
     end
-    branches = repo.branches.each_name(:local).sort
-    branches = branches.reject{|branch| branch == 'master'}
-   ensure
-     repo.close unless repo.nil?
-   end
+  end
+
+  def branch_list
+    begin
+      repo = setup
+      if repo.nil?
+        return nil
+      end
+      branches = repo.branches.each_name(:local).sort
+      branches = branches.reject{|branch| branch == 'master'}
+    ensure
+      repo.close unless repo.nil?
+    end
   end
 
   #retrieve the data from git

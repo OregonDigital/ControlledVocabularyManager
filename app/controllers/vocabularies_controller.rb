@@ -41,7 +41,16 @@ class VocabulariesController < AdminController
   end
 
   def edit
-    @term = vocabulary_form_repository.find(params[:id])
+    if in_review(params[:id])
+      if current_user.reviewer?
+        redirect_to review_term_path(:id => params[:id])
+      else
+        flash[:notice] = "This term is under review and currently locked for editing."
+        redirect_to term_path(:id => params[:id])
+      end
+    else
+      @term = vocabulary_form_repository.find(params[:id])
+    end
   end
 
   def update
