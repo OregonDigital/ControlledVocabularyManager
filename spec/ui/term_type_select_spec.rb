@@ -22,7 +22,7 @@ RSpec.feature "Using the term type SELECT", :js => true do
     vocabulary_create_page.create
     sleep 2
     visit "/review/#{VocabularyCreatePage.id}"
-    find_link('review').click
+    find_link('review').trigger('click')
     sleep 2
 
     allow(CorporateName).to receive(:visible_form_fields).and_return(%w[label date])

@@ -25,7 +25,7 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     find_button('Create Vocabulary').trigger('click')
     sleep 2
     visit "/review/#{vocabulary_id}"
-    find_link('review').click
+    find_link('review').trigger('click')
     sleep 2
 
     visit "/vocabularies/#{vocabulary_id}/new"

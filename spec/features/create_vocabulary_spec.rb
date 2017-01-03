@@ -38,7 +38,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     sleep 2
     expect(page).to have_content("#{vocabulary_id} has been saved and added to the review queue")
     visit "/review/#{vocabulary_id}"
-    find_link('review').click
+    find_link('review').trigger('click')
     sleep 2
     expect(page).to have_content("#{vocabulary_id}")
 
