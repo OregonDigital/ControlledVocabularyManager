@@ -41,7 +41,7 @@ RSpec.describe GitInterface do
       repo.checkout("master")
       terms = dummy_class.review_list
       expect(terms.first[:id]).to eq("blah/foo")
-
+      expect(dummy_class.get_author("blah/foo_review")).to eq("George Smith")
       #edit_params
       params = dummy_class.edit_params("blah/foo")
       expect(params[:vocabulary][:label].first).to eq("foo")
@@ -68,6 +68,7 @@ RSpec.describe GitInterface do
       repo.checkout("blah/foo_review")
       expect(repo.last_commit.message).to include("updating: blah/foo")
       repo.checkout("master")
+      expect(dummy_class.get_author("blah/foo_review")).to eq("Ira Jones")
       branch_commit = dummy_class.rugged_merge("blah/foo")
 
       #get history of blah/foo
