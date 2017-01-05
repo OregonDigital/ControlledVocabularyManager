@@ -10,6 +10,7 @@ RSpec.describe TermsController do
   let(:injector) { TermInjector.new }
   let(:decorated_resource) { TermWithChildren.new(resource, injector.child_node_finder) }
   let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+  let(:user2) {  User.create(:email => 'George@blah.com', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University", :name => "George")}
 
   before do
     sign_in(user) if user
@@ -295,6 +296,51 @@ RSpec.describe TermsController do
       end
     end
 
+  describe "GET 'edit'" do
+    let(:term_form) { instance_double("TermForm") }
+    let(:term) { term_mock }
+    context "when term is not under review" do
+
+      before do
+        allow_any_instance_of(GitInterface).to receive(:in_review).and_return(false)
+        allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        allow(term).to receive(:attributes=)
+        get 'edit', :id => term.id
+      end
+      it "should assign @term" do
+        expect(assigns(:term)).to eq term_form
+      end
+      it "should render edit" do
+        expect(response).to render_template 'edit'
+      end
+    end
+    context "when term is under review" do
+      before do
+        allow_any_instance_of(GitInterface).to receive(:in_review).with(term.id).and_return(true)
+        allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+        allow(term).to receive(:attributes=)
+      end
+      context "and user is not a reviewer" do
+        before do
+          sign_in(user)
+          get 'edit', :id => term.id
+        end
+        it "should not allow user to edit" do
+          expect(response).to redirect_to term_path(term.id)
+        end
+      end
+      context "and user is a reviewer" do
+        let(:user) {}
+        before do
+          sign_in(user2)
+          get 'edit', :id => term.id
+        end
+        it "should show the user the review edit page" do
+          expect(response).to redirect_to review_term_path(term.id)
+        end
+      end
+    end
+  end
     describe "PATCH update" do
       let(:term) { term_mock }
       let(:injector) { TermInjector.new }

@@ -5,6 +5,7 @@ require 'support/test_git_setup'
 RSpec.describe VocabulariesController do
   include TestGitSetup
   let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+  let(:user2) {  User.create(:email => 'George@blah.com', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University", :name => "George")}
 
   before do
     sign_in(user) if user
@@ -41,16 +42,47 @@ RSpec.describe VocabulariesController do
   describe "GET 'edit'" do
     let(:vocabulary_form) { instance_double("VocabularyForm") }
     let(:vocabulary) { vocabulary_mock }
-    before do
-      allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
-      allow(vocabulary).to receive(:attributes=)
-      get 'edit', :id => vocabulary.id
+
+    context "when term is not under review" do
+
+      before do
+        allow_any_instance_of(GitInterface).to receive(:in_review).and_return(false)
+        allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+        allow(vocabulary).to receive(:attributes=)
+        get 'edit', :id => vocabulary.id
+      end
+      it "should assign @term" do
+        expect(assigns(:term)).to eq vocabulary_form
+      end
+      it "should render edit" do
+        expect(response).to render_template 'edit'
+      end
     end
-    it "should assign @term" do
-      expect(assigns(:term)).to eq vocabulary_form
-    end
-    it "should render edit" do
-      expect(response).to render_template 'edit'
+    context "when term is under review" do
+      before do
+        allow_any_instance_of(GitInterface).to receive(:in_review).with(vocabulary.id).and_return(true)
+        allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
+        allow(vocabulary).to receive(:attributes=)
+      end
+      context "and user is not a reviewer" do
+        before do
+          sign_in(user)
+          get 'edit', :id => vocabulary.id
+        end
+        it "should not allow user to edit" do
+          expect(response).to redirect_to term_path(vocabulary.id)
+        end
+      end
+      context "and user is a reviewer" do
+        let(:user) {}
+        before do
+          sign_in(user2)
+          get 'edit', :id => vocabulary.id
+        end
+        it "should show the user the review edit page" do
+          expect(response).to redirect_to review_term_path(vocabulary.id)
+        end
+      end
     end
   end
 
