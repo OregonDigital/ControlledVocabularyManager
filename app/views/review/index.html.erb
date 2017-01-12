@@ -7,6 +7,7 @@
     <tr>
       <td><%= link_to term[:label], review_term_path(term[:id] ) %></td>
       <td><span class="uri"><%= link_to term[:uri], review_term_path(term[:id]) %></span></td>
+      <td><%= term[:author] %></td>
     </tr>
   <% end %>
 </table>
