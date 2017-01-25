@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     render partial: "shared/navbar", layout: false
   end
 
-  def can_edit
-    render json: { can_edit: current_user && current_user.editor? }
+  def admin
+    render json: { admin: current_user && current_user.admin? }
   end
 end

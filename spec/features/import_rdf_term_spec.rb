@@ -7,8 +7,8 @@ end
 
 RSpec.feature "Import RDF", :js => true, :type => :feature do
   include TestGitSetup
-  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin reviewer editor", :institution => "Oregon State University") }
-  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin reviewer editor", :institution => "Oregon State University"} }
+  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University") }
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University"} }
   let(:dummy_class) { DummyController.new }
   let(:urlpred) { "http://opaquenamespace.org/ns/artSeries.jsonld" }
   let(:urlvoc) { "http://opaquenamespace.org/ns/TestVocabulary.jsonld" }
