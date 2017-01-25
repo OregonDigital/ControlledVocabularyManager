@@ -6,9 +6,9 @@ $(document).ready(function(){
       $('nav.navbar').remove();
       $('body').prepend(html);
     });
-  $.ajax({ url: "/is_admin" })
+  $.ajax({ url: "/can_edit" })
     .done(function(json) {
-      if(json.admin) {
+      if(json.can_edit) {
         $(".hidden-unless-admin").show();
       }
     });

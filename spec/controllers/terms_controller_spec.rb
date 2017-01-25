@@ -9,7 +9,7 @@ RSpec.describe TermsController do
   let(:resource) { term_mock }
   let(:injector) { TermInjector.new }
   let(:decorated_resource) { TermWithChildren.new(resource, injector.child_node_finder) }
-  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
+  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University", :name => "Test")}
 
   before do
     sign_in(user) if user
@@ -88,7 +88,7 @@ RSpec.describe TermsController do
       let(:user) { }
       it "should require login" do
         get_new
-        expect(response.body).to have_content("Only admin can access")
+        expect(response.body).to have_content("Only a user with proper permissions can access")
       end
     end
     context "when the vocabulary is not persisted" do
@@ -164,7 +164,7 @@ RSpec.describe TermsController do
           post :create, params
         end
         it "should require login" do
-          expect(response.body).to have_content("Only admin can access")
+          expect(response.body).to have_content("Only a user with proper permissions can access")
         end
       end
       context "when blank arrays are passed in" do
