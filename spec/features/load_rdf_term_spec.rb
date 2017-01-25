@@ -7,8 +7,8 @@ end
 
 RSpec.feature "Load RDF", :js => true, :type => :feature do
   include TestGitSetup
-  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University") }
-  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin", :institution => "Oregon State University"} }
+  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin reviewer editor", :institution => "Oregon State University") }
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin reviewer editor", :institution => "Oregon State University"} }
   let(:dummy_class) { DummyController.new }
   background do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user)
