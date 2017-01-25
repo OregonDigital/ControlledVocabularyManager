@@ -4,7 +4,7 @@ require 'support/test_git_setup'
 
 RSpec.describe VocabulariesController do
   include TestGitSetup
-  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin reviewer editor", :institution => "Oregon State University", :name => "Test")}
+  let(:user) { User.create(:email => 'blah@blah.com', :password => "admin123",:role => "admin", :institution => "Oregon State University", :name => "Test")}
 
   before do
     sign_in(user) if user

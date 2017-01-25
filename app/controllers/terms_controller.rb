@@ -6,8 +6,7 @@ class TermsController < AdminController
 
   before_filter :skip_render_on_cached_page, only: :show
   caches_page :show
-  skip_before_filter :require_admin
-  before_filter :require_editor
+  skip_before_filter :require_admin, :only => [:review_update, :mark_reviewed]
 
   def show
     @term = find_term
