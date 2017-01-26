@@ -55,5 +55,5 @@ Rails.application.routes.draw do
   get "/review/*id", :to => "review#show", :as => "review_term"
 
   get "/nav", :to => "home#nav", :as => "nav"
-  get "/is_admin", :to => "home#admin", :as => "is_admin"
+  get "/can_edit", :to => "home#can_edit", :as => "can_edit"
  end
