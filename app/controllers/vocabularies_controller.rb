@@ -2,7 +2,8 @@ class VocabulariesController < AdminController
   delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
   delegate :deprecate_vocabulary_form_repository, :to => :deprecate_injector
   include GitInterface
-  skip_before_filter :require_admin, :only => [:review_update, :mark_reviewed]
+  skip_before_filter :require_admin, :only => [:edit, :update, :review_update, :mark_reviewed]
+  before_filter :require_editor, :only => [:edit, :update]
 
   def index
     @vocabularies = all_vocabs_query.call
