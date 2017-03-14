@@ -6,9 +6,10 @@
 <h3 class="uri"><%= @term.rdf_subject %></h3>
 
 <table class="table table-condensed" style="margin-top: 20px;">
-  <% @term.fields.each do |field| %>
-    <%= render :partial => "terms/term_row", locals: {:field => field} %>
+  <% unless @term.vocabulary? || @term.predicate? %>
+    <%= render partial: "terms/term_row_type", locals: { type: @term.titleized_type } %>
   <% end %>
+  <%= render partial: 'terms/term_row', collection: @term.fields, cache: true, as: :field %>
 </table>
 
 <% if !@term.commit_history.nil? %>
