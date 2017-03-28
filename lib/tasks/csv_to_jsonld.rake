@@ -4,7 +4,6 @@ require 'rdf'
 desc "Transforms CSV to JSONLD for ingest. Use `rake transform:csv_to_jsonld[path_to_csv, path`"
 namespace :transform do
   task :csv_to_jsonld, [:csv_path, :text_path] => :environment do |t, args|
-    @csv_headers = ["id:id_hash", "vocabulary:uri", "label:string", "combined_dates:datetime"]
 
     #Verify arguments were provided
     check_args(args) 
@@ -15,8 +14,10 @@ namespace :transform do
     #Build the graph and dump the jsonld
     @jsonld2 = build_graph2(args, @headers_hash)
 
+    puts @jsonld2
+
     #Write the jsonld to a text file
-    File.open(args[:text_path], 'w') { |file| file.write(@jsonld)}
+    File.open(args[:text_path], 'w') { |file| file.write(@jsonld2)}
 
   end
 end
@@ -84,7 +85,7 @@ def build_graph2(args, header_hash)
 
     #if no id column, mint an id and generate uri. Otherwise generate a uri
      if @no_id_column
-       @id = id_hash2(nil, row[@vocabulary_hash["vocabulary:uri"]]) 
+       @id = id_hash2(nil, row[@vocab_hash["vocabulary:uri"]]) 
      else
        @id = id_hash2(row[@id_hash["id:id_hash"]],row[@vocab_hash["vocabulary:uri"]])
      end
@@ -94,7 +95,7 @@ def build_graph2(args, header_hash)
        send(header.split(":").last + "2", @id, @graph, row[header_hash[header]])
      end
   end
-  puts @graph.dump(:jsonld)
+  @graph.dump(:jsonld)
 end
 
 def string2(id, graph, payload)
