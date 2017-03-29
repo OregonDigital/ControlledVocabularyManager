@@ -30,7 +30,7 @@ RSpec.describe Relationship do
   end
 
   it "should have visible form fields" do
-    expect(Relationship.visible_form_fields).to eq %w[parents children date comment]
+    expect(Relationship.visible_form_fields).to eq %w[hier_parent hier_child date comment]
   end
 
   describe "#get_values" do
@@ -93,8 +93,8 @@ RSpec.describe Relationship do
 
 
   it "should have additional fields" do
-    expect(resource.fields).to include :parents
-    expect(resource.fields).to include :children
+    expect(resource.fields).to include :hier_parent
+    expect(resource.fields).to include :hier_child
     expect(resource.fields).to include :date
     expect(resource.fields).to include :comment
   end

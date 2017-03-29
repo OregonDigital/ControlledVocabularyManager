@@ -1,4 +1,4 @@
-# Repository that returns a decorated Vocabulary object with VocabularyForm
+# Repository that returns a decorated Relationship object with RelationshipForm
 # validations.
 class RelationshipFormRepository < Struct.new(:decorators)
   delegate :new, :find, :exists?, :to => :repository
