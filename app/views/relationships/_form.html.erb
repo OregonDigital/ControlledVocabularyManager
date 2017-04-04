@@ -1,0 +1,14 @@
+<%= simple_form_for(relationship, :url => relationships_path, :as => :relationship) do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-inputs">
+    <%= f.input :id, :label => "ID" %>
+    <% relationship.editable_fields.each do |field| %>
+      <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => relationship, :attribute => field, :form => f} %>
+    <% end %>
+  </div>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+<% end %>

@@ -1,0 +1,6 @@
+<h1>Deprecate Relationship</h1>
+<div class="deprecate_form">
+<%= simple_form_for(@relationship, :url => deprecate_only_relationship_path(:id => @relationship.id)) do |f| %>
+  <%= render "deprecate_form", :f => f, :term => @relationship %>
+<% end %>
+</div>
