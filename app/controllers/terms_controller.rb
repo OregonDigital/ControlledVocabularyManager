@@ -1,5 +1,6 @@
 class TermsController < AdminController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
+  delegate :relationship_repository, :to => :relationship_injector
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   include GitInterface
@@ -11,6 +12,28 @@ class TermsController < AdminController
 
   def show
     @term = find_term
+    @child_term_labels = []
+    @child_term_ids = []
+    @child_dates = []
+    @parent_term_labels = []
+    @parent_term_ids = []
+    @parent_dates = []
+    if @term.attributes["relationships"]
+      @term.attributes["relationships"].each do |rel_id|
+        @rel = find_relationship(rel_id)
+        if @rel.hier_parent.include?(@term.id) 
+          @t = find_related_term(@rel.hier_child.first)
+          @child_term_labels << @t.label
+          @child_term_ids << @t.id
+          @child_dates << @rel.date
+        elsif @rel.hier_child.include?(@term.id)
+          @t = find_related_term(@rel.hier_parent.first)
+          @parent_term_labels << @t.label
+          @parent_term_ids << @t.id
+          @parent_dates << @rel.date
+        end
+      end
+    end
 
     # TODO: replace functionality, this causes memory leak and slowness currently.
     #@term.commit_history = get_history(@term.id)
@@ -186,12 +209,24 @@ class TermsController < AdminController
     @injector ||= TermInjector.new(params)
   end
 
+  def relationship_injector
+    @relationship_injector ||= RelationshipInjector.new(params)
+  end
+
   def deprecate_injector
     @injector ||= DeprecateTermInjector.new(params)
   end
 
   def find_term
     term_repository.find(params[:id])
+  end
+
+  def find_related_term(related_id)
+    term_repository.find(related_id)
+  end
+
+  def find_relationship(relationship_id)
+    relationship_repository.find(relationship_id)
   end
 
   def find_vocabulary

@@ -22,7 +22,8 @@
 
       <% elsif @term.predicate? %>
         <%= link_to "Mark as reviewed", mark_predicate_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
-
+      <% elsif @term.relationship? %>
+        <%= link_to "Mark as reviewed", mark_relationship_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
       <% else %>
         <%= link_to "Mark as reviewed", mark_term_path(@term.id ), {:class=>'btn btn-default', :value=>'review'} %>
       <% end %>

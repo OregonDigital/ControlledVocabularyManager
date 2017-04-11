@@ -3,7 +3,7 @@
 <% end %>
 <h1>Relationships</h1>
 <%- if current_user && current_user.admin?  %>
-  <%= link_to "Create Relationship", new_relationship_path, {:class=>'btn btn-default'} %>
+  <%= "A Relationship can only be created from a Term. Please refer to a Term and create a Relationship there." %>
 <% end %>
 
 <table class="table table-striped">

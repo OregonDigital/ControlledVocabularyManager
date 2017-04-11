@@ -41,13 +41,15 @@ Rails.application.routes.draw do
   get 'predicates/*id/deprecate', :to => "predicates#deprecate", :as => "deprecate_predicate"
   get "/predicates/*id/mark", :to =>"predicates#mark_reviewed", :as => "mark_predicate"
 
-  resources :relationships, :only => [:index, :new, :create, :edit]
+  resources :relationships, :only => [:index, :create, :edit]
   patch 'relationships/*id/deprecate_only', :to => "relationships#deprecate_only", :as => "deprecate_only_relationship"
   post 'relationships/*id/review_update', :to => "relationships#review_update", :as => "review_update_relationship"
   patch 'relationships/*id', :to => "relationships#update", :as => "update_relationship"
   get 'relationships/*id/deprecate', :to => "relationships#deprecate", :as => "deprecate_relationship"
   get "/relationships/*id/mark", :to =>"relationships#mark_reviewed", :as => "mark_relationship"
-  get "/relationships/*term_id/new_with_term", :to =>"relationships#new", :as => "new_with_term"
+  get "/relationships/*term_id/new", :to =>"relationships#new", :as => "new_relationship"
+
+  get "/relationships/*term_id/choose", :to =>"relationships#relationship_type", :as => "relationship_type"
 
   get '/ns/*id', :to => "terms#show", :as => "term"
 

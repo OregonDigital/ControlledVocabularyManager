@@ -11,7 +11,7 @@ class Relationship < Term
 
   # Update the fields method with any new properties added to this model
   def fields
-    [:hier_parent, :hier_child, :date, :comment] | super
+    [:hier_parent, :hier_child, :date, :comment]
   end
 
   def self.option_text

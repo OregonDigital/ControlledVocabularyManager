@@ -51,7 +51,7 @@ class TermType
   # @param types [Array<RDF::URI>] the types coming from the backend query
   # @return [Class] the class which relates to the term queried
   def self.class_from_types(types)
-    all_models = %w[Vocabulary Predicate]
+    all_models = %w[Vocabulary Predicate Relationship]
     all_models.concat(self.models - ['Term'])
 
     all_models.each do |m|

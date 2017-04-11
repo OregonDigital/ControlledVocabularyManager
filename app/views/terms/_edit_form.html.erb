@@ -1,10 +1,10 @@
 <p><%= term.rdf_subject %></p>
-<% unless term.vocabulary? || term.predicate? %>
+<% unless term.vocabulary? || term.predicate? || term.relationship? %>
   <%= render :partial => "terms/term_types_select", :locals => { :disabled => true, :term => term } %>
 <% end %>
 <% term.editable_fields.each do |attribute| %>
   <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
 <% end %>
-<%= hidden_field_tag :issued, @term.issued.first %>
+<%= hidden_field_tag :issued, term.issued.first %>
 <%= f.button :submit %>
 

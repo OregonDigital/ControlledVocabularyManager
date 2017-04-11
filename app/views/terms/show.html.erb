@@ -18,17 +18,19 @@
       <%= link_to "Edit", edit_vocabulary_path(@term), { :class => 'btn btn-default' } %>
   <% elsif @term.predicate? %>
       <%= link_to "Edit", edit_predicate_path(@term), { :class => 'btn btn-default' } %>
+  <% elsif @term.relationship? %>
+      <%= link_to "Edit", edit_relationship_path(@term), { :class => 'btn btn-default' } %>
   <% else %>
       <%= link_to "Edit", edit_term_path(@term), { :class => 'btn btn-default' } %>
+      <%= link_to "Create Relationship", new_relationship_path(@term.id), { :class => 'btn btn-default' } %>
   <% end %>
-  <%= link_to "Create Relationship", new_with_term_path(@term.id), { :class => 'btn btn-default' } %>
 </div>
 
 <% if @term.term_id.hasParent? %>
     <%= link_to "Return to Vocabulary", term_path(:id => @term.term_uri_vocabulary_id) %>
 <% end %>
 <table class="table table-condensed" style="margin-top: 20px;">
-  <% unless @term.vocabulary? || @term.predicate? %>
+  <% unless @term.vocabulary? || @term.predicate? || @term.relationship? %>
       <%= render partial: "terms/term_row_type", locals: { type: @term.titleized_type } %>
   <% end %>
   <%= render partial: 'terms/term_row', collection: @term.fields, cache: true, as: :field %>

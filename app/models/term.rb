@@ -18,6 +18,7 @@ class Term < ActiveTriples::Resource
   property :same_as, :predicate => RDF::OWL.sameAs
   property :modified, :predicate => RDF::Vocab::DC.modified
   property :issued, :predicate => RDF::Vocab::DC.issued
+  property :relationships, :predicate => RDF::Vocab::DC.relation
 
   delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
 
@@ -32,7 +33,7 @@ class Term < ActiveTriples::Resource
   end
 
   def self.visible_form_fields
-    %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued]
+    %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued relationships]
   end
 
   def default_language
@@ -84,12 +85,16 @@ class Term < ActiveTriples::Resource
     self.term_type == Predicate
   end
 
+  def relationship?
+    self.term_type == Relationship
+  end
+
   def editable_fields
-    fields - [:issued, :modified, :is_replaced_by]
+    fields - [:issued, :modified, :is_replaced_by, :relationships]
   end
 
   def editable_fields_deprecate
-    fields - [:issued, :modified, :label, :comment, :date, :see_also, :is_defined_by, :same_as, :alternate_name]
+    fields - [:issued, :modified, :label, :comment, :date, :see_also, :is_defined_by, :same_as, :alternate_name, :relationships]
   end
 
   def to_param

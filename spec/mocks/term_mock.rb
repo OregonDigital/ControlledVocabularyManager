@@ -21,5 +21,25 @@ module GlobalMocks
     allow(i).to receive(:predicate?).and_return(true)
     i
   end
-
+  let(:relationship_mock) do
+    i = instance_double("Relationship")
+    allow(i).to receive(:persisted?).and_return(false)
+    allow(i).to receive(:id).and_return("rel")
+    allow(i).to receive(:predicate?).and_return(true)
+    i
+  end
+  let(:parent_mock) do
+    i = instance_double("Term")
+    allow(i).to receive(:persisted?).and_return(false)
+    allow(i).to receive(:id).and_return("parent")
+    allow(i).to receive(:predicate?).and_return(true)
+    i
+  end
+  let(:child_mock) do
+    i = instance_double("Term")
+    allow(i).to receive(:persisted?).and_return(false)
+    allow(i).to receive(:id).and_return("child")
+    allow(i).to receive(:predicate?).and_return(true)
+    i
+  end
 end
