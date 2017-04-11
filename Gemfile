@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.1.7'
+gem 'rails', '4.2.0'
 gem 'actionpack-page_caching'
 
 # Use sqlite3 as the database for Active Record
@@ -64,13 +64,16 @@ gem 'attr_extras'
 gem 'capistrano', '~> 2.0'
 gem 'newrelic_rpm'
 
+gem 'responders', '~> 2.0'
+
 group :development do
   gem 'spring-commands-rspec'
+  gem 'web-console', '~> 2.0'
 end
 
 group :development, :test do
   gem 'awesome_print'
-  gem 'jazz_hands', :github => "terrellt/jazz_hands"
+  # gem 'jazz_hands', :github => "terrellt/jazz_hands"
   gem 'factory_girl_rails'
   gem 'rspec-rails'
   # Test Coverage
