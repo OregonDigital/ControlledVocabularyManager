@@ -1,0 +1,11 @@
+<% content_for :title do %>
+  Edit <%= @relationship.id %>
+<% end %>
+
+<h1>Edit</h1>
+
+<%= simple_form_for(@relationship, :url => update_relationship_path(:id => @relationship.id)) do |f| %>
+  <%= render "terms/edit_form", :f => f, :term => @relationship %>
+
+  <%= link_to "Deprecate", polymorphic_path([@relationship], :action => 'deprecate'), :class => 'btn btn-default' %>
+<% end %>

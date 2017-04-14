@@ -1,38 +1,63 @@
 <tr>
 <th scope="row"><%= field.to_s.titleize %>:</th>
 <td>
-  <ul style="list-style: none;">
-    <% if @term.blacklisted_language_properties.include?(field) %>
-      <% @term.get_values(field).each do |term| %>
-        <!-- This is a temporary fix!!!!!!!!! Since this is an RDF error, the easiest way to fix this issue
-          is by checking if a terms value responds to rdf_label. We need to fix this as we are enabling rdf to
-          work for the whole system -->
-        <% if term.respond_to?(:rdf_label) %>
-          <li><a href="<%= term.rdf_label.first %>" target="_blank"><%= term.rdf_label.first %></a></li>
-        <% elsif MaybeURI.new(term).uri? %>
-          <li><a href="<%= term %>" target="_blank"><%= term %></a></li>
-        <% else %>
-          <li><%= term %></li>
+  <% if field.to_s.titleize == "Relationships" %>
+    <ul style="list-style: none;">
+      <table>
+        <tr>
+          <th style="padding-right: 40px"> Type </th>
+          <th style="padding-right: 40px"> Date </th>
+          <th style="padding-right: 40px"> Related Term </th>
+        </tr>
+        <% @child_term_labels.each_with_index do |t_label, i| %>
+          <tr>
+            <td> Child </td>
+            <td> <%= @child_dates[i].first %> </td>
+            <td><li> <a href="<%= term_path(@child_term_ids[i]) %>"><%= t_label.first %></a></li></td> 
+          </tr>
         <% end %>
+        <% @parent_term_labels.each_with_index do |t_label, i| %>
+          <tr>
+            <td> Parent </td>
+            <td> <%= @parent_dates[i].first %> </td>
+            <td><li> <a href="<%= term_path(@parent_term_ids[i]) %>"><%= t_label.first %></a></li></td>
+          </tr>
       <% end %>
-    <% else %>
-      <% @term.literal_language_list_for_property(field).each do |t| %>
-        <% if (t.respond_to?(:rdf_label)) %>
-          <li><%= link_to t.rdf_label.first, t.rdf_label.first %></li>
-        <% else %>
-          <% if (t[0].respond_to?(:rdf_label)) %>
-            <li><%= link_to t[0].rdf_label.first, t[0].rdf_label.first %></li>
-          <% else %>
-            <% if t[1] == "Language Not Found" %>
-              <li><%= "#{t[0].value}" %> </li>
+    </ul>
+  <% else%>
+    <ul style="list-style: none;">
+      <% if @term.blacklisted_language_properties.include?(field) %>
+        <% @term.get_values(field).each do |term| %>
+          <!-- This is a temporary fix!!!!!!!!! Since this is an RDF error, the easiest way to fix this issue
+            is by checking if a terms value responds to rdf_label. We need to fix this as we are enabling rdf to
+            work for the whole system -->
+            <% if term.respond_to?(:rdf_label) %>
+              <li><a href="<%= term.rdf_label.first %>" target="_blank"><%= term.rdf_label.first %></a></li>
+            <% elsif MaybeURI.new(term).uri? %>
+              <li><a href="<%= term %>" target="_blank"><%= term %></a></li>
             <% else %>
-              <li><%= "#{t[0].value}" %> <span class="label label-default"><%= "#{t[1]} [#{t[0].language}]" %></span></li>
+              <li><%= term %></li>
+            <% end %>
+          <% end %>
+        <% else %>
+          <% @term.literal_language_list_for_property(field).each do |t| %>
+            <% if (t.respond_to?(:rdf_label)) %>
+              <li><%= link_to t.rdf_label.first, t.rdf_label.first %></li>
+            <% else %>
+              <% if (t[0].respond_to?(:rdf_label)) %>
+                <li><%= link_to t[0].rdf_label.first, t[0].rdf_label.first %></li>
+              <% else %>
+                <% if t[1] == "Language Not Found" %>
+                  <li><%= "#{t[0].value}" %> </li>
+                <% else %>
+                  <li><%= "#{t[0].value}" %> <span class="label label-default"><%= "#{t[1]} [#{t[0].language}]" %></span></li>
+                <% end %>
+              <% end %>
             <% end %>
           <% end %>
         <% end %>
-      <% end %>
-    <% end %>
-  </ul>
+    </ul>
+  <% end%>
 </td>
 </tr>
 

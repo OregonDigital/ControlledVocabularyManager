@@ -4,12 +4,12 @@ module GitInterface
 
   def rugged_create (id, string, action)
     begin
-      branch_id = branchify(id)
+      @branch_id = branchify(id)
       repo = setup
       #find/create branch and check it out
-      branch = repo.branches[branch_id]
+      branch = repo.branches[@branch_id]
       if branch.nil?
-        branch = repo.branches.create(branch_id, "HEAD")
+        branch = repo.branches.create(@branch_id, "HEAD")
       end
 
       retries = 0
@@ -44,7 +44,7 @@ module GitInterface
       repo.checkout('master')
       return true
     rescue
-      logger.error("Git create failed. Refer to " + branch_id)
+      logger.error("Git create failed. Refer to " + @branch_id)
       return false
     ensure
       repo.close unless repo.nil?
@@ -385,6 +385,8 @@ module GitInterface
       sr = StandardRepository.new(nil, Vocabulary)
     elsif statements.any? { |s| s.object == RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate") }
       sr = StandardRepository.new(nil, Predicate)
+    elsif statements.any? { |s| s.object == RDF::URI("http://vivoweb.org/ontology/core#Relationship") }
+      sr = StandardRepository.new(nil, Relationship)
     else
       sr = StandardRepository.new(nil, Term)
     end
@@ -410,20 +412,39 @@ module GitInterface
     return nil if term.blank?
     params = Hash.new
     params[:vocabulary] = Hash.new
-    Vocabulary.properties.each_pair do |k,triple|
-      results = []
-      term.query(:predicate=> triple.predicate ).each_statement {|s,p,o| results << o }
-      results.each do |result|
-        # set the language hash with stringified property name (set_languages depends on this)
-        # add the array of languages that relate to the object string set below
-        if !term.blacklisted_language_properties.include? k.to_sym
-          params[:vocabulary][:language] ||= Hash.new
-          params[:vocabulary][:language][k.to_s] ||= []
-          params[:vocabulary][:language][k.to_s] << result.language.to_s if result.respond_to?(:language)
+    if term.relationship?
+      Relationship.properties.each_pair do |k,triple|
+        results = []
+        term.query(:predicate=> triple.predicate ).each_statement {|s,p,o| results << o }
+        results.each do |result|
+          # set the language hash with stringified property name (set_languages depends on this)
+          # add the array of languages that relate to the object string set below
+          if !term.blacklisted_language_properties.include? k.to_sym
+            params[:vocabulary][:language] ||= Hash.new
+            params[:vocabulary][:language][k.to_s] ||= []
+            params[:vocabulary][:language][k.to_s] << result.language.to_s if result.respond_to?(:language)
+          end
+          # set the symbolized property name array and include the object string
+          params[:vocabulary][k.to_sym] ||= []
+          params[:vocabulary][k.to_sym] << result.object.to_s
         end
-        # set the symbolized property name array and include the object string
-        params[:vocabulary][k.to_sym] ||= []
-        params[:vocabulary][k.to_sym] << result.object.to_s
+      end
+    else
+      Vocabulary.properties.each_pair do |k,triple|
+        results = []
+        term.query(:predicate=> triple.predicate ).each_statement {|s,p,o| results << o }
+        results.each do |result|
+          # set the language hash with stringified property name (set_languages depends on this)
+          # add the array of languages that relate to the object string set below
+          if !term.blacklisted_language_properties.include? k.to_sym
+            params[:vocabulary][:language] ||= Hash.new
+            params[:vocabulary][:language][k.to_s] ||= []
+            params[:vocabulary][:language][k.to_s] << result.language.to_s if result.respond_to?(:language)
+          end
+          # set the symbolized property name array and include the object string
+          params[:vocabulary][k.to_sym] ||= []
+          params[:vocabulary][k.to_sym] << result.object.to_s
+        end
       end
     end
     params

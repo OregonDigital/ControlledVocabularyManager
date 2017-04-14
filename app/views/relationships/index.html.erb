@@ -1,0 +1,21 @@
+<% content_for :title do %>
+  Relationships
+<% end %>
+<h1>Relationships</h1>
+<%- if current_user && current_user.admin?  %>
+  <%= "A Relationship can only be created from a Term. Please refer to a Term and create a Relationship there." %>
+<% end %>
+
+<table class="table table-striped">
+  <% @relationships.each do |rel| %>
+    <tr>
+      <td><%= link_to rel.rdf_label.first, term_path(:id => rel.id) %></td>
+      <td><span class="uri"><%= link_to rel.rdf_subject, term_path(:id => rel.id) %></span></td>
+      <td>
+        <% if rel.deprecated? %>
+          <span class="label label-warning">Deprecated</span>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

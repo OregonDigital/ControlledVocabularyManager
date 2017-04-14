@@ -27,6 +27,7 @@ RSpec.describe TermsController do
       allow(full_graph).to receive(:dump)
       allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
       allow(resource).to receive(:commit_history=)
+      allow(resource).to receive(:attributes).and_return({:relationships => ["blahblah"]})
       allow_any_instance_of(DecoratingRepository).to receive(:find).with("test/bla").and_return(decorated_resource)
     end
 
