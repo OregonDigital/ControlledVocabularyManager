@@ -31,8 +31,15 @@ class ReviewController < AdminController
     @parent_dates = []
     if @term.attributes["relationships"]
       @term.attributes["relationships"].each do |rel_id|
-        @rel = find_relationship(rel_id)
-        if @rel.hier_parent.include?(@term.id) 
+        begin
+          @rel = find_relationship(rel_id)
+        rescue
+          flash[:notice] = "The relationship #{rel_id} must be reviewed first."
+          redirect_to review_queue_path
+          return
+        end
+
+        if @rel.hier_parent.include?(@term.id)
           @t = find_related_term(@rel.hier_child.first)
           @child_term_labels << @t.label
           @child_term_ids << @t.id
@@ -63,7 +70,13 @@ class ReviewController < AdminController
 
   private
 
-  def find_related_term(related_id)
+  def parse_term_uri(uri)
+    parts = uri.split('/')
+    "#{parts.slice(-2)}/#{parts.slice(-1)}"
+  end
+
+  def find_related_term(related_uri)
+    related_id = parse_term_uri(related_uri)
     term_repository.find(related_id)
   end
 

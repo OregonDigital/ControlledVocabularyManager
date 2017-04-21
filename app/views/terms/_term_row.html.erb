@@ -9,20 +9,14 @@
           <th style="padding-right: 40px"> Date </th>
           <th style="padding-right: 40px"> Related Term </th>
         </tr>
-        <% @child_term_labels.each_with_index do |t_label, i| %>
+        <% @related_terms.each_pair do |k,v| %>
           <tr>
-            <td> Child </td>
-            <td> <%= @child_dates[i].first %> </td>
-            <td><li> <a href="<%= term_path(@child_term_ids[i]) %>"><%= t_label.first %></a></li></td> 
+            <td> <%= v[:type] %> </td>
+            <td> <%= v[:date].join(', ') %> </td>
+            <td><li> <a href="<%= term_path(k) %>"><%= v[:label].join(', ') %></a></li></td>
           </tr>
         <% end %>
-        <% @parent_term_labels.each_with_index do |t_label, i| %>
-          <tr>
-            <td> Parent </td>
-            <td> <%= @parent_dates[i].first %> </td>
-            <td><li> <a href="<%= term_path(@parent_term_ids[i]) %>"><%= t_label.first %></a></li></td>
-          </tr>
-      <% end %>
+      </table>
     </ul>
   <% else%>
     <ul style="list-style: none;">

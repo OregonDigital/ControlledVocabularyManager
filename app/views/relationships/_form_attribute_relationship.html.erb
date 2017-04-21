@@ -1,0 +1,17 @@
+<%= form.input 'hier', :wrapper => :vertical_input_group, :as => :array, :label => 'Term URI' do %>
+  <div class="repeating-field toggle-model-visibility">
+    <fieldset>
+          <div class="row">
+              <div class="col-sm-9">
+                <input type="text" class="form-control" name="vocabulary[term_uri]"/>
+              </div>
+              <div class="col-sm-3">
+                <select class="form-control language-select" name="vocabulary[hier_type]" >
+                  <option value="parent">Parent</option>
+                  <option value="child">Child</option>
+                </select>
+              </div>
+          </div>
+    </fieldset>
+  </div>
+<% end %>

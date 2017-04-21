@@ -12,25 +12,16 @@ class TermsController < AdminController
 
   def show
     @term = find_term
-    @child_term_labels = []
-    @child_term_ids = []
-    @child_dates = []
-    @parent_term_labels = []
-    @parent_term_ids = []
-    @parent_dates = []
+    @related_terms = {}
     if @term.attributes["relationships"]
       @term.attributes["relationships"].each do |rel_id|
-        @rel = find_relationship(rel_id)
-        if @rel.hier_parent.include?(@term.id) 
-          @t = find_related_term(@rel.hier_child.first)
-          @child_term_labels << @t.label
-          @child_term_ids << @t.id
-          @child_dates << @rel.date
-        elsif @rel.hier_child.include?(@term.id)
-          @t = find_related_term(@rel.hier_parent.first)
-          @parent_term_labels << @t.label
-          @parent_term_ids << @t.id
-          @parent_dates << @rel.date
+        rel = find_relationship(rel_id)
+        if rel.hier_parent.any? { |t| t.include? @term.id }
+          t = find_related_term(rel.hier_child.first)
+          @related_terms.merge!({"#{t.id}": { type: 'Child', date: rel.date, label: t.label}})
+        elsif rel.hier_child.any? { |t| t.include? @term.id }
+          t = find_related_term(rel.hier_parent.first)
+          @related_terms.merge!({"#{t.id}": { type: 'Parent', date: rel.date, label: t.label}})
         end
       end
     end
@@ -217,12 +208,18 @@ class TermsController < AdminController
     @injector ||= DeprecateTermInjector.new(params)
   end
 
-  def find_term
-    term_repository.find(params[:id])
+  def parse_term_uri(uri)
+    parts = uri.split('/')
+    "#{parts.slice(-2)}/#{parts.slice(-1)}"
   end
 
-  def find_related_term(related_id)
+  def find_related_term(related_uri)
+    related_id = parse_term_uri(related_uri)
     term_repository.find(related_id)
+  end
+
+  def find_term
+    term_repository.find(params[:id])
   end
 
   def find_relationship(relationship_id)

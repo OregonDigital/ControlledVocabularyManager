@@ -3,6 +3,7 @@ class RelationshipsController < ApplicationController
   delegate :deprecate_relationship_form_repository, :to => :deprecate_injector
   delegate :term_form_repository, :to => :term_injector
   skip_before_filter :require_admin, :only => [:review_update, :mark_reviewed]
+  before_filter :set_form, :only => [:new, :create]
 
   include GitInterface
   def index
@@ -10,57 +11,38 @@ class RelationshipsController < ApplicationController
     @relationships = all_relationships_query.call
   end
 
-  def new
-    @parent_relationship = relationship_form_repository.new
-    @child_relationship = relationship_form_repository.new
-    @parent_relationship.attributes["hier_parent"] << params["term_id"]
-    @child_relationship.attributes["hier_child"] << params["term_id"]
-  end
 
   def create
     #Create new relationship form repository
-    relationship_form = relationship_form_repository.new(params[:relationship][:id])
-    if params[:vocabulary]["hier_parent"].first.empty?
-      flash[:notice] = "You must provide both a parent and a child when saving a relationship"
-      redirect_to :action => "new", :term_id => params[:vocabulary]["hier_child"]
-      return
-    end
-    if params[:vocabulary]["hier_child"].first.empty?
-      flash[:notice] = "You must provide both a parent and a child when saving a relationship"
-      redirect_to :action => "new", :term_id => params[:vocabulary]["hier_parent"]
-      return
-    end
-    parent_exists = validate_parent_exists
-    child_exists = validate_child_exists
-    unless parent_exists
-      flash[:notice] = "The parent you provided does not exist. Check the id and try again."
-      redirect_to :action => "new", :term_id => params[:vocabulary]["hier_child"]
-      return
-    end
-    unless child_exists
-      flash[:notice] = "The child you provided does not exist. Check the id and try again."
-      redirect_to :action => "new", :term_id => params[:vocabulary]["hier_parent"]
-      return
-    end
-    relationship_form.attributes = vocabulary_params.except(:id)
-    relationship_form.set_languages(params[:vocabulary])
-    relationship_form.set_modified
-    relationship_form.set_issued
-    if relationship_form.is_valid?
-      update_parent_term
-      update_child_term
-      relationship_form.add_resource
-      triples = relationship_form.sort_stringify(relationship_form.single_graph)
-      check = rugged_create(params[:relationship][:id], triples, "creating")
-      if check
-        flash[:notice] = "#{params[:relationship][:id]} has been saved and added to the review queue."
-      else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
-      end
-      redirect_to "/relationships"
+    if params[:vocabulary]["term_uri"].empty?
+      flash[:notice] = "You must provide a Term URI to establish a relationship."
+      @relationship.attributes = vocabulary_params.except(:id, :term_uri, :hier_type)
+      render :new
+    elsif !validate_hier_exists(params[:vocabulary][:term_uri])
+      flash[:notice] = "The Term URI you provided does not exist. Check the URI and try again."
+      @relationship.attributes = vocabulary_params.except(:id, :term_uri, :hier_type)
+      render :new
     else
-      @relationship = relationship_form
-      render :action => "new", :relationship => @relationship
+      set_hier_params
+      @relationship.attributes = vocabulary_params.except(:id, :term_uri, :hier_type)
+      @relationship.set_languages(params[:vocabulary])
+      @relationship.set_modified
+      @relationship.set_issued
+      if @relationship.is_valid?
+        update_term(params[:vocabulary]['hier_parent'].first.to_s)
+        update_term(params[:vocabulary]['hier_child'].first.to_s)
+        @relationship.add_resource
+        triples = @relationship.sort_stringify(@relationship.single_graph)
+        check = rugged_create(params[:relationship][:id], triples, "creating")
+        if check
+          flash[:notice] = "#{params[:relationship][:id]} has been saved and added to the review queue."
+        else
+          flash[:notice] = "Something went wrong, please notify a systems administrator."
+        end
+        redirect_to "/relationships"
+      else
+        render :new
+      end
     end
   end
 
@@ -70,7 +52,7 @@ class RelationshipsController < ApplicationController
 
   def update
     edit_relationship_form = relationship_form_repository.find(params[:id])
-    edit_relationship_form.attributes = vocabulary_params.except(:id)
+    edit_relationship_form.attributes = vocabulary_params
     edit_relationship_form.set_languages(params[:vocabulary])
     edit_relationship_form.set_modified
     if edit_relationship_form.is_valid?
@@ -175,45 +157,36 @@ class RelationshipsController < ApplicationController
 
 private
 
-  def validate_parent_exists
-    parent_exists = term_form_repository.exists?(params[:vocabulary]["hier_parent"].first)
-    return false unless parent_exists
-    true
-  end
-
-  def validate_child_exists
-    child_exists = term_form_repository.exists?(params[:vocabulary]["hier_child"].first)
-    return false unless child_exists
-    true
-  end
-
-  def update_parent_term
-    edit_term_form = term_form_repository.find(params[:vocabulary]["hier_parent"].first)
-    edit_term_form.attributes["relationships"] << params[:relationship][:id]
-    edit_term_form.set_modified
-    if edit_term_form.is_valid?
-      triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      binding.pry
-      check = rugged_create(params[:vocabulary]["hier_parent"].first, triples, "updating")
-      if check
-        flash[:notice] = "#{params[:vocabulary]["hier_parent"].first} has been saved and added to the review queue."
-      else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
-      end
+  def set_hier_params
+    if params[:vocabulary]['hier_type'].downcase == 'parent'
+      params[:vocabulary]['hier_child'] = [params[:relationship][:originating_term_uri]]
+      params[:vocabulary]['hier_parent'] = [params[:vocabulary][:term_uri]]
     else
-      #TODO what do you do when the form is not valid.
+      params[:vocabulary]['hier_child'] = [params[:vocabulary][:term_uri]]
+      params[:vocabulary]['hier_parent'] = [params[:relationship][:originating_term_uri]]
     end
   end
 
-  def update_child_term
-    edit_term_form = term_form_repository.find(params[:vocabulary]["hier_child"].first)
+  def parse_term_uri(uri)
+    parts = uri.split('/')
+    "#{parts.slice(-2)}/#{parts.slice(-1)}"
+  end
+
+
+  def validate_hier_exists(term_uri)
+    term_form_repository.exists?(parse_term_uri(term_uri))
+  end
+
+  def update_term(uri)
+    term_id = parse_term_uri(uri)
+    edit_term_form = term_form_repository.find(term_id)
     edit_term_form.attributes["relationships"] << params[:relationship][:id]
     edit_term_form.set_modified
     if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      check = rugged_create(params[:vocabulary]["hier_child"].first, triples, "updating")
+      check = rugged_create(term_id, triples, "updating")
       if check
-        flash[:notice] = "#{params[:vocabulary]["hier_child"].first} has been saved and added to the review queue."
+        flash[:notice] = "#{term_id} has been saved and added to the review queue."
       else
         flash[:notice] = "Something went wrong, please notify a systems administrator."
       end
@@ -242,4 +215,13 @@ private
     @injector ||= DeprecateRelationshipInjector.new(params)
   end
 
+  def set_form
+    if params[:relationship]
+      @relationship = relationship_form_repository.new(params[:relationship][:id])
+      @term = term_form_repository.find(params[:relationship][:term_id])
+    else
+      @relationship = relationship_form_repository.new
+      @term = term_form_repository.find(params[:term_id])
+    end
+  end
 end

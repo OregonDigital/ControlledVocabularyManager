@@ -7,14 +7,14 @@
             <% if form.object.blacklisted_language_properties.include?(attribute) %>
               <div class="col-sm-12">
                 <% if value.respond_to?(:rdf_label) %>
-                  <input type="text" class="form-control string" value="<%= MaybeURI.new(value.rdf_label.first).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>" id="<%= "vocabulary_#{attribute.to_s}" %>"/>
+                  <input type="text" class="form-control string" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= MaybeURI.new(value.rdf_label.first).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>" id="<%= "vocabulary_#{attribute.to_s}" %>"/>
                 <% else %>
-                  <input type="text" class="form-control string" value="<%= MaybeURI.new(value).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>" id="<%= "vocabulary_#{attribute.to_s}" %>"/>
+                  <input type="text" class="form-control string" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= MaybeURI.new(value).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>" id="<%= "vocabulary_#{attribute.to_s}" %>"/>
                 <% end %>
               </div>
             <% else %>
               <div class="col-sm-9">
-                <input type="text" class="form-control" value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+                <input type="text" class="form-control" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
               </div>
               <div class="col-sm-3">
                 <%= render "vocabularies/language_select", :form => form, :attribute => attribute, :index => 0 %>

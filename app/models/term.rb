@@ -36,6 +36,10 @@ class Term < ActiveTriples::Resource
     %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued relationships]
   end
 
+  def non_editable_fields
+    []
+  end
+
   def default_language
     :en
   end
@@ -66,6 +70,7 @@ class Term < ActiveTriples::Resource
   #
   # @return [Boolean] true if this terms property :is_replaced_by has a value
   def deprecated?
+    return false if self.attributes[:is_replaced_by].nil?
     !values_for_property(:is_replaced_by).empty?
   end
 
@@ -102,6 +107,7 @@ class Term < ActiveTriples::Resource
   end
 
   def values_for_property(property_name)
+    return self.attributes[property_name.to_s] unless self.attributes[property_name.to_s].is_a?(Array)
     self.get_values(property_name.to_s)
   end
 
@@ -123,8 +129,8 @@ class Term < ActiveTriples::Resource
   #
   # @param property_name [Symbol] the property name to get language for
   def literal_language_list_for_property(property_name)
-    self.get_values(property_name.to_s, :literal => true).map { 
-      |literal| [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))] 
+    self.get_values(property_name.to_s, :literal => true).map {
+      |literal| [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))]
     }
   end
 

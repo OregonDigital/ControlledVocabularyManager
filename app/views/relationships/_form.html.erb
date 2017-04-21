@@ -1,10 +1,21 @@
 <%= simple_form_for(relationship, :url => relationships_path, :as => :relationship) do |f| %>
   <%= f.error_notification %>
-
   <div class="form-inputs">
-    <%= f.input :id, :label => "ID" %>
-    <% relationship.editable_fields.each do |field| %>
-      <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => relationship, :attribute => field, :form => f} %>
+    <% if relationship.new_record? %>
+      <%= f.input :id, :label => "ID", input_html: { value: relationship.minted_id_if_new } %>
+      <%= f.input :originating_term_uri, as: :hidden, input_html: { value: term.term_uri.uri.to_s } %>
+      <%= f.input :term_id, as: :hidden, input_html: { value: term.id } %>
+      <%= render :partial => "form_attribute_relationship", :locals => {:form => f} %>
+      <% relationship.editable_fields.reject { |f| f == :hier_parent || f == :hier_child }.each do |field| %>
+        <%= render :partial => "vocabularies/form_attribute_list", :locals => {:single_value_field => false, :vocabulary => relationship, :attribute => field, :form => f} %>
+      <% end %>
+    <% else %>
+      <% relationship.single_value_fields.reject { |f| f.to_s == 'id' }.each do |field| %>
+        <%= render :partial => "vocabularies/form_attribute_list", :locals => {:single_value_field => true, :vocabulary => relationship, :attribute => field, :form => f} %>
+      <% end %>
+      <% relationship.editable_fields.reject { |f| relationship.single_value_fields.include?(f) }.each do |field| %>
+        <%= render :partial => "vocabularies/form_attribute_list", :locals => {:single_value_field => false, :vocabulary => relationship, :attribute => field, :form => f} %>
+      <% end %>
     <% end %>
   </div>
 

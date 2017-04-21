@@ -1,17 +1,49 @@
 <label class="control-label toggle-model-visibility term_<%= attribute %>" for="vocabulary_<%= attribute.to_s %>" data-visible-for="<%= TermType.models_having_visible_property(attribute) %>"><%= attribute.to_s.humanize %></label>
 
-<% if form.object.values_for_property(attribute).empty? %>
-  <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
-<% else %>
-  <div class="form-group multi-value-field repeating-field">
-    <fieldset>
-      <ul class="listing">
-        <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
-          <li class="field-wrapper">
-          <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
-          </li>
-        <% end %>
-      </ul>
-    </fieldset>
-  </div>
-<% end %>
+  <% if defined?(single_value_field) %>
+    <% if single_value_field %>
+      <div class="form-group repeating-field">
+        <fieldset>
+          <% if form.object.values_for_property(attribute).empty? %>
+            <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
+          <% else %>
+            <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+              <%= render :partial => "vocabularies/form_attribute_with_index", :locals => { :single_value_field => true, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
+            <% end %>
+          <% end %>
+        </fieldset>
+      </div>
+    <% else %>
+      <div class="form-group multi-value-field repeating-field">
+        <fieldset>
+          <ul class="listing">
+            <% if form.object.values_for_property(attribute).empty? %>
+              <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
+            <% else %>
+              <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+                <li class="field-wrapper">
+                  <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:single_value_field => false, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </fieldset>
+      </div>
+    <% end %>
+  <% else %>
+    <div class="form-group multi-value-field repeating-field">
+      <fieldset>
+        <ul class="listing">
+          <% if form.object.values_for_property(attribute).empty? %>
+            <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
+          <% else %>
+            <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+              <li class="field-wrapper">
+                <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:single_value_field => false, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
+              </li>
+            <% end %>
+          <% end %>
+        </ul>
+      </fieldset>
+    </div>
+  <% end %>

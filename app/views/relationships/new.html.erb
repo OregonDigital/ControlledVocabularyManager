@@ -1,11 +1,5 @@
 <% content_for :title do %>
   Create Relationships
 <% end %>
-<h1> Create New Parent Relationship </h1>
-
-<%= render :partial => "form", :locals => { :relationship => @parent_relationship } %>
-
-<h1> Create New Child Relationship </h1>
-
-<%= render :partial => "form", :locals => { :relationship => @child_relationship } %>
-
+<h1> Create New Relationship for <%= @term.id %></h1>
+<%= render :partial => "form", locals: { relationship: @relationship, term: @term }  %>
