@@ -13,7 +13,7 @@ var HydraEditor = (function($) {
 
           this.fieldWrapperClass = '.field-wrapper';
           this.warningClass = '.has-warning';
-          this.listClass = '.listing';
+          this.listClass = '.nested-listing';
 
           this.init();
       }
@@ -117,7 +117,7 @@ var HydraEditor = (function($) {
             event.preventDefault();
 
             var field = $(event.target).parents(this.fieldWrapperClass)
-            var secondLast = field.parents('.listing').children('.input-group:nth-last-child(2)');
+            var secondLast = field.parents('.nested-listing').children('.input-group:nth-last-child(2)');
             var addCount = field.children('.field-controls').children('.add').length;
 
             field.remove();

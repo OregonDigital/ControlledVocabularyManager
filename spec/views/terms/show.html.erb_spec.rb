@@ -69,9 +69,12 @@ RSpec.describe "terms/show" do
   context "when term is deprecated" do
     let(:resource) {
       t = Term.new(uri)
-      t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+      t.is_replaced_by = ["http://opaquenamespace.org/ns/bla2"]
       t
     }
+    before do
+      allow(resource).to receive(:attributes).and_return({"is_replaced_by" => "http://opaquenamespace.org/ns/bla2"})
+    end
     it "should display deprecated alert" do
       render
       expect(rendered).to have_content "Deprecated"
@@ -81,7 +84,7 @@ RSpec.describe "terms/show" do
   context "when visiting the show page" do
     let(:resource) {
       t = Term.new(uri)
-      t.is_replaced_by = "http://opaquenamespace.org/ns/bla2"
+      t.is_replaced_by = ["http://opaquenamespace.org/ns/bla2"]
       t.label = ["a_label", "another_label"]
       t.comment = ["comment"]
       t

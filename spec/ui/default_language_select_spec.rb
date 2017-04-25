@@ -12,7 +12,7 @@ RSpec.feature "Using a language SELECT with a default language set", :js => true
       expect(find(".language-select option[value='es']")).to be_selected
       click_button("Add")
     end
-    within('.vocabulary_label ul.listing li:nth-child(2)') do
+    within('.vocabulary_label ul.nested-listing li:nth-child(2)') do
       expect(find(".language-select option[value='en']")).to be_selected
     end
   end

@@ -26,12 +26,12 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     sleep 2
     expect(page).to have_content("ID")
     fill_in('vocabulary_id', with: vocabulary_id)
-    fill_in "vocabulary[label][]", :with => "Hello world"
-    within('.vocabulary_label') do
+    fill_in "vocabulary[title][]", :with => "Hello world"
+    within('.vocabulary_title') do
       click_button("Add", :match => :first)
     end
-    within('.vocabulary_label ul.listing li:nth-child(2)') do
-      fill_in "vocabulary[label][]", :with => "Hola mundo"
+    within('.vocabulary_title ul > li:nth-child(2)') do
+      fill_in "vocabulary[title][]", :with => "Hola mundo"
       find(".language-select").find("option[value='es']").select_option
     end
     find('input[name="commit"]').click
@@ -43,12 +43,11 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
     expect(page).to have_content("#{vocabulary_id}")
 
     vocab_statement_list = Vocabulary.find(vocabulary_id).statements.each.map { |x| x }
-    labels = vocab_statement_list.select { |s| s.predicate == "http://www.w3.org/2000/01/rdf-schema#label" }
-    expect(labels.any? {|l| l.object.value == "Hello world" && l.object.language == :en }).to be_truthy
-    expect(labels.any? {|l| l.object.value == "Hola mundo" && l.object.language == :es }).to be_truthy
+    expect(vocab_statement_list.any? {|l| l.object.value == "Hello world" && l.object.language == :en }).to be_truthy
+    expect(vocab_statement_list.any? {|l| l.object.value == "Hola mundo" && l.object.language == :es }).to be_truthy
 
     visit "/vocabularies/#{vocabulary_id}/edit"
-    within('form.edit_vocabulary > .multi-value-field ul.listing li:first-child') do
+    within ('form.edit_vocabulary > .multi-value-field .vocabulary_title ul.nested-listing li:nth-child(1)') do
       click_button("Remove", :match => :first)
     end
     expect(page).not_to have_xpath("//input[@value='Hello world']")

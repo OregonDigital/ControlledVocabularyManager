@@ -23,32 +23,16 @@ class ReviewController < AdminController
     else
       @term.commit_history = get_history(@term.id, params[:id] + "_review")
     end
-    @child_term_labels = []
-    @child_term_ids = []
-    @child_dates = []
-    @parent_term_labels = []
-    @parent_term_ids = []
-    @parent_dates = []
+    @related_terms = {}
     if @term.attributes["relationships"]
       @term.attributes["relationships"].each do |rel_id|
-        begin
-          @rel = find_relationship(rel_id)
-        rescue
-          flash[:notice] = "The relationship #{rel_id} must be reviewed first."
-          redirect_to review_queue_path
-          return
-        end
-
-        if @rel.hier_parent.include?(@term.id)
-          @t = find_related_term(@rel.hier_child.first)
-          @child_term_labels << @t.label
-          @child_term_ids << @t.id
-          @child_dates << @rel.date
-        elsif @rel.hier_child.include?(@term.id)
-          @t = find_related_term(@rel.hier_child.first)
-          @parent_term_labels << @t.label
-          @parent_term_ids << @t.id
-          @parent_dates << @rel.date
+        rel = find_relationship(rel_id)
+        if rel.hier_parent.any? { |t| t.include? @term.id }
+          t = find_related_term(rel.hier_child.first)
+          @related_terms.merge!({"#{t.id}": { type: 'Child', date: rel.date, label: t.label}})
+        elsif rel.hier_child.any? { |t| t.include? @term.id }
+          t = find_related_term(rel.hier_parent.first)
+          @related_terms.merge!({"#{t.id}": { type: 'Parent', date: rel.date, label: t.label}})
         end
       end
     end

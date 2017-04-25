@@ -1,7 +1,7 @@
 <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
   <div class="multi-value-field repeating-field toggle-model-visibility">
     <fieldset>
-      <ul class="listing">
+      <ul class="nested-listing">
         <li class="field-wrapper">
           <div class="row multi-value-controls">
             <% if form.object.blacklisted_language_properties.include?(attribute) %>

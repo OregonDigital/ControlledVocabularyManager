@@ -70,8 +70,8 @@ class Term < ActiveTriples::Resource
   #
   # @return [Boolean] true if this terms property :is_replaced_by has a value
   def deprecated?
-    return false if self.attributes[:is_replaced_by].nil?
-    !values_for_property(:is_replaced_by).empty?
+    return false if self.attributes[:is_replaced_by.to_s].nil?
+    !values_for_property(:is_replaced_by.to_s).empty?
   end
 
   ##

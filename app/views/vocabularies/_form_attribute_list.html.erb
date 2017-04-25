@@ -20,10 +20,16 @@
             <% if form.object.values_for_property(attribute).empty? %>
               <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
             <% else %>
-              <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
-                <li class="field-wrapper">
-                  <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:single_value_field => false, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
-                </li>
+              <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
+                <div class="multi-value-field repeating-field toggle-model-visibility">
+                  <fieldset>
+                    <ul class="nested-listing">
+                      <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+                        <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:single_value_field => false, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
+                    <% end %>
+                    </ul>
+                  </fieldset>
+                </div>
               <% end %>
             <% end %>
           </ul>
@@ -37,11 +43,17 @@
           <% if form.object.values_for_property(attribute).empty? %>
             <%= render :partial => "vocabularies/form_attribute", :locals => {:vocabulary => vocabulary, :attribute => attribute, :form => form, :value => ""} %>
           <% else %>
-            <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
-              <li class="field-wrapper">
-                <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:single_value_field => false, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
-              </li>
-            <% end %>
+            <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
+              <div class="multi-value-field repeating-field toggle-model-visibility">
+                <fieldset>
+                  <ul class="nested-listing">
+                    <% form.object.values_for_property(attribute).each_with_index do |value, index| %>
+                      <%= render :partial => "vocabularies/form_attribute_with_index", :locals => {:single_value_field => false, :vocabulary => vocabulary, :attribute => attribute, :form => form, :value => value, :index => index} %>
+                    <% end %>
+                  </ul>
+                </fieldset>
+              </div>
+            <% end  %>
           <% end %>
         </ul>
       </fieldset>

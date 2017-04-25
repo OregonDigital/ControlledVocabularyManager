@@ -1,11 +1,11 @@
-<div class="row <%= single_value_field ? '' : 'multi-value-controls' %> form-group">
-  <%= form.input attribute, :wrapper => :vertical_input_group, :as => :array, :label => false do %>
+<li class="field-wrapper"> 
+  <div class="row <%= single_value_field ? '' : 'multi-value-controls' %>">
     <% if form.object.blacklisted_language_properties.include?(attribute) %>
       <div class="col-sm-12">
         <% if value.respond_to?(:rdf_label) %>
-            <input type="text" class="form-control" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= MaybeURI.new(value.rdf_label.first).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+          <input type="text" class="form-control" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= MaybeURI.new(value.rdf_label.first).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
         <% else %>
-            <input type="text" class="form-control" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= MaybeURI.new(value).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
+          <input type="text" class="form-control" <%= form.object.non_editable_fields.include?(attribute) ? "disabled='disabled'" : "" %> value="<%= MaybeURI.new(value).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>"/>
         <% end %>
       </div>
     <% else %>
@@ -23,5 +23,5 @@
         <%= render "vocabularies/language_select", :form => form, :attribute => attribute, :index => index %>
       </div>
     <% end %>
-  <% end %>
-</div>
+  </div>
+</li>

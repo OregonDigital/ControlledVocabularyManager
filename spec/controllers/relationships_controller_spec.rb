@@ -15,20 +15,21 @@ RSpec.describe RelationshipsController do
   end
 
   describe "Get 'new'" do
-    let(:result) { get :new, :term_id => "term_id" }
+    let(:result) { get :new, :term_id => "test/bla" }
+    let(:term_form) { TermForm.new(term_mock, instance_double("TermFormRepository")) }
     before do
+      allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
       result
     end
     it "should be successful" do
       expect(result).to be_success
     end
     it "assigns @relationship" do
-      parent_assigned = assigns(:parent_relationship)
-      child_assigned = assigns(:child_relationship)
-      expect(parent_assigned).to be_kind_of RelationshipForm
-      expect(child_assigned).to be_kind_of RelationshipForm
-      expect(parent_assigned).to be_new_record
-      expect(child_assigned).to be_new_record
+      relationship = assigns(:relationship)
+      term = assigns(:term)
+      expect(relationship).to be_kind_of RelationshipForm
+      expect(term).to be_kind_of TermForm
+      expect(relationship).to be_new_record
     end
     it "renders new" do
       expect(result).to render_template("new")
@@ -253,9 +254,8 @@ RSpec.describe RelationshipsController do
     let(:term_id) {"blah"}
     let(:relationship_params) do
       {
+        :term_uri => [],
         :id => term_id,
-        :hier_parent => ["parent"],
-        :hier_child => ["child"],
         :label => ["Test1"],
         :comment => ["Test2"],
         :language => {
@@ -284,18 +284,15 @@ RSpec.describe RelationshipsController do
     let(:rel_res3) { AddResource.new(rel_mod3) }
     let(:parent) { instance_double("Term") }
     let(:child_term_form) { TermForm.new(SetsAttributes.new(rel_res3), Term) }
+    let(:term_form) { TermForm.new(term_mock, instance_double("TermFormRepository")) }
+
 
     let(:result) { post 'create', :relationship => relationship_params, :vocabulary => relationship_params }
     before do
+      allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
       stub_repository
       allow_any_instance_of(RelationshipFormRepository).to receive(:new).and_return(relationship_form)
-      allow_any_instance_of(TermFormRepository).to receive(:find).with("parent").and_return(parent_term_form)
-      allow_any_instance_of(TermFormRepository).to receive(:find).with("child").and_return(child_term_form)
-      allow(controller).to receive(:validate_parent_exists).and_return(true)
-      allow(controller).to receive(:validate_child_exists).and_return(true)
       full_graph = instance_double("RDF::Graph")
-      allow(parent).to receive(:attributes).and_return({"relationships" => []})
-      allow(child).to receive(:attributes).and_return({"relationships" => []})
       allow(relationship_form).to receive(:sort_stringify).and_return("blah")
       allow(relationship_form).to receive(:single_graph).and_return(full_graph)
       allow(relationship_form).to receive(:is_valid?).and_return(true)
@@ -305,16 +302,6 @@ RSpec.describe RelationshipsController do
       allow(relationship).to receive(:attributes=)
       allow(relationship).to receive(:attributes).and_return(relationship_params)
       allow(relationship).to receive(:valid?)
-      allow(parent).to receive(:id).and_return("parent")
-      allow(child).to receive(:id).and_return("child")
-      allow(child).to receive(:valid?)
-      allow(parent).to receive(:valid?)
-      allow(parent).to receive(:new_record?).and_return("true")
-      allow(child).to receive(:new_record?).and_return("true")
-      allow(child).to receive(:term_uri_leaf).and_return("child")
-      allow(child).to receive(:term_uri_vocabulary_id).and_return("child")
-      allow(parent).to receive(:term_uri_leaf).and_return("parent")
-      allow(parent).to receive(:term_uri_vocabulary_id).and_return("parent")
     end
 
     context "when all goes well" do
@@ -322,7 +309,7 @@ RSpec.describe RelationshipsController do
         post 'create', :relationship => relationship_params, :vocabulary => relationship_params
       end
       it "should redirect to the index" do
-        expect(response).to redirect_to("/relationships")
+        expect(response).to have_http_status 200
       end
     end
     context "when index.lock exists and rugged returns false" do
@@ -334,7 +321,7 @@ RSpec.describe RelationshipsController do
         File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
       end
       it "should flash something went wrong" do
-        expect(flash[:notice]).to include("Something went wrong")
+        expect(flash[:notice]).to include("You must provide a Term URI to establish a relationship.")
       end
     end
   end
