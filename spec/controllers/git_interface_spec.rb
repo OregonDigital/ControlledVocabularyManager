@@ -84,11 +84,11 @@ RSpec.describe GitInterface do
       expect(results[0][:diff][1]).to eq("added: " + triple3)
 
       #rollback blah/zoo, expect fail
-      dummy_class.rugged_rollback(branch_commit2)
+      dummy_class.rugged_rollback(branch_commit2, "blah/zoo")
       expect(repo.last_commit.author[:name]).to eq("Ira Jones")
 
       #rollback blah/foo, expect success
-      dummy_class.rugged_rollback(branch_commit)
+      dummy_class.rugged_rollback(branch_commit, "blah/foo")
       results = dummy_class.get_history("blah/foo")
       expect(results).to be_nil
       expect(repo.last_commit.author[:name]).to eq("George Smith")

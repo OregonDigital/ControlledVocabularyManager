@@ -139,12 +139,15 @@ module GitInterface
     end
   end
 
-  def rugged_rollback (branch_commit)
+  def rugged_rollback (branch_commit, id)
     begin
       repo = setup
       if branch_commit == repo.last_commit.parents[1].oid
         oid = repo.last_commit.parents[0].oid
         repo.reset(oid, :hard)
+        gitcom = GitCommit.find_by(:term_id=>id)
+        gitcom.remove(branch_commit)
+        gitcom.save
       else
         logger.error('rollback not attempted. refer to: ' + branch_commit)
       end
@@ -176,7 +179,8 @@ module GitInterface
         return nil
       end
       path = id + ".nt"
-      info = commit_info_rugged(repo, path, branch)
+      #change from commit_info_rugged
+      info = commit_info_from_ids(id)
       formatted = format_response(info)
       formatted
     ensure
@@ -225,6 +229,24 @@ module GitInterface
          a << {author: c.author, date: c.time, hash: c.oid, message: c.message}
       end
       a
+    end
+  end
+
+  def commit_info_from_ids(id)
+    begin
+      repo = setup
+      if repo.nil?
+        return nil
+      end
+      gc = GitCommit.find_by(:term_id=>id)
+      a = []
+      gc.commits.each do |commit_oid|
+        commit = repo.lookup(commit_oid)
+        a << {author: commit.author, date: commit.time, hash: commit.oid, message: commit.message}
+      end
+      a
+    ensure
+      repo.close unless repo.nil?
     end
   end
 
