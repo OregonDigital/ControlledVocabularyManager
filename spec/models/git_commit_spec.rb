@@ -32,4 +32,13 @@ RSpec.describe GitCommit do
       expect(gitc.unmerged_id).to eq("")
     end
   end
+  context "When a commit is rolled back" do
+    before do
+      gitc.merge_commit
+      gitc.remove("abc123456")
+    end
+    it "should no longer have the commit id" do
+      expect(gitc.commit_ids).to be_empty
+    end
+  end
 end

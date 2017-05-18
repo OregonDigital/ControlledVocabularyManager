@@ -24,6 +24,10 @@ class GitCommit < ActiveRecord::Base
     unserialize
   end
 
+  def remove (commit_id)
+    self.commit_ids = self.commit_ids.gsub(commit_id + ";", "")
+  end
+
   private
 
   def unserialize
