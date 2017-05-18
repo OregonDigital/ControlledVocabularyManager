@@ -36,12 +36,19 @@ module GitInterface
       options[:tree] = index.write_tree(repo)
       options[:message] = action + ": " + id
       options[:parents] = repo.empty? ? [] : [ repo.head.target ].compact
-      Rugged::Commit.create(repo, options)
+      commit_oid = Rugged::Commit.create(repo, options)
       index.write
       options = {}
       options[:strategy] = :force
       repo.checkout_head(options)
       repo.checkout('master')
+      if action == "creating"
+        gitcom = GitCommit.create(:term_id=>id, :unmerged_id=>commit_oid)
+      else
+        gitcom = GitCommit.find_by(:term_id => id)
+        gitcom.update_commit(commit_oid)
+        gitcom.save
+      end
       return true
     rescue
       logger.error("Git create failed. Refer to " + branch_id)
@@ -91,6 +98,9 @@ module GitInterface
         options = {}
         options[:strategy] = :force
         repo.checkout_head(options)
+        gitcom = GitCommit.find_by(:term_id=> id)
+        gitcom.merge_commit
+        gitcom.save
         #repo.push('origin', [repo.head.name], { credentials: @cred })
       end
       return our_commit

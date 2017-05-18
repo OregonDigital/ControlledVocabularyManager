@@ -36,6 +36,8 @@ RSpec.describe GitInterface do
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo_review")
       expect(repo.last_commit.message).to include("creating: blah/foo")
+      blahfoo_commit = GitCommit.find_by(:term_id=>"blah/foo").unmerged_id
+      expect(blahfoo_commit).to eq(repo.last_commit.oid)
 
       #review_list
       repo.checkout("master")
@@ -49,6 +51,7 @@ RSpec.describe GitInterface do
       repo.checkout("master")
       branch_commit = dummy_class.rugged_merge("blah/foo")
       expect(repo.last_commit.message).to include("Merge blah/foo_review into master")
+      expect(GitCommit.find_by(:term_id=>"blah/foo").commit_ids).to eq(blahfoo_commit + ";")
 
       #delete branch
       branches = dummy_class.branch_list
@@ -67,8 +70,12 @@ RSpec.describe GitInterface do
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo_review")
       expect(repo.last_commit.message).to include("updating: blah/foo")
+      blahfoo_commit2 = GitCommit.find_by(:term_id=>"blah/foo").unmerged_id
+      expect(repo.last_commit.oid).to eq(blahfoo_commit2)
+
       repo.checkout("master")
       branch_commit = dummy_class.rugged_merge("blah/foo")
+      expect(GitCommit.find_by(:term_id=>"blah/foo").commit_ids).to eq("#{blahfoo_commit2};#{blahfoo_commit};")
 
       #get history of blah/foo
       results = dummy_class.get_history("blah/foo")
