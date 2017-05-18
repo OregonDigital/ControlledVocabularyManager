@@ -74,6 +74,7 @@ end
 group :development, :test do
   gem 'awesome_print'
   # gem 'jazz_hands', :github => "terrellt/jazz_hands"
+  gem 'pry'
   gem 'factory_girl_rails'
   gem 'rspec-rails'
   # Test Coverage
