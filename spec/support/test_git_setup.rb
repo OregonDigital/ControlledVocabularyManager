@@ -19,12 +19,13 @@ module TestGitSetup
     options[:message] = "initial commit"
     options[:parents] =  []
     options[:update_ref] = 'HEAD'
-    Rugged::Commit.create(repo, options)
+    commit_id = Rugged::Commit.create(repo, options)
     index.write
     options = {}
     options[:strategy] = :force
     repo.checkout_head(options)
     repo.checkout('master')
+    GitCommit.create(:term_id=>"leopard",:unmerged_id=>commit_id)
   end
 
   def setup_for_review_test(dummy_class)
