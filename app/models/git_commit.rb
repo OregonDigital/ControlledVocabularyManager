@@ -1,6 +1,6 @@
 class GitCommit < ActiveRecord::Base
 
-  MAX = 3
+  MAX = 5
   validates :term_id, presence: true
   @unmerged_id
   after_initialize :init
@@ -10,18 +10,23 @@ class GitCommit < ActiveRecord::Base
   end
 
   def update_commit(commit_id)
-    self.unmerged_id = commit_id
+    self.unmerged_id = commit_id + ";" + self.unmerged_id
   end
 
   def merge_commit
     enqueue
-    if unserialize.size > MAX
+    self.unmerged_id = ""
+    if unserialize(self.commit_ids).size > MAX
       dequeue
     end
   end
 
+  def unmerged_commits
+    unserialize self.unmerged_id
+  end
+
   def commits
-    unserialize
+    unserialize self.commit_ids
   end
 
   def remove (commit_id)
@@ -30,13 +35,12 @@ class GitCommit < ActiveRecord::Base
 
   private
 
-  def unserialize
-    self.commit_ids.split(";")
+  def unserialize(ids)
+    ids.split(";")
   end
 
   def enqueue
     self.commit_ids = self.unmerged_id + ";" + self.commit_ids
-    self.unmerged_id = ""
   end
 
   def dequeue

@@ -20,7 +20,7 @@ RSpec.describe GitCommit do
       gitc.save
     end
     it "should update the unmerged_commit" do
-      expect(gitc.unmerged_id).to eq("abc123457")
+      expect(gitc.unmerged_id).to eq("abc123457;abc123456")
     end
   end
   context "When merge is called" do
