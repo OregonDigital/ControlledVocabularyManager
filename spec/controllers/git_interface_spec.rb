@@ -70,7 +70,7 @@ RSpec.describe GitInterface do
       repo = Rugged::Repository.new(ControlledVocabularyManager::Application::config.rugged_repo)
       repo.checkout("blah/foo_review")
       expect(repo.last_commit.message).to include("updating: blah/foo")
-      blahfoo_commit2 = GitCommit.find_by(:term_id=>"blah/foo").unmerged_id
+      blahfoo_commit2 = GitCommit.find_by(:term_id=>"blah/foo").unmerged_commits.first
       expect(repo.last_commit.oid).to eq(blahfoo_commit2)
 
       repo.checkout("master")
