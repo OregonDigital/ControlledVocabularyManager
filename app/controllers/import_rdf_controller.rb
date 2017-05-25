@@ -62,7 +62,7 @@ class ImportRdfController < AdminController
 
     term_list.terms.each do |term|
       triples = term.sort_stringify(term)
-      check = rugged_create(term.id, triples, "create")
+      check = rugged_create(term.id, triples, "creating")
       if !check
         flash[:notice] = "Something went wrong with creating #{term.id}."
         return false
