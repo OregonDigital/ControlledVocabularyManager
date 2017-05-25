@@ -10,7 +10,7 @@ class GitCommit < ActiveRecord::Base
   end
 
   def update_commit(commit_id)
-    self.unmerged_id = commit_id + ";" + self.unmerged_id
+    self.unmerged_id = self.unmerged_id.empty? ? commit_id : commit_id + ";" + self.unmerged_id
   end
 
   def merge_commit
