@@ -180,7 +180,7 @@ module GitInterface
       end
       path = id + ".nt"
       #change from commit_info_rugged
-      info = commit_info_from_ids(id)
+      info = commit_info(repo, id, branch)
       formatted = format_response(info)
       formatted
     ensure
@@ -232,21 +232,23 @@ module GitInterface
     end
   end
 
-  def commit_info_from_ids(id)
+  def commit_info(repo, id, branch)
     begin
-      repo = setup
-      if repo.nil?
-        return nil
-      end
       gc = GitCommit.find_by(:term_id=>id)
+      return nil unless !gc.blank?
+      commits = branch.include?("review") ? gc.unmerged_commits : gc.commits
+      commit_info_from_ids(commits, repo)
+    end
+  end
+
+  def commit_info_from_ids(commits, repo)
+    begin
       a = []
-      gc.commits.each do |commit_oid|
+      commits.each do |commit_oid|
         commit = repo.lookup(commit_oid)
         a << {author: commit.author, date: commit.time, hash: commit.oid, message: commit.message}
       end
       a
-    ensure
-      repo.close unless repo.nil?
     end
   end
 
@@ -283,7 +285,7 @@ module GitInterface
   end
 
   def format_response(results)
-    if results.empty?
+    if results.blank?
       return
     else
       formatted = []

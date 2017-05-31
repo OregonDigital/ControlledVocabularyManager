@@ -1,7 +1,7 @@
 <div>
 <h3>Proposed changes: </h3>
 
-<% commit = @term.commit_history.first %>
+<% @term.commit_history.each do |commit| %>
   <ul class="commit_hist"><li><%= commit[:date] %></li>
      <ul class="commit_hist_diffs">
      <% commit[:diff].each do |triple| %>
@@ -9,5 +9,5 @@
     <% end %>
     </ul>
     <li><%= commit[:author] %></li></ul>
-
+<% end %>
 </div>
