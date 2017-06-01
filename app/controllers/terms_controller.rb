@@ -3,6 +3,7 @@ class TermsController < AdminController
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   include GitInterface
+  include GitCommitMethods
 
   before_filter :skip_render_on_cached_page, only: :show
   caches_page :show
@@ -51,8 +52,13 @@ class TermsController < AdminController
   end
 
   def edit
-    @term = term_form_repository.find(params[:id])
-    @disable = true
+    if isLockedForEdit(params[:id])
+      flash[:notice] = "This term is currently in review and locked for editing."
+      redirect_to term_path(:id => params[:id])
+    else
+      @term = term_form_repository.find(params[:id])
+      @disable = true
+    end
   end
 
   def update

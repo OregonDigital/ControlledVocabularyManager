@@ -295,6 +295,38 @@ RSpec.describe TermsController do
       end
     end
 
+    describe "GET edit" do
+      let(:term) { term_mock }
+      let(:injector) { TermInjector.new }
+      let(:twc) { TermWithChildren.new(term, injector.child_node_finder)}
+      let(:term_form) { TermForm.new(SetsAttributes.new(term_mod), Term) }
+      let(:term_mod) { SetsModified.new(twc) }
+
+      before do
+        allow_any_instance_of(TermFormRepository).to receive(:find).and_return(term_form)
+      end
+      context "when term exists" do
+        let(:gc) { GitCommit.create(:term_id => term.id, :unmerged_id => "") }
+        before do
+          gc.commits
+          get :edit, :id => term.id
+        end
+        it "should work" do
+          expect(response).to be_success
+        end
+      end
+      context "when term is already in review" do
+        let(:gc) { GitCommit.create(:term_id => term.id, :unmerged_id => "blah") }
+        before do
+          gc.commits
+          get :edit, :id => term.id
+        end
+        it "should redirect" do
+          expect(response).to redirect_to("/ns/#{term.id}")
+        end
+      end
+    end
+
     describe "PATCH update" do
       let(:term) { term_mock }
       let(:injector) { TermInjector.new }
