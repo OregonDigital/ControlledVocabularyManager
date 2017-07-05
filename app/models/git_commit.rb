@@ -2,35 +2,35 @@ class GitCommit < ActiveRecord::Base
 
   MAX = 5
   validates :term_id, presence: true
-  @unmerged_id
+  @unmerged_commits
   after_initialize :init
 
   def init
-    self.commit_ids ||= ""
+    self.merged_commits ||= ""
   end
 
   def update_commit(commit_id)
-    self.unmerged_id = self.unmerged_id.empty? ? commit_id : commit_id + ";" + self.unmerged_id
+    self.unmerged_commits = self.unmerged_commits.empty? ? commit_id : commit_id + ";" + self.unmerged_commits
   end
 
   def merge_commit
     enqueue
-    self.unmerged_id = ""
-    if unserialize(self.commit_ids).size > MAX
+    self.unmerged_commits = ""
+    if unserialize(self.merged_commits).size > MAX
       dequeue
     end
   end
 
-  def unmerged_commits
-    unserialize self.unmerged_id
+  def unmerged_commit_ids
+    unserialize self.unmerged_commits
   end
 
-  def commits
-    unserialize self.commit_ids
+  def commit_ids
+    unserialize self.merged_commits
   end
 
   def remove (commit_id)
-    self.commit_ids = self.commit_ids.gsub(commit_id + ";", "")
+    self.merged_commits = self.merged_commits.gsub(commit_id + ";", "")
   end
 
   private
@@ -40,10 +40,10 @@ class GitCommit < ActiveRecord::Base
   end
 
   def enqueue
-    self.commit_ids = self.unmerged_id + ";" + self.commit_ids
+    self.merged_commits = self.unmerged_commits + ";" + self.merged_commits
   end
 
   def dequeue
-    self.commit_ids = unserialize.slice(0, MAX).join(";")
+    self.merged_commits = unserialize.slice(0, MAX).join(";")
   end
 end

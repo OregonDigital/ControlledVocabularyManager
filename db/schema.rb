@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170515170717) do
+ActiveRecord::Schema.define(version: 20170705175810) do
 
   create_table "git_commits", force: :cascade do |t|
     t.string   "term_id"
-    t.string   "unmerged_id"
-    t.string   "commit_ids"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.string   "unmerged_commits"
+    t.string   "merged_commits"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
   end
 
   create_table "users", force: :cascade do |t|
