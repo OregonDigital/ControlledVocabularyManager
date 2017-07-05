@@ -43,7 +43,7 @@ module GitInterface
       repo.checkout_head(options)
       repo.checkout('master')
       if action == "creating"
-        gitcom = GitCommit.create(:term_id=>id, :unmerged_id=>commit_oid)
+        gitcom = GitCommit.create(:term_id=>id, :unmerged_commits=>commit_oid)
       else
         gitcom = GitCommit.find_by(:term_id => id)
         gitcom.update_commit(commit_oid)

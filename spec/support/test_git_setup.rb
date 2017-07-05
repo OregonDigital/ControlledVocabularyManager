@@ -25,7 +25,7 @@ module TestGitSetup
     options[:strategy] = :force
     repo.checkout_head(options)
     repo.checkout('master')
-    GitCommit.create(:term_id=>"leopard",:unmerged_id=>commit_id)
+    GitCommit.create(:term_id=>"leopard",:unmerged_commits=>commit_id)
   end
 
   def setup_for_review_test(dummy_class)
