@@ -29,8 +29,8 @@ class GitCommit < ActiveRecord::Base
     unserialize self.merged_commits
   end
 
-  def remove (commit_id)
-    self.merged_commits = self.merged_commits.gsub(commit_id + ";", "")
+  def cancel
+    self.unmerged_commits = ""
   end
 
   private
