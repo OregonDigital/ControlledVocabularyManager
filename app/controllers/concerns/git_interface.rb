@@ -42,10 +42,10 @@ module GitInterface
       options[:strategy] = :force
       repo.checkout_head(options)
       repo.checkout('master')
-      if action == "creating"
+      gitcom = GitCommit.find_by(:term_id => id)
+      if gitcom.blank?
         gitcom = GitCommit.create(:term_id=>id, :unmerged_commits=>commit_oid)
       else
-        gitcom = GitCommit.find_by(:term_id => id)
         gitcom.update_commit(commit_oid)
         gitcom.save
       end
@@ -99,8 +99,12 @@ module GitInterface
         options[:strategy] = :force
         repo.checkout_head(options)
         gitcom = GitCommit.find_by(:term_id=> id)
-        gitcom.merge_commit
-        gitcom.save
+        if !gitcom.blank?
+          gitcom.merge_commit
+          gitcom.save
+        else
+          logger.error('git commit record missing: ' + id)
+        end
         #repo.push('origin', [repo.head.name], { credentials: @cred })
       end
       return our_commit
