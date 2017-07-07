@@ -16,6 +16,8 @@
   <%= render :partial => "history", locals: {:term => @term} %>
 <% end %>
 
+<p>Change history is temporarily turned off. If needed, changes may be available for this term <a href="https://github.com/OregonDigital/opaquenamespace-data/blob/master/<%= @term.id %>.nt">here</a>.</p>
+
   <% if current_user && current_user.administrative? %>
     <% if current_user.reviewer? || current_user.admin? %>
       <% if @term.vocabulary? %>

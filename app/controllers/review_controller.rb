@@ -18,7 +18,7 @@ class ReviewController < AdminController
       flash[:notice] = "#{params[:id]} could not be found in items for review."
       redirect_to review_queue_path
     else
-      @term.commit_history = get_history(@term.id, params[:id] + "_review")
+      #@term.commit_history = get_history(@term.id, params[:id] + "_review")
     end
   end
 
