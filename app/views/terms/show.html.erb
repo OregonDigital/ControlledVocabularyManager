@@ -36,8 +36,8 @@
 <p>
   <br/>
   <strong>Other Formats:</strong>
-  <%= link_to "N-Triples", request.original_url + '.nt' %>
-  , <%= link_to "JSON-LD", request.original_url + '.jsonld' %>
+  <%= link_to "N-Triples", term_path(:id=>@term.id) + '.nt' %>
+  , <%= link_to "JSON-LD", term_path(:id=>@term.id) + '.jsonld' %>
 </p>
 
 <%# TODO: Replace commit history functionality, currently very slow and causes memory leakage %>
