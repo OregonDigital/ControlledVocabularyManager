@@ -73,7 +73,7 @@ def build_graph(args, header_hash)
   @vocab_hash = header_hash.select { |k,v| k == "vocabulary:uri" }
 
   #Vocabulary MUST be provided or no ingest can happen
-  if @vocab_hash.empty? 
+  if @vocab_hash.empty?
     puts "A vocabulary needs to be specified for this term i.e. http://opaquenamespace.org/ns/creator"
     puts "Header row value should be in the form 'vocabulary:uri'"
     exit
@@ -88,7 +88,7 @@ def build_graph(args, header_hash)
 
     #if no id column, mint an id and generate uri. Otherwise generate a uri
      if @no_id_column
-       @id = id_hash(nil, row[@vocab_hash["vocabulary:uri"]]) 
+       @id = id_hash(nil, row[@vocab_hash["vocabulary:uri"]])
      else
        @id = id_hash(row[@id_hash["id:id_hash"]],row[@vocab_hash["vocabulary:uri"]])
      end
@@ -105,7 +105,7 @@ def build_graph(args, header_hash)
 end
 
 def label(id, graph, payload)
-  graph << RDF::Statement.new(id, RDF::RDFS.label, RDF::Literal.new(payload, :language => :en)) 
+  graph << RDF::Statement.new(id, RDF::RDFS.label, RDF::Literal.new(payload, :language => :en))
 end
 
 def date(id, graph, payload)
@@ -115,10 +115,10 @@ end
 def id_hash(id, vocabulary)
   if id.nil?
     o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
-    string = (0...7).map { o[rand(o.length)] }.join
+    string = (0...8).map { o[rand(o.length)] }.join
     return uri(string, vocabulary)
   end
-  return uri(id, vocabulary) 
+  return uri(id, vocabulary)
 end
 
 def uri(id, vocabulary)
@@ -131,10 +131,9 @@ end
 
 def type(id, graph, payload)
   graph << RDF::Statement.new(id, RDF.type, RDF::URI(payload)) if payload
-  graph << RDF::Statement.new(id, RDF.type, RDF::URI("http://www.w3.org/2000/01/rdf-schema#Resource")) 
+  graph << RDF::Statement.new(id, RDF.type, RDF::URI("http://www.w3.org/2000/01/rdf-schema#Resource"))
 end
 
 def comment(id, graph, payload)
   graph << RDF::Statement.new(id, RDF::RDFS.comment, RDF::Literal.new(payload, :language => :en)) if payload
 end
-
