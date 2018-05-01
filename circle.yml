@@ -10,5 +10,6 @@ dependencies:
     - "RAILS_ENV=test bundle exec rake triplestore_adapter:blazegraph:download"
     - java -server -Xmx4g -Dbigdata.propertyFile=config/triplestore_adapter/blazegraph/blazegraph.properties -Dlog4j.configuration=file:config/triplestore_adapter/blazegraph/log4j.properties -jar blazegraph/blazegraph.jar:
         background: true
-    - sleep 5
+    - sleep 10
     - "RAILS_ENV=test bundle exec rake triplestore_adapter:blazegraph:build_namespace"
+    - sleep 10

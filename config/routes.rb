@@ -51,7 +51,7 @@ Rails.application.routes.draw do
   get "/predicates/*id/mark", :to =>"predicates#mark_reviewed", :as => "mark_predicate"
   get "/terms/*id/mark", :to => "terms#mark_reviewed", :as => "mark_term"
   get "/review", :to => "review#index", :as => "review_queue"
-  get "/review/*id/edit", :to => "review#edit", :as => "review_edit"
+  patch "/review/*id/edit", :to => "review#edit", :as => "review_edit"
   get "/review/*id", :to => "review#show", :as => "review_term"
 
   get "/nav", :to => "home#nav", :as => "nav"
