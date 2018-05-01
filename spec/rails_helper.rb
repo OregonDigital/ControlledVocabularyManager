@@ -79,4 +79,7 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
   config.include Rails.application.routes.url_helpers
+  config.before(:each, js: true) do
+    page.driver.browser.url_whitelist = ["127.0.0.1"]
+  end
 end
