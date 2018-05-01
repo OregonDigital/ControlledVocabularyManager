@@ -35,7 +35,9 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     within('div.term_type') do
       find("select#term_type option[value='PersonalName']").select_option
     end
-    find_link('Create Term').click
+    Capybara.using_wait_time(180) do
+      find_link('Create Term').click
+    end
     sleep 2
 
     visit '/review'
