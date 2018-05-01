@@ -48,7 +48,7 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     expect (term_review_show_page).has_content? "Test comment"
     term_review_show_page.edit
     fill_in "vocabulary[alternate_name][]", :with => "Test alt"
-    find_button('Create Personal name').trigger('click')
+    find_button('Update PersonalName').trigger('click')
     sleep 2
 
     term_review_show_page = term_review_index_page.select
