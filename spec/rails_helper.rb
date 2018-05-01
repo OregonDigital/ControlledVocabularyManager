@@ -79,13 +79,4 @@ RSpec.configure do |config|
   # https://relishapp.com/rspec/rspec-rails/docs
   config.infer_spec_type_from_file_location!
   config.include Rails.application.routes.url_helpers
-  config.before(:each, js: true) do
-    page.driver.browser.url_whitelist = ["127.0.0.1"]
-  end
-  config.before(:suite) do
-    Capybara.current_driver = Capybara.javascript_driver
-  end
-  Capybara.register_driver :poltergeist do |app|
-    Capybara::Poltergeist::Driver.new(app, timeout: 1.minute)
-  end
 end
