@@ -35,7 +35,7 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     within('div.term_type') do
       find("select#term_type option[value='PersonalName']").select_option
     end
-    find_button('Create Term').trigger('click')
+    find_link('Create Term').click
     sleep 2
 
     visit '/review'
