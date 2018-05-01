@@ -6,5 +6,5 @@
   <%= render :partial => "vocabularies/form_attribute_list", :locals => {:vocabulary => term, :attribute => attribute, :form => f} %>
 <% end %>
 <%= hidden_field_tag :issued, @term.issued.first %>
-<%= f.button :submit, "Update Term" %>
+<%= f.button :submit, "Update #{f.object.term_type}" %>
 
