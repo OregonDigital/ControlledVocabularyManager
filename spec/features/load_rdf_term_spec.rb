@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'spec_helper'
 require 'support/test_git_setup'
 
 class DummyController < AdminController
