@@ -7,7 +7,7 @@ module ControlledVocabManager
 
       def generate_id
         o = [('a'..'z'), ('A'..'Z'), (0..9)].map(&:to_a).flatten
-        (0...7).map { o[rand(o.length)] }.join
+        (0...8).map { o[rand(o.length)] }.join
       end
     end
   end
