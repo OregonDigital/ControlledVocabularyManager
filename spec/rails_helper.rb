@@ -82,4 +82,7 @@ RSpec.configure do |config|
   config.before(:each, js: true) do
     page.driver.browser.url_whitelist = ["127.0.0.1"]
   end
+  config.before(:suite) do
+    Capybara.current_driver = Capybara.javascript_driver
+  end
 end
