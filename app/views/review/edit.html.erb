@@ -17,7 +17,8 @@
 
 
 <% else %>
-  <%= simple_form_for(@term, :url => review_update_term_path(@term.id)) do |f| %>
+  <%= simple_form_for(@term, :url => {:controller => "terms", :action => "review_update", :id => @term.id }) do |f| %>
     <%= render "terms/edit_form", :f => f, :term => @term %>
   <% end %>
+
 <% end %>
