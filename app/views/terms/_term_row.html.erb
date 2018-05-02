@@ -1,5 +1,5 @@
 <tr>
-<th scope="row"><a href="<%= @term.titleized_type.constantize.properties[field.to_s].predicate.to_s %>"><%= field.to_s.titleize %>:</th>
+<th scope="row"><a href="<%= @term.term_type.properties[field.to_s].predicate.to_s %>"><%= field.to_s.titleize %>:</th>
 <td>
   <ul style="list-style: none;">
     <% if @term.blacklisted_language_properties.include?(field) %>

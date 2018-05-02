@@ -1,5 +1,5 @@
 <label class="control-label toggle-model-visibility term_<%= attribute %>" for="vocabulary_<%= attribute.to_s %>" data-visible-for="<%= TermType.models_having_visible_property(attribute) %>">
-  <a href="<%= vocabulary.titleized_type.constantize.properties[attribute.to_s].predicate.to_s %>">
+  <a href="<%= vocabulary.term_type.properties[attribute.to_s].predicate.to_s %>">
     <%= attribute.to_s.humanize %>
   </a>
 </label>
