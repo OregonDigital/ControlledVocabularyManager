@@ -1,3 +1,5 @@
 triplestore_adapter:
   type: <%= "#{ENV['CVM_TRIPLESTORE_TYPE'] || 'blazegraph'}" %>
   url: <%= "#{ENV['CVM_TRIPLESTORE_URL']}" %>
+
+cache_dir: <%= "#{Rails.root.to_s + '/public'}" %>
