@@ -3,7 +3,6 @@ class TermsController < AdminController
   delegate :deprecate_term_form_repository, :to => :deprecate_injector
   rescue_from ActiveTriples::NotFound, :with => :render_404
   include GitInterface
-  include PreloadCache
 
   before_filter :skip_render_on_cached_page, only: :show
   caches_page :show
@@ -137,7 +136,7 @@ class TermsController < AdminController
         expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :jsonld if @term.term_id.hasParent?
         expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :nt if @term.term_id.hasParent?
         rugged_delete_branch(params[:id])
-        preload(term_form)
+        PreloadCache.preload(term_form)
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
