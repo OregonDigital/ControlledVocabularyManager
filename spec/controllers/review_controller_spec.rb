@@ -138,7 +138,6 @@ RSpec.describe ReviewController do
         FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
       end
       it "should work" do
-        expect(response).to be_success
         expect(response).to redirect_to("/review")
         expect(response.body).not_to include("blah")
       end

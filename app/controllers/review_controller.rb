@@ -38,7 +38,10 @@ class ReviewController < AdminController
 
   def discard
     rugged_delete_branch(params[:id])
-    message = Term.exists? params[:id] ? "Modifications to #{params[:id]} are discarded." : "#{params[:id]} has been discarded."
+    begin
+      status = Term.exists? params[:id]
+    end
+    message = status ? "Modifications to #{params[:id]} are discarded." : "#{params[:id]} has been discarded."
     flash[:notice] = message
     redirect_to review_queue_path
   end
