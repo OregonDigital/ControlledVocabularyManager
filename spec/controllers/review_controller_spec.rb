@@ -120,4 +120,28 @@ RSpec.describe ReviewController do
       end
     end
   end
+
+  describe "PATCH 'discard'" do
+    context 'when there is an item for review' do
+      let(:uri) { "http://opaquenamespace.org/ns/blah" }
+      let(:resource) { instance_double("Vocabulary") }
+      let(:dummy_class) { DummyController.new }
+      let(:user) { User.create(:email => 'george@blah.com', :name => 'George Smith', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University")}
+
+      before do
+        sign_in(user) if user
+        allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
+        setup_for_review_test(dummy_class)
+        patch :discard, :id => "blah"
+      end
+      after do
+        FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+      end
+      it "should work" do
+        expect(response).to be_success
+        expect(response).to redirect_to("/review")
+        expect(response.body).not_to include("blah")
+      end
+    end
+  end
 end

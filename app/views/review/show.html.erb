@@ -32,6 +32,7 @@
     <% end %>
 
     <%= link_to "Edit", review_edit_path(@term.id), {:class=>'btn btn-default', :value=>'edit', :method => :patch} %>
+    <%= link_to "Discard changes", review_discard_path(@term.id), {:class=>'btn btn-default', :value=>'discard', :method => :patch} %>
 
   <% end %>
 
