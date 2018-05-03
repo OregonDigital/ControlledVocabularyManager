@@ -389,15 +389,27 @@ RSpec.describe TermsController do
         allow_any_instance_of(GitInterface).to receive(:reassemble).and_return(term)
         allow(term).to receive(:term_uri_leaf).and_return(term_id)
         allow(term).to receive(:term_uri_vocabulary_id).and_return("test")
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump)
+        allow(term).to receive(:full_graph).and_return(full_graph)
+
       end
       context "when the item has been reviewed" do
         before do
           allow_any_instance_of(GitInterface).to receive(:rugged_merge)
           get :mark_reviewed, :id =>params[:id]
         end
+        after do
+          FileUtils.rm_rf(Settings.cache_dir + '/ns/test')
+        end
+
         it "will redirect to review queue if asset is saved" do
           expect(flash[:notice]).to include("test/blah has been saved")
           expect(response).to redirect_to("/review")
+        end
+        it "will put files in the cache dir" do
+          expect(File).to exist(Settings.cache_dir + '/ns/test/bla.nt')
+          expect(File).to exist(Settings.cache_dir + '/ns/test/bla.jsonld')
         end
       end
       context "when an error is raised inside rugged_merge" do

@@ -136,6 +136,7 @@ class TermsController < AdminController
         expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :jsonld if @term.term_id.hasParent?
         expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :nt if @term.term_id.hasParent?
         rugged_delete_branch(params[:id])
+        PreloadCache.preload(term_form)
         flash[:notice] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
