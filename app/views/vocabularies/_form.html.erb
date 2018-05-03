@@ -2,7 +2,7 @@
   <%= f.error_notification %>
 
   <div class="form-inputs">
-    <%= f.input :id, :label => "ID" %>
+    <%= f.input :id, :label => "ID", :required => true %>
     <% vocabulary.editable_fields.each do |field| %>
       <%= render :partial => "form_attribute_list", :locals => {:vocabulary => vocabulary, :attribute => field, :form => f} %>
     <% end %>
