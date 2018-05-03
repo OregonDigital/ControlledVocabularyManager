@@ -6,6 +6,7 @@ class TermID
   attr_reader :id
 
   def initialize(id)
+    id ||= ControlledVocabManager::IdMinter.mint_id
     @id = id.to_s
   end
 

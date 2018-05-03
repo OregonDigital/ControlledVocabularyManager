@@ -4,6 +4,16 @@ RSpec.describe TermID do
   subject { TermID.new(id) }
   let(:id) { "vocab" }
 
+  describe "#initialize" do
+    let(:subject_minted) { TermID.new(nil) }
+    it "should not be blank" do
+      expect(subject_minted.to_s).not_to be_empty
+    end
+    it "should be 8 characters long" do
+      expect(subject_minted.to_s.length).to eq 8
+    end
+  end
+
   describe "#to_s" do
     it "should be the string" do
       expect(subject.to_s).to eq id
