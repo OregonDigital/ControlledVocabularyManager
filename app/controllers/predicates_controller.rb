@@ -24,7 +24,7 @@ class PredicatesController < ApplicationController
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
       check = rugged_create(predicate_params[:id], triples, "creating")
       if check
-        flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+        flash[:notice] = "#{params[:predicate][:id]} has been saved and added to the review queue."
       else
         flash[:notice] = "Something went wrong, please notify a systems administrator."
       end
