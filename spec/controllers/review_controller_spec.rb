@@ -139,7 +139,7 @@ RSpec.describe ReviewController do
       end
       it "should work" do
         expect(response).to redirect_to("/review")
-        expect(response.body).not_to include("blah")
+        expect(branch_list).not_to include(branchify("blah"))
       end
     end
   end
