@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'spec_helper'
 require 'corporate_name'
 require 'support/test_git_setup'
 RSpec.feature "Using the term type SELECT", :js => true do
@@ -15,7 +16,9 @@ RSpec.feature "Using the term type SELECT", :js => true do
     setup_git
     WebMock.allow_net_connect!
     user1
-    capybara_login(user_params)
+    Capybara.using_wait_time(180) do
+      capybara_login(user_params)
+    end
     vocabulary_create_page = VocabularyCreatePage.new
     visit "/vocabularies/new"
     sleep 2
