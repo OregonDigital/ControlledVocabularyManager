@@ -19,7 +19,7 @@
       <div class="container">
         <div class="starter-template">
           <% flash.each do |key, value| %>
-            <%= content_tag :div, value, class: "flash #{key} alert-#{key} alert" %>
+            <%= content_tag :div, value, class: flash_class(key) %>
           <% end %>
           <%= yield %>
         </div>
