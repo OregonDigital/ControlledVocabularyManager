@@ -41,7 +41,7 @@ RSpec.describe ReviewController do
         end
         it "should handle it gracefully" do
           expect(response).to be_success
-          expect(flash[:notice]).to include("Something went wrong")
+          expect(flash[:error]).to include("Something went wrong")
         end
       end
       context "when logged out" do
@@ -85,7 +85,7 @@ RSpec.describe ReviewController do
         it "should handle it gracefully" do
           get :show, :id => "foo"
           expect(response).to redirect_to("/review")
-          expect(flash[:notice]).to include("foo could not be found")
+          expect(flash[:alert]).to include("foo could not be found")
         end
       end
     end
@@ -115,7 +115,7 @@ RSpec.describe ReviewController do
         it "should handle it gracefully" do
           get :edit, :id => "foo"
           expect(response).to redirect_to("/review")
-          expect(flash[:notice]).to include("foo could not be found")
+          expect(flash[:alert]).to include("foo could not be found")
         end
       end
     end

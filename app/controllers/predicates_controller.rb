@@ -24,9 +24,9 @@ class PredicatesController < ApplicationController
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
       check = rugged_create(predicate_params[:id], triples, "creating")
       if check
-        flash[:notice] = "#{params[:predicate][:id]} has been saved and added to the review queue."
+        flash[:success] = "#{params[:predicate][:id]} has been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       redirect_to "/predicates"
     else
@@ -48,9 +48,9 @@ class PredicatesController < ApplicationController
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+        flash[:saved] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       redirect_to "/predicates"
     else
@@ -70,9 +70,9 @@ class PredicatesController < ApplicationController
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+        flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       redirect_to "/predicates"
 
@@ -102,9 +102,9 @@ class PredicatesController < ApplicationController
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+        flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       redirect_to review_queue_path
     else
@@ -131,15 +131,15 @@ class PredicatesController < ApplicationController
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
-        flash[:notice] = "#{params[:id]} has been saved and is ready for use."
+        flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
         rugged_rollback(branch_commit)
-        flash[:notice] = "Something went wrong, and the term was not saved."
+        flash[:error] = "Something went wrong, and the term was not saved."
         redirect_to review_term_path(params[:id])
       end
     else
-      flash[:notice] = "Something went wrong. Please notify a systems administrator."
+      flash[:error] = "Something went wrong. Please notify a systems administrator."
       redirect_to review_term_path(params[:id])
     end
   end

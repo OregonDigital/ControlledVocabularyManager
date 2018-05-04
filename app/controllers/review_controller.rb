@@ -6,7 +6,7 @@ class ReviewController < AdminController
   def index
     @terms = review_list
     if @terms.nil?
-      flash[:notice] = "Something went wrong, please notify a system administrator."
+      flash[:error] = "Something went wrong, please notify a system administrator."
       @terms = []
     end
     @terms
@@ -15,7 +15,7 @@ class ReviewController < AdminController
   def show
     @term = reassemble(params[:id])
     if @term.blank?
-      flash[:notice] = "#{params[:id]} could not be found in items for review."
+      flash[:alert] = "#{params[:id]} could not be found in items for review."
       redirect_to review_queue_path
     else
       #@term.commit_history = get_history(@term.id, params[:id] + "_review")
@@ -31,11 +31,9 @@ class ReviewController < AdminController
       @term = reassemble(params[:id])
     end
     if @term.blank?
-      flash[:notice] = "#{params[:id]} could not be found in items for review."
+      flash[:alert] = "#{params[:id]} could not be found in items for review."
       redirect_to review_queue_path
     end
   end
 
 end
-
-

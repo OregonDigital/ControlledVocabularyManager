@@ -121,7 +121,7 @@ RSpec.describe VocabulariesController do
         File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
       end
       it "should flash something went wrong" do
-        expect(flash[:notice]).to include("Something went wrong")
+        expect(flash[:error]).to include("Something went wrong")
       end
     end
 
@@ -192,7 +192,7 @@ RSpec.describe VocabulariesController do
         File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
       end
       it "should flash something went wrong" do
-        expect(flash[:notice]).to include("Something went wrong")
+        expect(flash[:error]).to include("Something went wrong")
       end
     end
 
@@ -333,7 +333,7 @@ RSpec.describe VocabulariesController do
         File.delete(ControlledVocabularyManager::Application::config.rugged_repo + "/.git/index.lock")
       end
       it "should flash something went wrong" do
-        expect(flash[:notice]).to include("Something went wrong")
+        expect(flash[:error]).to include("Something went wrong")
       end
     end
 
@@ -365,7 +365,7 @@ RSpec.describe VocabulariesController do
         get :mark_reviewed, :id =>params[:id]
       end
       it "will redirect to review queue if asset is saved" do
-        expect(flash[:notice]).to include("blah has been saved")
+        expect(flash[:success]).to include("blah has been saved")
         expect(response).to redirect_to("/review")
       end
     end
@@ -375,7 +375,7 @@ RSpec.describe VocabulariesController do
         get :mark_reviewed, :id =>params[:id]
       end
       it "should show the flash error" do
-        expect(flash[:notice]).to include("Something went wrong")
+        expect(flash[:error]).to include("Something went wrong")
       end
     end
 
