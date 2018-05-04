@@ -39,9 +39,9 @@ class TermsController < AdminController
       triples = term_form.sort_stringify(term_form.full_graph)
       check = rugged_create(combined_id.to_s, triples, "creating")
       if check
-        flash[:notice] = "#{combined_id.to_s} has been saved and added to the review queue."
+        flash[:success] = "#{combined_id.to_s} has been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       redirect_to term_path(:id => params[:vocabulary_id])
     else
@@ -64,9 +64,9 @@ class TermsController < AdminController
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "#{params[:id]} has been saved and added to the review queue."
+        flash[:success] = "#{params[:id]} has been saved and added to the review queue."
       else
-       flash[:notice] = "Something went wrong, please notify a systems administrator."
+       flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       id_parts = params[:id].split("/")
       redirect_to term_path(:id => id_parts[0])
@@ -95,9 +95,9 @@ class TermsController < AdminController
       triples = term_form.sort_stringify(term_form.full_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+        flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       redirect_to review_queue_path
     else
@@ -137,15 +137,15 @@ class TermsController < AdminController
         expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :nt if @term.term_id.hasParent?
         rugged_delete_branch(params[:id])
         PreloadCache.preload(term_form)
-        flash[:notice] = "#{params[:id]} has been saved and is ready for use."
+        flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
         rugged_rollback(branch_commit)
-        flash[:notice] = "Something went wrong, and term was not saved."
+        flash[:error] = "Something went wrong, and term was not saved."
         redirect_to review_queue_path
       end
     else
-      flash[:notice] = "Something went wrong, please notify a system administrator."
+      flash[:error] = "Something went wrong, please notify a system administrator."
       redirect_to review_queue_path
     end
   end
@@ -157,9 +157,9 @@ class TermsController < AdminController
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
       check = rugged_create(params[:id], triples, "updating")
       if check
-        flash[:notice] = "Changes to #{params[:id]} have been saved and added to the review queue."
+        flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:notice] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = "Something went wrong, please notify a systems administrator."
       end
       id_parts = params[:id].split("/")
       redirect_to term_path(:id => id_parts[0])

@@ -64,17 +64,17 @@ class ImportRdfController < AdminController
       triples = term.sort_stringify(term)
       check = rugged_create(term.id, triples, "create")
       if !check
-        flash[:notice] = "Something went wrong with creating #{term.id}."
+        flash[:error] = "Something went wrong with creating #{term.id}."
         return false
       end
       branch_commit = rugged_merge(term.id)
       if !branch_commit
-        flash[:notice] = "Something went wrong with merging #{term.id}."
+        flash[:error] = "Something went wrong with merging #{term.id}."
         return false
       end
       if !term.persist!
         rugged_rollback(branch_commit)
-        flash[:notice] = "Something went wrong with saving #{term.id}."
+        flash[:error] = "Something went wrong with saving #{term.id}."
         return false
       end
       rugged_delete_branch(term.id)
