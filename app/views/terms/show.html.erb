@@ -49,6 +49,6 @@
     <h3><%= I18n.t("vocabulary.children_header") %></h3>
 
     <table class="table table-striped">
-      <%= render partial: 'terms/vocab_child', collection: @term.children.sort_by { |child| child.label }, cache: true, as: :child %>
+      <%= render partial: 'terms/vocab_child', collection: @term.children.sort_by { |child| child.label.first.downcase }, cache: true, as: :child %>
     </table>
 <% end %>
