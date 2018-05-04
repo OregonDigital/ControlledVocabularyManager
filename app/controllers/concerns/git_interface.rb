@@ -122,10 +122,13 @@ module GitInterface
     begin
       repo = setup
       repo.branches.delete(branch_id)
+      return_val = true
     rescue
       logger.error('delete_branch failed, refer to: ' + branch_id)
+      return_val = false
     ensure
       repo.close unless repo.nil?
+      return_val
     end
   end
 
