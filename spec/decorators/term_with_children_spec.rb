@@ -47,8 +47,11 @@ RSpec.describe TermWithChildren do
   end
 
   describe "#sort_stringify" do
-   it "should return a sorted stringified graph" do
-     expect(subject.sort_stringify(subject.full_graph)).to be_a String
-   end
+    before do
+      vocabulary << RDF::Statement.new(RDF::URI("http://opaquenamespace.org/ns/bla"), RDF::URI("http://schema.org/alternateName"), RDF::Literal("blah"))
+    end
+    it "should return a sorted stringified graph" do
+      expect(subject.sort_stringify(subject.full_graph)).to be_a String
+    end
   end
 end
