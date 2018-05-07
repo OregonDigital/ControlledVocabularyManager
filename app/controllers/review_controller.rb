@@ -41,8 +41,7 @@ class ReviewController < AdminController
     if !success
       flash[:error] = "Something went wrong, please alert a system administrator"
     else
-      status = Term.exists? params[:id]
-      message = status ? "Modifications to #{params[:id]} are discarded." : "#{params[:id]} has been discarded."
+      message = Term.exists? params[:id] ? "Modifications to #{params[:id]} are discarded." : "#{params[:id]} has been discarded."
       flash[:notice] = message
     end
     redirect_to review_queue_path
