@@ -53,9 +53,12 @@ RSpec.describe GitInterface do
       #delete branch
       branches = dummy_class.branch_list
       expect(branches).to include("blah/foo_review")
-      dummy_class.rugged_delete_branch("blah/foo")
+      rval = dummy_class.rugged_delete_branch("blah/foo")
       branches = dummy_class.branch_list
       expect(branches).not_to include("blah/foo_review")
+      expect(rval).to be true
+      rval2 = dummy_class.rugged_delete_branch("blah/foo")
+      expect(rval2).to be false
 
       #create and merge blah/zoo
       dummy_class.rugged_create("blah/zoo", subj2+triple1+subj2+triple5+subj2+triple4,"creating")
