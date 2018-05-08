@@ -1,5 +1,5 @@
 <% content_for :title do %>
-  <%= @term.id %>
+  Review - <%= @term.label.empty? ? @term.id : @term.id + " - " + @term.label.first[0...20] %>
 <% end %>
 
 <h2><%= @term.rdf_label.first %></h2>
