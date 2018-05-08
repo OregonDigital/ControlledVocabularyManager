@@ -1,5 +1,5 @@
 <% content_for :title do %>
-  Review - Edit <%= @term.label.empty? ? @term.id : @term.id + "-" + @term.label.first[0...20] %>
+  Review - Edit <%= @term.label.empty? ? @term.id : @term.id + " - " + @term.label.first[0...20] %>
 <% end %>
 
 <h1>Edit</h1>
