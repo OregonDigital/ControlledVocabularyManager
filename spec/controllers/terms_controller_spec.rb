@@ -497,9 +497,11 @@ RSpec.describe TermsController do
       end
     end
 
-  describe "update_cache" do
+  describe "update_cache", :caching do
     context 'when html exists in cache' do
       let(:format) {}
+      let(:file_cache) { ActiveSupport::Cache.lookup_store(:file_store, Settings.cache_dir) }
+      let(:cache) { Rails.cache }
       before do
         stub_repository
         full_graph = instance_double("RDF::Graph")
@@ -508,6 +510,7 @@ RSpec.describe TermsController do
         allow(resource).to receive(:commit_history=)
         allow(resource).to receive(:persisted?).and_return(true)
         FileUtils.mkdir_p("#{Settings.cache_dir}/ns/test")
+        allow(Rails).to receive(:cache).and_return(file_cache)
       end
       after do
         FileUtils.rm_rf(Settings.cache_dir + '/ns/test')
@@ -517,10 +520,9 @@ RSpec.describe TermsController do
         before do
           allow_any_instance_of(DecoratingRepository).to receive(:find).with("test/bla").and_return(decorated_resource)
           allow(resource).to receive(:term_uri_vocabulary_id).and_return("test")
-          allow_any_instance_of(ActionController::Base).to receive(:perform_caching).and_return(true)
         end
         it 'should refresh the cache' do
-          get :show, :id => resource.id, :format => "nt"
+          FileUtils.touch("#{Settings.cache_dir}/ns/test/bla.nt")
           time_old = File.mtime("#{Settings.cache_dir}/ns/test/bla.nt")
           sleep(1)
           put :cache_update, :id => resource.id, :term_type => "Term"
@@ -534,12 +536,11 @@ RSpec.describe TermsController do
       context "when the term is not a Term" do
         let(:uri) { "http://opaquenamespace.org/ns/test" }
         let(:resource) { instance_double("Vocabulary") }
+
         before do
           allow(resource).to receive(:id).and_return("test")
           allow_any_instance_of(DecoratingRepository).to receive(:find).with("test").and_return(decorated_resource)
-          allow_any_instance_of(ActionController::Base).to receive(:perform_caching).and_return(true)
-          get :show, :id => "test"
-          get :show, :id => "test", :format => "nt"
+          FileUtils.touch("#{Settings.cache_dir}/ns/test.nt")
           put :cache_update, :id => resource.id, :term_type => "Vocabulary"
         end
         it 'should expire the cache' do
