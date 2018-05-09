@@ -496,4 +496,60 @@ RSpec.describe TermsController do
         end
       end
     end
+
+  describe "update_cache" do
+    context 'when html exists in cache' do
+      let(:format) {}
+      before do
+        stub_repository
+        full_graph = instance_double("RDF::Graph")
+        allow(full_graph).to receive(:dump)
+        allow(decorated_resource).to receive(:full_graph).and_return(full_graph)
+        allow(resource).to receive(:commit_history=)
+        allow(resource).to receive(:persisted?).and_return(true)
+        FileUtils.mkdir_p("#{Settings.cache_dir}/ns/test")
+      end
+      after do
+        FileUtils.rm_rf(Settings.cache_dir + '/ns/test')
+        FileUtils.rm_rf(Settings.cache_dir + '/ns/test.*')
+      end
+      context "when the term is a Term" do
+        before do
+          allow_any_instance_of(DecoratingRepository).to receive(:find).with("test/bla").and_return(decorated_resource)
+          allow(resource).to receive(:term_uri_vocabulary_id).and_return("test")
+          allow_any_instance_of(ActionController::Base).to receive(:perform_caching).and_return(true)
+        end
+        it 'should refresh the cache' do
+          get :show, :id => resource.id, :format => "nt"
+          time_old = File.mtime("#{Settings.cache_dir}/ns/test/bla.nt")
+          sleep(1)
+          put :cache_update, :id => resource.id, :term_type => "Term"
+          expect(File.mtime("#{Settings.cache_dir}/ns/test/bla.nt")).not_to eq(time_old)
+        end
+        it 'should redirect to the term page' do
+          put :cache_update, :id => resource.id, :term_type => "Term"
+          expect(response).to redirect_to("/ns/#{resource.id}")
+        end
+      end
+      context "when the term is not a Term" do
+        let(:uri) { "http://opaquenamespace.org/ns/test" }
+        let(:resource) { instance_double("Vocabulary") }
+        before do
+          allow(resource).to receive(:id).and_return("test")
+          allow_any_instance_of(DecoratingRepository).to receive(:find).with("test").and_return(decorated_resource)
+          allow_any_instance_of(ActionController::Base).to receive(:perform_caching).and_return(true)
+          get :show, :id => "test"
+          get :show, :id => "test", :format => "nt"
+          put :cache_update, :id => resource.id, :term_type => "Vocabulary"
+        end
+        it 'should expire the cache' do
+          expect(File).not_to exist(Settings.cache_dir + '/ns/test.nt')
+        end
+        it 'should redirect to the term page' do
+          expect(response).to redirect_to("/ns/#{resource.id}")
+        end
+      end
+    end
+  end
+
 end

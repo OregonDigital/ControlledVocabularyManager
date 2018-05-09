@@ -173,6 +173,20 @@ class TermsController < AdminController
     @term = term_form_repository.find(params[:id])
   end
 
+  def cache
+    @term = term_form_repository.find(params[:id])
+  end
+
+  def cache_update
+    expire_page action: 'show', id: params[:id], format: :html
+    expire_page action: 'show', id: params[:id], format: :nt
+    expire_page action: 'show', id: params[:id], format: :jsonld
+    if params[:term_type] == 'Term'
+      @term = find_term
+      PreloadCache.preload(@term)
+    end
+    redirect_to term_path(params[:id])
+  end
   private
 
   def term_params

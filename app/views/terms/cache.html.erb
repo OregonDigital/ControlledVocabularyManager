@@ -1,0 +1,11 @@
+<% content_for :title do %>
+    <%= @term.id %>
+<% end %>
+<h2><%= @term.rdf_label.first %></h2>
+<h3 class="uri"><%= @term.rdf_subject %></h3>
+<% if @term.vocabulary? || @term.predicate? %>
+<p> This process will update the cached html page for this vocabulary/predicate only. </p>
+<% else %>
+<p>This process will update the cached html page for this term as well as its nt and jsonld pages.</p>
+<% end %>
+  <%= link_to "Update cache?", cache_update_term_path(@term), { :class => 'btn btn-default', :method => :put} %>

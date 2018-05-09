@@ -50,6 +50,8 @@ Rails.application.routes.draw do
   get "/vocabularies/*id/mark", :to => "vocabularies#mark_reviewed", :as => "mark_vocabulary"
   get "/predicates/*id/mark", :to =>"predicates#mark_reviewed", :as => "mark_predicate"
   get "/terms/*id/mark", :to => "terms#mark_reviewed", :as => "mark_term"
+  put "/terms/*id/cache_update", :to => "terms#cache_update", :as => "cache_update_term"
+  get "/terms/*id/cache", :to => "terms#cache", :as => "cachef_term"
   get "/review", :to => "review#index", :as => "review_queue"
   patch "/review/*id/edit", :to => "review#edit", :as => "review_edit"
   patch "/review/*id/discard", :to => "review#discard", :as => "review_discard"
