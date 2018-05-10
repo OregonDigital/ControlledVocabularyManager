@@ -338,7 +338,9 @@ module GitInterface
     end
     branches.each do |branch|
       content = commit_content(branch)
-      if !content.blank?
+      if content.blank? 
+        rugged_delete_branch(branch)
+      else
         graph = triples_string_to_graph(content)
         label_state = graph.query([nil, RDF::RDFS.label, nil])
         if !label_state.blank?
