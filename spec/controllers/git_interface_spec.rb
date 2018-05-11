@@ -47,6 +47,11 @@ RSpec.describe GitInterface do
       terms = dummy_class.review_list
       expect(terms.size).to eq(1)
 
+      #handle bad branch name
+      repo.branches.create("badbranch", "HEAD")
+      terms = dummy_class.review_list
+      expect(terms.size).to eq(1)
+
       #edit_params
       params = dummy_class.edit_params("blah/foo")
       expect(params[:vocabulary][:label].first).to eq("foo")
