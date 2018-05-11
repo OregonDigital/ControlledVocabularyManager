@@ -42,6 +42,11 @@ RSpec.describe GitInterface do
       terms = dummy_class.review_list
       expect(terms.first[:id]).to eq("blah/foo")
 
+      #handle empty branch in review
+      dummy_class.rugged_create("blah/blank", "", "creating")
+      terms = dummy_class.review_list
+      expect(terms.size).to eq(1)
+
       #edit_params
       params = dummy_class.edit_params("blah/foo")
       expect(params[:vocabulary][:label].first).to eq("foo")
