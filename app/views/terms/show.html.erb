@@ -21,6 +21,7 @@
   <% else %>
       <%= link_to "Edit", edit_term_path(@term), { :class => 'btn btn-default' } %>
   <% end %>
+  <%= link_to "Manage cache", cache_term_path(@term), { :class => 'btn btn-default' } %>
 </div>
 
 <% if @term.term_id.hasParent? %>

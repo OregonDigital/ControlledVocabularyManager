@@ -40,6 +40,18 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
+  config.around(:each, :caching ) do |example|
+    status = ActionController::Base.perform_caching
+    store = ActionController::Base.cache_store
+    ActionController::Base.perform_caching = true
+    ActionController::Base.cache_store = :file_store, Settings.cache_dir
+    Rails.cache = ActionController::Base.cache_store
+    example.run
+    Rails.cache = store
+    ActionController::Base.perform_caching = status
+    ActionController::Base.cache_store = store
+  end
+
   # The settings below are suggested to provide a good initial experience
   # with RSpec, but feel free to customize to your heart's content.
   begin

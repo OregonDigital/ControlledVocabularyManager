@@ -8,6 +8,7 @@ class TermsController < AdminController
   caches_page :show
   skip_before_filter :require_admin
   before_filter :require_editor, :except => [:index, :show]
+  before_filter :require_admin, :only => [:cache]
 
   def show
     @term = find_term
@@ -173,6 +174,20 @@ class TermsController < AdminController
     @term = term_form_repository.find(params[:id])
   end
 
+  def cache
+    @term = term_form_repository.find(params[:id])
+  end
+
+  def cache_update
+    expire_page action: 'show', id: params[:id], format: :html
+    expire_page action: 'show', id: params[:id], format: :nt
+    expire_page action: 'show', id: params[:id], format: :jsonld
+    if params[:term_type] == 'Term'
+      @term = find_term
+      PreloadCache.preload(@term)
+    end
+    redirect_to term_path(params[:id])
+  end
   private
 
   def term_params
