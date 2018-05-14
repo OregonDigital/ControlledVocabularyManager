@@ -19,7 +19,7 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     setup_git
 
     user
-    capybara_login(user_params)
+    sign_in user
     visit "/vocabularies/new"
     fill_in('vocabulary[id]', with: vocabulary_id)
     find_button('Create Vocabulary').trigger('click')

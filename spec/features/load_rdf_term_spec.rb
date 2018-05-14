@@ -84,9 +84,7 @@ RSpec.feature "Load RDF", :js => true, :type => :feature do
     setup_git
 
     user
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
+    sign_in user
     visit "/load_rdf"
     fill_in('load_form_rdf_string', with: jsonld)
     find_button('Load').trigger('click')
@@ -105,9 +103,7 @@ RSpec.feature "Load RDF", :js => true, :type => :feature do
     setup_git
 
     user
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
+    sign_in user
     visit "/load_rdf"
     fill_in('load_form_rdf_string', with: jsonldbad)
     find_button('Load').trigger('click')

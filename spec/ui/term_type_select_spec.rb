@@ -16,9 +16,7 @@ RSpec.feature "Using the term type SELECT", :js => true do
     setup_git
     WebMock.allow_net_connect!
     user1
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
+    sign_in user1
     vocabulary_create_page = VocabularyCreatePage.new
     visit "/vocabularies/new"
     sleep 2
