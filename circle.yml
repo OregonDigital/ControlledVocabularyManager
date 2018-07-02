@@ -1,6 +1,6 @@
 machine:
   ruby:
-    version: 2.2.2
+    version: 2.3.1
 dependencies:
   cache_directories:
     - "tmp"
