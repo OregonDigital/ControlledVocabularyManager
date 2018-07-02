@@ -22,10 +22,7 @@ RSpec.feature "Import RDF", :js => true, :type => :feature do
     setup_git
 
     user
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
-
+    sign_in user
     visit "/import_rdf"
 
     fill_in('import_form_url', with: urlpred)
@@ -50,9 +47,7 @@ RSpec.feature "Import RDF", :js => true, :type => :feature do
     setup_git
 
     user
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
+    sign_in user
     visit "/import_rdf"
 
     fill_in('import_form_url', with: urlvoc)

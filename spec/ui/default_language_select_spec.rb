@@ -13,10 +13,7 @@ RSpec.feature "Using a language SELECT with a default language set", :js => true
   scenario "adding another label defaults language select to english" do
     WebMock.allow_net_connect!
     user1
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
-
+    sign_in user1
     visit "/vocabularies/new"
     within('.vocabulary_label') do
       find(".language-select option[value='es']").select_option

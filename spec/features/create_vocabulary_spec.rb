@@ -15,7 +15,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
 
   before do
     user
-    capybara_login(user_params)
+    sign_in user
   end
 
   it "should create and update a vocabulary" do
