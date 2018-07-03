@@ -19,7 +19,8 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
     setup_git
 
     user
-    sign_in user
+    sign_in(user)
+
     visit "/vocabularies/new"
     fill_in('vocabulary[id]', with: vocabulary_id)
     find_button('Create Vocabulary').trigger('click')
