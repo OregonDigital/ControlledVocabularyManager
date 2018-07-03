@@ -498,7 +498,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   sqlite3
-  therubyracer
   timecop
   triplestore-adapter!
   turbolinks
