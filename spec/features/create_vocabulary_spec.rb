@@ -15,9 +15,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
 
   before do
     user
-    Capybara.using_wait_time(180) do
-      capybara_login(user_params)
-    end
+    sign_in user
 
   end
 
