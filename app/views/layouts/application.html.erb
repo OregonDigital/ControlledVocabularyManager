@@ -11,6 +11,8 @@
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= render :partial => 'shared/analytics' %>
     <%= csrf_meta_tags unless @skip_render %>
+
+    <script src="https://unpkg.com/lunr/lunr.js"></script>
   </head>
 
   <body>

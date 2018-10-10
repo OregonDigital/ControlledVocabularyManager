@@ -1,8 +1,11 @@
 <%= javascript_tag do %>
-  window.data = <%= File.read(Rails.root.join("lib", "index.json")) %>;
+  window.data = '<%= raw File.read(Rails.root.join("lib", "index.json")) %>';
 <% end %>
 
 <div class='lunr_search'>
+</div>
+
+<div id="search_results">
 </div>
 
 <form action="get" id="site_search">
