@@ -358,7 +358,6 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rugged (0.25.1.1)
     safe_yaml (1.0.4)
     sass (3.2.19)
     sass-rails (4.0.5)
@@ -493,7 +492,6 @@ DEPENDENCIES
   responders (~> 2.0)
   rest-client
   rspec-rails
-  rugged
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   shoulda-matchers

@@ -1,0 +1,175 @@
+{
+  "@context": {
+    "dc": "http://purl.org/dc/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "schema": "http://schema.org/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary",
+      "@type": [
+        "http://purl.org/dc/dcam/VocabularyEncodingScheme",
+        "rdf:Property",
+        "rdfs:Resource"
+      ],
+      "dc:issued": "2016-03-04",
+      "dc:modified": {
+        "@value": "2017-01-26",
+        "@type": "xsd:date"
+      },
+      "dc:publisher": {
+        "@value": "Me",
+        "@language": "ne"
+      },
+      "dc:title": [
+        {
+          "@value": "Testing Vocabulary",
+          "@language": "en"
+        },
+        {
+          "@value": "Testing Vocabulary Zulu",
+          "@language": "zu"
+        }
+      ],
+      "rdfs:comment": {
+        "@value": "Simple comment",
+        "@language": "ja"
+      },
+      "rdfs:isDefinedBy": "Blahblah",
+      "rdfs:label": {
+        "@value": "Here is a sample label",
+        "@language": "an"
+      },
+      "rdfs:seeAlso": "Blahblah",
+      "rdfs:subPropertyOf": [
+        "asdf",
+        "{:scheme=>\"http\", :authority=>\"opaquenamespace.org\", :userinfo=>nil, :user=>nil, :password=>nil, :host=>\"opaquenamespace.org\", :port=>nil, :path=>\"/ns/TestVocabulary\", :query=>nil, :fragment=>nil}",
+        {
+          "@id": "http://opaquenamespace.org/ns/TestVocabulary"
+        }
+      ],
+      "schema:alternateName": {
+        "@value": "asdf",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary/TestTerm",
+      "@type": [
+        "skos:Concept",
+        "rdfs:Resource"
+      ],
+      "dc:issued": "2016-03-04",
+      "dc:modified": {
+        "@value": "2017-01-26",
+        "@type": "xsd:date"
+      },
+      "rdfs:comment": {
+        "@value": "Testing 1 2",
+        "@language": "th"
+      },
+      "rdfs:isDefinedBy": "yup",
+      "rdfs:label": {
+        "@value": "hello",
+        "@language": "fo"
+      },
+      "rdfs:seeAlso": "yup"
+    },
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary/TestTerm2",
+      "@type": [
+        "skos:Concept",
+        "rdfs:Resource"
+      ],
+      "dc:date": "Today",
+      "dc:issued": "2016-03-04",
+      "dc:modified": {
+        "@value": "2018-10-09",
+        "@type": "xsd:date"
+      },
+      "rdfs:comment": {
+        "@value": "Comment",
+        "@language": "en"
+      },
+      "rdfs:isDefinedBy": "Comment",
+      "rdfs:label": [
+        {
+          "@value": "Blah2",
+          "@language": "de"
+        },
+        {
+          "@value": "Blah",
+          "@language": "en"
+        }
+      ],
+      "rdfs:seeAlso": "Comment",
+      "schema:alternateName": {
+        "@value": "Alt Name",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary",
+      "@type": "skos:Geographic",
+      "dc:issued": {
+        "@value": "2016-08-30",
+        "@type": "xsd:date"
+      },
+      "dc:modified": {
+        "@value": "2016-08-30",
+        "@type": "xsd:date"
+      }
+    },
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary/gumj",
+      "@type": [
+        "skos:Concept",
+        "rdfs:Resource"
+      ],
+      "dc:issued": "2016-04-07",
+      "dc:modified": {
+        "@value": "2016-11-04",
+        "@type": "xsd:date"
+      },
+      "rdfs:label": {
+        "@value": "Gum, Josh",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary/gumk",
+      "@type": [
+        "skos:PersonalName",
+        "rdfs:Resource"
+      ],
+      "dc:issued": "2016-11-04",
+      "dc:modified": {
+        "@value": "2016-11-04",
+        "@type": "xsd:date"
+      },
+      "rdfs:label": {
+        "@value": "Fictitious name",
+        "@language": "en"
+      }
+    },
+    {
+      "@id": "http://opaquenamespace.org/ns/TestVocabulary/ï¿½ï¿½ï¿½",
+      "@type": "skos:Concept",
+      "dc:issued": {
+        "@value": "2016-04-12",
+        "@type": "xsd:date"
+      },
+      "dc:modified": {
+        "@value": "2016-04-12",
+        "@type": "xsd:date"
+      },
+      "rdfs:label": {
+        "@value": "a testy",
+        "@language": "en"
+      }
+    }
+  ]
+}

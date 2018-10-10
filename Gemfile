@@ -47,7 +47,7 @@ gem 'triplestore-adapter', :github => "osulp/triplestore-adapter", :branch => "0
 gem 'json-ld', '~> 1.99'
 
 gem 'warden-github-rails'
-gem 'rugged'
+#gem 'rugged'
 
 gem 'config'
 gem 'simple_form'
