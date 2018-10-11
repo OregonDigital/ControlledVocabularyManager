@@ -1,5 +1,393 @@
 <%= javascript_tag do %>
-  window.data = '<%= raw File.read(Rails.root.join("lib", "index.json")) %>';
+  window.data = JSON.stringify({
+"version": "2.3.3",
+"fields": ["title", "date", "type", "label", "comment", "publisher", "alternateName"],
+"fieldVectors": [
+["title/http://opaquenamespace.org/ns/TestVocabulary", [0, 0.506, 1, 0.506]],
+["date/http://opaquenamespace.org/ns/TestVocabulary", [2, 0.241]],
+["type/http://opaquenamespace.org/ns/TestVocabulary", [3, 1.279, 4, 1.279, 5, 0.2]],
+["label/http://opaquenamespace.org/ns/TestVocabulary", [6, 1.161, 7, 1.161, 8, 1.161]],
+["comment/http://opaquenamespace.org/ns/TestVocabulary", [9, 1.093, 10, 0.731]],
+["publisher/http://opaquenamespace.org/ns/TestVocabulary", []],
+["alternateName/http://opaquenamespace.org/ns/TestVocabulary", [11, 1.093]],
+["title/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", []],
+["date/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", [2, 0.241]],
+["type/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", [5, 0.241, 12, 0.693]],
+["label/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", [13, 1.842]],
+["comment/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", [14, 0.847, 15, 0.847, 16, 0.847]],
+["publisher/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", []],
+["alternateName/http://opaquenamespace.org/ns/TestVocabulary/TestTerm", []],
+["title/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", []],
+["date/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", [17, 1.54]],
+["type/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", [5, 0.241, 12, 0.693]],
+["label/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", [18, 1.424, 19, 1.424]],
+["comment/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", [10, 1.03]],
+["publisher/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", []],
+["alternateName/http://opaquenamespace.org/ns/TestVocabulary/TestTerm2", [20, 0.692, 21, 0.462]],
+["title/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", []],
+["date/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", [2, 0.241]],
+["type/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", [22, 1.937]],
+["label/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", []],
+["comment/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", []],
+["publisher/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", []],
+["alternateName/http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary", []],
+["title/http://opaquenamespace.org/ns/TestVocabulary/gumj", []],
+["date/http://opaquenamespace.org/ns/TestVocabulary/gumj", [2, 0.241]],
+["type/http://opaquenamespace.org/ns/TestVocabulary/gumj", [5, 0.241, 12, 0.693]],
+["label/http://opaquenamespace.org/ns/TestVocabulary/gumj", [23, 1.424, 24, 1.424]],
+["comment/http://opaquenamespace.org/ns/TestVocabulary/gumj", []],
+["publisher/http://opaquenamespace.org/ns/TestVocabulary/gumj", []],
+["alternateName/http://opaquenamespace.org/ns/TestVocabulary/gumj", []],
+["title/http://opaquenamespace.org/ns/TestVocabulary/gumk", []],
+["date/http://opaquenamespace.org/ns/TestVocabulary/gumk", [2, 0.241]],
+["type/http://opaquenamespace.org/ns/TestVocabulary/gumk", [5, 0.241, 25, 1.54]],
+["label/http://opaquenamespace.org/ns/TestVocabulary/gumk", [21, 0.952, 26, 1.424]],
+["comment/http://opaquenamespace.org/ns/TestVocabulary/gumk", []],
+["publisher/http://opaquenamespace.org/ns/TestVocabulary/gumk", []],
+["alternateName/http://opaquenamespace.org/ns/TestVocabulary/gumk", []]
+],
+"invertedIndex": [
+["1", {
+"_index": 15,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {}
+},
+"publisher": {},
+"alternateName": {}
+}],
+["2", {
+"_index": 16,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {}
+},
+"publisher": {},
+"alternateName": {}
+}],
+["alt", {
+"_index": 20,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {}
+}
+}],
+["asdf", {
+"_index": 11,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+}
+}],
+["blah", {
+"_index": 19,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["blah2", {
+"_index": 18,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["comment", {
+"_index": 10,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {
+"http://opaquenamespace.org/ns/TestVocabulary": {},
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {}
+},
+"publisher": {},
+"alternateName": {}
+}],
+["fictiti", {
+"_index": 26,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/gumk": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["gum", {
+"_index": 23,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/gumj": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["hello", {
+"_index": 13,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["here", {
+"_index": 6,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["http://purl.org/dc/dcam/vocabularyencodingschem", {
+"_index": 3,
+"title": {},
+"date": {},
+"type": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["josh", {
+"_index": 24,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/gumj": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["label", {
+"_index": 8,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["name", {
+"_index": 21,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary/gumk": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {}
+}
+}],
+["null", {
+"_index": 2,
+"title": {},
+"date": {
+"http://opaquenamespace.org/ns/TestVocabulary": {},
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {},
+"http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary": {},
+"http://opaquenamespace.org/ns/TestVocabulary/gumj": {},
+"http://opaquenamespace.org/ns/TestVocabulary/gumk": {}
+},
+"type": {},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["rdf:properti", {
+"_index": 4,
+"title": {},
+"date": {},
+"type": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["rdfs:resourc", {
+"_index": 5,
+"title": {},
+"date": {},
+"type": {
+"http://opaquenamespace.org/ns/TestVocabulary": {},
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {},
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {},
+"http://opaquenamespace.org/ns/TestVocabulary/gumj": {},
+"http://opaquenamespace.org/ns/TestVocabulary/gumk": {}
+},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["sampl", {
+"_index": 7,
+"title": {},
+"date": {},
+"type": {},
+"label": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["simpl", {
+"_index": 9,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"publisher": {},
+"alternateName": {}
+}],
+["skos:concept", {
+"_index": 12,
+"title": {},
+"date": {},
+"type": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {},
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {},
+"http://opaquenamespace.org/ns/TestVocabulary/gumj": {}
+},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["skos:geograph", {
+"_index": 22,
+"title": {},
+"date": {},
+"type": {
+"http://opaquenamespace.org/ns/TestVocabulary/ValleyLibrary": {}
+},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["skos:personalnam", {
+"_index": 25,
+"title": {},
+"date": {},
+"type": {
+"http://opaquenamespace.org/ns/TestVocabulary/gumk": {}
+},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["test", {
+"_index": 14,
+"title": {},
+"date": {},
+"type": {},
+"label": {},
+"comment": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm": {}
+},
+"publisher": {},
+"alternateName": {}
+}],
+["testing vocabulari", {
+"_index": 0,
+"title": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"date": {},
+"type": {},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["testing vocabulary zulu", {
+"_index": 1,
+"title": {
+"http://opaquenamespace.org/ns/TestVocabulary": {}
+},
+"date": {},
+"type": {},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}],
+["today", {
+"_index": 17,
+"title": {},
+"date": {
+"http://opaquenamespace.org/ns/TestVocabulary/TestTerm2": {}
+},
+"type": {},
+"label": {},
+"comment": {},
+"publisher": {},
+"alternateName": {}
+}]
+],
+"pipeline": ["stemmer"]
+});
+
 <% end %>
 
 <div class='lunr_search'>
