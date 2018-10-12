@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+#gem 'spring',        group: :development
 
 # Use unicorn as the app server
 gem 'unicorn'
@@ -47,7 +47,7 @@ gem 'triplestore-adapter', :github => "osulp/triplestore-adapter", :branch => "0
 gem 'json-ld', '~> 1.99'
 
 gem 'warden-github-rails'
-gem 'rugged'
+#gem 'rugged'
 
 gem 'config'
 gem 'simple_form'
@@ -65,12 +65,15 @@ gem 'capistrano', '~> 2.0'
 
 gem 'responders', '~> 2.0'
 
+gem 'sunspot_rails'
+gem 'sunspot_solr'
+
 group :production, :staging do
   gem 'ddtrace'
 end
 
 group :development do
-  gem 'spring-commands-rspec'
+  # gem 'spring-commands-rspec'
   gem 'web-console', '~> 2.0'
 end
 
