@@ -19,6 +19,7 @@
       <ul class="nav navbar-nav">
         <li><%= link_to "Vocabularies", vocabularies_path %></li>
         <li><%= link_to "Predicates", predicates_path %></li>
+        <li><%= link_to "Search", search_path %></li>
         <%# @skip_render aids in page_caching all but the dynamic/user related content which gets loaded by update_user_data_on_cached_page.js ajax %>
         <% if current_user && current_user.administrative? && !@skip_render %>
           <li><%= link_to "Review", review_queue_path %></li>

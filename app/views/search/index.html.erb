@@ -1,0 +1,7 @@
+<div class='lunr_search'>
+</div>
+
+<%= form_tag(search_results_path, method: :get) do %>
+  <%= text_field_tag :value %>
+  <%= submit_tag 'Search' %>
+<% end %>

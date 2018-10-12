@@ -5,6 +5,8 @@ Rails.application.routes.draw do
 
   # You can have the root of your site routed with "root"
   root 'home#index'
+  get "/search", :to => "search#index", :as => "search"
+  get "/search_results(/:value)", :to => "search#search_results", :as => "search_results"
 
   get "/admin", :to => "admin#index", :as => "admin"
 
