@@ -3,6 +3,8 @@ class SearchController < ApplicationController
   end
 
   def search_results
-    Vocabulary.search{ fulltext params[:search_value]}
+    search = Vocabulary.search{ fulltext params[:search_value]}
+    puts search
+    search
   end
 end

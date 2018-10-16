@@ -6,11 +6,6 @@ class Vocabulary < Term
   property :range, :predicate => RDF::RDFS.range
   property :domain, :predicate => RDF::RDFS.domain
 
-
-  searchable do
-    text :title
-    text :publisher
-  end
   def self.option_text
     "Vocabulary"
   end

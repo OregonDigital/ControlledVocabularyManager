@@ -1,6 +1,8 @@
 class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   include ActiveModel::Validations
+  include Sunspot::Rails::Searchable
+
 
   attr_accessor :commit_history
 
@@ -22,6 +24,10 @@ class Term < ActiveTriples::Resource
   delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
 
   validate :not_blank_node
+
+  searchable auto_index: false, auto_remove: false do
+    text :label
+  end
 
   def self.option_text
     "Concept"
@@ -118,8 +124,8 @@ class Term < ActiveTriples::Resource
   #
   # @param property_name [Symbol] the property name to get language for
   def literal_language_list_for_property(property_name)
-    self.get_values(property_name.to_s, :literal => true).map { 
-      |literal| [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))] 
+    self.get_values(property_name.to_s, :literal => true).map {
+      |literal| [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))]
     }
   end
 
