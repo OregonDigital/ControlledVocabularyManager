@@ -12,6 +12,7 @@ class VocabularyInjector < Struct.new(:params)
     #causes some issues with the objects and predicates being fetched properly
     #By inputing the sparql_client directly into the all vocabs query correctly
     #assembles the query.
+    #
     -> { AllVocabsQuery.call(sparql_client, vocabulary_repository, Vocabulary.type) }
   end
 

@@ -6,6 +6,10 @@ class Vocabulary < Term
   property :range, :predicate => RDF::RDFS.range
   property :domain, :predicate => RDF::RDFS.domain
 
+  searchable auto_index: false, auto_remove: false do
+    text :label
+  end
+
   def self.option_text
     "Vocabulary"
   end
@@ -16,6 +20,10 @@ class Vocabulary < Term
 
   def self.visible_form_fields
     %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued title publisher sub_property_of range domain]
+  end
+
+  def self.includes(included_field)
+    VocabularyInjector.new({"controller"=>"vocabularies", "action"=>"index"}).all_vocabs_query.call.sort_by! {|v| v.rdf_label.first.to_s.downcase }
   end
 
   def allow_vocab_deprecate?

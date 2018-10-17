@@ -1,2 +1,2 @@
-Sunspot::Adapters::InstanceAdapter.register(TermInstanceAdapter, Term)
-Sunspot::Adapters::DataAccessor.register(TermDataAccessor, Term)
+Sunspot::Adapters::InstanceAdapter.register(TermInstanceAdapter, Vocabulary)
+Sunspot::Adapters::DataAccessor.register(TermDataAccessor, Vocabulary)

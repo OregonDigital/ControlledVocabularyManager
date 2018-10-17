@@ -25,9 +25,7 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
-  searchable auto_index: false, auto_remove: false do
-    text :label
-  end
+
 
   def self.option_text
     "Concept"
