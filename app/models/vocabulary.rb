@@ -7,7 +7,11 @@ class Vocabulary < Term
   property :domain, :predicate => RDF::RDFS.domain
 
   searchable auto_index: false, auto_remove: false do
+    text :id
     text :label
+    text :title do
+      title
+    end
   end
 
   def self.option_text

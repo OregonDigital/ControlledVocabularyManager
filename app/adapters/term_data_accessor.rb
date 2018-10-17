@@ -4,6 +4,6 @@ class TermDataAccessor < Sunspot::Adapters::DataAccessor
   end
 
   def load_all(ids)
-    @clazz.all
+    @clazz.includes(:thing)
   end
 end
