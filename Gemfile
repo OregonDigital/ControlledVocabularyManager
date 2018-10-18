@@ -31,7 +31,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0',          group: :doc
 
 # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-gem 'spring',        group: :development
+# gem 'spring',        group: :development
 
 # Use unicorn as the app server
 gem 'unicorn'
@@ -65,12 +65,14 @@ gem 'capistrano', '~> 2.0'
 
 gem 'responders', '~> 2.0'
 
+gem 'blacklight'
+
 group :production, :staging do
   gem 'ddtrace'
 end
 
 group :development do
-  gem 'spring-commands-rspec'
+  # gem 'spring-commands-rspec'
   gem 'web-console', '~> 2.0'
 end
 
@@ -96,3 +98,9 @@ group :test do
   gem 'timecop'
   gem 'webmock'
 end
+
+group :development, :test do
+  gem 'solr_wrapper', '>= 0.3'
+end
+
+gem 'rsolr', '>= 1.0'

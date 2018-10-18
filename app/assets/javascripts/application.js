@@ -12,6 +12,9 @@
 //
 //= require jquery
 //= require jquery_ujs
+//
+// Required by Blacklight
+//= require blacklight/blacklight
 //= require jquery-ui
 //= require bootstrap-sprockets
 //= require add_date_field

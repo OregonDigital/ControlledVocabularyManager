@@ -73,6 +73,16 @@ GEM
     bcrypt (3.1.12)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    blacklight (6.16.0)
+      bootstrap-sass (~> 3.2)
+      deprecation
+      globalid
+      jbuilder
+      kaminari (>= 0.15)
+      nokogiri (~> 1.6)
+      rails (>= 4.2, < 6)
+      rsolr (>= 1.0.6, < 3)
+      twitter-typeahead-rails (= 0.11.1.pre.corejavascript)
     bootstrap-sass (3.3.5)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
@@ -183,6 +193,18 @@ GEM
     json-ld (1.99.2)
       multi_json (~> 1.11)
       rdf (~> 1.99)
+    kaminari (1.1.1)
+      activesupport (>= 4.1.0)
+      kaminari-actionview (= 1.1.1)
+      kaminari-activerecord (= 1.1.1)
+      kaminari-core (= 1.1.1)
+    kaminari-actionview (1.1.1)
+      actionview
+      kaminari-core (= 1.1.1)
+    kaminari-activerecord (1.1.1)
+      activerecord
+      kaminari-core (= 1.1.1)
+    kaminari-core (1.1.1)
     kgio (2.11.0)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -341,6 +363,10 @@ GEM
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
+    retriable (3.1.2)
+    rsolr (2.2.1)
+      builder (>= 2.1.2)
+      faraday (>= 0.9.0)
     rspec-core (3.5.4)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -358,6 +384,8 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
+    ruby-progressbar (1.10.0)
+    rubyzip (1.2.2)
     rugged (0.25.1.1)
     safe_yaml (1.0.4)
     sass (3.2.19)
@@ -383,6 +411,11 @@ GEM
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
     slop (3.6.0)
+    solr_wrapper (2.0.0)
+      faraday
+      retriable
+      ruby-progressbar
+      rubyzip
     sparql (1.99.1)
       builder (~> 3.2)
       ebnf (~> 1.0)
@@ -396,10 +429,6 @@ GEM
       net-http-persistent (~> 2.9)
       rdf (>= 1.99, < 3)
       tins (= 1.6.0)
-    spring (2.0.1)
-      activesupport (>= 4.2)
-    spring-commands-rspec (1.0.4)
-      spring (>= 0.9.1)
     sprockets (2.12.5)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -421,6 +450,10 @@ GEM
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.0)
+    twitter-typeahead-rails (0.11.1.pre.corejavascript)
+      actionpack (>= 3.1)
+      jquery-rails
+      railties (>= 3.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -464,6 +497,7 @@ DEPENDENCIES
   attr_extras
   autoprefixer-rails
   awesome_print
+  blacklight
   bootstrap-sass (~> 3.3.1)
   cancan
   capistrano (~> 2.0)
@@ -492,6 +526,7 @@ DEPENDENCIES
   rdf-vocab
   responders (~> 2.0)
   rest-client
+  rsolr (>= 1.0)
   rspec-rails
   rugged
   sass-rails (~> 4.0.3)
@@ -499,9 +534,8 @@ DEPENDENCIES
   shoulda-matchers
   simple_form
   simplecov
+  solr_wrapper (>= 0.3)
   sparql-client (~> 1.99)
-  spring
-  spring-commands-rspec
   sqlite3
   timecop
   triplestore-adapter!

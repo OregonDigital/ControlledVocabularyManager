@@ -18,6 +18,15 @@ class Vocabulary < Term
     %w[label alternate_name date comment is_replaced_by see_also is_defined_by same_as modified issued title publisher sub_property_of range domain]
   end
 
+  def to_solr
+    {
+      "id_tesim": id,
+      "id_ssim": id,
+      "title_tesim": title,
+      "title_ssim": title
+    }
+  end
+
   def allow_vocab_deprecate?
     deprecated_children.length == vocab_with_children.length
   end

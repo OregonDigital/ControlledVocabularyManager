@@ -17,6 +17,7 @@ class VocabulariesController < AdminController
   def create
     vocabulary_form = vocabulary_form_repository.new(vocabulary_params[:id])
     vocabulary_form.attributes = vocabulary_params.except(:id)
+    index_vocabulary(vocabulary_params[:id], vocabulary_form)
     vocabulary_form.set_languages(params[:vocabulary])
     vocabulary_form.set_modified
     vocabulary_form.set_issued
@@ -35,6 +36,20 @@ class VocabulariesController < AdminController
       @vocabulary = vocabulary_form
       render "new"
     end
+  end
+
+  def solrized_attributes(id, form)
+    {
+      "id_tesim": id,
+      "id_ssim": id,
+      "title_tesim": form.title,
+      "title_ssim": form.title
+    }
+  end
+
+  def index_vocabulary(id, form)
+    SolrService.add(solrized_attributes(id, form))
+    SolrService.commit
   end
 
   def deprecate

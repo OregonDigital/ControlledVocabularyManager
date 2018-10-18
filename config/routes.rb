@@ -1,7 +1,4 @@
 Rails.application.routes.draw do
-  #devise_for :users
-  # The priority is based upon order of creation: first created -> highest priority.
-  # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
   root 'home#index'
@@ -13,6 +10,28 @@ Rails.application.routes.draw do
   end
 
   Rails.application.routes.draw do
+
+    mount Blacklight::Engine => '/'
+    concern :searchable, Blacklight::Routes::Searchable.new
+
+    resource :catalog, only: [:index], as: 'catalog', path: '/catalog', controller: 'catalog' do
+      concerns :searchable
+    end
+
+    concern :exportable, Blacklight::Routes::Exportable.new
+
+    resources :solr_documents, only: [:show], path: '/catalog', controller: 'catalog' do
+      concerns :exportable
+    end
+
+    resources :bookmarks do
+      concerns :exportable
+
+      collection do
+        delete 'clear'
+      end
+    end
+
     devise_for :users, controllers: {
       registrations: 'users/registrations'
     }
