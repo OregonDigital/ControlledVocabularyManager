@@ -4,6 +4,18 @@ class Predicate < Term
   property :range, :predicate => RDF::RDFS.range
   property :domain, :predicate => RDF::RDFS.domain
 
+  Sunspot::Adapters::InstanceAdapter.register(SunspotHelper::InstanceAdapter, Predicate)
+  Sunspot::Adapters::DataAccessor.register(SunspotHelper::DataAccessor, Predicate)
+
+  Sunspot.setup(Predicate) do
+    text :id, :boost => 2.0
+    text :label, :boost => 2.0
+    text :comment, :stored => true
+
+    string :id, :stored => true
+    string :label, :stored => true, :multiple => true
+  end
+
   def self.option_text
     "Predicate"
   end
@@ -20,5 +32,4 @@ class Predicate < Term
   def fields
     [:sub_property_of, :range, :domain] | super
   end
-
 end

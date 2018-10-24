@@ -25,6 +25,14 @@
         <% end %>
       </ul>
 
+      <%= form_tag(search_path, method: :get, class: "navbar-form navbar-left") do %>
+        <div class="form-group">
+          <label class="sr-only" for="query">Search</label>
+          <input type="text" class="form-control" name="query" id="query" size="20">
+        </div>
+        <%= submit_tag("Search", class: "btn btn-primary mb-2") %>
+      <% end %>
+
       <%# @skip_render aids in page_caching all but the dynamic/user related content which gets loaded by update_user_data_on_cached_page.js ajax %>
       <% if current_user && !@skip_render %>
         <ul class="nav navbar-nav navbar-right">
@@ -42,7 +50,6 @@
 
               <li role="separator" class="divider"></li>
               <li><%= link_to "Logout", destroy_user_session_path %></li>
-
             </ul>
           </li>
         </ul>

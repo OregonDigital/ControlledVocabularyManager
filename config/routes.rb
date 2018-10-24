@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     resources :users
   end
 
+  get "/search(/:query)", :to => "search#search", :as => "search"
+
   Rails.application.routes.draw do
     devise_for :users, controllers: {
       registrations: 'users/registrations'

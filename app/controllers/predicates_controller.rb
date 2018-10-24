@@ -131,6 +131,7 @@ class PredicatesController < ApplicationController
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
+        Sunspot.index! Predicate.find(params[:id])
         flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
