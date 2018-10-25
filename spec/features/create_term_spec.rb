@@ -9,6 +9,7 @@ RSpec.feature "Create and update a Term", :js => true, :type => :feature do
   background do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user)
     allow(user).to receive(:admin?).and_return(true)
+    allow_any_instance_of(TermsController).to receive(:update_solr_index)
   end
 
   let(:datetime_now) { DateTime.now.strftime('%Y%m%dT%H%M%S') }
