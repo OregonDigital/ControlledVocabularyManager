@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  def search
+  def search_results
     @search_query = params[:query] || session[:query]
     if (@search_query)
       session[:query] = @search_query

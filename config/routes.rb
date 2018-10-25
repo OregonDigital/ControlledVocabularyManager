@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     resources :users
   end
 
-  get "/search(/:query)", :to => "search#search", :as => "search"
+  get "/search(/:query)", :to => "search#search_results", :as => "search_results"
 
   Rails.application.routes.draw do
     devise_for :users, controllers: {
