@@ -113,7 +113,7 @@ class VocabulariesController < AdminController
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
-        Sunspot.index! Vocabulary.find(params[:id])
+        update_solr_index(params[:id])
         flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
@@ -148,6 +148,10 @@ class VocabulariesController < AdminController
   end
 
   private
+
+  def update_solr_index(id)
+    Sunspot.index! Vocabulary.find(id)
+  end
 
   def vocabulary_params
     ParamCleaner.call(params[:vocabulary])

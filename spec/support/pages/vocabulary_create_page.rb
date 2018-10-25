@@ -12,7 +12,7 @@ class VocabularyCreatePage
   def create
     fill_in "ID", :with => VocabularyCreatePage.id
     fill_in "vocabulary[label][]", :with => "test"
-    find(:xpath, "//input[@name = 'commit']").trigger("click")
+    find(:xpath, "//input[@name = 'commit'][@value = 'Create Vocabulary']").trigger("click")
     sleep 2
     VocabularyShowPage.new(VocabularyCreatePage.id)
   end

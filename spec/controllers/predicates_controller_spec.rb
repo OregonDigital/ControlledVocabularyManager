@@ -312,6 +312,8 @@ RSpec.describe PredicatesController do
     context "when the item has been reviewed" do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge)
+        # Solr is not running for tests, we want Sunspot.index! to not fail
+        allow(subject).to receive(:update_solr_index)
         get :mark_reviewed, :id =>params[:id]
       end
       it "will redirect to review queue if asset is saved" do

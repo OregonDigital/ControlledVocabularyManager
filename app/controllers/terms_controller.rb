@@ -138,7 +138,7 @@ class TermsController < AdminController
         expire_page action: 'show', id: @term.term_uri_vocabulary_id, format: :nt if @term.term_id.hasParent?
         rugged_delete_branch(params[:id])
         PreloadCache.preload(term_form)
-        Sunspot.index! Term.find(params[:id])
+        update_solr_index(params[:id])
         flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
@@ -189,7 +189,12 @@ class TermsController < AdminController
     end
     redirect_to term_path(params[:id])
   end
+
   private
+
+  def update_solr_index(id)
+    Sunspot.index! Term.find(id)
+  end
 
   def term_params
     ParamCleaner.call(params[:term])
