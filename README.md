@@ -19,6 +19,7 @@ Local Development Setup
 	bundle install
 	rake db:create && rake db:migrate
 	rake triplestore_adapter:blazegraph:reset
+	rake sunspot:solr:start
 
 Start the servers:
 
