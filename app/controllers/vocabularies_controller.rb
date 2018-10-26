@@ -113,6 +113,7 @@ class VocabulariesController < AdminController
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
+        update_solr_index(params[:id])
         flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
@@ -127,7 +128,7 @@ class VocabulariesController < AdminController
   end
 
 
- def deprecate_only
+  def deprecate_only
     edit_vocabulary_form = deprecate_vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.is_replaced_by = vocabulary_params[:is_replaced_by]
 
@@ -147,6 +148,10 @@ class VocabulariesController < AdminController
   end
 
   private
+
+  def update_solr_index(id)
+    Sunspot.index! Vocabulary.find(id)
+  end
 
   def vocabulary_params
     ParamCleaner.call(params[:vocabulary])

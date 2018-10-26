@@ -1,0 +1,12 @@
+development:
+  solr:
+    hostname: <%= ENV.fetch('CVM_SOLR_URL', 'localhost') %>
+    port: 8983
+    log_level: INFO
+
+# Solr is not needed for test environment
+
+production:
+  solr:
+    hostname: <%= ENV.fetch('CVM_SOLR_URL', 'http://localhost:8080') %>
+    log_level: ERROR

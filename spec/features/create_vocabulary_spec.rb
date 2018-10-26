@@ -35,7 +35,7 @@ RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature d
       fill_in "vocabulary[label][]", :with => "Hola mundo"
       find(".language-select").find("option[value='es']").select_option
     end
-    find('input[name="commit"]').click
+    find('input[value="Create Vocabulary"]').click
     sleep 2
     expect(page).to have_content("#{vocabulary_id} has been saved and added to the review queue")
     visit "/review/#{vocabulary_id}"

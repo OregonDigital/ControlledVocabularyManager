@@ -23,6 +23,20 @@ class Term < ActiveTriples::Resource
 
   validate :not_blank_node
 
+  Sunspot::Adapters::InstanceAdapter.register(SunspotHelper::InstanceAdapter, Term)
+  Sunspot::Adapters::DataAccessor.register(SunspotHelper::DataAccessor, Term)
+
+  Sunspot.setup(Term) do
+    text :id
+    text :label, :boost => 2.0
+    text :comment, :stored => true
+    text :alternate_name, :stored => true
+
+    string :id, :stored => true
+    string :label, :stored => true, :multiple => true
+    string :date, :stored => true, :multiple => true
+  end
+
   def self.option_text
     "Concept"
   end

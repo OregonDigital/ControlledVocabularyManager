@@ -1,0 +1,29 @@
+<% content_for :title do %>
+  Search Results: <%= @search_query %>
+<% end %>
+
+<h2>Search Results</h2>
+<p>Search: <strong><%= @search_query %></strong>
+<br/>Results Found: <%= @hits.total_entries %>
+</p>
+<br/>
+
+<ul>
+<% @hits.each do |hit| -%>
+  <li>
+    <span class="h4"><%= link_to hit.stored(:label).first, '/ns/' + hit.stored(:id) %></span>
+    <br/><span class="label label-default"><%= hit.class_name %></span> <%= if hit.stored(:date) then hit.stored(:date).first + ' - ' end %> <%= link_to (Term.base_uri + hit.stored(:id)), '/ns/' + hit.stored(:id) %>
+    <% if hit.highlight(:comment) then %>
+      <br/><strong>Comment</strong>: <%= hit.highlight(:comment).format { |word| "<mark><strong>#{strip_tags(word)}</strong></mark>"}.html_safe %>
+    <% end %>
+    <% if hit.highlight(:alternate_name) then %>
+      <br/><strong>Alternate Name</strong>: <%= hit.highlight(:alternate_name).format { |word| "<mark><strong>#{strip_tags(word)}</strong></mark>"}.html_safe %>
+    <% end %>
+    <br/>&#160;
+  </li>
+<% end %>
+</ul>
+
+<div class="pagination">
+  <%= will_paginate(@hits) %>
+</div>

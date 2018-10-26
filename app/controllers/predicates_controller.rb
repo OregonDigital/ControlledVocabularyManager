@@ -131,6 +131,7 @@ class PredicatesController < ApplicationController
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
+        update_solr_index (params[:id])
         flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
@@ -144,7 +145,11 @@ class PredicatesController < ApplicationController
     end
   end
 
-private
+  private
+
+  def update_solr_index(id)
+    Sunspot.index! Predicate.find(id)
+  end
 
   def predicate_params
     ParamCleaner.call(params[:predicate])

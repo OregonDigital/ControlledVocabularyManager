@@ -65,6 +65,12 @@ gem 'capistrano', '~> 2.0'
 
 gem 'responders', '~> 2.0'
 
+gem 'sunspot'
+gem 'sunspot_solr'
+
+gem 'will_paginate', '~> 3.1.0'
+gem 'bootstrap-will_paginate'
+
 group :production, :staging do
   gem 'ddtrace'
 end
