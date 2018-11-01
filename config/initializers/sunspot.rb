@@ -1,4 +1,4 @@
-unless Rails.test?
+unless Rails.env.test?
   config = YAML.safe_load(ERB.new(IO.read(Rails.root + 'config' + 'sunspot.yml')).result)[Rails.env].with_indifferent_access
   Sunspot.config.solr.url = config['solr']['hostname']
   Sunspot.config.pagination.default_per_page = config['solr']['pagination_default_per_page'] || 30
