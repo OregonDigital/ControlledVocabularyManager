@@ -66,7 +66,6 @@ gem 'capistrano', '~> 2.0'
 gem 'responders', '~> 2.0'
 
 gem 'sunspot'
-gem 'sunspot_solr'
 
 gem 'will_paginate', '~> 3.1.0'
 gem 'bootstrap-will_paginate'
@@ -78,6 +77,7 @@ end
 group :development do
   gem 'spring-commands-rspec'
   gem 'web-console', '~> 2.0'
+  gem 'sunspot_solr'
 end
 
 group :development, :test do
