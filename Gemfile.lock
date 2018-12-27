@@ -6,11 +6,12 @@ GIT
 
 GIT
   remote: git://github.com/osulp/triplestore-adapter.git
-  revision: 90d1b717bd0fd64ce117fcce65679d93acc46d76
+  revision: acd4e78e6fca8f64d56336f429e4b5bb98c19db2
   branch: 0.1.0
   specs:
     triplestore-adapter (0.1.0)
       json-ld (~> 1.99)
+      net-http-persistent (~> 2.9)
       rdf (~> 1.99)
       rdf-blazegraph (= 0.0.2)
       rdf-vocab (~> 0.8)
@@ -19,23 +20,23 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    actionmailer (4.2.9)
-      actionpack (= 4.2.9)
-      actionview (= 4.2.9)
-      activejob (= 4.2.9)
+    actionmailer (4.2.11)
+      actionpack (= 4.2.11)
+      actionview (= 4.2.11)
+      activejob (= 4.2.11)
       mail (~> 2.5, >= 2.5.4)
       rails-dom-testing (~> 1.0, >= 1.0.5)
-    actionpack (4.2.9)
-      actionview (= 4.2.9)
-      activesupport (= 4.2.9)
+    actionpack (4.2.11)
+      actionview (= 4.2.11)
+      activesupport (= 4.2.11)
       rack (~> 1.6)
       rack-test (~> 0.6.2)
       rails-dom-testing (~> 1.0, >= 1.0.5)
       rails-html-sanitizer (~> 1.0, >= 1.0.2)
     actionpack-page_caching (1.1.0)
       actionpack (>= 4.0.0, < 6)
-    actionview (4.2.9)
-      activesupport (= 4.2.9)
+    actionview (4.2.11)
+      activesupport (= 4.2.11)
       builder (~> 3.1)
       erubis (~> 2.7.0)
       rails-dom-testing (~> 1.0, >= 1.0.5)
@@ -46,17 +47,17 @@ GEM
       deprecation (~> 0.1)
       linkeddata (~> 1.1)
       rdf (~> 1.1)
-    activejob (4.2.9)
-      activesupport (= 4.2.9)
+    activejob (4.2.11)
+      activesupport (= 4.2.11)
       globalid (>= 0.3.0)
-    activemodel (4.2.9)
-      activesupport (= 4.2.9)
+    activemodel (4.2.11)
+      activesupport (= 4.2.11)
       builder (~> 3.1)
-    activerecord (4.2.9)
-      activemodel (= 4.2.9)
-      activesupport (= 4.2.9)
+    activerecord (4.2.11)
+      activemodel (= 4.2.11)
+      activesupport (= 4.2.11)
       arel (~> 6.0)
-    activesupport (4.2.9)
+    activesupport (4.2.11)
       i18n (~> 0.7)
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
@@ -159,7 +160,7 @@ GEM
       activesupport
       capybara
       i18n
-    globalid (0.4.0)
+    globalid (0.4.1)
       activesupport (>= 4.2.0)
     haml (4.0.7)
       tilt
@@ -253,19 +254,19 @@ GEM
       method_source (~> 0.8)
       slop (~> 3.4)
     public_suffix (2.0.5)
-    rack (1.6.10)
+    rack (1.6.11)
     rack-test (0.6.3)
       rack (>= 1.0)
-    rails (4.2.9)
-      actionmailer (= 4.2.9)
-      actionpack (= 4.2.9)
-      actionview (= 4.2.9)
-      activejob (= 4.2.9)
-      activemodel (= 4.2.9)
-      activerecord (= 4.2.9)
-      activesupport (= 4.2.9)
+    rails (4.2.11)
+      actionmailer (= 4.2.11)
+      actionpack (= 4.2.11)
+      actionview (= 4.2.11)
+      activejob (= 4.2.11)
+      activemodel (= 4.2.11)
+      activerecord (= 4.2.11)
+      activesupport (= 4.2.11)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 4.2.9)
+      railties (= 4.2.11)
       sprockets-rails
     rails-deprecated_sanitizer (1.0.3)
       activesupport (>= 4.2.0.alpha)
@@ -275,9 +276,9 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
-    railties (4.2.9)
-      actionpack (= 4.2.9)
-      activesupport (= 4.2.9)
+    railties (4.2.11)
+      actionpack (= 4.2.11)
+      activesupport (= 4.2.11)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     raindrops (0.18.0)
@@ -500,7 +501,7 @@ DEPENDENCIES
   passenger
   poltergeist (~> 1.9.0)
   pry
-  rails (~> 4.2.9)
+  rails (~> 4.2.11)
   rdf-vocab
   responders (~> 2.0)
   rest-client
@@ -529,4 +530,4 @@ DEPENDENCIES
   will_paginate (~> 3.1.0)
 
 BUNDLED WITH
-   1.16.4
+   1.17.1
