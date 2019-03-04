@@ -66,7 +66,7 @@ GEM
       public_suffix (~> 2.0, >= 2.0.2)
     arel (6.0.4)
     attr_extras (5.2.0)
-    autoprefixer-rails (6.7.7.1)
+    autoprefixer-rails (9.4.9)
       execjs
     awesome_print (1.7.0)
     bcp47 (0.3.3)
@@ -74,9 +74,9 @@ GEM
     bcrypt (3.1.12)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    bootstrap-sass (3.3.5)
-      autoprefixer-rails (>= 5.0.0.1)
-      sass (>= 3.2.19)
+    bootstrap-sass (3.4.1)
+      autoprefixer-rails (>= 5.2.1)
+      sassc (>= 2.0.0)
     bootstrap-will_paginate (1.0.0)
       will_paginate
     builder (3.2.3)
@@ -154,6 +154,7 @@ GEM
       railties (>= 3.0.0)
     faraday (0.12.0.1)
       multipart-post (>= 1.2, < 3)
+    ffi (1.10.0)
     font-awesome-rails (4.7.0.1)
       railties (>= 3.2, < 5.1)
     formulaic (0.4.0)
@@ -189,6 +190,7 @@ GEM
     kgio (2.11.0)
     launchy (2.4.3)
       addressable (~> 2.3)
+    libv8 (6.7.288.46.1)
     link_header (0.0.8)
     linkeddata (1.99.0)
       equivalent-xml (~> 0.6)
@@ -221,6 +223,8 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
     mini_portile2 (2.3.0)
+    mini_racer (0.2.4)
+      libv8 (>= 6.3)
     minitest (5.11.3)
     msgpack (1.2.4)
     multi_json (1.12.2)
@@ -373,6 +377,9 @@ GEM
       sass (~> 3.2.2)
       sprockets (~> 2.8, < 3.0)
       sprockets-rails (~> 2.0)
+    sassc (2.0.1)
+      ffi (~> 1.9)
+      rake
     sawyer (0.8.1)
       addressable (>= 2.3.5, < 2.6)
       faraday (~> 0.8, < 1.0)
@@ -476,7 +483,7 @@ DEPENDENCIES
   attr_extras
   autoprefixer-rails
   awesome_print
-  bootstrap-sass (~> 3.3.1)
+  bootstrap-sass (~> 3.4)
   bootstrap-will_paginate
   cancan
   capistrano (~> 2.0)
@@ -497,6 +504,7 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   json-ld (~> 1.99)
+  mini_racer
   mysql2 (~> 0.3.13)
   passenger
   poltergeist (~> 1.9.0)
