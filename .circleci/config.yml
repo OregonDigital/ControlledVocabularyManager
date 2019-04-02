@@ -2,17 +2,16 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.5
+      - image: circleci/ruby:2.5-stretch
     working_directory: ~/app
     steps:
       - run:
           name: Update Debian Packages
           command: |
-            echo "deb http://http.debian.net/debian jessie-backports main" | sudo tee -a /etc/apt/sources.list
-            sudo apt-get update -qq
+            sudo apt-get update --fix-missing -qq
             sudo apt-get upgrade -qq
             sudo apt-get install -y -f software-properties-common build-essential default-libmysqlclient-dev nodejs make apt-utils cmake
-            sudo apt-get install -t jessie-backports -y openjdk-8-jre-headless ca-certificates-java
+            sudo apt-get install -y openjdk-8-jre-headless ca-certificates-java
             sudo apt-get install -y openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless
             sudo update-alternatives --config java
 
@@ -42,7 +41,7 @@ jobs:
           command: bundle exec rake triplestore_adapter:blazegraph:reset
 
       - run:
-          name: Create DB          
+          name: Create DB
           command: bundle exec rake db:create db:migrate db:test:prepare
 
       - run:
