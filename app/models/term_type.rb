@@ -5,7 +5,7 @@ class TermType
   # names relate to models which inherit from Term that are considered to be
   # different 'types' of terms.. (not a vocabulary)
   def self.models
-    %w[Term CorporateName Geographic PersonalName Title Topic]
+    %w[Term CorporateName Geographic PersonalName Title Topic LocalCollection]
   end
 
   # Clear names for use with labels on views

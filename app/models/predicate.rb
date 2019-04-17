@@ -30,6 +30,6 @@ class Predicate < Term
 
   # Update the fields method with any new properties added to this model
   def fields
-    [:sub_property_of, :range, :domain] | super
+    [:sub_property_of, :range, :domain] | super - [:ark, :local]
   end
 end
