@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe TermType do
-  it "should return 6 models" do
-    expect(TermType.models.length).to eq(6)
+  it "should return 7 models" do
+    expect(TermType.models.length).to eq(7)
   end
-  it "should return 6 names" do
-    expect(TermType.names.length).to eq(6)
+  it "should return 7 names" do
+    expect(TermType.names.length).to eq(7)
   end
   it "should show all models having field 'date'" do
-    expect(TermType.models_having_visible_property('date').length).to eq(6)
+    expect(TermType.models_having_visible_property('date').length).to eq(7)
   end
 
 
