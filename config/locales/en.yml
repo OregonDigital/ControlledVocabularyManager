@@ -24,4 +24,6 @@ en:
     children_header: "Child Terms"
   hints:
     id_hint: 'This ID was system generated, but can be overridden.'
-
+  properties:
+    ark: 'Archival Resource Key (ARK)'
+    local: 'Local Web URL / Identifier'

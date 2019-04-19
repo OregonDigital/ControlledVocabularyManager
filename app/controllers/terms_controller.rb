@@ -119,7 +119,10 @@ class TermsController < AdminController
       type = Term
       if !@term.type.blank?
         @term.type.each do |t|
-          if t.to_s != "http://www.w3.org/2000/01/rdf-schema#Resource" && t.to_s != "http://www.w3.org/2004/02/skos/core#Concept"
+          if t.to_s == "http://purl.org/dc/dcmitype/Collection"
+            type = "LocalCollection".constantize
+            break
+          elsif t.to_s != "http://www.w3.org/2000/01/rdf-schema#Resource" && t.to_s != "http://www.w3.org/2004/02/skos/core#Concept"
             type = t.object[:fragment].constantize
             break
           end

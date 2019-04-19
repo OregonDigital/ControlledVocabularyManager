@@ -10,6 +10,8 @@ class Term < ActiveTriples::Resource
 
   property :label, :predicate => RDF::RDFS.label
   property :alternate_name, :predicate => RDF::URI("http://schema.org/alternateName")
+  property :ark, :predicate => RDF::URI('http://opaquenamespace.org/ns/ark')
+  property :local, :predicate => RDF::Vocab::Identifiers.local
   property :date, :predicate => RDF::Vocab::DC.date
   property :comment, :predicate => RDF::RDFS.comment
   property :is_replaced_by, :predicate => RDF::Vocab::DC.isReplacedBy
@@ -65,7 +67,9 @@ class Term < ActiveTriples::Resource
       :is_defined_by,
       :range,
       :domain,
-      :sub_property_of
+      :sub_property_of,
+      :ark,
+      :local
     ]
   end
 

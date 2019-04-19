@@ -39,7 +39,7 @@ class Vocabulary < Term
 
   # Update the fields method with any new properties added to this model
   def fields
-    [:title, :publisher, :sub_property_of, :range, :domain] | super
+    [:title, :publisher, :sub_property_of, :range, :domain] | super - [:ark, :local]
   end
 
   private

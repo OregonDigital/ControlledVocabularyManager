@@ -249,7 +249,7 @@ RSpec.describe Term do
   describe "self.class_from_types" do
     let(:types) { [ type, RDF::URI('https://www.w3.org/2000/01/rdf-schema#Resource') ] }
 
-    [Vocabulary, Predicate, CorporateName, Geographic, Title, Topic, PersonalName, Term].each do |k|
+    [Vocabulary, Predicate, CorporateName, Geographic, Title, Topic, PersonalName, Term, LocalCollection].each do |k|
       context "when passing a #{k} type" do
         let(:type) { k.type }
         it "should return the #{k} class" do
