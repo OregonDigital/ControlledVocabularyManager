@@ -2,7 +2,7 @@
   <td><%= link_to child.rdf_label.first, term_path(child.id) %></td>
   <td><span class="uri"><%= link_to child.rdf_subject.to_s, term_path(child.id) %></span></td>
   <td>
-    <span class="label label-warning label-<%= child.parameterized_type %>"><%= child.titleized_type %></span>
+    <span class="label label-<%= child.parameterized_type %>"><%= child.titleized_type %></span>
     <% if child.deprecated? %>
         <span class="label label-warning">Deprecated</span>
     <% end %>
