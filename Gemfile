@@ -79,6 +79,7 @@ group :development do
   gem 'spring-commands-rspec'
   gem 'web-console', '~> 2.0'
   gem 'sunspot_solr'
+  gem 'brakeman'
 end
 
 group :development, :test do
