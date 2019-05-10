@@ -30,7 +30,14 @@ class TermsController < AdminController
   def create
     @vocabulary = find_vocabulary
     combined_id = CombinedId.new(params[:vocabulary_id], term_params[:id])
-    term_form = term_form_repository.new(combined_id, params[:term_type].constantize)
+
+    # Check term_type param against whitelist
+    term_type = TermType.models.map(&:constantize).find do |model|
+      model.name == params[:term_type]
+    end
+    raise "Unrecognized term type" if term_type.nil?
+
+    term_form = term_form_repository.new(combined_id, term_type)
     term_form.attributes = vocab_params.except(:id)
     term_form.set_languages(params[:vocabulary])
     term_form.set_modified
@@ -83,7 +90,13 @@ class TermsController < AdminController
       term_form.attributes = vocab_params
       action = "edit"
     else
-      term_form = term_form_repository.new(params[:id], params[:term_type].constantize)
+      # Check term_type param against whitelist
+      term_type = TermType.models.map(&:constantize).find do |model|
+        model.name == params[:term_type]
+      end
+      raise "Unrecognized term type" if term_type.nil?
+
+      term_form = term_form_repository.new(params[:id], term_type)
       term_form.attributes = vocab_params.except(:id)
       term_form.add_resource
       action = "new"

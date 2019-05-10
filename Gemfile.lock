@@ -79,6 +79,7 @@ GEM
       sassc (>= 2.0.0)
     bootstrap-will_paginate (1.0.0)
       will_paginate
+    brakeman (4.5.0)
     builder (3.2.3)
     cancan (1.6.10)
     capistrano (2.15.9)
@@ -485,6 +486,7 @@ DEPENDENCIES
   awesome_print
   bootstrap-sass (~> 3.4)
   bootstrap-will_paginate
+  brakeman
   cancan
   capistrano (~> 2.0)
   capybara
