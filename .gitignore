@@ -18,15 +18,6 @@
 /log/*.log.*
 /tmp
 
-# Ignore vagrant
-/.vagrant
-
-# Ignore jetty
-jetty
-
-# Ignore marmotta
-marmotta
-
 # Ignore dotenv
 .env
 
