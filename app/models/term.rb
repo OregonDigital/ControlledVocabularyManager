@@ -107,7 +107,7 @@ class Term < ActiveTriples::Resource
   end
 
   def editable_fields_deprecate
-    fields - [:issued, :modified, :label, :comment, :date, :see_also, :is_defined_by, :same_as, :alternate_name]
+    fields - [:issued, :modified, :label, :comment, :date, :see_also, :is_defined_by, :same_as, :alternate_name, :ark, :local]
   end
 
   def to_param
