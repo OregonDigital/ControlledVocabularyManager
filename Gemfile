@@ -44,7 +44,7 @@ gem 'iso-639'
 gem 'active-triples', '~> 0.6.0'
 gem 'rdf-vocab'
 gem "sparql-client", '~> 1.99'
-gem 'triplestore-adapter', :github => "osulp/triplestore-adapter", :branch => "0.1.0"
+gem 'triplestore-adapter', '~> 0.1.1'
 gem 'json-ld', '~> 1.99'
 
 gem 'warden-github-rails'

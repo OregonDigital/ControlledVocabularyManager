@@ -4,19 +4,6 @@ GIT
   specs:
     warden-rspec-rails (0.1.0)
 
-GIT
-  remote: git://github.com/osulp/triplestore-adapter.git
-  revision: acd4e78e6fca8f64d56336f429e4b5bb98c19db2
-  branch: 0.1.0
-  specs:
-    triplestore-adapter (0.1.0)
-      json-ld (~> 1.99)
-      net-http-persistent (~> 2.9)
-      rdf (~> 1.99)
-      rdf-blazegraph (= 0.0.2)
-      rdf-vocab (~> 0.8)
-      sparql-client (~> 1.99)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -228,7 +215,7 @@ GEM
       libv8 (>= 6.3)
     minitest (5.11.3)
     msgpack (1.2.4)
-    multi_json (1.12.2)
+    multi_json (1.13.1)
     multipart-post (2.0.0)
     mysql2 (0.3.21)
     net-http-persistent (2.9.4)
@@ -292,9 +279,6 @@ GEM
       link_header (~> 0.0, >= 0.0.8)
     rdf-aggregate-repo (1.99.0)
       rdf (~> 1.99)
-    rdf-blazegraph (0.0.2)
-      rdf (~> 1.99)
-      sparql-client (~> 1.1)
     rdf-isomorphic (1.99.0)
       rdf (~> 1.99)
     rdf-json (1.99.0)
@@ -437,6 +421,13 @@ GEM
     tilt (1.4.1)
     timecop (0.8.1)
     tins (1.6.0)
+    triplestore-adapter (0.1.1)
+      json-ld
+      net-http-persistent (~> 2.9)
+      rdf
+      rdf-rdfxml
+      rdf-vocab
+      sparql-client
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.0)
@@ -529,7 +520,7 @@ DEPENDENCIES
   sunspot
   sunspot_solr
   timecop
-  triplestore-adapter!
+  triplestore-adapter (~> 0.1.1)
   turbolinks
   uglifier (>= 1.3.0)
   unicorn
