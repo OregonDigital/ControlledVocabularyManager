@@ -5,7 +5,7 @@ require 'rdf'
 # vocabulary:uri,id:id_hash,label,type,comment
 # http://opaquenamespace.org/ns/creator,MooreJannaFalk,"Moore, Janna (Falk)",http://www.w3.org/2004/02/skos/core#PersonalName,Oregon Century Farm and Ranch Collection
 
-desc "Transforms CSV to JSON-LD, can use for Load RDF. Use `rake transform:csv_to_jsonld[path_to_csv, path_to_export_file]`"
+desc "Transforms CSV to JSON-LD, can use for Load RDF. Use `rake 'transform:csv_to_jsonld[path_to_csv, path_to_export_file]'`"
 namespace :transform do
   task :csv_to_jsonld, [:csv_path, :output_path] => :environment do |t, args|
 
@@ -106,6 +106,12 @@ end
 
 def label(id, graph, payload)
   graph << RDF::Statement.new(id, RDF::RDFS.label, RDF::Literal.new(payload, :language => :en))
+end
+
+def alternate_name(id, graph, payload)
+  unless payload.nil?
+    graph << RDF::Statement.new(id, RDF::Vocab::SCHEMA.alternateName, RDF::Literal.new(payload, :language => :en))
+  end
 end
 
 def date(id, graph, payload)
