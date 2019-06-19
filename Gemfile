@@ -2,11 +2,11 @@ source 'https://rubygems.org'
 
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.11'
+gem 'rails', '~> 4.2.11.1'
 gem 'actionpack-page_caching'
 
 # Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.3.13'
 gem 'mysql2', '~> 0.3.13'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
@@ -44,7 +44,7 @@ gem 'iso-639'
 gem 'active-triples', '~> 0.6.0'
 gem 'rdf-vocab'
 gem "sparql-client", '~> 1.99'
-gem 'triplestore-adapter', :github => "osulp/triplestore-adapter", :branch => "0.1.0"
+gem 'triplestore-adapter', :git => "https://github.com/osulp/triplestore-adapter", :branch => "0.1.0"
 gem 'json-ld', '~> 1.99'
 
 gem 'warden-github-rails'
@@ -84,16 +84,19 @@ end
 
 group :development, :test do
   gem 'awesome_print'
-  # gem 'jazz_hands', :github => "terrellt/jazz_hands"
-  gem 'pry'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'rspec-rails'
   # Test Coverage
   gem 'simplecov'
   gem 'capybara-screenshot'
   gem 'dotenv-rails'
-  gem 'warden-rspec-rails', :github => "mspanc/warden-rspec-rails"
+  gem 'warden-rspec-rails', :git => "https://github.com/mspanc/warden-rspec-rails"
   gem 'capybara'
+  gem 'pry'
+  gem 'pry-rails'
+  gem 'pry-git'
+  gem 'pry-remote'
+  gem 'pry-byebug'
 end
 
 group :test do
