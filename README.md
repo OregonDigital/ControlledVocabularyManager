@@ -12,7 +12,7 @@ Currently powering http://OpaqueNamespace.org
 Local Development Setup
 -----
 
-**Requires Ruby 2.5**
+**Requires: Ruby 2.5, Java 8 for Blazegraph**
 
 	git clone https://github.com/OregonDigital/ControlledVocabularyManager.git
 	cd ControlledVocabularyManager
