@@ -172,6 +172,7 @@ RSpec.describe TermsController do
       allow(term).to receive(:new_record?).and_return('true')
       allow(term).to receive(:attributes=)
       allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified])
+      allow(term).to receive(:uri_fields).and_return([])
       allow(term).to receive(:attributes).and_return(params[:vocabulary])
       allow(term).to receive(:valid?)
       allow(Vocabulary).to receive(:find)
@@ -359,6 +360,7 @@ RSpec.describe TermsController do
       allow(term_form).to receive(:full_graph).and_return(full_graph)
       allow(term).to receive(:attributes=)
       allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified])
+      allow(term).to receive(:uri_fields).and_return([])
       allow(term).to receive(:attributes).and_return(params)
       allow(term).to receive(:valid?)
     end
@@ -506,6 +508,7 @@ RSpec.describe TermsController do
       allow(term).to receive(:attributes=)
       allow(term).to receive(:is_replaced_by=)
       allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified])
+      allow(term).to receive(:uri_fields).and_return([])
       allow(term).to receive(:attributes).and_return(params)
       allow(term).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
       allow(term).to receive(:persist!).and_return(persist_success)

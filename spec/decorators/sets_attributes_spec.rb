@@ -21,17 +21,24 @@ RSpec.describe SetsAttributes do
     allow(term).to receive(:attributes=)
     allow(term).to receive(:attributes).and_return(test_param)
     allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified])
+    allow(term).to receive(:uri_fields).and_return(%i[see_also])
     allow(term).to receive(:valid?).and_return(true)
   end
 
-  describe '#set_languages' do
+  describe '#set_attributes' do
     context 'when saving a term or vocab' do
       before do
-        subject.set_languages(test_param)
+        subject.set_attributes(test_param)
       end
 
       it 'sets the attributes' do
         expect(term).to have_received(:attributes=)
+      end
+    end
+
+    context 'when a uri only field has a value' do
+      it 'makes the val a uri' do
+        expect(subject.set_attributes(test_param)[:see_also]).to eq [RDF::URI(test_param[:see_also].first)]
       end
     end
   end

@@ -42,7 +42,7 @@ class TermsController < AdminController
 
     term_form = term_form_repository.new(combined_id, term_type)
     term_form.attributes = vocab_params.except(:id)
-    term_form.set_languages(params[:vocabulary])
+    term_form.set_attributes(params[:vocabulary])
     term_form.set_modified
     term_form.set_issued
     if term_form.is_valid?
@@ -69,7 +69,7 @@ class TermsController < AdminController
   def update
     edit_term_form = term_form_repository.find(params[:id])
     edit_term_form.attributes = vocab_params
-    edit_term_form.set_languages(params[:vocabulary])
+    edit_term_form.set_attributes(params[:vocabulary])
     edit_term_form.set_modified
     if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
@@ -104,7 +104,7 @@ class TermsController < AdminController
       term_form.add_resource
       action = 'new'
     end
-    term_form.set_languages(params[:vocabulary])
+    term_form.set_attributes(params[:vocabulary])
     term_form.set_modified
     term_form.reset_issued(params[:issued])
 
@@ -130,7 +130,7 @@ class TermsController < AdminController
       term_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject { |k, _v| k == :language })
       empty_fields = term_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ['id']
       term_form.attributes = term_form.attributes.update(term_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
-      term_form.set_languages(term_form.attributes.merge(e_params[:vocabulary].stringify_keys))
+      term_form.set_attributes(term_form.attributes.merge(e_params[:vocabulary].stringify_keys))
       @term = term_form
     else
       @term = reassemble(params[:id])
