@@ -18,7 +18,7 @@ class PredicatesController < ApplicationController
   def create
     predicate_form = predicate_form_repository.new(predicate_params[:id])
     predicate_form.attributes = vocabulary_params.except(:id)
-    predicate_form.set_languages(params[:vocabulary])
+    predicate_form.set_attributes(params[:vocabulary])
     predicate_form.set_modified
     predicate_form.set_issued
     if predicate_form.is_valid?
@@ -44,7 +44,7 @@ class PredicatesController < ApplicationController
   def update
     edit_predicate_form = predicate_form_repository.find(params[:id])
     edit_predicate_form.attributes = vocabulary_params
-    edit_predicate_form.set_languages(params[:vocabulary])
+    edit_predicate_form.set_attributes(params[:vocabulary])
     edit_predicate_form.set_modified
     if edit_predicate_form.is_valid?
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
@@ -95,7 +95,7 @@ class PredicatesController < ApplicationController
       predicate_form.add_resource
       action = 'new'
     end
-    predicate_form.set_languages(params[:vocabulary])
+    predicate_form.set_attributes(params[:vocabulary])
     predicate_form.set_modified
     predicate_form.reset_issued(params[:issued])
 
@@ -122,7 +122,7 @@ class PredicatesController < ApplicationController
       predicate_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject { |k, _v| k == :language })
       empty_fields = predicate_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ['id']
       predicate_form.attributes = predicate_form.attributes.update(predicate_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
-      predicate_form.set_languages(predicate_form.attributes.merge(e_params[:vocabulary].stringify_keys))
+      predicate_form.set_attributes(predicate_form.attributes.merge(e_params[:vocabulary].stringify_keys))
     else
       @predicate = reassemble(params[:id])
       predicate_form = PredicateForm.new(@predicate, StandardRepository.new(nil, Predicate))

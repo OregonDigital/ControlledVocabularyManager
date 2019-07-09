@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SetsAttributes < SimpleDelegator
-  def set_languages(form_params)
+  def set_attributes(form_params)
     new_hash = {}
     attributes.each_pair do |key, value|
       if !blacklisted_language_properties.include?(key.to_sym)
