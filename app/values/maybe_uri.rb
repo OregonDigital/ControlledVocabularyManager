@@ -3,7 +3,7 @@ class MaybeURI
 
   def value
     if uri?
-      raw_value
+      uri
     else
       raw_value
     end

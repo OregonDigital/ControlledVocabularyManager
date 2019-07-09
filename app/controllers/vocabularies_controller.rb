@@ -106,6 +106,7 @@ class VocabulariesController < AdminController
       @vocabulary = reassemble(params[:id])
       vocabulary_form = VocabularyForm.new(@vocabulary, StandardRepository.new(nil, Vocabulary))
     end
+    binding.pry
     branch_commit = rugged_merge(params[:id])
     if branch_commit != 0
       if vocabulary_form.save
