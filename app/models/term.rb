@@ -75,6 +75,19 @@ class Term < ActiveTriples::Resource
     ]
   end
 
+  def uri_fields
+    [
+       :see_also,
+       :is_replaced_by,
+       :same_as,
+       :is_defined_by,
+       :range,
+       :domain,
+       :sub_property_of,
+       :ark,
+       :local
+    ]
+  end
   def id
     return nil if rdf_subject.node?
 

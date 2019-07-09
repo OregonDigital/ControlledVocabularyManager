@@ -12,6 +12,12 @@ class SetsAttributes < SimpleDelegator
           end
         end
         new_hash[key] = value_array if key != :language
+      elsif self.uri_fields.include?(key.to_sym)
+        value_array = []
+        value.each_with_index do |val, index|
+          value_array << RDF::URI(val) #Don't raise error here, using validation in form is more helpful
+        end
+        new_hash[key] = value_array
       else
         new_hash[key] = value
       end
