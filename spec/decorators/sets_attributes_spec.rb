@@ -36,7 +36,7 @@ RSpec.describe SetsAttributes do
       end
     end
 
-    context 'when a uri only field has a value' do
+    context 'when a uri only field has a valid value value' do
       it 'makes the val a uri' do
         expect(subject.set_attributes(test_param)[:see_also]).to eq [RDF::URI(test_param[:see_also].first)]
       end
