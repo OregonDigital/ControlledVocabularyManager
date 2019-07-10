@@ -16,7 +16,6 @@ class SetsAttributes < SimpleDelegator
         new_hash[key] = value
       end
     end
-    (self.attributes.keys.map(&:to_sym) - form_params.keys).each { |key| new_hash[key] = [] }
     self.attributes = new_hash
   end
 end
