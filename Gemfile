@@ -75,6 +75,11 @@ group :production, :staging do
   gem 'ddtrace'
 end
 
+# Honeycomb
+gem 'sequel'
+gem 'honeycomb-beeline'
+gem 'rack-honeycomb', '~> 0.5.0'
+
 group :development do
   gem 'spring-commands-rspec'
   gem 'web-console', '~> 2.0'
