@@ -101,7 +101,7 @@ class VocabulariesController < AdminController
       e_params = edit_params(params[:id])
       vocabulary_form = vocabulary_form_repository.find(params[:id])
       vocabulary_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
-      vocabulary_form.set_languages(e_params[:vocabulary])
+      vocabulary_form.set_languages(vocabulary_form.attributes.merge(e_params[:vocabulary].stringify_keys))
     else
       @vocabulary = reassemble(params[:id])
       vocabulary_form = VocabularyForm.new(@vocabulary, StandardRepository.new(nil, Vocabulary))
