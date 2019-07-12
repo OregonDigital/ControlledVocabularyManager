@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Removes blank attributes from hashes in params.
 class ParamCleaner < Struct.new(:params)
   def self.call(params)

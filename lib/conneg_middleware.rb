@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ConnegMiddleware
   def initialize(app)
     @app = app

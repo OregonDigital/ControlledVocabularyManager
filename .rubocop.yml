@@ -1,0 +1,62 @@
+require: rubocop-rspec
+
+inherit_from: .rubocop_fix_me.yml
+
+AllCops:
+  TargetRubyVersion: 2.5
+  DisplayCopNames: true
+  Exclude:
+    - 'db/**/*'
+    - 'script/**/*'
+    - 'build/**/*'
+    - 'vendor/**/*'
+    - 'bin/**/*'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'lib/tasks/**/*'
+    - 'config/**/*'
+    - 'sa_scripts/**/*'
+
+Style/AsciiComments:
+  Enabled: false
+
+Style/CollectionMethods:
+  PreferredMethods:
+    collect: 'map'
+    collect!: 'map!'
+    inject: 'reduce'
+    detect: 'find'
+    find_all: 'select'
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/SingleLineBlockParams:
+  Enabled: false
+
+Rails/ApplicationJob:
+  Enabled: false
+
+Rails/ApplicationRecord:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Exclude:
+    - 'spec/system/**/*'
+    - 'spec/views/**/*'
+
+RSpec/LetSetup:
+  Enabled: false
+
+# # By default RSpec/MessageSpies has the following:
+# #   Prefer have_received for setting message expectations. Setup form as a spy using allow or instance_spy.
+# # The default assumes EnforcedStyle is 'have_received'. Most of our specs are 'receive'
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/AnyInstance:
+  Enabled: false
+
+# FactoryBot 5 will require dynamic definition, so we should allow it.
+# FactoryBot/StaticAttributeDefinedDynamically:
+#   Enabled: false

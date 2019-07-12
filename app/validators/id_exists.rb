@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IdExists < ActiveModel::Validator
   def validate(record)
     if leaf_id(record).blank?

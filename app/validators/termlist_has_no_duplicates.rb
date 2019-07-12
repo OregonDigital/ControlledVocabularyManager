@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Verifies that all terms in a list are unique within the list
 class TermlistHasNoDuplicates < ActiveModel::Validator
   def validate(record)

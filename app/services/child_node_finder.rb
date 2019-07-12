@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChildNodeFinder
   attr_reader :sparql_client
   def initialize(sparql_client)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SetsAttributes < SimpleDelegator
   def set_languages(form_params)
     new_hash = {}

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 RSpec.feature "Create and update a Vocabulary", :js => true, :type => :feature do
   include TestGitSetup

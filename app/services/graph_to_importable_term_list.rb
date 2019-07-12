@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GraphToImportableTermList < Struct.new(:graph)
   attr_accessor :decorators, :repository
 

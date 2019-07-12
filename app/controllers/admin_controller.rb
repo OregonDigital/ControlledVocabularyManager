@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AdminController < ApplicationController
   #Except show and index is important for fetching ntriples and other data types.
   before_filter :require_admin, :except => [:index, :show]

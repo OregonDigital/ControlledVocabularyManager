@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # an ActiveTriples repository
 class TriplestoreRepository
   attr_reader :triplestore, :rdf_statement, :url

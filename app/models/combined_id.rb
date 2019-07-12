@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CombinedId
   attr_reader :vocab_id, :term_id
   def initialize(vocab_id, term_id)

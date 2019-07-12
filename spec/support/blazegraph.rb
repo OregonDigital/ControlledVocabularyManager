@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 WebMock.disable_net_connect!(:allow_localhost => Settings.triplestore_adapter.url)
 
 ENV["RAILS_ENV"] ||= 'test'

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TermIsUnique < ActiveModel::Validator
   def validate(record)
     if record.new_record? && record.id.present? && record.repository.exists?(record.id)

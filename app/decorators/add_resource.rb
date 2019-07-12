@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AddResource < SimpleDelegator
   def persist!
     add_resource

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def stub_repository
   repository = RDF::Repository.new
   repository.define_singleton_method(:query_client) do

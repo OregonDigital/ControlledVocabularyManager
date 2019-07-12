@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LocalCollection < Term
   configure :type => RDF::URI("http://purl.org/dc/dcmitype/Collection")
 

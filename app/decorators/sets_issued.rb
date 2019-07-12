@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SetsIssued < SimpleDelegator
   def persist!
     set_issued

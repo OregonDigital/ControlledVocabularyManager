@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MaybeURI
   pattr_initialize :raw_value
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Term Type hash and utility methods to drive the term type select list and aid
 # in rendering of term#show and index pages
 class TermType

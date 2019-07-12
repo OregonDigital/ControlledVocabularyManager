@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Repository that returns a decorated Vocabulary object with DeprecateVocabularyForm
 # validations.
 class DeprecateVocabularyFormRepository < Struct.new(:decorators)

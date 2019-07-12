@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeprecatePredicateInjector < Struct.new(:params)
   delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
 

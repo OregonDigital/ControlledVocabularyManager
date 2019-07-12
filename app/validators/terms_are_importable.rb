@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Validator for an array of terms to ensure none of them have any "core"
 # validation errors
 class TermsAreImportable < ActiveModel::Validator

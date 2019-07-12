@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PolymorphicTermRepository
   attr_reader :repository_type
 

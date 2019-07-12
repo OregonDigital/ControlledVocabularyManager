@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GlobalMocks
   extend RSpec::SharedContext
   let(:term_mock) do

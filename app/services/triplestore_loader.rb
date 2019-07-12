@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rdf_loader'
 require 'triplestore_adapter'
 

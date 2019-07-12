@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This encapsulates whether a given ID is a vocabulary or not.
 # We may want to use this in TermURI in the future, but for now it doesn't seem

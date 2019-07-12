@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SetsTermType < SimpleDelegator
   def persist!
     if valid?

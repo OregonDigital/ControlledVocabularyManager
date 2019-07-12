@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TermReviewIndexPage < Struct.new(:vocabulary_id)
   include Capybara::DSL
 

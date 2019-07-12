@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Vocabulary < Term
   require 'sunspot'
   require 'sunspot_helper'

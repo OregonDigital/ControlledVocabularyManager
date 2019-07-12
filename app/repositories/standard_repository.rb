@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Repository that returns an optionally decorated object based on whether the
 # given ID matches a Vocabulary or Term syntax.
 class StandardRepository < Struct.new(:decorators, :repository_type)

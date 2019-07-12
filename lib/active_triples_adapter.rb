@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ActiveTriplesAdapter
   extend ActiveSupport::Concern
   included do

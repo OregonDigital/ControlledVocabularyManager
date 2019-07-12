@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json/ld'
 require 'rdf'
 require 'rdf/ntriples'

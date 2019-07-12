@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rdf_loader'
 
 # Imports RDF from an externally hosted URL, or using a supplied valid string of

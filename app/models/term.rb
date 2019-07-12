@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   include ActiveModel::Validations

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 #this test is kind of obsolete? but fixing it anyway
 RSpec.describe DeprecatePredicateFormRepository do

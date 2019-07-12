@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def capybara_login(user)
   visit "users/sign_in"
   fill_in 'user_email', with: user[:email]

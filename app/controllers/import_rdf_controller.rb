@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImportRdfController < AdminController
   delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
   before_filter :require_admin

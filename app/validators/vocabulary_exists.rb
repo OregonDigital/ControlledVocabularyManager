@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VocabularyExists < ActiveModel::Validator
   def validate(record)
     vocabulary_id = self.vocabulary_id(record)

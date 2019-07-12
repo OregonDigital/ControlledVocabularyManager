@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Value object representing a URI for Terms.
 #
