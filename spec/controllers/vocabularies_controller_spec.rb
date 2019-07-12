@@ -92,7 +92,7 @@ RSpec.describe VocabulariesController do
         patch :update, :id => vocabulary.id, :vocabulary => params, :is_replaced_by => ["test"]
       end
       it "should update the properties" do
-        expect(vocabulary).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :label=>[RDF::Literal("Test", :language => :en)]}).exactly(1).times
+        expect(vocabulary).to have_received(:attributes=).with({:comment=>[RDF::Literal("Test", :language => :en)], :id=>"blah", :label=>[RDF::Literal("Test", :language => :en)]})
       end
       it "should redirect to the index" do
         expect(response).to redirect_to("/vocabularies")
