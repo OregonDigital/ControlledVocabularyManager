@@ -426,9 +426,11 @@ module GitInterface
           params[:vocabulary][:language][k.to_s] ||= []
           params[:vocabulary][:language][k.to_s] << result.language.to_s if result.respond_to?(:language)
         end
+
         # set the symbolized property name array and include the object string
         params[:vocabulary][k.to_sym] ||= []
-        params[:vocabulary][k.to_sym] << result.object.to_s
+        params[:vocabulary][k.to_sym] << result.object.to_s unless result.is_a?(RDF::URI)
+        params[:vocabulary][k.to_sym] << result.value if result.is_a?(RDF::URI)
       end
     end
     params
