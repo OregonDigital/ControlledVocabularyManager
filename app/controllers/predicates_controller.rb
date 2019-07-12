@@ -119,7 +119,9 @@ class PredicatesController < ApplicationController
       e_params = edit_params(params[:id])
       predicate_form = predicate_form_repository.find(params[:id])
       predicate_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
-      predicate_form.set_languages(e_params[:vocabulary])
+      empty_fields = predicate_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ["id"]
+      predicate_form.attributes = predicate_form.attributes.update(predicate_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
+      predicate_form.set_languages(predicate_form.attributes.merge(e_params[:vocabulary].stringify_keys))
     else
       @predicate = reassemble(params[:id] )
       predicate_form = PredicateForm.new(@predicate, StandardRepository.new(nil, Predicate))

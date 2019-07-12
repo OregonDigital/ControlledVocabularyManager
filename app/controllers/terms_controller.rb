@@ -125,7 +125,9 @@ class TermsController < AdminController
       e_params = edit_params(params[:id])
       term_form = term_form_repository.find(params[:id])
       term_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
-      term_form.set_languages(e_params[:vocabulary])
+      empty_fields = term_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ["id"]
+      term_form.attributes = term_form.attributes.update(term_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
+      term_form.set_languages(term_form.attributes.merge(e_params[:vocabulary].stringify_keys))
       @term = term_form
     else
       @term = reassemble(params[:id])
