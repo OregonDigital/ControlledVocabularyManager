@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
     @skip_render = true
   end
 
-  if %w[production staging development].include? Rails.env
+  if %w[production staging].include? Rails.env
     def append_info_to_payload(payload)
       super(payload)
       Rack::Honeycomb.add_field(request.env, 'classname', self.class.name)

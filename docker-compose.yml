@@ -34,18 +34,19 @@ services:
     <<: *app
     environment:
       - RAILS_ENV=${RAILS_ENV}
-      - CVM_SOLR_URL=http://solr:8983
-      - CVM_TRIPLESTORE_URL=http://blazegraph:8080/bigdata/namespace/development/sparql
+      - CVM_SOLR_URL=http://localhost:8983
+      - CVM_TRIPLESTORE_URL=http://localhost:9999/blazegraph/namespace/development/sparql
+      - BLAZEGRAPH_URL=http://localhost:9999/blazegraph
 
     # Ideally we will replace this set of commands with an entrypoint script that checks to see if these
     # have been run already have been run and if so it just starts the server without the first three commands
     # taking time to run.
     command: >
-      bash -c "./build/entrypoint.sh && 
-               bundle exec rake triplestore_adapter:blazegraph:reset &&
-               bundle exec rake git_dev:create_dev_repo &&
-               bundle exec rake sunspot:solr:start &&
-               rails server"
+      bash -c "bundle exec rake triplestore_adapter:blazegraph:reset &&
+               ./build/entrypoint.sh && 
+               rake git_dev:create_dev_repo &&
+               rake sunspot:solr:start &&
+               bundle exec puma -C config/puma/development.rb --dir /data --pidfile /data/tmp/pids/puma.pid -b tcp://0.0.0.0:3000"
     depends_on:
       - db
       - db_test

@@ -18,9 +18,6 @@
 /log/*.log.*
 /tmp
 
-# Ignore dotenv
-.env
-
 # Ignore coverage
 /coverage
 
