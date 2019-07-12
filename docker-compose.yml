@@ -34,7 +34,7 @@ services:
     <<: *app
     environment:
       - RAILS_ENV=${RAILS_ENV}
-      - CVM_SOLR_URL=http://localhost:8983
+      - CVM_SOLR_URL=http://localhost:8983/solr/default
       - CVM_TRIPLESTORE_URL=http://localhost:9999/blazegraph/namespace/development/sparql
       - BLAZEGRAPH_URL=http://localhost:9999/blazegraph
 

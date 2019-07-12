@@ -34,3 +34,5 @@ blazegraph*
 public/ns*
 
 .vscode/*
+
+sunspot-solr.pid
