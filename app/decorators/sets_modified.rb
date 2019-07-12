@@ -7,8 +7,6 @@ class SetsModified < SimpleDelegator
   end
 
   def set_modified
-    if valid?
-      self.modified = RDF::Literal::Date.new(Time.now)
-    end
+    self.modified = RDF::Literal::Date.new(Time.now) if valid?
   end
 end

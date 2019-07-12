@@ -42,7 +42,7 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.around(:each, :caching ) do |example|
+  config.around(:each, :caching) do |example|
     status = ActionController::Base.perform_caching
     store = ActionController::Base.cache_store
     ActionController::Base.perform_caching = true

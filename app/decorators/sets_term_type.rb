@@ -3,9 +3,7 @@
 class SetsTermType < SimpleDelegator
   def persist!
     if valid?
-      unless self.vocabulary? || self.predicate? || new_record?
-        self.set_term_type
-      end
+      set_term_type unless vocabulary? || predicate? || new_record?
     end
     __getobj__.persist!
   end

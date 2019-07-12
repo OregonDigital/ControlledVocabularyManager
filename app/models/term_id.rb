@@ -15,16 +15,19 @@ class TermID
   def to_s
     id
   end
-#maybe remove this in favor of has_parent
+
+  # maybe remove this in favor of has_parent
   def vocabulary?
-    !clean_id.include?("/")
+    !clean_id.include?('/')
   end
+
   def hasParent?
-    clean_id.include?("/")
+    clean_id.include?('/')
   end
+
   private
 
   def clean_id
-    id.gsub(/.*\/ns\//, '')
+    id.gsub(%r{.*/ns/}, '')
   end
 end

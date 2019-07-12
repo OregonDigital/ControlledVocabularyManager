@@ -8,7 +8,7 @@ class VocabularyShowPage < Struct.new(:id)
   end
 
   def click_create_term
-    click_link "Create Term"
+    click_link 'Create Term'
     TermCreatePage.new(id)
   end
 

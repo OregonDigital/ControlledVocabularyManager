@@ -8,6 +8,6 @@ class CombinedId
   end
 
   def to_s
-    [vocab_id, term_id].join("/")
+    [vocab_id, term_id].join('/')
   end
 end

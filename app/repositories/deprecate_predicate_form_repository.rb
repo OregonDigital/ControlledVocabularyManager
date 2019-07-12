@@ -3,7 +3,7 @@
 # Repository that returns a decorated Term object with DeprecatePredicateForm
 # validations.
 class DeprecatePredicateFormRepository < Struct.new(:decorators, :repository_type)
-  delegate :new, :find, :exists?, :to => :repository
+  delegate :new, :find, :exists?, to: :repository
 
   def repository
     DecoratingRepository.new(decorators, Predicate)

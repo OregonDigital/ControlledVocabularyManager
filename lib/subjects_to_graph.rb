@@ -8,7 +8,7 @@ class SubjectsToGraph < Struct.new(:sparql_client, :subjects)
   private
 
   def query
-    sparql_client.select.where([:s, :p, :o]).filter(filter)
+    sparql_client.select.where(%i[s p o]).filter(filter)
   end
 
   def filter
@@ -16,11 +16,10 @@ class SubjectsToGraph < Struct.new(:sparql_client, :subjects)
   end
 
   def subjects_string
-    subjects.map{|x| "<#{x}>"}.join(", ")
+    subjects.map { |x| "<#{x}>" }.join(', ')
   end
 
   def solutions
     query.each_solution.to_a
   end
-
 end

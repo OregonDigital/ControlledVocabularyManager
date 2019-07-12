@@ -1,29 +1,29 @@
 # frozen_string_literal: true
 
 class Predicate < Term
-  configure :type => RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate")
-  property :sub_property_of, :predicate => RDF::RDFS.subPropertyOf
-  property :range, :predicate => RDF::RDFS.range
-  property :domain, :predicate => RDF::RDFS.domain
+  configure type: RDF::URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate')
+  property :sub_property_of, predicate: RDF::RDFS.subPropertyOf
+  property :range, predicate: RDF::RDFS.range
+  property :domain, predicate: RDF::RDFS.domain
 
   Sunspot::Adapters::InstanceAdapter.register(SunspotHelper::InstanceAdapter, Predicate)
   Sunspot::Adapters::DataAccessor.register(SunspotHelper::DataAccessor, Predicate)
 
   Sunspot.setup(Predicate) do
-    text :id, :boost => 2.0
-    text :label, :boost => 2.0
-    text :comment, :stored => true
+    text :id, boost: 2.0
+    text :label, boost: 2.0
+    text :comment, stored: true
 
-    string :id, :stored => true
-    string :label, :stored => true, :multiple => true
+    string :id, stored: true
+    string :label, stored: true, multiple: true
   end
 
   def self.option_text
-    "Predicate"
+    'Predicate'
   end
 
   def self.uri
-    self.type.to_s
+    type.to_s
   end
 
   def self.visible_form_fields
@@ -32,6 +32,6 @@ class Predicate < Term
 
   # Update the fields method with any new properties added to this model
   def fields
-    [:sub_property_of, :range, :domain] | super - [:ark, :local]
+    %i[sub_property_of range domain] | super - %i[ark local]
   end
 end

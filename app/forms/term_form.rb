@@ -2,7 +2,7 @@
 
 class TermForm < SimpleDelegator
   include ActiveModel::Validations
-  validates_with *(TermValidations)
+  validates_with *TermValidations
   validates_with VocabularyExists
 
   attr_reader :repository
@@ -17,7 +17,7 @@ class TermForm < SimpleDelegator
 
   def save
     return false unless valid?
-    self.persist!
-  end
 
+    persist!
+  end
 end

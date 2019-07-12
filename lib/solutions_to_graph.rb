@@ -10,13 +10,11 @@ class SolutionsToGraph < Struct.new(:solutions)
   private
 
   def triples
-    solutions.map{ |x| to_triple(x) }
+    solutions.map { |x| to_triple(x) }
   end
 
   def to_triple(solution)
     hsh = solution.to_hash
     RDF::Statement.from([hsh[:s], hsh[:p], hsh[:o]])
   end
-
 end
-

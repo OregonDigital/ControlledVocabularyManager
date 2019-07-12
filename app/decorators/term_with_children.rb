@@ -12,12 +12,12 @@ class TermWithChildren < SimpleDelegator
   end
 
   def sort_stringify(graph)
-    triples = graph.statements.to_a.sort_by{|x| x.predicate}.inject{|collector, element| collector.to_s + "\n" + element.to_s}
+    triples = graph.statements.to_a.sort_by(&:predicate).inject { |collector, element| collector.to_s + "\n" + element.to_s }
   end
 
   def full_graph
-    self.set_term_type
-    children.each { |c| c.set_term_type } unless children.empty?
+    set_term_type
+    children.each(&:set_term_type) unless children.empty?
     (children << self).inject(RDF::Graph.new, :<<)
   end
 end

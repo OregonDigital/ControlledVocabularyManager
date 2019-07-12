@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class LocalCollection < Term
-  configure :type => RDF::URI("http://purl.org/dc/dcmitype/Collection")
+  configure type: RDF::URI('http://purl.org/dc/dcmitype/Collection')
 
   def self.option_text
-    "Local Collection"
+    'Local Collection'
   end
 
   def self.uri
-    self.type.to_s
+    type.to_s
   end
 
   def self.visible_form_fields
@@ -16,6 +16,6 @@ class LocalCollection < Term
   end
 
   def fields
-    [:label, :alternate_name, :ark, :local, :date, :comment] | super
+    %i[label alternate_name ark local date comment] | super
   end
 end

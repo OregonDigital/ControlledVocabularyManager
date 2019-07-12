@@ -4,10 +4,8 @@ module ActiveTriplesAdapter
   extend ActiveSupport::Concern
   included do
     alias_method :orig_reload, :reload
-    def reload
-    end
+    def reload; end
   end
-
 
   module ClassMethods
     def find(uri)
@@ -15,9 +13,10 @@ module ActiveTriplesAdapter
       result.orig_reload
       relevant_triples = result.statements.to_a
       if type
-        relevant_triples.select!{|x| !(x.predicate == RDF.type && x.object.to_s == type.to_s)}
+        relevant_triples.reject! { |x| (x.predicate == RDF.type && x.object.to_s == type.to_s) }
       end
-      raise ActiveTriples::NotFound if relevant_triples.length == 0
+      raise ActiveTriples::NotFound if relevant_triples.empty?
+
       result
     end
 
@@ -30,5 +29,4 @@ module ActiveTriplesAdapter
       true
     end
   end
-
 end

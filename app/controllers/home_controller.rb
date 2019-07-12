@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
 class HomeController < ApplicationController
-  def index
-  end
+  def index; end
 
   def nav
-    render partial: "shared/navbar", layout: false
+    render partial: 'shared/navbar', layout: false
   end
 
   def can_edit

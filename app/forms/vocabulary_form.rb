@@ -2,7 +2,7 @@
 
 class VocabularyForm < SimpleDelegator
   include ActiveModel::Validations
-  validates_with *(TermValidations)
+  validates_with *TermValidations
 
   attr_reader :repository
   def initialize(term, repository)
@@ -16,6 +16,7 @@ class VocabularyForm < SimpleDelegator
 
   def save
     return false unless valid?
-    self.persist!
+
+    persist!
   end
 end

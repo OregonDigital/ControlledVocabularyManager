@@ -2,14 +2,13 @@
 
 module ControlledVocabManager
   class IsoLanguageTranslator
-    
     def self.language_list(format = :symbol)
       language_hash = {}
-      if(format == :symbol)
+      if format == :symbol
         ISO_639::ISO_639_1.each do |array|
           language_hash[array[2].to_sym] = array[3]
         end
-      elsif(format == :string)
+      elsif format == :string
         ISO_639::ISO_639_1.each do |array|
           language_hash[array[3]] = array[2].to_sym
         end
@@ -18,7 +17,7 @@ module ControlledVocabManager
     end
 
     def self.sorted_language_list
-      language_list.sort_by{|key, value| value}.to_h
+      language_list.sort_by { |_key, value| value }.to_h
     end
 
     def self.find_by_name(name)
@@ -26,8 +25,7 @@ module ControlledVocabManager
     end
 
     def self.find_by_symbol(symbol)
-      language_list(:symbol)[symbol] ||= "Language Not Found"
+      language_list(:symbol)[symbol] ||= 'Language Not Found'
     end
-
   end
 end

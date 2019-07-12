@@ -2,9 +2,7 @@
 
 class ErrorPropagator < Struct.new(:object, :errors, :limit)
   def run
-    if object.valid?
-      return
-    end
+    return if object.valid?
 
     truncated_messages.each do |message|
       errors.add(:base, message)
@@ -19,16 +17,14 @@ class ErrorPropagator < Struct.new(:object, :errors, :limit)
 
   def truncated_messages
     if exceeds_limit(messages.count)
-      messages[0..limit - 1] + ["Further errors exist but were suppressed"]
+      messages[0..limit - 1] + ['Further errors exist but were suppressed']
     else
       messages
     end
   end
 
   def exceeds_limit(value)
-    if !limit
-      return false
-    end
+    return false unless limit
 
     value > limit
   end

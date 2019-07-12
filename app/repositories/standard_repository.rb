@@ -3,7 +3,7 @@
 # Repository that returns an optionally decorated object based on whether the
 # given ID matches a Vocabulary or Term syntax.
 class StandardRepository < Struct.new(:decorators, :repository_type)
-  delegate :find, :exists?, :new, :to => :repository
+  delegate :find, :exists?, :new, to: :repository
   def repository
     decorating_repository
   end
@@ -22,4 +22,3 @@ class StandardRepository < Struct.new(:decorators, :repository_type)
     DecoratingRepository.new(decorators, undecorated_repository)
   end
 end
-

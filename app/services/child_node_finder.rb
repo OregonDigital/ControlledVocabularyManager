@@ -9,11 +9,9 @@ class ChildNodeFinder
   def find_children(vocabulary)
     query_graph = ChildQuery.new(sparql_client, vocabulary.rdf_subject).run
     results = GraphToTerms.new(nil, query_graph).terms
-    results.sort_by{|i| i.rdf_subject.to_s.downcase}
+    results.sort_by { |i| i.rdf_subject.to_s.downcase }
   end
-
 end
-
 
 class ChildQuery < Struct.new(:sparql_client, :parent_uri)
   def run

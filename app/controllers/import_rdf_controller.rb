@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ImportRdfController < AdminController
-  delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, :to => :injector
+  delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, to: :injector
   before_filter :require_admin
   include GitInterface
 
@@ -10,7 +10,6 @@ class ImportRdfController < AdminController
   end
 
   def import
-
     @form = ImportForm.new(*form_params)
     unless @form.valid?
       render :index
@@ -31,7 +30,7 @@ class ImportRdfController < AdminController
       return
     end
 
-    flash[:success] = "Imported external RDF resource(s)"
+    flash[:success] = 'Imported external RDF resource(s)'
     redirect_to term_path(@form.term_list.terms.first.id)
   end
 
@@ -54,27 +53,26 @@ class ImportRdfController < AdminController
       return
     end
 
-    flash[:success] = "Loaded RDF resource(s)"
+    flash[:success] = 'Loaded RDF resource(s)'
     redirect_to term_path(@form.term_list.terms.first.id)
   end
 
   private
 
   def add_to_repo_and_persist(term_list)
-
     term_list.terms.each do |term|
       triples = term.sort_stringify(term)
-      check = rugged_create(term.id, triples, "create")
-      if !check
+      check = rugged_create(term.id, triples, 'create')
+      unless check
         flash[:error] = "Something went wrong with creating #{term.id}."
         return false
       end
       branch_commit = rugged_merge(term.id)
-      if !branch_commit
+      unless branch_commit
         flash[:error] = "Something went wrong with merging #{term.id}."
         return false
       end
-      if !term.persist!
+      unless term.persist!
         rugged_rollback(branch_commit)
         flash[:error] = "Something went wrong with saving #{term.id}."
         return false

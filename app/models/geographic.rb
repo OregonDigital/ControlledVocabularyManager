@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Geographic < Term
-  configure :type => RDF::URI("http://www.w3.org/2004/02/skos/core#Geographic")
+  configure type: RDF::URI('http://www.w3.org/2004/02/skos/core#Geographic')
 
   def self.option_text
-    "Geographic"
+    'Geographic'
   end
 
   def self.uri
-    self.type.to_s
+    type.to_s
   end
 
   def self.visible_form_fields

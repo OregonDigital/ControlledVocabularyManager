@@ -17,7 +17,7 @@ class DeprecateTermForm < SimpleDelegator
 
   def save
     return false unless valid?
-    self.persist!
-  end
 
+    persist!
+  end
 end

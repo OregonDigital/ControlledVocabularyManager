@@ -2,7 +2,7 @@
 
 class DeprecateVocabularyForm < SimpleDelegator
   include ActiveModel::Validations
-  validates_with *(IsReplacedByValidations)
+  validates_with *IsReplacedByValidations
 
   attr_reader :repository
   def initialize(term, repository)
@@ -16,7 +16,7 @@ class DeprecateVocabularyForm < SimpleDelegator
 
   def save
     return false unless valid?
-    self.persist!
-  end
 
+    persist!
+  end
 end

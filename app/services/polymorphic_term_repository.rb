@@ -27,5 +27,4 @@ class PolymorphicTermRepository
     term = Term.find(id)
     term.term_type
   end
-
 end

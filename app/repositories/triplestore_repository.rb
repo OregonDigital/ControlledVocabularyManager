@@ -11,7 +11,7 @@ class TriplestoreRepository
     @triplestore = TriplestoreAdapter::Triplestore.new(client)
   end
 
-  def query(*args)
+  def query(*_args)
     statements
   end
 
@@ -24,7 +24,7 @@ class TriplestoreRepository
   # to inserting (<<) the model posted from the form
   def delete(args)
     if args.is_a?(Array)
-      url = args.flatten.first.scheme + "://" + args.flatten.first.host + args.flatten.first.path
+      url = args.flatten.first.scheme + '://' + args.flatten.first.host + args.flatten.first.path
       @triplestore.delete(url)
     else
       @triplestore.delete(args)
@@ -40,21 +40,20 @@ class TriplestoreRepository
   end
 
   def delete_namespace
-    raise "No deleting the production namespace!" if Rails.env.downcase == 'production'
+    raise 'No deleting the production namespace!' if Rails.env.downcase == 'production'
+
     @triplestore.client.provider.delete_namespace(Rails.env.downcase)
   end
 
   # get an enumerable of the statements related to the rdf_statement
   def statements
-    begin
-      subject = @rdf_statement.subject.to_s
-      @triplestore.fetch(subject)
-    rescue TriplestoreAdapter::TriplestoreException => e
-      puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
-      RDF::Graph.new
-    rescue => e
-      puts "[ERROR] TriplestoreRepository.statements failed with exception: #{e.message}"
-      RDF::Graph.new
-    end
+    subject = @rdf_statement.subject.to_s
+    @triplestore.fetch(subject)
+  rescue TriplestoreAdapter::TriplestoreException => e
+    puts "[ERROR] TriplestoreRepository.statements failed with TriplestoreException: #{e.message}"
+    RDF::Graph.new
+  rescue StandardError => e
+    puts "[ERROR] TriplestoreRepository.statements failed with exception: #{e.message}"
+    RDF::Graph.new
   end
 end

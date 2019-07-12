@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class Title < Term
-  configure :type => RDF::URI("http://www.w3.org/2004/02/skos/core#Title")
+  configure type: RDF::URI('http://www.w3.org/2004/02/skos/core#Title')
 
   def self.option_text
-    "Title"
+    'Title'
   end
 
   def self.uri
-    self.type.to_s
+    type.to_s
   end
 
   def self.visible_form_fields

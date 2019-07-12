@@ -10,7 +10,6 @@ class TermReviewIndexPage < Struct.new(:vocabulary_id)
   end
 
   def id
-    "#{vocabulary_id}"
+    vocabulary_id.to_s
   end
 end
-

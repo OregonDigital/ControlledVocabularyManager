@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class TermInjector < Struct.new(:params)
-  delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
+  delegate :vocabulary_repository, :child_node_finder, to: :vocabulary_injector
 
   def term_form_repository
     TermFormRepository.new(@klass)
@@ -25,11 +25,11 @@ class TermInjector < Struct.new(:params)
       SetsIssued,
       AddResource,
       DecoratorWithArguments.new(TermWithChildren, child_node_finder),
-      DecoratorWithArguments.new(TermWithoutChildren))
+      DecoratorWithArguments.new(TermWithoutChildren)
+    )
   end
 
   def vocabulary_injector
     @vocabulary_injector ||= VocabularyInjector.new(params)
   end
-
 end

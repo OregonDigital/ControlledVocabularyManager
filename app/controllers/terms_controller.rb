@@ -1,26 +1,26 @@
 # frozen_string_literal: true
 
 class TermsController < AdminController
-  delegate :term_form_repository, :term_repository, :vocabulary_repository, :to => :injector
-  delegate :deprecate_term_form_repository, :to => :deprecate_injector
-  rescue_from ActiveTriples::NotFound, :with => :render_404
+  delegate :term_form_repository, :term_repository, :vocabulary_repository, to: :injector
+  delegate :deprecate_term_form_repository, to: :deprecate_injector
+  rescue_from ActiveTriples::NotFound, with: :render_404
   include GitInterface
 
   before_filter :skip_render_on_cached_page, only: :show
   caches_page :show
   skip_before_filter :require_admin
-  before_filter :require_editor, :except => [:index, :show]
-  before_filter :require_admin, :only => [:cache]
+  before_filter :require_editor, except: %i[index show]
+  before_filter :require_admin, only: [:cache]
 
   def show
     @term = find_term
 
     # TODO: replace functionality, this causes memory leak and slowness currently.
-    #@term.commit_history = get_history(@term.id)
+    # @term.commit_history = get_history(@term.id)
     respond_to do |format|
       format.html
-      format.nt { render body: @term.full_graph.dump(:ntriples), :content_type => Mime::NT }
-      format.jsonld { render body: @term.full_graph.dump(:jsonld, standard_prefixes: true), :content_type => Mime::JSONLD }
+      format.nt { render body: @term.full_graph.dump(:ntriples), content_type: Mime::NT }
+      format.jsonld { render body: @term.full_graph.dump(:jsonld, standard_prefixes: true), content_type: Mime::JSONLD }
     end
   end
 
@@ -37,7 +37,7 @@ class TermsController < AdminController
     term_type = TermType.models.map(&:constantize).find do |model|
       model.name == params[:term_type]
     end
-    raise "Unrecognized term type" if term_type.nil?
+    raise 'Unrecognized term type' if term_type.nil?
 
     term_form = term_form_repository.new(combined_id, term_type)
     term_form.attributes = vocab_params.except(:id)
@@ -47,16 +47,16 @@ class TermsController < AdminController
     if term_form.is_valid?
       term_form.add_resource
       triples = term_form.sort_stringify(term_form.full_graph)
-      check = rugged_create(combined_id.to_s, triples, "creating")
+      check = rugged_create(combined_id.to_s, triples, 'creating')
       if check
-        flash[:success] = "#{combined_id.to_s} has been saved and added to the review queue."
+        flash[:success] = "#{combined_id} has been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to term_path(:id => params[:vocabulary_id])
+      redirect_to term_path(id: params[:vocabulary_id])
     else
       @term = term_form
-      render "new"
+      render 'new'
     end
   end
 
@@ -72,17 +72,17 @@ class TermsController < AdminController
     edit_term_form.set_modified
     if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "#{params[:id]} has been saved and added to the review queue."
       else
-       flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      id_parts = params[:id].split("/")
-      redirect_to term_path(:id => id_parts[0])
+      id_parts = params[:id].split('/')
+      redirect_to term_path(id: id_parts[0])
     else
       @term = edit_term_form
-      render "edit"
+      render 'edit'
     end
   end
 
@@ -90,18 +90,18 @@ class TermsController < AdminController
     if Term.exists? params[:id]
       term_form = term_form_repository.find(params[:id])
       term_form.attributes = vocab_params
-      action = "edit"
+      action = 'edit'
     else
       # Check term_type param against whitelist
       term_type = TermType.models.map(&:constantize).find do |model|
         model.name == params[:term_type]
       end
-      raise "Unrecognized term type" if term_type.nil?
+      raise 'Unrecognized term type' if term_type.nil?
 
       term_form = term_form_repository.new(params[:id], term_type)
       term_form.attributes = vocab_params.except(:id)
       term_form.add_resource
-      action = "new"
+      action = 'new'
     end
     term_form.set_languages(params[:vocabulary])
     term_form.set_modified
@@ -109,11 +109,11 @@ class TermsController < AdminController
 
     if term_form.is_valid?
       triples = term_form.sort_stringify(term_form.full_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
       redirect_to review_queue_path
     else
@@ -126,20 +126,20 @@ class TermsController < AdminController
     if Term.exists? params[:id]
       e_params = edit_params(params[:id])
       term_form = term_form_repository.find(params[:id])
-      term_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
-      empty_fields = term_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ["id"]
+      term_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject { |k, _v| k == :language })
+      empty_fields = term_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ['id']
       term_form.attributes = term_form.attributes.update(term_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
       term_form.set_languages(term_form.attributes.merge(e_params[:vocabulary].stringify_keys))
       @term = term_form
     else
       @term = reassemble(params[:id])
       type = Term
-      if !@term.type.blank?
+      unless @term.type.blank?
         @term.type.each do |t|
-          if t.to_s == "http://purl.org/dc/dcmitype/Collection"
-            type = "LocalCollection".constantize
+          if t.to_s == 'http://purl.org/dc/dcmitype/Collection'
+            type = 'LocalCollection'.constantize
             break
-          elsif t.to_s != "http://www.w3.org/2000/01/rdf-schema#Resource" && t.to_s != "http://www.w3.org/2004/02/skos/core#Concept"
+          elsif t.to_s != 'http://www.w3.org/2000/01/rdf-schema#Resource' && t.to_s != 'http://www.w3.org/2004/02/skos/core#Concept'
             type = t.object[:fragment].constantize
             break
           end
@@ -163,11 +163,11 @@ class TermsController < AdminController
         redirect_to review_queue_path
       else
         rugged_rollback(branch_commit)
-        flash[:error] = "Something went wrong, and term was not saved."
+        flash[:error] = 'Something went wrong, and term was not saved.'
         redirect_to review_queue_path
       end
     else
-      flash[:error] = "Something went wrong, please notify a system administrator."
+      flash[:error] = 'Something went wrong, please notify a system administrator.'
       redirect_to review_queue_path
     end
   end
@@ -177,17 +177,17 @@ class TermsController < AdminController
     edit_term_form.is_replaced_by = vocab_params[:is_replaced_by]
     if edit_term_form.is_valid?
       triples = edit_term_form.sort_stringify(edit_term_form.full_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      id_parts = params[:id].split("/")
-      redirect_to term_path(:id => id_parts[0])
+      id_parts = params[:id].split('/')
+      redirect_to term_path(id: id_parts[0])
     else
       @term = edit_term_form
-      render "deprecate"
+      render 'deprecate'
     end
   end
 
@@ -242,7 +242,7 @@ class TermsController < AdminController
 
   def render_404
     respond_to do |format|
-      format.html { render "terms/404", :status => 404 }
+      format.html { render 'terms/404', status: 404 }
       format.all { render nothing: true, status: 404 }
     end
   end
@@ -250,5 +250,4 @@ class TermsController < AdminController
   def vocabulary
     @vocabulary ||= Vocabulary.find(params[:vocabulary_id])
   end
-
 end

@@ -1,3 +1,3 @@
 # frozen_string_literal: true
 
-TermValidations = [TermIsUnique, IdExists, TermIsSanitary]
+TermValidations = [TermIsUnique, IdExists, TermIsSanitary].freeze

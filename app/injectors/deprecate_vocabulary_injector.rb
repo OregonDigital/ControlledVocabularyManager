@@ -22,6 +22,4 @@ class DeprecateVocabularyInjector < Struct.new(:params)
   def vocabulary_injector
     @vocabulary_injector ||= VocabularyInjector.new(params)
   end
-
-
 end

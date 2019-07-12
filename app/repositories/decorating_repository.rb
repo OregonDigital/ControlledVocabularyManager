@@ -33,6 +33,4 @@ class DecoratingRepository
   def decorate
     decorators.new(yield)
   end
-
 end
-

@@ -6,7 +6,6 @@ class TermReviewShowPage < Struct.new(:vocabulary_id)
   def mark
     find_link('review').click
     sleep 2
-
   end
 
   def edit

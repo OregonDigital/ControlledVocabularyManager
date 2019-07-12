@@ -16,5 +16,5 @@ class ApplicationController < ActionController::Base
       super(payload)
       Rack::Honeycomb.add_field(request.env, 'classname', self.class.name)
     end
-  end 
+  end
 end
