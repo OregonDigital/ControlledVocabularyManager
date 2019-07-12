@@ -6,6 +6,8 @@ class Predicate < Term
   property :range, predicate: RDF::RDFS.range
   property :domain, predicate: RDF::RDFS.domain
 
+  validates_with ValidUri
+
   Sunspot::Adapters::InstanceAdapter.register(SunspotHelper::InstanceAdapter, Predicate)
   Sunspot::Adapters::DataAccessor.register(SunspotHelper::DataAccessor, Predicate)
 

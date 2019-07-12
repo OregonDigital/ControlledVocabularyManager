@@ -4,6 +4,8 @@ class Vocabulary < Term
   require 'sunspot'
   require 'sunspot_helper'
 
+  validates_with ValidUri
+
   configure type: RDF::URI('http://purl.org/dc/dcam/VocabularyEncodingScheme')
   property :title, predicate: RDF::Vocab::DC.title
   property :publisher, predicate: RDF::Vocab::DC.publisher
