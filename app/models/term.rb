@@ -5,6 +5,8 @@ class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   include ActiveModel::Validations
 
+  validates_with ValidUri
+
   attr_accessor :commit_history
 
   configure base_uri: "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
