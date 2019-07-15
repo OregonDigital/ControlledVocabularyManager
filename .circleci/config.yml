@@ -43,7 +43,7 @@ jobs:
       - run:
           name: Create DB
           command: bundle exec rake db:create db:migrate db:test:prepare
-
+      - run: bundle exec rubocop
       - run:
           name: Run Tests
           command: |
@@ -57,4 +57,3 @@ jobs:
           destination: coverage
       - store_test_results:
           path: /tmp/circle-junit
-
