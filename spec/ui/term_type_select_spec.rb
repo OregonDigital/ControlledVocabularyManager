@@ -4,23 +4,23 @@ require 'rails_helper'
 require 'spec_helper'
 require 'corporate_name'
 require 'support/test_git_setup'
-RSpec.describe 'Using the term type SELECT', js: true do
+RSpec.feature "Using the term type SELECT", :js => true do
   include TestGitSetup
-  let(:user1) { User.create(email: 'admin@example.com', name: 'Jane Admin', password: 'admin123', role: 'admin editor reviewer', institution: 'Oregon State University') }
-  let(:user_params) { { email: 'admin@example.com', name: 'Jane Admin', password: 'admin123', role: 'admin editor reviewer', institution: 'Oregon State University' } }
+  let(:user1) { User.create(:email => 'admin@example.com', :name => 'Jane Admin', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University")}
+  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin editor reviewer", :institution => "Oregon State University"} }
 
-  before do
+  background do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user1)
     allow(user1).to receive(:admin?).and_return(true)
   end
 
-  it "hide fields which aren't specifically configured as visible for the model" do
+  scenario "hide fields which aren't specifically configured as visible for the model" do
     setup_git
     WebMock.allow_net_connect!
     user1
     sign_in user1
     vocabulary_create_page = VocabularyCreatePage.new
-    visit '/vocabularies/new'
+    visit "/vocabularies/new"
     sleep 2
     vocabulary_create_page.create
     sleep 2
@@ -34,8 +34,8 @@ RSpec.describe 'Using the term type SELECT', js: true do
       find("select#term_type option[value='CorporateName']").select_option
       expect(find("select#term_type option[value='CorporateName']")).to be_selected
     end
-    expect(page).to have_selector('label.term_alternate_name', visible: false)
-    expect(page).to have_selector('div.term_alternate_name', visible: false)
-    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
+    expect(page).to have_selector("label.term_alternate_name", visible: false)
+    expect(page).to have_selector("div.term_alternate_name", visible: false)
+    FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 end
