@@ -16,7 +16,8 @@ class SetsAttributes < SimpleDelegator
       elsif self.uri_fields.include?(key.to_sym)
         value_array = []
         value.each_with_index do |val, index|
-          value_array << RDF::URI(val) #Don't raise error here, using validation in form is more helpful
+          item = ( val.is_a? ActiveTriples::Resource) ? val : RDF::URI(val) #Don't raise error here, using validation in form is more helpful
+          value_array << item
         end
         new_hash[key] = value_array
       else
