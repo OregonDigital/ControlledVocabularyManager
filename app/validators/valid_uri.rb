@@ -2,7 +2,7 @@ class ValidUri < ActiveModel::Validator
 
   def validate(record)
     record.uri_fields.each do |field|
-      next if !record.respond_to? field || record.send(field).blank?
+      next if ((!record.respond_to? field) || (record.send(field).blank?))
       record.send(field).each do |val|
         error = is_uri(val)
         record.errors[field] << error unless error.blank?
