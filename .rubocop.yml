@@ -43,7 +43,7 @@ Rails/ApplicationRecord:
 RSpec/DescribeClass:
   Exclude:
     - 'spec/system/**/*'
-    - 'spec/views/**/*'
+    - 'spec/**/*'
 
 RSpec/LetSetup:
   Enabled: false

@@ -1,0 +1,693 @@
+Style/Documentation:
+  Exclude:
+    - 'app/forms/deprecate_predicate_form.rb'
+    - 'app/forms/vocabulary_form.rb'
+    - 'app/forms/predicate_form.rb'
+    - 'app/forms/load_form.rb'
+    - 'app/forms/deprecate_term_form.rb'
+    - 'app/forms/deprecate_vocabulary_form.rb'
+    - 'app/forms/import_form.rb'
+    - 'app/forms/term_form.rb'
+    - 'app/decorators/sets_issued.rb'
+    - 'app/decorators/sets_modified.rb'
+    - 'app/decorators/term_with_children.rb'
+    - 'app/decorators/term_without_children.rb'
+    - 'app/decorators/add_resource.rb'
+    - 'app/decorators/sets_attributes.rb'
+    - 'app/decorators/null_decorator.rb'
+    - 'app/decorators/decorator_with_arguments.rb'
+    - 'app/decorators/sets_term_type.rb'
+    - 'app/composites/decorator_list.rb'
+    - 'app/values/maybe_uri.rb'
+    - 'app/queries/all_vocabs_query.rb'
+    - 'app/repositories/decorating_repository.rb'
+    - 'app/models/corporate_name.rb'
+    - 'app/models/vocabulary.rb'
+    - 'app/models/title.rb'
+    - 'app/models/topic.rb'
+    - 'app/models/local_collection.rb'
+    - 'app/models/personal_name.rb'
+    - 'app/models/predicate.rb'
+    - 'app/models/geographic.rb'
+    - 'app/models/term.rb'
+    - 'app/models/ability.rb'
+    - 'app/models/combined_id.rb'
+    - 'app/models/user.rb'
+    - 'app/injectors/deprecate_term_injector.rb'
+    - 'app/injectors/deprecate_vocabulary_injector.rb'
+    - 'app/injectors/deprecate_predicate_injector.rb'
+    - 'app/injectors/predicate_injector.rb'
+    - 'app/injectors/term_injector.rb'
+    - 'app/injectors/vocabulary_injector.rb'
+    - 'app/validators/is_valid_is_replaced_by.rb'
+    - 'app/validators/id_exists.rb'
+    - 'app/validators/term_is_sanitary.rb'
+    - 'app/validators/is_valid_rdf_string.rb'
+    - 'app/validators/vocabulary_exists.rb'
+    - 'app/validators/term_is_unique.rb'
+    - 'app/validators/is_valid_rdf_import_url.rb'
+    - 'app/controllers/application_controller.rb'
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/admin/users_controller.rb'
+    - 'app/controllers/search_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/review_controller.rb'
+    - 'app/controllers/home_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+    - 'app/controllers/import_rdf_controller.rb'
+    - 'app/controllers/users/registrations_controller.rb'
+    - 'app/controllers/admin_controller.rb'
+    - 'app/controllers/concerns/sanitize.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+    - 'app/helpers/sunspot_helper.rb'
+    - 'app/helpers/application_helper.rb'
+    - 'app/services/graph_to_importable_term_list.rb'
+    - 'app/services/error_propagator.rb'
+    - 'app/services/preload_cache.rb'
+    - 'app/services/polymorphic_term_repository.rb'
+    - 'app/services/graph_to_terms.rb'
+    - 'app/services/child_node_finder.rb'
+    - 'app/services/triplestore_loader.rb'
+    - 'app/inputs/array_input.rb'
+    - 'lib/controlled_vocab_manager/id_minter.rb'
+    - 'lib/controlled_vocab_manager/iso_language_translator.rb'
+    - 'lib/subjects_to_graph.rb'
+    - 'lib/active_triples_adapter.rb'
+    - 'lib/conneg_middleware.rb'
+    - 'lib/solutions_to_graph.rb'
+    - 'spec/mocks/term_mock.rb'
+    - 'spec/features/import_rdf_term_spec.rb'
+    - 'spec/features/load_rdf_term_spec.rb'
+    - 'spec/support/test_git_setup.rb'
+    - 'spec/support/pages/term_review_index_page.rb'
+    - 'spec/support/pages/term_create_page.rb'
+    - 'spec/support/pages/term_show_page.rb'
+    - 'spec/support/pages/vocabulary_create_page.rb'
+    - 'spec/support/pages/term_review_show_page.rb'
+    - 'spec/support/pages/vocabulary_index_page.rb'
+    - 'spec/support/pages/vocabulary_show_page.rb'
+    - 'spec/lib/active_triples_adapter_spec.rb'
+    - 'spec/controllers/git_interface_spec.rb'
+    - 'spec/controllers/review_controller_spec.rb'
+    - 'spec/views/terms/show.html.erb_spec.rb'
+    - 'spec/views/review/show.html.erb_spec.rb'
+
+Lint/AmbiguousOperator:
+  Exclude:
+    - 'app/forms/deprecate_predicate_form.rb'
+    - 'app/forms/vocabulary_form.rb'
+    - 'app/forms/predicate_form.rb'
+    - 'app/forms/deprecate_vocabulary_form.rb'
+    - 'app/forms/term_form.rb'
+    - 'app/services/triplestore_loader.rb'
+
+Naming/PredicateName:
+  Exclude:
+    - 'app/forms/deprecate_predicate_form.rb'
+    - 'app/forms/vocabulary_form.rb'
+    - 'app/forms/predicate_form.rb'
+    - 'app/forms/deprecate_term_form.rb'
+    - 'app/forms/deprecate_vocabulary_form.rb'
+    - 'app/forms/term_form.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+
+Metrics/LineLength:
+  Exclude:
+    - 'app/forms/load_form.rb'
+    - 'app/forms/import_form.rb'
+    - 'app/decorators/term_with_children.rb'
+    - 'app/decorators/term_without_children.rb'
+    - 'app/decorators/sets_attributes.rb'
+    - 'app/values/maybe_uri.rb'
+    - 'app/queries/all_vocabs_query.rb'
+    - 'app/repositories/deprecate_predicate_form_repository.rb'
+    - 'app/repositories/vocabulary_form_repository.rb'
+    - 'app/repositories/deprecate_vocabulary_form_repository.rb'
+    - 'app/repositories/deprecate_term_form_repository.rb'
+    - 'app/repositories/triplestore_repository.rb'
+    - 'app/repositories/predicate_form_repository.rb'
+    - 'app/models/corporate_name.rb'
+    - 'app/models/vocabulary.rb'
+    - 'app/models/title.rb'
+    - 'app/models/term_type.rb'
+    - 'app/models/topic.rb'
+    - 'app/models/local_collection.rb'
+    - 'app/models/personal_name.rb'
+    - 'app/models/predicate.rb'
+    - 'app/models/geographic.rb'
+    - 'app/models/term.rb'
+    - 'app/injectors/predicate_injector.rb'
+    - 'app/injectors/vocabulary_injector.rb'
+    - 'app/validators/is_valid_is_replaced_by.rb'
+    - 'app/validators/terms_are_importable.rb'
+    - 'app/validators/term_is_sanitary.rb'
+    - 'app/validators/is_replaced_by_validations.rb'
+    - 'app/validators/is_valid_rdf_string.rb'
+    - 'app/validators/term_is_unique.rb'
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/review_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+    - 'app/controllers/import_rdf_controller.rb'
+    - 'app/controllers/admin_controller.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+    - 'app/services/rdf_loader.rb'
+    - 'app/services/preload_cache.rb'
+    - 'app/services/graph_to_terms.rb'
+    - 'app/services/child_node_finder.rb'
+    - 'app/services/triplestore_loader.rb'
+    - 'app/inputs/array_input.rb'
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+    - 'spec/spec_helper.rb'
+    - 'spec/forms/load_form_spec.rb'
+    - 'spec/forms/vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_vocabulary_form_spec.rb'
+    - 'spec/decorators/sets_modified_spec.rb'
+    - 'spec/decorators/term_with_children_spec.rb'
+    - 'spec/decorators/sets_attributes_spec.rb'
+    - 'spec/decorators/sets_issued_spec.rb'
+    - 'spec/composites/decorator_list_spec.rb'
+    - 'spec/features/create_term_spec.rb'
+    - 'spec/features/import_rdf_term_spec.rb'
+    - 'spec/features/create_vocabulary_spec.rb'
+    - 'spec/features/load_rdf_term_spec.rb'
+    - 'spec/values/maybe_uri.rb'
+    - 'spec/queries/all_vocabs_query_spec.rb'
+    - 'spec/repositories/triplestore_repository_spec.rb'
+    - 'spec/models/term_type_spec.rb'
+    - 'spec/models/term_spec.rb'
+    - 'spec/models/predicate_spec.rb'
+    - 'spec/models/vocabulary_spec.rb'
+    - 'spec/models/user_spec.rb'
+    - 'spec/support/blazegraph.rb'
+    - 'spec/support/stub_repository.rb'
+    - 'spec/support/poltergeist.rb'
+    - 'spec/support/test_git_setup.rb'
+    - 'spec/support/coveralls.rb'
+    - 'spec/support/pages/vocabulary_create_page.rb'
+    - 'spec/lib/controlled_vocab_manager/iso_language_translator_spec.rb'
+    - 'spec/validators/is_valid_rdf_string_spec.rb'
+    - 'spec/validators/is_valid_rdf_import_url_spec.rb'
+    - 'spec/validators/term_is_sanitary_spec.rb'
+    - 'spec/routing/term_routes_spec.rb'
+    - 'spec/routing/predicates_routes_spec.rb'
+    - 'spec/routing/terms_routes_spec.rb'
+    - 'spec/routing/vocabularies_routes_spec.rb'
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
+    - 'spec/controllers/git_interface_spec.rb'
+    - 'spec/controllers/import_rdf_controller_spec.rb'
+    - 'spec/controllers/review_controller_spec.rb'
+    - 'spec/controllers/users/registrations_controller_spec.rb'
+    - 'spec/views/vocabularies/edit.html.erb_spec.rb'
+    - 'spec/views/vocabularies/new.html.erb_spec.rb'
+    - 'spec/views/vocabularies/deprecate.html.erb_spec.rb'
+    - 'spec/views/vocabularies/index.html.erb_spec.rb'
+    - 'spec/views/import_rdf/_form.html.erb_spec.rb'
+    - 'spec/views/import_rdf/_termlist.html.erb_spec.rb'
+    - 'spec/views/import_rdf/preview_import.html.erb_spec.rb'
+    - 'spec/views/terms/edit.html.erb_spec.rb'
+    - 'spec/views/terms/show.html.erb_spec.rb'
+    - 'spec/views/terms/new.html.erb_spec.rb'
+    - 'spec/views/terms/deprecate.html.erb_spec.rb'
+    - 'spec/views/shared/_navbar.html.erb_spec.rb'
+    - 'spec/views/shared/_errors.html.erb_spec.rb'
+    - 'spec/views/review/show.html.erb_spec.rb'
+    - 'spec/views/review/index.html.erb_spec.rb'
+    - 'spec/services/rdf_importer_spec.rb'
+    - 'spec/services/graph_to_importable_term_list_spec.rb'
+    - 'spec/services/error_propagator_spec.rb'
+    - 'spec/services/child_node_finder_spec.rb'
+    - 'spec/services/triplestore_loader_spec.rb'
+    - 'spec/services/graph_to_terms_spec.rb'
+    - 'spec/services/rdf_loader_spec.rb'
+    - 'lib/active_triples_adapter.rb'
+
+Style/GuardClause:
+  Exclude:
+    - 'app/decorators/sets_issued.rb'
+    - 'app/decorators/add_resource.rb'
+    - 'app/validators/is_valid_rdf_string.rb'
+    - 'app/validators/vocabulary_exists.rb'
+    - 'app/validators/term_is_unique.rb'
+    - 'app/validators/is_valid_rdf_import_url.rb'
+    - 'app/controllers/review_controller.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+
+Lint/UselessAssignment:
+  Exclude:
+    - 'app/decorators/term_with_children.rb'
+    - 'app/decorators/term_without_children.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+    - 'app/services/rdf_loader.rb'
+    - 'spec/controllers/git_interface_spec.rb'
+
+Metrics/AbcSize:
+  Exclude:
+    - 'app/decorators/sets_attributes.rb'
+    - 'app/repositories/triplestore_repository.rb'
+    - 'app/validators/is_valid_rdf_import_url.rb'
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/review_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+    - 'app/controllers/import_rdf_controller.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+    - 'app/services/triplestore_loader.rb'
+    - 'spec/support/test_git_setup.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'app/decorators/sets_attributes.rb'
+    - 'app/models/term.rb'
+    - 'app/validators/is_valid_rdf_import_url.rb'
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+    - 'app/controllers/import_rdf_controller.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+    - 'app/services/triplestore_loader.rb'
+    - 'app/services/rdf_importer.rb'
+    - 'spec/support/test_git_setup.rb'
+    - 'lib/controlled_vocab_manager/iso_language_translator.rb'
+
+Naming/AccessorMethodName:
+  Exclude:
+    - 'app/decorators/sets_attributes.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+
+Style/CaseEquality:
+  Exclude:
+    - 'app/values/maybe_uri.rb'
+
+Style/StructInheritance:
+  Exclude:
+    - 'app/queries/all_vocabs_query.rb'
+    - 'app/repositories/deprecate_predicate_form_repository.rb'
+    - 'app/repositories/vocabulary_form_repository.rb'
+    - 'app/repositories/deprecate_vocabulary_form_repository.rb'
+    - 'app/repositories/deprecate_term_form_repository.rb'
+    - 'app/repositories/term_form_repository.rb'
+    - 'app/repositories/standard_repository.rb'
+    - 'app/repositories/predicate_form_repository.rb'
+    - 'app/models/importable_term_list.rb'
+    - 'app/injectors/deprecate_term_injector.rb'
+    - 'app/injectors/deprecate_vocabulary_injector.rb'
+    - 'app/injectors/deprecate_predicate_injector.rb'
+    - 'app/injectors/predicate_injector.rb'
+    - 'app/injectors/term_injector.rb'
+    - 'app/injectors/vocabulary_injector.rb'
+    - 'app/services/graph_to_importable_term_list.rb'
+    - 'app/services/error_propagator.rb'
+    - 'app/services/graph_to_terms.rb'
+    - 'app/services/child_node_finder.rb'
+    - 'spec/support/pages/term_review_index_page.rb'
+    - 'spec/support/pages/term_create_page.rb'
+    - 'spec/support/pages/term_review_show_page.rb'
+    - 'spec/support/pages/vocabulary_show_page.rb'
+    - 'lib/subjects_to_graph.rb'
+    - 'lib/solutions_to_graph.rb'
+    - 'lib/param_cleaner.rb'
+
+Lint/DisjunctiveAssignmentInConstructor:
+  Exclude:
+    - 'app/repositories/triplestore_repository.rb'
+
+Naming/MethodName:
+  Exclude:
+    - 'app/models/term_id.rb'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'app/models/term.rb'
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+
+Naming/MemoizedInstanceVariableName:
+  Exclude:
+    - 'app/injectors/deprecate_vocabulary_injector.rb'
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+
+Style/FormatStringToken:
+  Exclude:
+    - 'app/validators/terms_are_importable.rb'
+    - 'app/validators/termlist_has_no_duplicates.rb'
+    - 'spec/views/shared/_errors.html.erb_spec.rb'
+
+Naming/ConstantName:
+  Exclude:
+    - 'app/validators/is_replaced_by_validations.rb'
+    - 'app/validators/term_validations.rb'
+
+Style/FormatString:
+  Exclude:
+    - 'app/validators/termlist_has_no_duplicates.rb'
+    - 'spec/views/shared/_errors.html.erb_spec.rb'
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/predicates_controller.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/concerns/git_interface.rb'
+
+Style/IdenticalConditionalBranches:
+  Exclude:
+    - 'app/controllers/terms_controller.rb'
+    - 'app/controllers/vocabularies_controller.rb'
+    - 'app/controllers/review_controller.rb'
+
+Style/EmptyElse:
+  Exclude:
+    - 'app/controllers/review_controller.rb'
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'app/controllers/concerns/git_interface.rb'
+
+Lint/EmptyWhen:
+  Exclude:
+    - 'app/controllers/concerns/git_interface.rb'
+
+Layout/DefEndAlignment:
+  Exclude:
+    - 'app/controllers/concerns/git_interface.rb'
+
+Lint/DuplicateMethods:
+  Exclude:
+    - 'app/services/graph_to_importable_term_list.rb'
+    - 'app/services/triplestore_loader.rb'
+
+Lint/UselessAccessModifier:
+  Exclude:
+    - 'app/services/rdf_loader.rb'
+    - 'app/services/preload_cache.rb'
+
+Lint/IneffectiveAccessModifier:
+  Exclude:
+    - 'app/services/rdf_loader.rb'
+    - 'app/services/preload_cache.rb'
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/spec_helper.rb'
+    - 'spec/forms/load_form_spec.rb'
+    - 'spec/forms/deprecate_predicate_form_spec.rb'
+    - 'spec/forms/import_form_spec.rb'
+    - 'spec/forms/vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_term_form_spec.rb'
+    - 'spec/forms/term_form_spec.rb'
+    - 'spec/decorators/sets_modified_spec.rb'
+    - 'spec/decorators/term_with_children_spec.rb'
+    - 'spec/decorators/sets_attributes_spec.rb'
+    - 'spec/decorators/sets_issued_spec.rb'
+    - 'spec/features/create_term_spec.rb'
+    - 'spec/features/import_rdf_term_spec.rb'
+    - 'spec/features/create_vocabulary_spec.rb'
+    - 'spec/features/load_rdf_term_spec.rb'
+    - 'spec/queries/all_vocabs_query_spec.rb'
+    - 'spec/models/term_type_spec.rb'
+    - 'spec/models/term_spec.rb'
+    - 'spec/models/importable_term_list_spec.rb'
+    - 'spec/models/term_id_spec.rb'
+    - 'spec/models/vocabulary_spec.rb'
+    - 'spec/models/user_spec.rb'
+    - 'spec/models/term_uri_spec.rb'
+    - 'spec/lib/active_triples_adapter_spec.rb'
+    - 'spec/lib/controlled_vocab_manager/iso_language_translator_spec.rb'
+    - 'spec/validators/is_valid_is_replaced_by.rb'
+    - 'spec/validators/is_valid_rdf_string_spec.rb'
+    - 'spec/validators/is_valid_rdf_import_url_spec.rb'
+    - 'spec/routing/term_routes_spec.rb'
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
+    - 'spec/controllers/git_interface_spec.rb'
+    - 'spec/controllers/import_rdf_controller_spec.rb'
+    - 'spec/controllers/review_controller_spec.rb'
+    - 'spec/views/vocabularies/edit.html.erb_spec.rb'
+    - 'spec/views/vocabularies/new.html.erb_spec.rb'
+    - 'spec/views/vocabularies/index.html.erb_spec.rb'
+    - 'spec/views/import_rdf/_form.html.erb_spec.rb'
+    - 'spec/views/import_rdf/preview_import.html.erb_spec.rb'
+    - 'spec/views/terms/edit.html.erb_spec.rb'
+    - 'spec/views/terms/show.html.erb_spec.rb'
+    - 'spec/views/terms/new.html.erb_spec.rb'
+    - 'spec/views/terms/deprecate.html.erb_spec.rb'
+    - 'spec/views/shared/_errors.html.erb_spec.rb'
+    - 'spec/views/review/show.html.erb_spec.rb'
+    - 'spec/services/rdf_importer_spec.rb'
+    - 'spec/services/polymorphic_term_repository_spec.rb'
+    - 'spec/services/error_propagator_spec.rb'
+    - 'spec/services/child_node_finder_spec.rb'
+    - 'spec/services/triplestore_loader_spec.rb'
+    - 'spec/services/rdf_loader_spec.rb'
+
+Capybara/FeatureMethods:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+
+Style/StringLiterals:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+
+Style/HashSyntax:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+
+Layout/SpaceAfterComma:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+
+Layout/SpaceInsideBlockBraces:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+
+Layout/SpaceInsideHashLiteralBraces:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+    - 'spec/features/create_term_spec.rb'
+    - 'spec/features/import_rdf_term_spec.rb'
+    - 'spec/features/create_vocabulary_spec.rb'
+    - 'spec/features/load_rdf_term_spec.rb'
+    - 'spec/controllers/git_interface_spec.rb'
+    - 'spec/services/triplestore_loader_spec.rb'
+
+RSpec/MultipleExpectations:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+    - 'spec/ui/default_language_select_spec.rb'
+    - 'spec/forms/load_form_spec.rb'
+    - 'spec/forms/deprecate_predicate_form_spec.rb'
+    - 'spec/forms/import_form_spec.rb'
+    - 'spec/forms/vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_term_form_spec.rb'
+    - 'spec/forms/term_form_spec.rb'
+    - 'spec/composites/decorator_list_spec.rb'
+    - 'spec/features/create_term_spec.rb'
+    - 'spec/features/import_rdf_term_spec.rb'
+    - 'spec/features/create_vocabulary_spec.rb'
+    - 'spec/features/load_rdf_term_spec.rb'
+    - 'spec/values/maybe_uri.rb'
+    - 'spec/models/term_type_spec.rb'
+    - 'spec/models/term_spec.rb'
+    - 'spec/models/importable_term_list_spec.rb'
+    - 'spec/models/predicate_spec.rb'
+    - 'spec/models/vocabulary_spec.rb'
+    - 'spec/models/user_spec.rb'
+    - 'spec/lib/controlled_vocab_manager/iso_language_translator_spec.rb'
+    - 'spec/validators/is_valid_rdf_string_spec.rb'
+    - 'spec/validators/is_valid_rdf_import_url_spec.rb'
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
+    - 'spec/controllers/git_interface_spec.rb'
+    - 'spec/controllers/import_rdf_controller_spec.rb'
+    - 'spec/controllers/review_controller_spec.rb'
+    - 'spec/views/vocabularies/edit.html.erb_spec.rb'
+    - 'spec/views/vocabularies/new.html.erb_spec.rb'
+    - 'spec/views/import_rdf/_form.html.erb_spec.rb'
+    - 'spec/views/import_rdf/preview_import.html.erb_spec.rb'
+    - 'spec/views/terms/show.html.erb_spec.rb'
+    - 'spec/views/terms/new.html.erb_spec.rb'
+    - 'spec/views/review/show.html.erb_spec.rb'
+    - 'spec/services/rdf_importer_spec.rb'
+    - 'spec/services/polymorphic_term_repository_spec.rb'
+    - 'spec/services/error_propagator_spec.rb'
+    - 'spec/services/child_node_finder_spec.rb'
+    - 'spec/services/triplestore_loader_spec.rb'
+    - 'spec/services/rdf_loader_spec.rb'
+
+Style/ColonMethodCall:
+  Exclude:
+    - 'spec/ui/term_type_select_spec.rb'
+
+Layout/EmptyLinesAroundBlockBody:
+  Exclude:
+    - 'spec/ui/default_language_select_spec.rb'
+
+RSpec/NamedSubject:
+  Exclude:
+    - 'spec/forms/deprecate_predicate_form_spec.rb'
+    - 'spec/forms/vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_vocabulary_form_spec.rb'
+    - 'spec/forms/deprecate_term_form_spec.rb'
+    - 'spec/forms/term_form_spec.rb'
+    - 'spec/decorators/decorator_with_arguments_spec.rb'
+    - 'spec/decorators/sets_modified_spec.rb'
+    - 'spec/decorators/term_with_children_spec.rb'
+    - 'spec/decorators/sets_attributes_spec.rb'
+    - 'spec/decorators/sets_issued_spec.rb'
+    - 'spec/repositories/deprecate_term_form_repository_spec.rb'
+    - 'spec/repositories/triplestore_repository_spec.rb'
+    - 'spec/repositories/deprecate_vocabulary_form_repository_spec.rb'
+    - 'spec/repositories/deprecate_predicate_form_repository_spec.rb'
+    - 'spec/models/combined_id_spec.rb'
+    - 'spec/models/term_id_spec.rb'
+    - 'spec/models/term_uri_spec.rb'
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
+    - 'spec/services/graph_to_importable_term_list_spec.rb'
+    - 'spec/services/graph_to_terms_spec.rb'
+
+RSpec/SubjectStub:
+  Exclude:
+    - 'spec/forms/vocabulary_form_spec.rb'
+
+RSpec/VerifiedDoubles:
+  Exclude:
+    - 'spec/decorators/decorator_with_arguments_spec.rb'
+    - 'spec/composites/decorator_list_spec.rb'
+    - 'spec/values/maybe_uri.rb'
+    - 'spec/app_factories/decorating_repository_spec.rb'
+    - 'spec/validators/is_valid_rdf_string_spec.rb'
+    - 'spec/validators/is_valid_rdf_import_url_spec.rb'
+    - 'spec/services/polymorphic_term_repository_spec.rb'
+    - 'spec/services/graph_to_importable_term_list_spec.rb'
+    - 'spec/services/error_propagator_spec.rb'
+
+RSpec/ScatteredLet:
+  Exclude:
+    - 'spec/features/create_term_spec.rb'
+    - 'spec/features/create_vocabulary_spec.rb'
+    - 'spec/features/load_rdf_term_spec.rb'
+    - 'spec/queries/all_vocabs_query_spec.rb'
+
+RSpec/VoidExpect:
+  Exclude:
+    - 'spec/features/create_term_spec.rb'
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/features/create_term_spec.rb'
+    - 'spec/features/create_vocabulary_spec.rb'
+
+RSpec/ScatteredSetup:
+  Exclude:
+    - 'spec/features/create_vocabulary_spec.rb'
+    - 'spec/queries/all_vocabs_query_spec.rb'
+    - 'spec/lib/active_triples_adapter_spec.rb'
+
+RSpec/FilePath:
+  Exclude:
+    - 'spec/values/maybe_uri.rb'
+    - 'spec/validators/is_valid_is_replaced_by.rb'
+
+RSpec/UnspecifiedException:
+  Exclude:
+    - 'spec/repositories/triplestore_repository_spec.rb'
+
+RSpec/ContextWording:
+  Exclude:
+    - 'spec/models/term_spec.rb'
+    - 'spec/models/importable_term_list_spec.rb'
+    - 'spec/models/user_spec.rb'
+    - 'spec/lib/active_triples_adapter_spec.rb'
+    - 'spec/lib/controlled_vocab_manager/iso_language_translator_spec.rb'
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
+    - 'spec/controllers/import_rdf_controller_spec.rb'
+    - 'spec/controllers/review_controller_spec.rb'
+    - 'spec/controllers/users/registrations_controller_spec.rb'
+    - 'spec/views/vocabularies/edit.html.erb_spec.rb'
+    - 'spec/views/review/show.html.erb_spec.rb'
+    - 'spec/services/rdf_importer_spec.rb'
+    - 'spec/services/error_propagator_spec.rb'
+    - 'spec/services/graph_to_terms_spec.rb'
+
+RSpec/IteratedExpectation:
+  Exclude:
+    - 'spec/models/importable_term_list_spec.rb'
+
+Style/ClassVars:
+  Exclude:
+    - 'spec/support/share_db_connection.rb'
+
+Lint/ParenthesesAsGroupedExpression:
+  Exclude:
+    - 'spec/support/test_git_setup.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+
+RSpec/NestedGroups:
+  Exclude:
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
+    - 'spec/controllers/import_rdf_controller_spec.rb'
+    - 'spec/controllers/review_controller_spec.rb'
+    - 'spec/services/rdf_importer_spec.rb'
+    - 'spec/services/error_propagator_spec.rb'
+    - 'spec/services/rdf_loader_spec.rb'
+
+RSpec/ExpectInHook:
+  Exclude:
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/import_rdf_controller_spec.rb'
+    - 'spec/services/rdf_importer_spec.rb'
+    - 'spec/services/graph_to_importable_term_list_spec.rb'
+
+RSpec/OverwritingSetup:
+  Exclude:
+    - 'spec/controllers/terms_controller_spec.rb'
+
+RSpec/InstanceVariable:
+  Exclude:
+    - 'spec/controllers/users/registrations_controller_spec.rb'
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - 'spec/services/triplestore_loader_spec.rb'
+    - 'spec/services/rdf_loader_spec.rb'
+    - 'spec/spec_helper.rb'
+
+Naming/UncommunicativeMethodParamName:
+  Exclude:
+    - 'lib/param_cleaner.rb'
+
