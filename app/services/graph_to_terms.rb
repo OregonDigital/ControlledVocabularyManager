@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Graph To Terms
 class GraphToTerms < Struct.new(:resource_factory, :graph)
   attr_reader :klass
 

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Vocabulary Show Page
 class VocabularyShowPage < Struct.new(:id)
   include Capybara::DSL
 

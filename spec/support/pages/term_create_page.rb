@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Create Page
 class TermCreatePage < Struct.new(:vocabulary_id)
   include Capybara::DSL
 

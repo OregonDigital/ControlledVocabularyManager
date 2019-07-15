@@ -4,6 +4,7 @@ require 'rails_helper'
 require 'spec_helper'
 require 'support/test_git_setup'
 
+# Dummy Controller
 class DummyController < AdminController
   include GitInterface
 end

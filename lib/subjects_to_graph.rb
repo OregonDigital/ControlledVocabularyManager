@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Subjects to graph
 class SubjectsToGraph < Struct.new(:sparql_client, :subjects)
   def graph
     SolutionsToGraph.new(solutions).graph

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Solutions to graph
 class SolutionsToGraph < Struct.new(:solutions)
   def graph
     g = RDF::Graph.new

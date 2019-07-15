@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# All Vocabs Query
 class AllVocabsQuery < Struct.new(:sparql_client, :repository, :term_type)
   class << self
     def call(sparql_client, repository, term_type)

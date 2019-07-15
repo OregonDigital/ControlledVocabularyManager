@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe ActiveTriplesAdapter do
   before do
+    # Example Resource
     class ExampleResource < ActiveTriples::Resource
       include ActiveTriplesAdapter
       configure repository: :default

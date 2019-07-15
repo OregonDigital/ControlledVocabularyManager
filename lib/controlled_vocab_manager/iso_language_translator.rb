@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ControlledVocabManager
+
+  # Language Translator
   class IsoLanguageTranslator
     def self.language_list(format = :symbol)
       language_hash = {}

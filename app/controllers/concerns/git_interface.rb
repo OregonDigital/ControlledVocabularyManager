@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# Git Interface
 module GitInterface
   extend ActiveSupport::Concern
   require 'rugged'
@@ -421,6 +420,7 @@ module GitInterface
     end
   end
 
+  # Git Interface
   class WalkerTerm
     attr_reader :record, :parent, :parent_record
 
@@ -444,6 +444,7 @@ module GitInterface
     end
   end
 
+  # Git Interface
   class WalkerVocab
     attr_reader :record, :parent, :parent_record
 

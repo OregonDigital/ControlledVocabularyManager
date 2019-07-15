@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ControlledVocabManager
+  # ID Minter
   class IdMinter
     class << self
       def mint_id

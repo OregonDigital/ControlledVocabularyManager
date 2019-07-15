@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Preload Cache
 class PreloadCache
   def self.preload(term)
     FileUtils.mkdir_p("#{Settings.cache_dir}/ns/#{term.term_uri_vocabulary_id}")

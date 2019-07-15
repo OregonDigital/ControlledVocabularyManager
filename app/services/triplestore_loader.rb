@@ -3,6 +3,7 @@
 require 'rdf_loader'
 require 'triplestore_adapter'
 
+# Triplestore Loader
 class TriplestoreLoader
   attr_accessor :triplestore, :type, :url, :errors, :mismatches, :write_report, :update_triplestore, :write_update_file, :output_path
 

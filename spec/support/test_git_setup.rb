@@ -2,6 +2,7 @@
 
 require 'rugged'
 
+# Git setup
 module TestGitSetup
   include GitInterface
   def setup_git
