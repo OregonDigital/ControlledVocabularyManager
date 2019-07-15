@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Search Controller
 class SearchController < ApplicationController
   def search_results
     @search_query = params[:query] || session[:query]

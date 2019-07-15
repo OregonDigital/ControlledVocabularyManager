@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Deprecate Predicate Form
 class DeprecatePredicateForm < SimpleDelegator
   include ActiveModel::Validations
   validates_with *TermValidations

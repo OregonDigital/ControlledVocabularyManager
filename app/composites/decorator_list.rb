@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# List of decorators
 class DecoratorList
   attr_reader :decorators
 

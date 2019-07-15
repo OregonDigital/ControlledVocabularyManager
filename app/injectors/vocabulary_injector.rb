@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Vocabulary Injector
 class VocabularyInjector < Struct.new(:params)
   def vocabulary_form_repository
     VocabularyFormRepository.new(decorators)

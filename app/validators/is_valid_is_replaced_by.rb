@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Is Replaced By Validator
 class IsValidIsReplacedBy < ActiveModel::Validator
   include Sanitize
 

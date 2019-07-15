@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Sanitary Term Validator
 class TermIsSanitary < ActiveModel::Validator
   include Sanitize
 

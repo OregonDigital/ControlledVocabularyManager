@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Terms Controller
 class TermsController < AdminController
   delegate :term_form_repository, :term_repository, :vocabulary_repository, to: :injector
   delegate :deprecate_term_form_repository, to: :deprecate_injector

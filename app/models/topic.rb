@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Topic Term Type
 class Topic < Term
   configure type: RDF::URI('http://www.w3.org/2004/02/skos/core#Topic')
 

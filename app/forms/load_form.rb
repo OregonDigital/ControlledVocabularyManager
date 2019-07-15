@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Load RDF Form
 class LoadForm
   include ActiveModel::Model
   attr_accessor :rdf_string, :term_list, :rdf_importer_factory

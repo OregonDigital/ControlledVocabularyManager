@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Git Interface
 module GitInterface
   extend ActiveSupport::Concern
   require 'rugged'

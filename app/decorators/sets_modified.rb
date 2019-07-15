@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Decorates set_modified
 class SetsModified < SimpleDelegator
   def persist!
     set_modified

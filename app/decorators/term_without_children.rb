@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Queries terms without children
 class TermWithoutChildren < SimpleDelegator
   def initialize(resource)
     super(resource)

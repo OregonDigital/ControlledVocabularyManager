@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Abstract Decorator that supports args
 class DecoratorWithArguments
   attr_reader :decorator, :args
   def initialize(decorator, *args)
