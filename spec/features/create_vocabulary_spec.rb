@@ -54,10 +54,7 @@ RSpec.describe 'Create and update a Vocabulary', js: true, type: :feature do
       click_button('Remove', match: :first)
     end
     expect(page).not_to have_xpath("//input[@value='Hello world']")
-
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 
   it 'creates a vocabulary with uri field' do
@@ -72,9 +69,6 @@ RSpec.describe 'Create and update a Vocabulary', js: true, type: :feature do
     find_button('Create Vocabulary').trigger('click')
     sleep 2
     expect(page).to have_content(vocabulary_id.to_s)
-
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 end

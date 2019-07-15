@@ -14,6 +14,7 @@ class ChildNodeFinder
   end
 end
 
+# Child Query
 class ChildQuery < Struct.new(:sparql_client, :parent_uri)
   def run
     graph

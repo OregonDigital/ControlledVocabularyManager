@@ -39,9 +39,7 @@ RSpec.describe 'Import RDF', js: true, type: :feature do
     expect(page).to have_content('In the visual arts')
     repo = dummy_class.setup
     expect(repo.last_commit.message).to eq('Merge artSeries_review into master')
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 
   # skip this because it takes too long
@@ -67,8 +65,6 @@ RSpec.describe 'Import RDF', js: true, type: :feature do
     expect(page).to have_content('TestVocabulary')
     repo = dummy_class.setup
     expect(repo.last_commit.message).to have_content('Merge TestVocabulary')
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 end

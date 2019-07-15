@@ -8,8 +8,6 @@ class AddResource < SimpleDelegator
   end
 
   def add_resource
-    if valid?
-      get_values(:type) << RDF::URI('http://www.w3.org/2000/01/rdf-schema#Resource')
-    end
+    get_values(:type) << RDF::URI('http://www.w3.org/2000/01/rdf-schema#Resource') if valid?
   end
 end

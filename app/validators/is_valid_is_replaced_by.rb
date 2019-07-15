@@ -9,9 +9,7 @@ class IsValidIsReplacedBy < ActiveModel::Validator
       record.errors.add(:is_replaced_by, "can't be blank") if record.is_replaced_by.blank?
     else
       record.is_replaced_by.each do |value|
-        unless verify_uri(value)
-          record.errors.add(:is_replaced_by, 'invalid uri')
-        end
+        record.errors.add(:is_replaced_by, 'invalid uri') unless verify_uri(value)
       end
     end
   end

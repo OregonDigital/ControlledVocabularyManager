@@ -101,9 +101,7 @@ RSpec.describe 'Load RDF', js: true, type: :feature do
     expect(page).to have_content('my little vocab')
     repo = dummy_class.setup
     expect(repo.last_commit.message).to eq('Merge mylittlevocab_review into master')
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 
   it 'load a bad term' do
@@ -119,8 +117,6 @@ RSpec.describe 'Load RDF', js: true, type: :feature do
     expect(page).to have_content('Something went wrong')
     repo = dummy_class.setup
     expect(repo.last_commit.message).to eq('initial commit')
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Git Interface
 module GitInterface
   extend ActiveSupport::Concern
   require 'rugged'
@@ -197,9 +198,7 @@ module GitInterface
              end
     walker.push(branch)
     walker.each_with_object([]) do |c, a|
-      if entry_changed? c, path, repo
-        a << { author: c.author, date: c.time, hash: c.oid, message: c.message }
-      end
+      a << { author: c.author, date: c.time, hash: c.oid, message: c.message } if entry_changed? c, path, repo
     end
   end
 
@@ -357,13 +356,13 @@ module GitInterface
     return nil if graph.blank?
 
     statements = graph.query(predicate: RDF::URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'))
-    if statements.any? { |s| s.object == RDF::URI('http://purl.org/dc/dcam/VocabularyEncodingScheme') }
-      sr = StandardRepository.new(nil, Vocabulary)
-    elsif statements.any? { |s| s.object == RDF::URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate') }
-      sr = StandardRepository.new(nil, Predicate)
-    else
-      sr = StandardRepository.new(nil, Term)
-    end
+    sr = if statements.any? { |s| s.object == RDF::URI('http://purl.org/dc/dcam/VocabularyEncodingScheme') }
+           StandardRepository.new(nil, Vocabulary)
+         elsif statements.any? { |s| s.object == RDF::URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate') }
+           StandardRepository.new(nil, Predicate)
+         else
+           StandardRepository.new(nil, Term)
+         end
     results = GraphToTerms.new(sr, graph).terms
     results.first
   end

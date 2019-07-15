@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
+# CVM
 module ControlledVocabManager
-
   # Language Translator
   class IsoLanguageTranslator
     def self.language_list(format = :symbol)
