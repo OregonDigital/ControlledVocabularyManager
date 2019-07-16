@@ -15,7 +15,7 @@ class SetsAttributes < SimpleDelegator
       elsif self.uri_fields.include?(key.to_sym)
         value_array = []
         value.each_with_index do |val, index|
-          item = ( val.is_a? ActiveTriples::Resource) ? val : RDF::URI(val) #Don't raise error here, using validation in form is more helpful
+          item = ( val.is_a? ActiveTriples::Resource) ? val : ActiveTriples::Resource.new(val) #Don't raise error here, using validation in form is more helpful
           value_array << item
         end
         new_hash[key] = value_array
@@ -24,5 +24,9 @@ class SetsAttributes < SimpleDelegator
       end
     end
     self.attributes = new_hash
+  # Temporary fix: when the ActiveTriples::Resource is added to the attributes, ActiveTriples::Resource.erase_old_resource fails with the following error:
+  # "undefined method `delete' for Object:Class Did you mean?  delegate"
+  rescue NoMethodError => e
+    raise unless e.message.include? ("delete")
   end
 end
