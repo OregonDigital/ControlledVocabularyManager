@@ -23,6 +23,7 @@ RSpec.describe SetsAttributes do
     allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified see_also])
     allow(term).to receive(:uri_fields).and_return(%i[see_also])
     allow(term).to receive(:valid?).and_return(true)
+    allow(term).to receive(:parent=)
   end
 
   describe '#set_attributes' do
