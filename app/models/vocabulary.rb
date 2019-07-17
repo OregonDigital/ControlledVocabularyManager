@@ -1,32 +1,34 @@
+# frozen_string_literal: true
+
 class Vocabulary < Term
   require 'sunspot'
   require 'sunspot_helper'
 
-  configure :type => RDF::URI("http://purl.org/dc/dcam/VocabularyEncodingScheme")
-  property :title, :predicate => RDF::Vocab::DC.title
-  property :publisher, :predicate => RDF::Vocab::DC.publisher
-  property :sub_property_of, :predicate => RDF::RDFS.subPropertyOf
-  property :range, :predicate => RDF::RDFS.range
-  property :domain, :predicate => RDF::RDFS.domain
+  configure type: RDF::URI('http://purl.org/dc/dcam/VocabularyEncodingScheme')
+  property :title, predicate: RDF::Vocab::DC.title
+  property :publisher, predicate: RDF::Vocab::DC.publisher
+  property :sub_property_of, predicate: RDF::RDFS.subPropertyOf
+  property :range, predicate: RDF::RDFS.range
+  property :domain, predicate: RDF::RDFS.domain
 
   Sunspot::Adapters::InstanceAdapter.register(SunspotHelper::InstanceAdapter, Vocabulary)
   Sunspot::Adapters::DataAccessor.register(SunspotHelper::DataAccessor, Vocabulary)
 
   Sunspot.setup(Vocabulary) do
     text :id
-    text :label, :using => :title, :boost => 2.0
-    text :comment, :stored => true
+    text :label, using: :title, boost: 2.0
+    text :comment, stored: true
 
-    string :id, :stored => true
-    string :label, :using => :title, :stored => true, :multiple => true
+    string :id, stored: true
+    string :label, using: :title, stored: true, multiple: true
   end
 
   def self.option_text
-    "Vocabulary"
+    'Vocabulary'
   end
 
   def self.uri
-    self.type.to_s
+    type.to_s
   end
 
   def self.visible_form_fields
@@ -39,13 +41,13 @@ class Vocabulary < Term
 
   # Update the fields method with any new properties added to this model
   def fields
-    [:title, :publisher, :sub_property_of, :range, :domain] | super - [:ark, :local]
+    %i[title publisher sub_property_of range domain] | super - %i[ark local]
   end
 
   private
 
   def deprecated_children
-    vocab_with_children.select { |c| c.deprecated? }
+    vocab_with_children.select(&:deprecated?)
   end
 
   def vocab_with_children

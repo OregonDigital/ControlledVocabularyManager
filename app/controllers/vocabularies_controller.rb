@@ -1,13 +1,15 @@
+# frozen_string_literal: true
+
 class VocabulariesController < AdminController
-  delegate :vocabulary_form_repository,  :all_vocabs_query, :to => :injector
-  delegate :deprecate_vocabulary_form_repository, :to => :deprecate_injector
+  delegate :vocabulary_form_repository, :all_vocabs_query, to: :injector
+  delegate :deprecate_vocabulary_form_repository, to: :deprecate_injector
   include GitInterface
-  skip_before_filter :require_admin, :only => [:edit, :update, :review_update, :mark_reviewed]
-  before_filter :require_editor, :only => [:edit, :update]
+  skip_before_filter :require_admin, only: %i[edit update review_update mark_reviewed]
+  before_filter :require_editor, only: %i[edit update]
 
   def index
     @vocabularies = all_vocabs_query.call
-    @vocabularies.sort_by! {|v| v.rdf_label.first.to_s.downcase }
+    @vocabularies.sort_by! { |v| v.rdf_label.first.to_s.downcase }
   end
 
   def new
@@ -23,17 +25,17 @@ class VocabulariesController < AdminController
     if vocabulary_form.is_valid?
       vocabulary_form.add_resource
       triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
-      check = rugged_create(vocabulary_params[:id], triples, "creating")
+      check = rugged_create(vocabulary_params[:id], triples, 'creating')
       if check
         flash[:success] = "#{vocabulary_params[:id]} has been saved and added to the review queue"
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to "/vocabularies"
+      redirect_to '/vocabularies'
 
     else
       @vocabulary = vocabulary_form
-      render "new"
+      render 'new'
     end
   end
 
@@ -52,16 +54,16 @@ class VocabulariesController < AdminController
     edit_vocabulary_form.set_modified
     if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to "/vocabularies"
+      redirect_to '/vocabularies'
     else
       @term = edit_vocabulary_form
-      render "edit"
+      render 'edit'
     end
   end
 
@@ -69,12 +71,12 @@ class VocabulariesController < AdminController
     if Term.exists? params[:id]
       vocabulary_form = vocabulary_form_repository.find(params[:id])
       vocabulary_form.attributes = vocabulary_params.except(:issued)
-      action = "edit"
+      action = 'edit'
     else
       vocabulary_form = vocabulary_form_repository.new(params[:id], Vocabulary)
       vocabulary_form.attributes = vocabulary_params.except(:id, :issued)
       vocabulary_form.add_resource
-      action = "new"
+      action = 'new'
     end
     vocabulary_form.set_languages(params[:vocabulary])
     vocabulary_form.set_modified
@@ -82,11 +84,11 @@ class VocabulariesController < AdminController
 
     if vocabulary_form.is_valid?
       triples = vocabulary_form.sort_stringify(vocabulary_form.single_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
       redirect_to review_queue_path
     else
@@ -100,8 +102,8 @@ class VocabulariesController < AdminController
     if Term.exists? params[:id]
       e_params = edit_params(params[:id])
       vocabulary_form = vocabulary_form_repository.find(params[:id])
-      vocabulary_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
-      empty_fields = vocabulary_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ["id"]
+      vocabulary_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject { |k, _v| k == :language })
+      empty_fields = vocabulary_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ['id']
       vocabulary_form.attributes = vocabulary_form.attributes.update(vocabulary_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
       vocabulary_form.set_languages(vocabulary_form.attributes.merge(e_params[:vocabulary].stringify_keys))
     else
@@ -120,15 +122,14 @@ class VocabulariesController < AdminController
         redirect_to review_queue_path
       else
         rugged_rollback(branch_commit)
-        flash[:error] = "Something went wrong, and term was not saved."
+        flash[:error] = 'Something went wrong, and term was not saved.'
         redirect_to review_queue_path
       end
     else
-      flash[:error] = "Something went wrong. Please a systems administrator"
+      flash[:error] = 'Something went wrong. Please a systems administrator'
       redirect_to review_queue_path
     end
   end
-
 
   def deprecate_only
     edit_vocabulary_form = deprecate_vocabulary_form_repository.find(params[:id])
@@ -136,16 +137,16 @@ class VocabulariesController < AdminController
 
     if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to "/vocabularies"
+      redirect_to '/vocabularies'
     else
       @term = edit_vocabulary_form
-      render "deprecate"
+      render 'deprecate'
     end
   end
 
@@ -166,5 +167,4 @@ class VocabulariesController < AdminController
   def deprecate_injector
     @injector ||= DeprecateVocabularyInjector.new(params)
   end
-
 end

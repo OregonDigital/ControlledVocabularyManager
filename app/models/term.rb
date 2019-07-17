@@ -1,27 +1,29 @@
+# frozen_string_literal: true
+
 class Term < ActiveTriples::Resource
   include ActiveTriplesAdapter
   include ActiveModel::Validations
 
   attr_accessor :commit_history
 
-  configure :base_uri => "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
-  configure :repository => :default
-  configure :type => RDF::URI("http://www.w3.org/2004/02/skos/core#Concept")
+  configure base_uri: "http://#{Rails.application.routes.default_url_options[:host]}/ns/"
+  configure repository: :default
+  configure type: RDF::URI('http://www.w3.org/2004/02/skos/core#Concept')
 
-  property :label, :predicate => RDF::RDFS.label
-  property :alternate_name, :predicate => RDF::URI("http://schema.org/alternateName")
-  property :ark, :predicate => RDF::URI('http://opaquenamespace.org/ns/ark')
-  property :local, :predicate => RDF::Vocab::Identifiers.local
-  property :date, :predicate => RDF::Vocab::DC.date
-  property :comment, :predicate => RDF::RDFS.comment
-  property :is_replaced_by, :predicate => RDF::Vocab::DC.isReplacedBy
-  property :see_also, :predicate => RDF::RDFS.seeAlso
-  property :is_defined_by, :predicate => RDF::RDFS.isDefinedBy
-  property :same_as, :predicate => RDF::OWL.sameAs
-  property :modified, :predicate => RDF::Vocab::DC.modified
-  property :issued, :predicate => RDF::Vocab::DC.issued
+  property :label, predicate: RDF::RDFS.label
+  property :alternate_name, predicate: RDF::URI('http://schema.org/alternateName')
+  property :ark, predicate: RDF::URI('http://opaquenamespace.org/ns/ark')
+  property :local, predicate: RDF::Vocab::Identifiers.local
+  property :date, predicate: RDF::Vocab::DC.date
+  property :comment, predicate: RDF::RDFS.comment
+  property :is_replaced_by, predicate: RDF::Vocab::DC.isReplacedBy
+  property :see_also, predicate: RDF::RDFS.seeAlso
+  property :is_defined_by, predicate: RDF::RDFS.isDefinedBy
+  property :same_as, predicate: RDF::OWL.sameAs
+  property :modified, predicate: RDF::Vocab::DC.modified
+  property :issued, predicate: RDF::Vocab::DC.issued
 
-  delegate :vocabulary_id, :leaf, :to => :term_uri, :prefix => true
+  delegate :vocabulary_id, :leaf, to: :term_uri, prefix: true
 
   validate :not_blank_node
 
@@ -30,21 +32,21 @@ class Term < ActiveTriples::Resource
 
   Sunspot.setup(Term) do
     text :id
-    text :label, :boost => 2.0
-    text :comment, :stored => true
-    text :alternate_name, :stored => true
+    text :label, boost: 2.0
+    text :comment, stored: true
+    text :alternate_name, stored: true
 
-    string :id, :stored => true
-    string :label, :stored => true, :multiple => true
-    string :date, :stored => true, :multiple => true
+    string :id, stored: true
+    string :label, stored: true, multiple: true
+    string :date, stored: true, multiple: true
   end
 
   def self.option_text
-    "Concept"
+    'Concept'
   end
 
   def self.uri
-    self.type.to_s
+    type.to_s
   end
 
   def self.visible_form_fields
@@ -56,26 +58,27 @@ class Term < ActiveTriples::Resource
   end
 
   def blacklisted_language_properties
-    [
-      :id,
-      :issued,
-      :modified,
-      :see_also,
-      :is_replaced_by,
-      :date,
-      :same_as,
-      :is_defined_by,
-      :range,
-      :domain,
-      :sub_property_of,
-      :ark,
-      :local
+    %i[
+      id
+      issued
+      modified
+      see_also
+      is_replaced_by
+      date
+      same_as
+      is_defined_by
+      range
+      domain
+      sub_property_of
+      ark
+      local
     ]
   end
 
   def id
     return nil if rdf_subject.node?
-    rdf_subject.to_s.gsub(self.class.base_uri, "")
+
+    rdf_subject.to_s.gsub(self.class.base_uri, '')
   end
 
   ##
@@ -95,19 +98,19 @@ class Term < ActiveTriples::Resource
   end
 
   def vocabulary?
-    self.term_type == Vocabulary
+    term_type == Vocabulary
   end
 
   def predicate?
-    self.term_type == Predicate
+    term_type == Predicate
   end
 
   def editable_fields
-    fields - [:issued, :modified, :is_replaced_by]
+    fields - %i[issued modified is_replaced_by]
   end
 
   def editable_fields_deprecate
-    fields - [:issued, :modified, :label, :comment, :date, :see_also, :is_defined_by, :same_as, :alternate_name, :ark, :local]
+    fields - %i[issued modified label comment date see_also is_defined_by same_as alternate_name ark local]
   end
 
   def to_param
@@ -115,7 +118,7 @@ class Term < ActiveTriples::Resource
   end
 
   def values_for_property(property_name)
-    self.get_values(property_name.to_s)
+    get_values(property_name.to_s)
   end
 
   def term_uri
@@ -127,7 +130,7 @@ class Term < ActiveTriples::Resource
   end
 
   def repository
-    rdf_statement = RDF::Statement.new(:subject => rdf_subject)
+    rdf_statement = RDF::Statement.new(subject: rdf_subject)
     @repository ||= TriplestoreRepository.new(rdf_statement, Settings.triplestore_adapter.type, Settings.triplestore_adapter.url)
   end
 
@@ -136,9 +139,9 @@ class Term < ActiveTriples::Resource
   #
   # @param property_name [Symbol] the property name to get language for
   def literal_language_list_for_property(property_name)
-    self.get_values(property_name.to_s, :literal => true).map { 
-      |literal| [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))] 
-    }
+    get_values(property_name.to_s, literal: true).map do |literal|
+      [literal, (literal.respond_to?(:language) ? language_from_symbol(literal.language) : language_from_symbol(0))]
+    end
   end
 
   def language_from_symbol(language_symbol)
@@ -153,14 +156,14 @@ class Term < ActiveTriples::Resource
   # The friendly text 'titleize'd, ie. "Personal Name"
   # @return [String] the term type
   def titleized_type
-    self.term_type.option_text.titleize
+    term_type.option_text.titleize
   end
 
   ##
   # The friendly text 'parameterize'd, ie. "personalname"
   # @return [String] the term type
   def parameterized_type
-    self.term_type.option_text.parameterize
+    term_type.option_text.parameterize
   end
 
   ##
@@ -169,8 +172,8 @@ class Term < ActiveTriples::Resource
   #
   # @return [RDF::Graph] an RDF graph of this whole term
   def full_graph
-    self.term_type = TermType.class_from_types(self.type)
-    (self).inject(RDF::Graph.new, :<<)
+    self.term_type = TermType.class_from_types(type)
+    inject(RDF::Graph.new, :<<)
   end
 
   ##
@@ -178,14 +181,14 @@ class Term < ActiveTriples::Resource
   # @param graph [RDF::Graph] an RDF graph to sort
   # @return [Array<String>] a sorted array of statements
   def sort_stringify(graph)
-    triples = graph.statements.to_a.sort_by { |x| x.predicate }.inject { |collector, element| collector.to_s + " " + element.to_s }
-    "#{triples.to_s.gsub(" . ", " .\n")}\n"
+    triples = graph.statements.to_a.sort_by(&:predicate).inject { |collector, element| collector.to_s + ' ' + element.to_s }
+    "#{triples.to_s.gsub(' . ', " .\n")}\n"
   end
 
   ##
   # Update this instance of the terms type, see the getter and setter for details
   def set_term_type
-    self.term_type = self.term_type
+    self.term_type = term_type
   end
 
   ##
@@ -194,7 +197,7 @@ class Term < ActiveTriples::Resource
   #
   # @return [Class] the class of this instance of a term
   def term_type
-    TermType.class_from_types(self.type)
+    TermType.class_from_types(type)
   end
 
   ##
@@ -206,11 +209,12 @@ class Term < ActiveTriples::Resource
   end
 
   private
+
   def vocab_subject_uri
-    self.term_uri.uri.to_s
+    term_uri.uri.to_s
   end
 
   def not_blank_node
-    errors.add(:id, "can not be blank") if node?
+    errors.add(:id, 'can not be blank') if node?
   end
 end

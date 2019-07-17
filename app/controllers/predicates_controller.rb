@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 class PredicatesController < ApplicationController
-  delegate :predicate_form_repository, :all_preds_query, :to => :injector
-  delegate :deprecate_predicate_form_repository, :to => :deprecate_injector
-  skip_before_filter :require_admin, :only => [:review_update, :mark_reviewed]
+  delegate :predicate_form_repository, :all_preds_query, to: :injector
+  delegate :deprecate_predicate_form_repository, to: :deprecate_injector
+  skip_before_filter :require_admin, only: %i[review_update mark_reviewed]
 
   include GitInterface
   def index
     @predicates = all_preds_query.call
-    @predicates.sort_by! { |v| (v.respond_to?(:rdf_label)) ? v.rdf_label.first.to_s : v[:label] }
+    @predicates.sort_by! { |v| v.respond_to?(:rdf_label) ? v.rdf_label.first.to_s : v[:label] }
   end
 
   def new
@@ -22,16 +24,16 @@ class PredicatesController < ApplicationController
     if predicate_form.is_valid?
       predicate_form.add_resource
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
-      check = rugged_create(predicate_params[:id], triples, "creating")
+      check = rugged_create(predicate_params[:id], triples, 'creating')
       if check
         flash[:success] = "#{params[:predicate][:id]} has been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to "/predicates"
+      redirect_to '/predicates'
     else
       @predicate = predicate_form
-      render "new"
+      render 'new'
     end
   end
 
@@ -46,16 +48,16 @@ class PredicatesController < ApplicationController
     edit_predicate_form.set_modified
     if edit_predicate_form.is_valid?
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:saved] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to "/predicates"
+      redirect_to '/predicates'
     else
       @term = edit_predicate_form
-      render "edit"
+      render 'edit'
     end
   end
 
@@ -68,31 +70,30 @@ class PredicatesController < ApplicationController
     edit_predicate_form.is_replaced_by = vocabulary_params[:is_replaced_by]
     if edit_predicate_form.is_valid?
       triples = edit_predicate_form.sort_stringify(edit_predicate_form.single_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
-      redirect_to "/predicates"
+      redirect_to '/predicates'
 
     else
       @term = edit_predicate_form
-      render "deprecate"
+      render 'deprecate'
     end
   end
-
 
   def review_update
     if Term.exists? params[:id]
       predicate_form = predicate_form_repository.find(params[:id])
       predicate_form.attributes = vocabulary_params.except(:id, :issued)
-       action = "edit"
+      action = 'edit'
     else
       predicate_form = predicate_form_repository.new(params[:id], Predicate)
       predicate_form.attributes = vocabulary_params.except(:id, :issued)
       predicate_form.add_resource
-      action = "new"
+      action = 'new'
     end
     predicate_form.set_languages(params[:vocabulary])
     predicate_form.set_modified
@@ -100,11 +101,11 @@ class PredicatesController < ApplicationController
 
     if predicate_form.is_valid?
       triples = predicate_form.sort_stringify(predicate_form.single_graph)
-      check = rugged_create(params[:id], triples, "updating")
+      check = rugged_create(params[:id], triples, 'updating')
       if check
         flash[:success] = "Changes to #{params[:id]} have been saved and added to the review queue."
       else
-        flash[:error] = "Something went wrong, please notify a systems administrator."
+        flash[:error] = 'Something went wrong, please notify a systems administrator.'
       end
       redirect_to review_queue_path
     else
@@ -118,12 +119,12 @@ class PredicatesController < ApplicationController
     if Term.exists? params[:id]
       e_params = edit_params(params[:id])
       predicate_form = predicate_form_repository.find(params[:id])
-      predicate_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject{|k,v| k==:language})
-      empty_fields = predicate_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ["id"]
+      predicate_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject { |k, _v| k == :language })
+      empty_fields = predicate_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ['id']
       predicate_form.attributes = predicate_form.attributes.update(predicate_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
       predicate_form.set_languages(predicate_form.attributes.merge(e_params[:vocabulary].stringify_keys))
     else
-      @predicate = reassemble(params[:id] )
+      @predicate = reassemble(params[:id])
       predicate_form = PredicateForm.new(@predicate, StandardRepository.new(nil, Predicate))
     end
     branch_commit = rugged_merge(params[:id])
@@ -133,16 +134,16 @@ class PredicatesController < ApplicationController
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :jsonld
         expire_page controller: 'terms', action: 'show', id: params[:id], format: :nt
         rugged_delete_branch(params[:id])
-        update_solr_index (params[:id])
+        update_solr_index params[:id]
         flash[:success] = "#{params[:id]} has been saved and is ready for use."
         redirect_to review_queue_path
       else
         rugged_rollback(branch_commit)
-        flash[:error] = "Something went wrong, and the term was not saved."
+        flash[:error] = 'Something went wrong, and the term was not saved.'
         redirect_to review_term_path(params[:id])
       end
     else
-      flash[:error] = "Something went wrong. Please notify a systems administrator."
+      flash[:error] = 'Something went wrong. Please notify a systems administrator.'
       redirect_to review_term_path(params[:id])
     end
   end
@@ -168,5 +169,4 @@ class PredicatesController < ApplicationController
   def deprecate_injector
     @injector ||= DeprecatePredicateInjector.new(params)
   end
-
 end

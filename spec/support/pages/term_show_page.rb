@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TermShowPage
   include Capybara::DSL
 
@@ -13,7 +15,6 @@ class TermShowPage
   private
 
   def rdf_subject
-    Term.base_uri + "#{id}"
+    Term.base_uri + id.to_s
   end
-
 end

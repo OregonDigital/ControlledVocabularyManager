@@ -1,0 +1,24 @@
+rubocop_translate_script.rb:1:1: C: Style/FrozenStringLiteralComment: Missing magic comment # frozen_string_literal: true.
+rubocop_translate_script.rb:14:25: W: Lint/ShadowingOuterLocalVariable: Shadowing outer local variable - file.
+spec/mocks/term_mock.rb:3:1: C: Style/Documentation: Missing top-level module documentation comment.
+spec/spec_helper.rb:104:5: C: RSpec/BeforeAfterAll: Beware of using config.before(:all) as it may cause state to leak between tests. If you are using rspec-rails, and use_transactional_fixtures is enabled, then records created in config.before(:all) are not automatically rolled back.
+spec/spec_helper.rb:109:5: C: RSpec/BeforeAfterAll: Beware of using config.after(:all) as it may cause state to leak between tests. If you are using rspec-rails, and use_transactional_fixtures is enabled, then records created in config.after(:all) are not automatically rolled back.
+spec/features/import_rdf_term_spec.rb:6:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/features/load_rdf_term_spec.rb:7:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/test_git_setup.rb:5:1: C: Style/Documentation: Missing top-level module documentation comment.
+spec/support/pages/term_review_index_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/pages/term_create_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/pages/term_show_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/pages/vocabulary_create_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/pages/term_review_show_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/pages/vocabulary_index_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/support/pages/vocabulary_show_page.rb:3:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/lib/active_triples_adapter_spec.rb:7:5: C: Style/Documentation: Missing top-level class documentation comment.
+spec/routing/term_routes_spec.rb:5:16: C: RSpec/DescribeClass: The first argument to describe should be the class or module being tested.
+spec/routing/predicates_routes_spec.rb:5:16: C: RSpec/DescribeClass: The first argument to describe should be the class or module being tested.
+spec/routing/terms_routes_spec.rb:5:16: C: RSpec/DescribeClass: The first argument to describe should be the class or module being tested.
+spec/routing/vocabularies_routes_spec.rb:5:16: C: RSpec/DescribeClass: The first argument to describe should be the class or module being tested.
+spec/controllers/git_interface_spec.rb:7:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/controllers/review_controller_spec.rb:6:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/views/terms/show.html.erb_spec.rb:6:1: C: Style/Documentation: Missing top-level class documentation comment.
+spec/views/review/show.html.erb_spec.rb:6:1: C: Style/Documentation: Missing top-level class documentation comment.

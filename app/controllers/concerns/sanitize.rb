@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Sanitize
   extend ActiveSupport::Concern
 
@@ -9,31 +11,25 @@ module Sanitize
   end
 
   def check_special_characters(string, messages)
-    if string.match(/[?\\&]+/)
-      messages << "Term contains special characters"
-    end
+    messages << 'Term contains special characters' if string.match(/[?\\&]+/)
     messages
   end
 
   def check_for_spaces(string, messages)
-    if string.include? " "
-      messages << "Term contains spaces"
-    end
+    messages << 'Term contains spaces' if string.include? ' '
     messages
   end
 
   def format_messages(messages)
-    message = messages.join(". ")
-    unless message.empty?
-      message = message + "."
-    end
+    message = messages.join('. ')
+    message += '.' unless message.empty?
     message
   end
 
   def verify_uri(string)
     begin
       uri = URI.parse(string)
-      resp = uri.kind_of?(URI::HTTP)
+      resp = uri.is_a?(URI::HTTP)
     rescue URI::InvalidURIError
       resp = false
     end

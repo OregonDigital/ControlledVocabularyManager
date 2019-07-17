@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # Repository that returns a decorated Vocabulary object with VocabularyForm
 # validations.
 class PredicateFormRepository < Struct.new(:decorators)
-  delegate :new, :find, :exists?, :to => :repository
+  delegate :new, :find, :exists?, to: :repository
 
   def repository
     DecoratingRepository.new(decorators, Predicate)

@@ -1,11 +1,12 @@
-class PredicateInjector < Struct.new(:params)
+# frozen_string_literal: true
 
+class PredicateInjector < Struct.new(:params)
   def predicate_form_repository
     PredicateFormRepository.new(decorators)
   end
 
   def predicate_repository
-    @predicate_repository ||= StandardRepository.new(decorators,Predicate)
+    @predicate_repository ||= StandardRepository.new(decorators, Predicate)
   end
 
   def all_preds_query
@@ -13,7 +14,7 @@ class PredicateInjector < Struct.new(:params)
   end
 
   def sparql_client
-    @sparql_client ||= SPARQL::Client.new("#{Settings.triplestore_adapter.url}")
+    @sparql_client ||= SPARQL::Client.new(Settings.triplestore_adapter.url.to_s)
   end
 
   def params

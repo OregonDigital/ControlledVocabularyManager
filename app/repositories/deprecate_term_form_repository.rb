@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 # Repository that returns a decorated Term object with DeprecateTermForm
 # validations.
 class DeprecateTermFormRepository < Struct.new(:decorators, :repository_type)
-  delegate :new, :find, :exists?, :to => :repository
+  delegate :new, :find, :exists?, to: :repository
 
-  def initialize(decorators, klass)
+  def initialize(_decorators, klass)
     @klass = klass || Term
   end
 

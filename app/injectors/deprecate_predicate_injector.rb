@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 class DeprecatePredicateInjector < Struct.new(:params)
-  delegate :vocabulary_repository, :child_node_finder, :to => :vocabulary_injector
+  delegate :vocabulary_repository, :child_node_finder, to: :vocabulary_injector
 
   def deprecate_predicate_form_repository
     DeprecatePredicateFormRepository.new(decorators)
@@ -22,5 +24,4 @@ class DeprecatePredicateInjector < Struct.new(:params)
   def vocabulary_injector
     @vocabulary_injector ||= VocabularyInjector.new(params)
   end
-
 end

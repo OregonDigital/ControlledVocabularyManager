@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe RdfImporter do
-  let(:jsonld) { '{
+  let(:jsonld) do
+    '{
     "@context": {
       "dc": "http://purl.org/dc/terms/",
           "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
@@ -29,17 +32,18 @@ RSpec.describe RdfImporter do
                 "@value": "aiban (prints)",
                     "@language": "en"
               }
-  }'}
-  let(:url) { "http://opaquenamespace.org/ns/workType/aibanprints.jsonld" }
-  let(:errors) { instance_double("ActiveModel::Errors") }
-  let(:importer) { RdfImporter.new(errors, url: url, validators: [validator]) }
+  }'
+  end
+  let(:url) { 'http://opaquenamespace.org/ns/workType/aibanprints.jsonld' }
+  let(:errors) { instance_double('ActiveModel::Errors') }
+  let(:importer) { described_class.new(errors, url: url, validators: [validator]) }
   let(:rdf_loader) { RdfLoader }
-  let(:graph_to_termlist) { instance_double("GraphToImportableTermList") }
+  let(:graph_to_termlist) { instance_double('GraphToImportableTermList') }
   let(:termlist) { ImportableTermList.new }
   let(:validator_class) { IsValidRdfImportUrl }
-  let(:validator) { instance_double("IsValidRdfImportUrl") }
+  let(:validator) { instance_double('IsValidRdfImportUrl') }
 
-  describe "#run for RDF URL" do
+  describe '#run for RDF URL' do
     before do
       WebMock.allow_net_connect!
 
@@ -51,41 +55,41 @@ RSpec.describe RdfImporter do
       allow(validator).to receive(:validate).with(importer)
     end
 
-    context "when there are no errors" do
+    context 'when there are no errors' do
       before do
         allow(errors).to receive(:any?).and_return(false)
       end
 
-      it "should return the term_list" do
+      it 'returns the term_list' do
         importer.run
         expect(importer.term_list.terms.size).to be > 0
       end
     end
 
-    context "Presence of errors preventing code execution" do
-      context "When there are errors in all cases" do
+    context 'Presence of errors preventing code execution' do
+      context 'When there are errors in all cases' do
         before do
           expect(errors).to receive(:any?).and_return(true)
         end
 
-        it "shouldn't call rdf_loader" do
+        it 'does not call rdf_loader' do
           expect(rdf_loader).not_to receive(:load_url)
           importer.run
         end
 
-        it "shouldn't call graph_to_termlist" do
+        it 'does not call graph_to_termlist' do
           expect(importer).not_to receive(:build_term_list)
           importer.run
         end
       end
 
-      context "when there is no error on the first call" do
+      context 'when there is no error on the first call' do
         before do
-          stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
+          stub_request(:get, url).to_return(status: 200, body: jsonld, headers: {})
           expect(errors).to receive(:any?).and_return(false, true)
         end
 
-        it "shouldn't return build_term_list" do
+        it 'does not return build_term_list' do
           expect(importer).to receive(:build_graph)
           expect(importer).not_to receive(:build_term_list)
           importer.run
@@ -93,23 +97,24 @@ RSpec.describe RdfImporter do
       end
     end
 
-    context "when an empty graph is returned" do
+    context 'when an empty graph is returned' do
       before do
-        stub_request(:get, url).to_return(:status => 200, :body => jsonld, :headers => {})
+        stub_request(:get, url).to_return(status: 200, body: jsonld, headers: {})
         allow(errors).to receive(:any?).and_return(false, true)
         allow(rdf_loader).to receive(:load_url).and_return(RDF::Graph.new)
       end
 
-      it "should add an error" do
-        expect(errors).to receive(:add).with(:url, "must resolve to valid RDF")
-        expect(errors).to receive(:add).with(:base, "URL is not valid.")
+      it 'adds an error' do
+        expect(errors).to receive(:add).with(:url, 'must resolve to valid RDF')
+        expect(errors).to receive(:add).with(:base, 'URL is not valid.')
         importer.run
       end
     end
   end
-  describe "#run for RDF String" do
-    let(:validator) { instance_double("IsValidRdfString") }
-    let(:importer) { RdfImporter.new(errors, rdf_string: jsonld, validators: [validator]) }
+
+  describe '#run for RDF String' do
+    let(:validator) { instance_double('IsValidRdfString') }
+    let(:importer) { described_class.new(errors, rdf_string: jsonld, validators: [validator]) }
 
     before do
       WebMock.allow_net_connect!
@@ -121,40 +126,40 @@ RSpec.describe RdfImporter do
       allow(validator).to receive(:validate).with(importer)
     end
 
-    context "when there are no errors" do
+    context 'when there are no errors' do
       before do
         allow(errors).to receive(:any?).and_return(false)
       end
 
-      it "should return the term_list" do
+      it 'returns the term_list' do
         importer.run
         expect(importer.term_list.terms.size).to be > 0
       end
     end
 
-    context "Presence of errors preventing code execution" do
-      context "When there are errors in all cases" do
+    context 'Presence of errors preventing code execution' do
+      context 'When there are errors in all cases' do
         before do
           expect(errors).to receive(:any?).and_return(true)
         end
 
-        it "shouldn't call rdf_loader" do
+        it 'does not call rdf_loader' do
           expect(rdf_loader).not_to receive(:load_string)
           importer.run
         end
 
-        it "shouldn't call graph_to_termlist" do
+        it 'does not call graph_to_termlist' do
           expect(importer).not_to receive(:build_term_list)
           importer.run
         end
       end
 
-      context "when there is no error on the first call" do
+      context 'when there is no error on the first call' do
         before do
           expect(errors).to receive(:any?).and_return(false, true)
         end
 
-        it "shouldn't return build_term_list" do
+        it 'does not return build_term_list' do
           expect(importer).to receive(:build_graph)
           expect(importer).not_to receive(:build_term_list)
           importer.run
@@ -162,15 +167,16 @@ RSpec.describe RdfImporter do
       end
     end
 
-    context "when an empty graph is returned" do
-      let(:jsonld) { "not-blank-not-valid" }
+    context 'when an empty graph is returned' do
+      let(:jsonld) { 'not-blank-not-valid' }
+
       before do
         allow(errors).to receive(:any?).and_return(false, true)
       end
 
-      it "should add an error" do
-        expect(errors).to receive(:add).with(:rdf_string, "invalid RDF")
-        expect(errors).to receive(:add).with(:base, "Text contains invalid RDF.")
+      it 'adds an error' do
+        expect(errors).to receive(:add).with(:rdf_string, 'invalid RDF')
+        expect(errors).to receive(:add).with(:base, 'Text contains invalid RDF.')
         importer.run
       end
     end

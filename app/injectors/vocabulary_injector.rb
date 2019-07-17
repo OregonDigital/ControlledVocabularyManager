@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VocabularyInjector < Struct.new(:params)
   def vocabulary_form_repository
     VocabularyFormRepository.new(decorators)
@@ -8,10 +10,10 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def all_vocabs_query
-    #Creating this SPARQL query before it goes in an actually builds the query
-    #causes some issues with the objects and predicates being fetched properly
-    #By inputing the sparql_client directly into the all vocabs query correctly
-    #assembles the query.
+    # Creating this SPARQL query before it goes in an actually builds the query
+    # causes some issues with the objects and predicates being fetched properly
+    # By inputing the sparql_client directly into the all vocabs query correctly
+    # assembles the query.
     -> { AllVocabsQuery.call(sparql_client, vocabulary_repository, Vocabulary.type) }
   end
 
@@ -20,7 +22,7 @@ class VocabularyInjector < Struct.new(:params)
   end
 
   def child_node_finder
-    #See All Vocabs Query
+    # See All Vocabs Query
     @child_node_finder ||= ChildNodeFinder.new(sparql_client)
   end
 
