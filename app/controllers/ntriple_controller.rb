@@ -9,6 +9,7 @@ class NtripleController < AdminController
   end
 
   def update
-
+    binding.pry
+    redirect_to '/'
   end
 end
