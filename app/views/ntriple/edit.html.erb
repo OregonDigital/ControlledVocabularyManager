@@ -1,1 +1,3 @@
-YO DAWG
+<%= simple_form_for(@term, :url => update_ntriples_path(:id => @term)) do |f| %>
+  <%= f.input 'ntriples', as: :text, input_html: { cols: 150, rows: 30, value: @file } %>
+<% end %>
