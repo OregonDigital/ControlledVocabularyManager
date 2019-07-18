@@ -39,7 +39,7 @@ RSpec.describe SetsAttributes do
 
     context 'when a uri only field has a valid value value' do
       it 'makes the val a uri' do
-        expect(subject.set_attributes(test_param)["same_as"].first).to be_an ActiveTriples::Resource
+        expect(subject.set_attributes(test_param)['same_as'].first).to be_an ActiveTriples::Resource
       end
     end
   end
