@@ -13,10 +13,11 @@ class SetsAttributes < SimpleDelegator
           end
         end
         new_hash[key] = value_array if key != :language
-      elsif self.uri_fields.include?(key.to_sym)
+      elsif uri_fields.include?(key.to_sym)
         value_array = []
-        value.each_with_index do |val, index|
-          item = ( val.is_a? ActiveTriples::Resource) ? val : new_resource(val) #Don't raise error here, using validation in form is more helpful
+        value.each do |val|
+          # Don't raise error here, using validation in form is more helpful
+          item = val.is_a?(ActiveTriples::Resource) ? val : new_resource(val)
           value_array << item
         end
         new_hash[key] = value_array

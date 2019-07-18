@@ -69,20 +69,20 @@ RSpec.describe TermForm do
         expect(subject.errors[:id].length).to be > 0
       end
     end
-    context "when a non-uri value is entered in a uri-only field" do
+
+    context 'when a non-uri value is entered in a uri-only field' do
       let(:params) do
         {
-          :comment => ["Comment"],
-          :label => ["Label"],
-          :see_also => ["blah"]
+          comment: ['Comment'],
+          label: ['Label'],
+          see_also: ['blah']
         }
       end
 
-      it "alerts user" do
+      it 'alerts user' do
         expect(subject).not_to be_valid
-        expect(subject.errors.messages[:see_also]).to include "blah is not a valid URI"
+        expect(subject.errors.messages[:see_also]).to include 'blah is not a valid URI'
       end
     end
-
   end
 end
