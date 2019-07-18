@@ -267,7 +267,7 @@ RSpec.describe ImportRdfController, type: :controller do
             sign_in(user) if user
             allow(load_form).to receive(:term_list).and_return(termlist)
             expect(load_form).to receive(:valid?).and_return(true)
-            expect(term1).to receive(:sort_stringify).and_return("blah")
+            expect(term1).to receive(:sort_stringify).and_return('blah')
             allow(PreloadCache).to receive(:preload).with(anything).and_return(true)
             allow(termlist).to receive(:terms).and_return(terms)
             expect(term1).to receive(:persist!).and_return(true)
