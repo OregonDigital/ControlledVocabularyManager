@@ -61,12 +61,18 @@ services:
     <<: *server
     environment:
       - RAILS_ENV=test
+      - CVM_SOLR_URL=http://localhost:8983/solr/default
+      - CVM_TRIPLESTORE_URL=http://localhost:9999/blazegraph/namespace/test/sparql
+      - BLAZEGRAPH_URL=http://localhost:9999/blazegraph
     depends_on:
       - db_test
       - solr-test
       - blazegraph
     command: >
-      bash -c "./build/entrypoint.sh"
+      bash -c "bundle exec rake triplestore_adapter:blazegraph:reset &&
+               ./build/entrypoint.sh && 
+               rake git_dev:create_dev_repo &&
+               bundle exec puma -b tcp://0.0.0.0:3001 -e test"
     expose:
       - 3001
 
@@ -83,7 +89,7 @@ services:
     <<: *blazegraph-image
     volumes:
       - blazegraph:/data
-      - ./config/blazegraph/RWStore.properties:/RWStore.properties
+      - ./config/blazegraph/RWStore.properties:/data/RWStore.properties
 
   ##
   # Run an instance of MySQL with a database named 'development' for running specs. See config/database.yml
