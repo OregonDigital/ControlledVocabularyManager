@@ -9,7 +9,13 @@ class NtripleController < AdminController
   end
 
   def update
-    binding.pry
-    redirect_to '/'
+    reader = RDF::Reader.for(:ntriples).new(params[params["id"]]["ntriples"])
+    reader = reader.validate!
+    if reader.valid?
+      # Commit triples to file and to BG
+      redirect_to '/'
+    else
+      # Redirect back to form
+    end
   end
 end
