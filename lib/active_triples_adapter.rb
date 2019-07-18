@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Active Triples Adapter
 module ActiveTriplesAdapter
   extend ActiveSupport::Concern
   included do
@@ -7,14 +8,13 @@ module ActiveTriplesAdapter
     def reload; end
   end
 
+  # Class Methods
   module ClassMethods
     def find(uri)
       result = new(uri)
       result.orig_reload
       relevant_triples = result.statements.to_a
-      if type
-        relevant_triples.reject! { |x| (x.predicate == RDF.type && x.object.to_s == type.to_s) }
-      end
+      relevant_triples.reject! { |x| (x.predicate == RDF.type && x.object.to_s == type.to_s) } if type
       raise ActiveTriples::NotFound if relevant_triples.empty?
 
       result

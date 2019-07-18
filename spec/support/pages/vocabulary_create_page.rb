@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Vocabulary Create Page
 class VocabularyCreatePage
   include Capybara::DSL
 

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Valid RDF Import URL
 class IsValidRdfImportUrl < ActiveModel::Validator
   def validate(record)
     if record.url.blank?

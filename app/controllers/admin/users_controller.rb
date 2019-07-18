@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Users Controller
 class Admin::UsersController < AdminController
   respond_to :html, :json
 

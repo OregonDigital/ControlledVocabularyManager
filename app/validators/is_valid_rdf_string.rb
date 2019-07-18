@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Valid RDF String Validator
 class IsValidRdfString < ActiveModel::Validator
   def validate(record)
     if record.rdf_string.blank?

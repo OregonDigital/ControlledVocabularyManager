@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Predicate Injector
 class PredicateInjector < Struct.new(:params)
   def predicate_form_repository
     PredicateFormRepository.new(decorators)

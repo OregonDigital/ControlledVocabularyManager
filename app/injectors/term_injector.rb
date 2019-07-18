@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Term Injector
 class TermInjector < Struct.new(:params)
   delegate :vocabulary_repository, :child_node_finder, to: :vocabulary_injector
 

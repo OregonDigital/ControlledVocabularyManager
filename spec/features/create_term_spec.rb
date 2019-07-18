@@ -69,9 +69,6 @@ RSpec.describe 'Create and update a Term', js: true, type: :feature do
     types = term_statement_list.select { |s| s.predicate == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' }
     expect(types).to be_any { |t| t.object.to_s == 'http://www.w3.org/2004/02/skos/core#PersonalName' }
     expect(types).to be_any { |t| t.object.to_s == 'http://www.w3.org/2000/01/rdf-schema#Resource' }
-
-    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
-    end
+    FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo) if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
   end
 end

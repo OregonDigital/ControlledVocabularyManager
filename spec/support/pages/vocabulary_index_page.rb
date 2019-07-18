@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Vocabulary Index Page
 class VocabularyIndexPage
   include Capybara::DSL
 

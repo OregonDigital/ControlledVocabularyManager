@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Decorating Repository
 class DecoratingRepository
   attr_reader :decorators, :repository
 

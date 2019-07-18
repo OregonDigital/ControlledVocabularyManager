@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# All Vocabs Query
 class AllVocabsQuery < Struct.new(:sparql_client, :repository, :term_type)
   class << self
     def call(sparql_client, repository, term_type)
@@ -18,6 +19,7 @@ class AllVocabsQuery < Struct.new(:sparql_client, :repository, :term_type)
   end
 end
 
+# All Vocabs Graph
 class AllVocabsGraph < Struct.new(:sparql_client, :term_type)
   def graph
     SubjectsToGraph.new(sparql_client, statements).graph

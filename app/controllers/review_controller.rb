@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Review Controller
 class ReviewController < AdminController
   include GitInterface
   before_filter :require_editor

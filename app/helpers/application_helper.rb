@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Application Helper
 module ApplicationHelper
   def flash_class(level)
     case level

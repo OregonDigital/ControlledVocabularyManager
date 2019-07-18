@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Term Form
 class TermForm < SimpleDelegator
   include ActiveModel::Validations
   validates_with *TermValidations

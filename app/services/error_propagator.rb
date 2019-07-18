@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Error Propogator
 class ErrorPropagator < Struct.new(:object, :errors, :limit)
   def run
     return if object.valid?

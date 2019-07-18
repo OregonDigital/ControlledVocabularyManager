@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Deprecate Term Injector
 class DeprecateTermInjector < Struct.new(:params)
   delegate :vocabulary_repository, :child_node_finder, to: :vocabulary_injector
 

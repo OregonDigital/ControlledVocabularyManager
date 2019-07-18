@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Decorates methods to add/query children
 class TermWithChildren < SimpleDelegator
   attr_reader :node_finder
   def initialize(resource, node_finder)

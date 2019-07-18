@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Sanitizer
 module Sanitize
   extend ActiveSupport::Concern
 

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Child Node Finder
 class ChildNodeFinder
   attr_reader :sparql_client
   def initialize(sparql_client)
@@ -13,6 +14,7 @@ class ChildNodeFinder
   end
 end
 
+# Child Query
 class ChildQuery < Struct.new(:sparql_client, :parent_uri)
   def run
     graph

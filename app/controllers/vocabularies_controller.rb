@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Vocabulary Controller
 class VocabulariesController < AdminController
   delegate :vocabulary_form_repository, :all_vocabs_query, to: :injector
   delegate :deprecate_vocabulary_form_repository, to: :deprecate_injector

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Predicates Controller
 class PredicatesController < ApplicationController
   delegate :predicate_form_repository, :all_preds_query, to: :injector
   delegate :deprecate_predicate_form_repository, to: :deprecate_injector

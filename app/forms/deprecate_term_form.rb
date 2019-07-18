@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Deprecate Term Form
 class DeprecateTermForm < SimpleDelegator
   include ActiveModel::Validations
   validates_with VocabularyExists

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Deprecate Vocabulary Injector
 class DeprecateVocabularyInjector < Struct.new(:params)
   def deprecate_vocabulary_form_repository
     DeprecateVocabularyFormRepository.new(decorators)

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# Middleware Override
 class ConnegMiddleware
   def initialize(app)
     @app = app
