@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DecoratingRepository
   attr_reader :decorators, :repository
 
@@ -31,6 +33,4 @@ class DecoratingRepository
   def decorate
     decorators.new(yield)
   end
-
 end
-

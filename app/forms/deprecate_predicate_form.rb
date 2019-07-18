@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 class DeprecatePredicateForm < SimpleDelegator
   include ActiveModel::Validations
-  validates_with *(TermValidations)
+  validates_with *TermValidations
   validates_with IsValidIsReplacedBy
 
   attr_reader :repository
@@ -15,7 +17,7 @@ class DeprecatePredicateForm < SimpleDelegator
 
   def save
     return false unless valid?
-    self.persist!
-  end
 
+    persist!
+  end
 end

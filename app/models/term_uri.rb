@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Value object representing a URI for Terms.
 #
@@ -10,24 +12,23 @@ class TermUri
   end
 
   def leaf
-    if uri.node? || uri.ends_with?("/")
-      ""
+    if uri.node? || uri.ends_with?('/')
+      ''
     else
       uri.to_s.gsub(uri.parent.to_s, '')
     end
   end
 
   def vocabulary_uri
-    if uri.ends_with?("/")
-      vocab_uri = RDF::URI.new(uri.to_s.gsub(/\/$/,''))
-    else
-      vocab_uri = RDF::URI.new(uri.parent.to_s.gsub(/\/$/,''))
-    end
+    vocab_uri = if uri.ends_with?('/')
+                  RDF::URI.new(uri.to_s.gsub(%r{/$}, ''))
+                else
+                  RDF::URI.new(uri.parent.to_s.gsub(%r{/$}, ''))
+                end
     TermUri.new(vocab_uri)
   end
 
   def vocabulary_id
     vocabulary_uri.leaf
   end
-
 end

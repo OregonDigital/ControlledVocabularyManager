@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 require 'rdf_loader'
 require 'triplestore_adapter'
 
 class TriplestoreLoader
-
   attr_accessor :triplestore, :type, :url, :errors, :mismatches, :write_report, :update_triplestore, :write_update_file, :output_path
 
   ##
@@ -13,7 +14,8 @@ class TriplestoreLoader
     @start_datetime = DateTime.now.to_s(:number)
     @type = args[:type]
     @url = args[:url]
-    raise Exception.new("Missing required parameter.") if @type.nil? || @url.nil?
+    raise Exception, 'Missing required parameter.' if @type.nil? || @url.nil?
+
     @triplestore = TriplestoreAdapter::Triplestore.new(TriplestoreAdapter::Client.new(type, url))
 
     @write_report = args[:write_report]
@@ -42,8 +44,8 @@ class TriplestoreLoader
       not_in_file = mismatches.values.map { |s| s[:not_in_file] }.flatten(1)
 
       write_report(process_filename, filename, @url, not_in_file, not_in_triplestore) if @write_report
-      insert_graph(not_in_triplestore) if @update_triplestore && not_in_triplestore.length > 0
-      write_file(process_filename, graph_from_file.statements.to_a + not_in_file) if @write_update_file && not_in_file.length > 0
+      insert_graph(not_in_triplestore) if @update_triplestore && !not_in_triplestore.empty?
+      write_file(process_filename, graph_from_file.statements.to_a + not_in_file) if @write_update_file && !not_in_file.empty?
     ensure
       @errors
     end
@@ -73,23 +75,21 @@ class TriplestoreLoader
   def find_mismatching_statements(grouped_graph)
     results = {}
     grouped_graph.each_pair do |uri, statements_in_file|
-      begin
-        graph_from_triplestore = fetch_graph(uri)
-        if graph_from_triplestore.nil?
-          add_error(uri, "Failed to fetch '#{uri}'")
-          next
-        end
-
-        not_in_triplestore = statements_in_file.reject { |s| graph_from_triplestore.statements.to_a.any? { |g| s.eql?(g) }}
-        not_in_file = graph_from_triplestore.statements.to_a.reject { |g| statements_in_file.any? { |s| g.eql?(s) }}
-
-        results[uri] = {
-          not_in_triplestore: not_in_triplestore,
-          not_in_file: not_in_file
-        }
-      rescue StandardError => e
-        add_error(uri, "Error: #{e.message}")
+      graph_from_triplestore = fetch_graph(uri)
+      if graph_from_triplestore.nil?
+        add_error(uri, "Failed to fetch '#{uri}'")
+        next
       end
+
+      not_in_triplestore = statements_in_file.reject { |s| graph_from_triplestore.statements.to_a.any? { |g| s.eql?(g) } }
+      not_in_file = graph_from_triplestore.statements.to_a.reject { |g| statements_in_file.any? { |s| g.eql?(s) } }
+
+      results[uri] = {
+        not_in_triplestore: not_in_triplestore,
+        not_in_file: not_in_file
+      }
+    rescue StandardError => e
+      add_error(uri, "Error: #{e.message}")
     end
     results
   end
@@ -143,9 +143,10 @@ class TriplestoreLoader
   # @param statements [Array<RDF::Statement>] array of statements to sort
   # @return [String] sorted triples
   def sort_statements(statements)
-    return "#{statements[0].to_s}\n" unless statements.length > 1
-    sorted = statements.sort_by { |x| x.predicate }.inject { |collector, element| collector.to_s + " " + element.to_s }
-    "#{sorted.gsub(" . ", " .\n")}\n"
+    return "#{statements[0]}\n" unless statements.length > 1
+
+    sorted = statements.sort_by(&:predicate).inject { |collector, element| collector.to_s + ' ' + element.to_s }
+    "#{sorted.gsub(' . ', " .\n")}\n"
   end
 
   ##
@@ -165,13 +166,12 @@ class TriplestoreLoader
   # @param uri [String] the uri to the RDF endpoint
   # @return [RDF::Graph|nil] the graph from the triplestore or nil
   def fetch_graph(uri)
-    begin
-      @triplestore.fetch(uri, from_remote: true)
-    rescue TriplestoreAdapter::TriplestoreException => e
-      return RDF::Graph.new if e.to_s.include?("404")
-      nil
-    rescue
-      nil
-    end
+    @triplestore.fetch(uri, from_remote: true)
+  rescue TriplestoreAdapter::TriplestoreException => e
+    return RDF::Graph.new if e.to_s.include?('404')
+
+    nil
+  rescue StandardError
+    nil
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PolymorphicTermRepository
   attr_reader :repository_type
 
@@ -25,5 +27,4 @@ class PolymorphicTermRepository
     term = Term.find(id)
     term.term_type
   end
-
 end

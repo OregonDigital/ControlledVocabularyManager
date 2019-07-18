@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe IsValidRdfString do
-  describe "#validate" do
-    let(:jsonld) { '{
+  describe '#validate' do
+    let(:jsonld) do
+      '{
     "@context": {
       "dc": "http://purl.org/dc/terms/",
           "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
@@ -30,29 +33,30 @@ RSpec.describe IsValidRdfString do
                 "@value": "aiban (prints)",
                     "@language": "en"
               }
-  }'}
-    let(:record) { double("record") }
-    let(:errors) { double("errors") }
-    let(:validate) { IsValidRdfString.new.validate(record) }
+      }'
+    end
+    let(:record) { double('record') }
+    let(:errors) { double('errors') }
+    let(:validate) { described_class.new.validate(record) }
 
     before do
       allow(record).to receive(:errors).and_return(errors)
       allow(record).to receive(:rdf_string).and_return(jsonld)
     end
 
-    context "when the string is valid" do
-      it "should not add errors" do
+    context 'when the string is valid' do
+      it 'does not add errors' do
         expect(errors).not_to receive(:add)
         validate
       end
     end
 
-    context "when the string is missing" do
+    context 'when the string is missing' do
       let(:jsonld) { nil }
 
-      it "should add an error" do
+      it 'adds an error' do
         expect(errors).to receive(:add).with(:rdf_string, "can't be blank")
-        expect(errors).to receive(:add).with(:base, "RDF text cannot be blank.")
+        expect(errors).to receive(:add).with(:base, 'RDF text cannot be blank.')
         validate
       end
     end

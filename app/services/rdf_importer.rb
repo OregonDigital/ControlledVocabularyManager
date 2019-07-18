@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rdf_loader'
 
 # Imports RDF from an externally hosted URL, or using a supplied valid string of
@@ -21,10 +23,12 @@ class RdfImporter
   # process of inserting the terms into the backend triplestore
   # - finally, return the terms that were stored
   def run
-    validators.each {|v| v.new.validate(self)}
+    validators.each { |v| v.new.validate(self) }
     return if errors.any?
+
     build_graph
     return if errors.any?
+
     build_term_list
     term_list
   end
@@ -35,14 +39,14 @@ class RdfImporter
     if @rdf_string.blank?
       @graph = RdfLoader.load_url(@url)
       if @graph.empty?
-        errors.add(:url, "must resolve to valid RDF")
-        errors.add(:base, "URL is not valid.")
+        errors.add(:url, 'must resolve to valid RDF')
+        errors.add(:base, 'URL is not valid.')
       end
     else
       @graph = RdfLoader.load_string(@rdf_string)
       if @graph.empty?
-        errors.add(:rdf_string, "invalid RDF")
-        errors.add(:base, "Text contains invalid RDF.")
+        errors.add(:rdf_string, 'invalid RDF')
+        errors.add(:base, 'Text contains invalid RDF.')
       end
     end
   end

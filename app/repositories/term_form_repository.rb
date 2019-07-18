@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 # Repository that returns a decorated Term object with TermForm
 # validations.
 class TermFormRepository < Struct.new(:decorators, :repository_type)
-  delegate :new, :find, :exists?, :to => :repository
+  delegate :new, :find, :exists?, to: :repository
 
   def initialize(klass)
     @klass = klass || Term

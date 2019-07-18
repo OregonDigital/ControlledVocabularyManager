@@ -1,5 +1,6 @@
-require 'rails_helper'
+# frozen_string_literal: true
 
+require 'rails_helper'
 RSpec.feature "Using a language SELECT with a default language set", :js => true do
 
   let(:user1) { User.create(:email => 'admin@example.com', :name => 'Jane Admin', :password => "admin123",:role => "admin editor reviewer", :institution => "Oregon State University")}

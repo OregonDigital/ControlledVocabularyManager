@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GraphToTerms < Struct.new(:resource_factory, :graph)
   attr_reader :klass
 
@@ -15,9 +17,9 @@ class GraphToTerms < Struct.new(:resource_factory, :graph)
     # type of vocabulary, predicate, or term this graph is representing so
     # that the proper type of repository can be persisted
     @klass = nil
-    statements = triples.select { |s| s.predicate == RDF::URI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type") && s.object !=  RDF::URI("http://www.w3.org/2000/01/rdf-schema#Resource") }
-    uris = statements.map { |s| s.object }
-    #TODO: The triplestore backend has terms that weren't persisted with a valid type, these need to be updated so that this crutch can be removed and the data be clean.
+    statements = triples.select { |s| s.predicate == RDF::URI('http://www.w3.org/1999/02/22-rdf-syntax-ns#type') && s.object != RDF::URI('http://www.w3.org/2000/01/rdf-schema#Resource') }
+    uris = statements.map(&:object)
+    # TODO: The triplestore backend has terms that weren't persisted with a valid type, these need to be updated so that this crutch can be removed and the data be clean.
     if statements.empty?
       @klass = Term
     else

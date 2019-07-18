@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::UsersController < AdminController
   respond_to :html, :json
 
@@ -16,16 +18,14 @@ class Admin::UsersController < AdminController
     else
       @user.update_attributes(user_params)
     end
-    respond_with @user, :location => admin_users_path
+    respond_with @user, location: admin_users_path
   end
 
-  def show
+  def show; end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:name, :email, :role, :institution)
   end
-
-  private 
-
-    def user_params
-      params.require(:user).permit(:name, :email, :role, :institution)
-    end
-
 end

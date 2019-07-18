@@ -1,21 +1,25 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 require 'spec_helper'
 require 'support/test_git_setup'
 
 class DummyController < AdminController
-    include GitInterface
+  include GitInterface
 end
 
-RSpec.feature "Load RDF", :js => true, :type => :feature do
+RSpec.describe 'Load RDF', js: true, type: :feature do
   include TestGitSetup
-  given(:user) { User.create(:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin reviewer editor", :institution => "Oregon State University") }
-  let(:user_params) { {:email => 'admin@example.com', :name => "Jane Admin", :password => 'admin123', :role => "admin reviewer editor", :institution => "Oregon State University"} }
+  let(:user) { User.create(email: 'admin@example.com', name: 'Jane Admin', password: 'admin123', role: 'admin reviewer editor', institution: 'Oregon State University') }
+  let(:user_params) { { email: 'admin@example.com', name: 'Jane Admin', password: 'admin123', role: 'admin reviewer editor', institution: 'Oregon State University' } }
   let(:dummy_class) { DummyController.new }
-  background do
+  before do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user)
     allow(user).to receive(:admin?).and_return(true)
   end
-    let(:jsonld) { '{
+
+  let(:jsonld) do
+    '{
    "@context": {
     "dc": "http://purl.org/dc/terms/",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
@@ -25,29 +29,31 @@ RSpec.feature "Load RDF", :js => true, :type => :feature do
   },
   "@graph": [
     {
-      "@id": "http://opaquenamespace.org/ns/mylittlevocab",
-      "@type": [
-        "http://purl.org/dc/dcam/VocabularyEncodingScheme",
-        "rdfs:Resource"
-      ],
-      "dc:issued": "2016-09-22",
-      "dc:modified": {
-        "@value": "2016-09-29",
-        "@type": "xsd:date"
-      },
-      "dc:title": {
-        "@value": "My Little Vocab",
-        "@language": "en"
-      },
-      "rdfs:label": {
-        "@value": "my little vocab",
-        "@language": "en"
-      }
+  "@id": "http://opaquenamespace.org/ns/mylittlevocab",
+  "@type": [
+    "http://purl.org/dc/dcam/VocabularyEncodingScheme",
+    "rdfs:Resource"
+  ],
+  "dc:issued": "2016-09-22",
+  "dc:modified": {
+    "@value": "2016-09-29",
+    "@type": "xsd:date"
+  },
+  "dc:title": {
+    "@value": "My Little Vocab",
+    "@language": "en"
+  },
+  "rdfs:label": {
+    "@value": "my little vocab",
+    "@language": "en"
+  }
     }
    ]
-  }'}
+  }'
+  end
 
-    let(:jsonldbad) { '{
+  let(:jsonldbad) do
+    '{
    "@context": {
     "dc": "http://purl.org/dc/terms/",
     "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
@@ -57,64 +63,63 @@ RSpec.feature "Load RDF", :js => true, :type => :feature do
   },
   "@graph": [
     {
-      "@id": "http://opaquenamespace.org/ns/Bad Vocab",
-      "@type": [
-        "http://purl.org/dc/dcam/VocabularyEncodingScheme",
-        "rdfs:Resource"
-      ],
-      "dc:issued": "2016-09-22",
-      "dc:modified": {
-        "@value": "2016-09-29",
-        "@type": "xsd:date"
-      },
-      "dc:title": {
-        "@value": "Bad Vocab",
-        "@language": "en"
-      },
-      "rdfs:label": {
-        "@value": "bad",
-        "@language": "en"
-      }
+  "@id": "http://opaquenamespace.org/ns/Bad Vocab",
+  "@type": [
+    "http://purl.org/dc/dcam/VocabularyEncodingScheme",
+    "rdfs:Resource"
+  ],
+  "dc:issued": "2016-09-22",
+  "dc:modified": {
+    "@value": "2016-09-29",
+    "@type": "xsd:date"
+  },
+  "dc:title": {
+    "@value": "Bad Vocab",
+    "@language": "en"
+  },
+  "rdfs:label": {
+    "@value": "bad",
+    "@language": "en"
+  }
     }
    ]
-  }'}
+  }'
+  end
 
-  scenario "load a term" do
+  it 'load a term' do
     WebMock.allow_net_connect!
     setup_git
 
     user
     sign_in user
-    visit "/load_rdf"
+    visit '/load_rdf'
     fill_in('load_form_rdf_string', with: jsonld)
     find_button('Load').trigger('click')
     sleep(2)
-    visit "/ns/mylittlevocab"
-    expect(page).to have_content("my little vocab")
+    visit '/ns/mylittlevocab'
+    expect(page).to have_content('my little vocab')
     repo = dummy_class.setup
-    expect(repo.last_commit.message).to eq("Merge mylittlevocab_review into master")
-    if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    expect(repo.last_commit.message).to eq('Merge mylittlevocab_review into master')
+    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
+      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
     end
   end
 
-  scenario "load a bad term" do
+  it 'load a bad term' do
     WebMock.allow_net_connect!
     setup_git
 
     user
     sign_in user
-    visit "/load_rdf"
+    visit '/load_rdf'
     fill_in('load_form_rdf_string', with: jsonldbad)
     find_button('Load').trigger('click')
     sleep(2)
-    expect(page).to have_content("Something went wrong")
+    expect(page).to have_content('Something went wrong')
     repo = dummy_class.setup
-    expect(repo.last_commit.message).to eq("initial commit")
-    if Dir.exists? ControlledVocabularyManager::Application::config.rugged_repo
-      FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
+    expect(repo.last_commit.message).to eq('initial commit')
+    if Dir.exist? ControlledVocabularyManager::Application.config.rugged_repo
+      FileUtils.rm_rf(ControlledVocabularyManager::Application.config.rugged_repo)
     end
   end
-
-
 end

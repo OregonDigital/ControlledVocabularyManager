@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -14,5 +16,5 @@ class ApplicationController < ActionController::Base
       super(payload)
       Rack::Honeycomb.add_field(request.env, 'classname', self.class.name)
     end
-  end 
+  end
 end

@@ -1,12 +1,12 @@
+# frozen_string_literal: true
+
 # Validator for an array of terms to ensure none of them have any "core"
 # validation errors
 class TermsAreImportable < ActiveModel::Validator
   def validate(record)
     record.terms.each do |term|
       term = decorate(term)
-      unless term.valid?
-        record.errors.add(:base, term_errors(term))
-      end
+      record.errors.add(:base, term_errors(term)) unless term.valid?
     end
   end
 
@@ -15,7 +15,7 @@ class TermsAreImportable < ActiveModel::Validator
   end
 
   def term_errors(term)
-    "%s is not importable: %s" % [term.rdf_subject, term.errors.full_messages.join(", ")]
+    format('%s is not importable: %s', term.rdf_subject, term.errors.full_messages.join(', '))
   end
 end
 

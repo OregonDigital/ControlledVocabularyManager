@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeprecateTermForm < SimpleDelegator
   include ActiveModel::Validations
   validates_with VocabularyExists
@@ -15,7 +17,7 @@ class DeprecateTermForm < SimpleDelegator
 
   def save
     return false unless valid?
-    self.persist!
-  end
 
+    persist!
+  end
 end
