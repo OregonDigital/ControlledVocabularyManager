@@ -77,7 +77,7 @@ services:
       - 3001
 
   ##
-  # Fedora repository server
+  # Blazegraph server
   blazegraph-image: &blazegraph-image
     image: lyrasis/blazegraph:2.1.5
     expose:
