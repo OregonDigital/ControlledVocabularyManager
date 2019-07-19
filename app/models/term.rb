@@ -80,15 +80,15 @@ class Term < ActiveTriples::Resource
 
   def uri_fields
     %i[
-       see_also
-       is_replaced_by
-       same_as
-       is_defined_by
-       range
-       domain
-       sub_property_of
-       ark
-       local
+      see_also
+      is_replaced_by
+      same_as
+      is_defined_by
+      range
+      domain
+      sub_property_of
+      ark
+      local
     ]
   end
 
