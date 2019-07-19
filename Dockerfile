@@ -7,9 +7,13 @@ ENV LC_ALL C.UTF-8
 RUN gem install bundler
 
 RUN apt-get update -qq && apt-get upgrade -y && \
-  apt-get install -y build-essential libpq-dev mysql-client cmake && \
+  apt-get install -y build-essential libpq-dev mysql-client cmake libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev phantomjs && \
   apt-get install -y openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless && \
   update-alternatives --config java
+
+RUN wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
+RUN tar xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /usr/local/share/
+RUN ln -sf /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin
 
 RUN mkdir /data
 WORKDIR /data
