@@ -78,6 +78,7 @@ class ImportRdfController < AdminController
         flash[:error] = "Something went wrong with saving #{term.id}."
         return false
       end
+      PreloadCache.preload(term)
       rugged_delete_branch(term.id)
     end
     true
