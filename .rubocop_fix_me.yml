@@ -148,11 +148,13 @@ Metrics/PerceivedComplexity:
     - 'app/controllers/vocabularies_controller.rb'
     - 'app/controllers/predicates_controller.rb'
     - 'app/controllers/concerns/git_interface.rb'
+    - 'app/decorators/sets_attributes.rb'
 
 Metrics/CyclomaticComplexity:
   Exclude:
     - 'app/controllers/terms_controller.rb'
     - 'app/controllers/concerns/git_interface.rb'
+    - 'app/decorators/sets_attributes.rb'
 
 Style/IdenticalConditionalBranches:
   Exclude:

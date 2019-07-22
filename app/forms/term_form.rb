@@ -5,6 +5,7 @@ class TermForm < SimpleDelegator
   include ActiveModel::Validations
   validates_with *TermValidations
   validates_with VocabularyExists
+  validates_with ValidUri
 
   attr_reader :repository
   def initialize(term, repository)

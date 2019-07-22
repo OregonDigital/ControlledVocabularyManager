@@ -4,6 +4,7 @@
 class PredicateForm < SimpleDelegator
   include ActiveModel::Validations
   validates_with *TermValidations
+  validates_with ValidUri
 
   attr_reader :repository
   def initialize(term, repository)

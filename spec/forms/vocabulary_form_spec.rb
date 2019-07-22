@@ -66,6 +66,21 @@ RSpec.describe VocabularyForm do
         expect(subject.errors[:id]).to include "can't be blank"
       end
     end
+
+    context 'when a non-uri value is entered in a uri-only field' do
+      let(:params) do
+        {
+          comment: ['Comment'],
+          label: ['Label'],
+          see_also: ['blah']
+        }
+      end
+
+      it 'alerts user' do
+        expect(subject).not_to be_valid
+        expect(subject.errors.messages[:see_also]).to include 'blah is not a valid URI'
+      end
+    end
   end
 
   describe '#save' do

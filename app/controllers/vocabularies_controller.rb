@@ -20,7 +20,7 @@ class VocabulariesController < AdminController
   def create
     vocabulary_form = vocabulary_form_repository.new(vocabulary_params[:id])
     vocabulary_form.attributes = vocabulary_params.except(:id)
-    vocabulary_form.set_languages(params[:vocabulary])
+    vocabulary_form.set_attributes(params[:vocabulary])
     vocabulary_form.set_modified
     vocabulary_form.set_issued
     if vocabulary_form.is_valid?
@@ -51,7 +51,7 @@ class VocabulariesController < AdminController
   def update
     edit_vocabulary_form = vocabulary_form_repository.find(params[:id])
     edit_vocabulary_form.attributes = vocabulary_params
-    edit_vocabulary_form.set_languages(params[:vocabulary])
+    edit_vocabulary_form.set_attributes(params[:vocabulary])
     edit_vocabulary_form.set_modified
     if edit_vocabulary_form.is_valid?
       triples = edit_vocabulary_form.sort_stringify(edit_vocabulary_form.single_graph)
@@ -79,7 +79,7 @@ class VocabulariesController < AdminController
       vocabulary_form.add_resource
       action = 'new'
     end
-    vocabulary_form.set_languages(params[:vocabulary])
+    vocabulary_form.set_attributes(params[:vocabulary])
     vocabulary_form.set_modified
     vocabulary_form.reset_issued(params[:issued])
 
@@ -106,7 +106,7 @@ class VocabulariesController < AdminController
       vocabulary_form.attributes = ParamCleaner.call(e_params[:vocabulary].reject { |k, _v| k == :language })
       empty_fields = vocabulary_form.attributes.keys - e_params[:vocabulary].keys.map(&:to_s) - ['id']
       vocabulary_form.attributes = vocabulary_form.attributes.update(vocabulary_form.attributes) { |k, v| empty_fields.include?(k.to_s) ? [] : v }
-      vocabulary_form.set_languages(vocabulary_form.attributes.merge(e_params[:vocabulary].stringify_keys))
+      vocabulary_form.set_attributes(vocabulary_form.attributes.merge(e_params[:vocabulary].stringify_keys))
     else
       @vocabulary = reassemble(params[:id])
       vocabulary_form = VocabularyForm.new(@vocabulary, StandardRepository.new(nil, Vocabulary))
