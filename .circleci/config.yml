@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.5-stretch
+      - image: circleci/ruby:2.5.1
     working_directory: ~/app
     steps:
       - run:

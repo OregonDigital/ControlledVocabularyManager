@@ -18,9 +18,6 @@
 /log/*.log.*
 /tmp
 
-# Ignore dotenv
-.env
-
 # Ignore coverage
 /coverage
 
@@ -37,3 +34,5 @@ blazegraph*
 public/ns*
 
 .vscode/*
+
+sunspot-solr.pid

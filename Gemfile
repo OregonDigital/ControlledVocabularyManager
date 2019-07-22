@@ -9,7 +9,7 @@ gem 'actionpack-page_caching'
 gem 'sqlite3', '~> 1.3.13'
 gem 'mysql2', '~> 0.3.13'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails'
 # Use Bootstrap
 gem 'bootstrap-sass', '~> 3.4'
 gem 'autoprefixer-rails'
@@ -62,7 +62,12 @@ gem 'font-awesome-rails'
 
 gem 'attr_extras'
 
-gem 'capistrano', '~> 2.0'
+gem 'capistrano', '~> 3.0'
+gem 'capistrano-passenger'
+gem 'capistrano-rails'
+gem 'capistrano-rbenv'
+gem 'capistrano3-puma'
+gem 'puma'
 
 gem 'responders', '~> 2.0'
 
