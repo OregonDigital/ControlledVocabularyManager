@@ -126,8 +126,6 @@ GEM
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
     database_cleaner (1.7.0)
-    ddtrace (0.24.0)
-      msgpack
     debug_inspector (0.0.3)
     deep_merge (1.2.1)
     deprecation (0.99.0)
@@ -283,7 +281,6 @@ GEM
     mini_racer (0.2.6)
       libv8 (>= 6.9.411)
     minitest (5.11.3)
-    msgpack (1.2.10)
     multi_json (1.13.1)
     multipart-post (2.1.1)
     mysql2 (0.3.21)
@@ -580,7 +577,6 @@ DEPENDENCIES
   config
   coveralls
   database_cleaner
-  ddtrace
   devise
   dotenv-rails
   factory_bot_rails
