@@ -74,10 +74,6 @@ gem 'bootstrap-will_paginate'
 gem 'rubocop'
 gem 'rubocop-rspec'
 
-group :production, :staging do
-  gem 'ddtrace'
-end
-
 # Honeycomb
 gem 'sequel'
 gem 'honeycomb-beeline'
