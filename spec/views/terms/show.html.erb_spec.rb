@@ -77,7 +77,7 @@ RSpec.describe 'terms/show' do
   context 'when term is deprecated' do
     let(:resource) do
       t = Term.new(uri)
-      t.is_replaced_by = 'http://opaquenamespace.org/ns/bla2'
+      t.is_replaced_by = RDF::URI('http://opaquenamespace.org/ns/bla2')
       t
     end
 
@@ -90,6 +90,8 @@ RSpec.describe 'terms/show' do
   context 'when visiting the show page' do
     let(:resource) do
       t = Term.new(uri)
+      # This instance of is_replaced_by is left as a string to ensure both values work.
+      # Currently most existing is_replaced_by values in ONS are strings.
       t.is_replaced_by = 'http://opaquenamespace.org/ns/bla2'
       t.label = %w[a_label another_label]
       t.comment = ['comment']

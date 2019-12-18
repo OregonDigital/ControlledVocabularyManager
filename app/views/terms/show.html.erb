@@ -8,7 +8,11 @@
     <div class="alert alert-warning">
       <strong>Deprecated</strong> -
       <%= :is_replaced_by.to_s.humanize %>
-      <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
+      <% if @term.get_values(:is_replaced_by).first.is_a?(String) %>
+        <%= link_to @term.get_values(:is_replaced_by).first, @term.get_values(:is_replaced_by).first %>
+      <% else %>
+        <%= link_to @term.get_values(:is_replaced_by).first.rdf_subject.to_s, @term.get_values(:is_replaced_by).first.rdf_subject.to_s %>
+      <% end %>
     </div>
 <% end %>
 
