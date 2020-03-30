@@ -143,3 +143,7 @@ end
 def comment(id, graph, payload)
   graph << RDF::Statement.new(id, RDF::RDFS.comment, RDF::Literal.new(payload, :language => :en)) if payload
 end
+
+def same_as(id, graph, payload)
+  graph << RDF::Statement.new(id, RDF::OWL.sameAs, RDF::URI(payload)) if payload
+end
