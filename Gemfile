@@ -1,22 +1,20 @@
 source 'https://rubygems.org'
 
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.11.1'
+gem 'rails', '~> 5.0'
 gem 'actionpack-page_caching'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.3.13'
 gem 'mysql2', '~> 0.3.13'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails'
 # Use Bootstrap
 gem 'bootstrap-sass', '~> 3.4'
 gem 'autoprefixer-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'mini_racer', platforms: :ruby
 
@@ -104,7 +102,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'poltergeist', '~> 1.9.0'
+  gem 'poltergeist'
   gem 'database_cleaner'
   gem 'formulaic'
   gem 'shoulda-matchers'
