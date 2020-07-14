@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 5.0'
+gem 'bootsnap'
+gem 'listen'
 gem 'actionpack-page_caching'
 
 # Use sqlite3 as the database for Active Record
