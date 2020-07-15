@@ -3,7 +3,7 @@
 # Import RDF Controller
 class ImportRdfController < AdminController
   delegate :form_factory, :rdf_importer_factory, :param_cleaner, :form_key, to: :injector
-  before_filter :require_admin
+  before_action :require_admin
   include GitInterface
 
   def index

@@ -3,7 +3,7 @@
 # Admin Controller
 class AdminController < ApplicationController
   # Except show and index is important for fetching ntriples and other data types.
-  before_filter :require_admin, except: %i[index show]
+  before_action :require_admin, except: %i[index show]
 
   def index; end
 

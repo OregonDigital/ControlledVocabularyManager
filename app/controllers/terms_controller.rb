@@ -7,11 +7,11 @@ class TermsController < AdminController
   rescue_from ActiveTriples::NotFound, with: :render_404
   include GitInterface
 
-  before_filter :skip_render_on_cached_page, only: :show
+  before_action :skip_render_on_cached_page, only: :show
   caches_page :show
-  skip_before_filter :require_admin
-  before_filter :require_editor, except: %i[index show]
-  before_filter :require_admin, only: [:cache]
+  skip_before_action :require_admin
+  before_action :require_editor, except: %i[index show]
+  before_action :require_admin, only: [:cache]
 
   def show
     @term = find_term
