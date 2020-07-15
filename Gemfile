@@ -81,7 +81,7 @@ gem 'rack-honeycomb', '~> 0.5.0'
 
 group :development do
   gem 'spring-commands-rspec'
-  gem 'web-console', '~> 2.0'
+  gem 'web-console'
   gem 'sunspot_solr'
   gem 'brakeman'
 end
@@ -90,6 +90,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'factory_bot_rails'
   gem 'rspec-rails'
+  gem 'rails-controller-testing'
   # Test Coverage
   gem 'simplecov'
   gem 'capybara-screenshot'
