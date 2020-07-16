@@ -33,7 +33,7 @@ RSpec.describe GitInterface do
     let(:triple5) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foobiz\" @en .\n" }
     let(:triple6) { "<http://www.w3.org/2000/01/rdf-schema#label> \"foobuzz\" @en .\n" }
 
-    it 'commit,s merge, and provide history' do
+    it 'commits merge, and provide history' do
       # create blah/foo
       allow_any_instance_of(DummyController).to receive(:current_user).and_return(user1)
       dummy_class.rugged_create('blah/foo', subj + triple1 + subj + triple2 + subj + triple4, 'creating')

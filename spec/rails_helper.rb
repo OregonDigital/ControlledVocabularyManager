@@ -15,7 +15,7 @@ SimpleCov.start
 require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'webmock/rspec'
-require 'capybara/rspec'
+require 'capybara/rails'
 require 'triplestore_adapter'
 
 WebMock.allow_net_connect!
@@ -42,16 +42,9 @@ Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
-Shoulda::Matchers.configure do |conf|
-  conf.integrate do |with|
-    # Choose a test framework:
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
     with.test_framework :rspec
-
-    # Choose one or more libraries:
-    with.library :active_record
-    with.library :active_model
-    with.library :action_controller
-    # Or, choose the following (which implies all of the above):
     with.library :rails
   end
 end

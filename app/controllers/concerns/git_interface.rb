@@ -196,7 +196,7 @@ module GitInterface
              else
                repo.last_commit
              end
-    walker.push(branch)
+    walker.push(branch.oid)
     walker.each_with_object([]) do |c, a|
       a << { author: c.author, date: c.time, hash: c.oid, message: c.message } if entry_changed? c, path, repo
     end

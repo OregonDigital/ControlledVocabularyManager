@@ -34,11 +34,11 @@ RSpec.describe TermsController do
     end
 
     context 'when the resource exists' do
-      let(:format) {}
+      let(:format) { :html }
 
       before do
         allow(resource).to receive(:persisted?).and_return(true)
-        get :show, id: resource.id, format: format
+        get :show, params: { id: resource.id, format: format }
       end
 
       it 'renders the show template' do
@@ -73,7 +73,7 @@ RSpec.describe TermsController do
     context 'when the resource does not exist' do
       before do
         allow_any_instance_of(DecoratingRepository).to receive(:find).with('nothing').and_raise ActiveTriples::NotFound
-        get :show, id: 'nothing'
+        get :show, params: { id: 'nothing' }
       end
 
       it 'returns a 404' do
@@ -91,7 +91,7 @@ RSpec.describe TermsController do
     end
 
     def get_new
-      get :new, vocabulary_id: vocabulary_id
+      get :new, params: { vocabulary_id: vocabulary_id }
     end
     context 'when logged out' do
       let(:user) {}
@@ -139,7 +139,7 @@ RSpec.describe TermsController do
     let(:twc) { TermWithChildren.new(term, injector.child_node_finder) }
     let(:term) { instance_double('Term') }
     let(:term_id) { 'blah' }
-    let(:params) do
+    let(:post_params) do
       {
         term: {
           id: term_id
@@ -173,7 +173,7 @@ RSpec.describe TermsController do
       allow(term).to receive(:attributes=)
       allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified])
       allow(term).to receive(:uri_fields).and_return([])
-      allow(term).to receive(:attributes).and_return(params[:vocabulary])
+      allow(term).to receive(:attributes).and_return(post_params[:vocabulary])
       allow(term).to receive(:valid?)
       allow(Vocabulary).to receive(:find)
     end
@@ -182,7 +182,7 @@ RSpec.describe TermsController do
       let(:user) {}
 
       before do
-        post :create, params
+        post :create, params: post_params
       end
 
       it 'requires login' do
@@ -192,7 +192,7 @@ RSpec.describe TermsController do
 
     context 'when blank arrays are passed in' do
       let(:term_id) { 'blah' }
-      let(:params) do
+      let(:post_params) do
         {
           term: {
             id: term_id
@@ -210,7 +210,7 @@ RSpec.describe TermsController do
       end
 
       before do
-        post :create, params
+        post :create, params: post_params
       end
 
       it 'does not pass them to Term' do
@@ -221,7 +221,7 @@ RSpec.describe TermsController do
     context 'when all goes well' do
       before do
         allow(term_form).to receive(:is_valid?).and_return(true)
-        post :create, params
+        post :create, params: post_params
       end
 
       it 'redirects to the vocab page' do
@@ -233,7 +233,7 @@ RSpec.describe TermsController do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
         allow(term_form).to receive(:is_valid?).and_return(true)
-        post :create, params
+        post :create, params: post_params
       end
 
       after do
@@ -246,7 +246,7 @@ RSpec.describe TermsController do
     end
 
     context "when vocabulary isn't found" do
-      let(:params) do
+      let(:post_params) do
         {
           term: {
             id: term_id
@@ -265,11 +265,11 @@ RSpec.describe TermsController do
 
       before do
         allow(Vocabulary).to receive(:find).and_raise ActiveTriples::NotFound
-        post :create, params
+        post :create, params: post_params
       end
 
       it 'returns a 404' do
-        expect(post(:create, params).code).to eq '404'
+        expect(post(:create, params: post_params ).code).to eq '404'
       end
       it "doesn't call TermForm" do
         expect(TermForm).not_to receive(:new)
@@ -278,7 +278,7 @@ RSpec.describe TermsController do
 
     context 'when term has special chars' do
       let(:term_id) { 'test/howsitgoin?' }
-      let(:params) do
+      let(:post_params) do
         {
           term: {
             id: term_id
@@ -296,7 +296,7 @@ RSpec.describe TermsController do
       end
 
       before do
-        post :create, params
+        post :create, params: post_params
       end
 
       it 'shows the term form again' do
@@ -306,7 +306,7 @@ RSpec.describe TermsController do
 
     context 'when term has spaces in it' do
       let(:term_id) { 'bad term' }
-      let(:params) do
+      let(:post_params) do
         {
           term: {
             id: term_id
@@ -324,7 +324,7 @@ RSpec.describe TermsController do
       end
 
       before do
-        post :create, params
+        post :create, params: post_params
       end
 
       it 'shows the term form again' do
@@ -339,7 +339,7 @@ RSpec.describe TermsController do
     let(:twc) { TermWithChildren.new(term, injector.child_node_finder) }
     let(:term_form) { TermForm.new(SetsAttributes.new(term_mod), Term) }
     let(:term_mod) { SetsModified.new(twc) }
-    let(:params) do
+    let(:patch_params) do
       {
         label: ['Test'],
         comment: ['Comment'],
@@ -361,18 +361,18 @@ RSpec.describe TermsController do
       allow(term).to receive(:attributes=)
       allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified])
       allow(term).to receive(:uri_fields).and_return([])
-      allow(term).to receive(:attributes).and_return(params)
+      allow(term).to receive(:attributes).and_return(patch_params)
       allow(term).to receive(:valid?)
     end
 
     context 'when the fields are edited' do
       before do
         allow(term_form).to receive(:valid?).and_return(true)
-        patch :update, id: term.id, vocabulary: params
+        patch :update, params: { id: term.id, vocabulary: patch_params }
       end
 
       it 'updates the properties' do
-        expect(term).to have_received(:attributes=).with(params.except(:language))
+        expect(term).to have_received(:attributes=).with(patch_params.except(:language))
       end
       it 'redirects to the vocab' do
         expect(response).to redirect_to('/ns/test')
@@ -383,7 +383,7 @@ RSpec.describe TermsController do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
         allow(term_form).to receive(:is_valid?).and_return(true)
-        patch :update, id: term.id, vocabulary: params
+        patch :update, params: { id: term.id, vocabulary: patch_params }
       end
 
       after do
@@ -398,7 +398,7 @@ RSpec.describe TermsController do
     context 'when the fields are edited and the check fails' do
       before do
         allow(term_form).to receive(:valid?).and_return(false)
-        patch :update, id: term.id, vocabulary: params
+        patch :update, params: { id: term.id, vocabulary: patch_params }
       end
 
       it 'shows the edit form' do
@@ -448,7 +448,7 @@ RSpec.describe TermsController do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge)
         # Solr is not running for tests, we want Sunspot.index! to not fail
         allow(subject).to receive(:update_solr_index)
-        get :mark_reviewed, id: params[:id]
+        get :mark_reviewed, params: { id: params[:id] }
       end
 
       after do
@@ -468,7 +468,7 @@ RSpec.describe TermsController do
     context 'when an error is raised inside rugged_merge' do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge).and_return(0)
-        get :mark_reviewed, id: params[:id]
+        get :mark_reviewed, params: { id: params[:id] }
       end
 
       it 'shows the flash error' do
@@ -513,7 +513,7 @@ RSpec.describe TermsController do
       allow(term).to receive(:is_replaced_by).and_return(params[:is_replaced_by])
       allow(term).to receive(:persist!).and_return(persist_success)
       allow(term_form).to receive(:valid?).and_return(true)
-      patch :deprecate_only, id: term.id, vocabulary: params
+      patch :deprecate_only, params: { id: term.id, vocabulary: params }
     end
 
     context 'when the fields are edited' do
@@ -530,7 +530,7 @@ RSpec.describe TermsController do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
         allow(term_form).to receive(:is_valid?).and_return(true)
-        patch :deprecate_only, id: term.id, vocabulary: params
+        patch :deprecate_only, params: { id: term.id, vocabulary: params }
       end
 
       after do
@@ -545,7 +545,7 @@ RSpec.describe TermsController do
     context 'when the fields are edited and the update fails' do
       before do
         allow(term_form).to receive(:is_valid?).and_return(false)
-        patch :deprecate_only, id: term.id, vocabulary: params
+        patch :deprecate_only, params: { id: term.id, vocabulary: params }
       end
 
       it 'shows the edit form' do
@@ -587,11 +587,11 @@ RSpec.describe TermsController do
           FileUtils.touch("#{Settings.cache_dir}/ns/test/bla.nt")
           time_old = File.mtime("#{Settings.cache_dir}/ns/test/bla.nt")
           sleep(1)
-          put :cache_update, id: resource.id, term_type: 'Term'
+          put :cache_update, params: { id: resource.id, term_type: 'Term' }
           expect(File.mtime("#{Settings.cache_dir}/ns/test/bla.nt")).not_to eq(time_old)
         end
         it 'redirects to the term page' do
-          put :cache_update, id: resource.id, term_type: 'Term'
+          put :cache_update, params: { id: resource.id, term_type: 'Term' }
           expect(response).to redirect_to("/ns/#{resource.id}")
         end
       end
@@ -604,7 +604,7 @@ RSpec.describe TermsController do
           allow(resource).to receive(:id).and_return('test')
           allow_any_instance_of(DecoratingRepository).to receive(:find).with('test').and_return(decorated_resource)
           FileUtils.touch("#{Settings.cache_dir}/ns/test.nt")
-          put :cache_update, id: resource.id, term_type: 'Vocabulary'
+          put :cache_update, params: { id: resource.id, term_type: 'Vocabulary' }
         end
 
         it 'expires the cache' do

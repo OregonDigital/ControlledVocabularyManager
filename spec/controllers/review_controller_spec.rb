@@ -76,7 +76,7 @@ RSpec.describe ReviewController do
         sign_in(user) if user
         allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
         setup_for_review_test(dummy_class)
-        get :show, id: 'blah'
+        get :show, params: { id: 'blah' }
       end
 
       after do
@@ -98,7 +98,7 @@ RSpec.describe ReviewController do
 
       context 'term is not under review' do
         it 'handles it gracefully' do
-          get :show, id: 'foo'
+          get :show, params: { id: 'foo' }
           expect(response).to redirect_to('/review')
           expect(flash[:alert]).to include('foo could not be found')
         end
@@ -117,7 +117,7 @@ RSpec.describe ReviewController do
         sign_in(user) if user
         allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
         setup_for_review_test(dummy_class)
-        get :edit, id: 'blah'
+        get :edit, params: { id: 'blah' }
       end
 
       after do
@@ -130,7 +130,7 @@ RSpec.describe ReviewController do
       end
       context 'term is not under review' do
         it 'handles it gracefully' do
-          get :edit, id: 'foo'
+          get :edit, params: { id: 'foo' }
           expect(response).to redirect_to('/review')
           expect(flash[:alert]).to include('foo could not be found')
         end
@@ -149,7 +149,7 @@ RSpec.describe ReviewController do
         sign_in(user) if user
         allow_any_instance_of(DummyController).to receive(:current_user).and_return(user)
         setup_for_review_test(dummy_class)
-        patch :discard, id: 'blah'
+        patch :discard, params: { id: 'blah' }
       end
 
       after do

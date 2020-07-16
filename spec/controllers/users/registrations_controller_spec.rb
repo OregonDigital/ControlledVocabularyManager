@@ -12,7 +12,7 @@ RSpec.describe Users::RegistrationsController do
 
   context 'When registering a new user' do
     before do
-      post :create, user: user_params
+      post :create, params: { user: user_params }
     end
 
     it 'creates a user with the proper default role' do
@@ -25,7 +25,7 @@ RSpec.describe Users::RegistrationsController do
 
     before do
       sign_in(user) if user
-      put :update, user: user_params_fake_role
+      put :update, params: { user: user_params_fake_role }
     end
 
     it 'leaves the role as is' do

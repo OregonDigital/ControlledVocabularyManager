@@ -20,8 +20,8 @@ class TermsController < AdminController
     # @term.commit_history = get_history(@term.id)
     respond_to do |format|
       format.html
-      format.nt { render body: @term.full_graph.dump(:ntriples), content_type: Mime::NT }
-      format.jsonld { render body: @term.full_graph.dump(:jsonld, standard_prefixes: true), content_type: Mime::JSONLD }
+      format.nt { render body: @term.full_graph.dump(:ntriples), content_type: Mime[:nt] }
+      format.jsonld { render body: @term.full_graph.dump(:jsonld, standard_prefixes: true), content_type: Mime[:jsonld] }
     end
   end
 

@@ -43,7 +43,7 @@ RSpec.describe ImportRdfController, type: :controller do
   let(:load_form) { instance_double('LoadForm') }
   let(:url) { 'http://example.com' }
   let(:preview) { '0' }
-  let(:params) do
+  let(:import_params) do
     { import_form: { url: url, preview: preview } }
   end
 
@@ -97,7 +97,7 @@ RSpec.describe ImportRdfController, type: :controller do
   describe "POST 'import'" do
     context 'when logged out' do
       it 'requires login' do
-        post :import, params
+        post :import, params: import_params
         expect(response.body).to have_content('Only admin can access')
       end
     end
@@ -120,7 +120,7 @@ RSpec.describe ImportRdfController, type: :controller do
           # have sort_stringify return nothing, the create will fail
           expect(term1).to receive(:sort_stringify)
           expect(termlist).to receive(:terms).and_return(terms)
-          post :import, params
+          post :import, params: import_params
         end
 
         it 'assigns the form' do
@@ -151,7 +151,7 @@ RSpec.describe ImportRdfController, type: :controller do
           before do
             expect(form).to receive(:valid?).and_return(true)
             expect(form).to receive(:preview?).and_return(true)
-            post :import, params
+            post :import, params: import_params
           end
 
           it 'renders the preview page' do
@@ -177,7 +177,7 @@ RSpec.describe ImportRdfController, type: :controller do
             expect(term3).to receive(:sort_stringify).and_return('blah')
             expect(term4).to receive(:sort_stringify).and_return('blah')
 
-            post :import, params
+            post :import, params: import_params
           end
 
           it 'shows the first term imported' do
@@ -226,7 +226,7 @@ RSpec.describe ImportRdfController, type: :controller do
       let(:logged_in) { false }
 
       it 'requires login' do
-        post :save, load_params
+        post :save, params: load_params
         expect(response.body).to eq('Only admin can access')
       end
     end
@@ -244,7 +244,7 @@ RSpec.describe ImportRdfController, type: :controller do
           expect(termlist).to receive(:terms).and_return(terms)
           # have sort_stringify return nothing, create will fail
           expect(term1).to receive(:sort_stringify)
-          post :save, load_params
+          post :save, params: load_params
         end
 
         it 'assigns the form' do
@@ -274,7 +274,7 @@ RSpec.describe ImportRdfController, type: :controller do
           end
 
           it 'shows the first term imported' do
-            post :save, load_params
+            post :save, params: load_params
             expect(response).to redirect_to term_path(terms.first.id)
           end
         end
