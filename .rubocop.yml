@@ -34,12 +34,6 @@ Style/ClassAndModuleChildren:
 Style/SingleLineBlockParams:
   Enabled: false
 
-Rails/ApplicationJob:
-  Enabled: false
-
-Rails/ApplicationRecord:
-  Enabled: false
-
 RSpec/DescribeClass:
   Exclude:
     - 'spec/system/**/*'

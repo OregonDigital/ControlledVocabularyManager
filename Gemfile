@@ -75,6 +75,7 @@ gem 'bootstrap-will_paginate'
 
 gem 'rubocop'
 gem 'rubocop-rspec'
+gem 'rubocop-rails'
 
 # Honeycomb
 gem 'sequel'

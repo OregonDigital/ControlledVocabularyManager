@@ -481,7 +481,7 @@ RSpec/BeforeAfterAll:
     - 'spec/services/rdf_loader_spec.rb'
     - 'spec/spec_helper.rb'
 
-Naming/UncommunicativeMethodParamName:
+Naming/MethodParameterName:
   Exclude:
     - 'lib/param_cleaner.rb'
 
