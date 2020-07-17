@@ -26,9 +26,8 @@ jobs:
             sudo cp /opt/phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 
       - checkout
-      - run: bundle clean --force
       - restore_cache:
-          key: gemfile-{{ checksum "Gemfile.lock" }}
+          key: v2-gemfile-{{ checksum "Gemfile.lock" }}
       - run:
           name: Update bundler
           command: gem install bundler -v 2.0.2
@@ -37,7 +36,7 @@ jobs:
           command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
       - save_cache:
-          key: gemfile-{{ checksum "Gemfile.lock" }}
+          key: v2-gemfile-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
             - tmp/zips
