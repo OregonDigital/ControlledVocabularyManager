@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.5-stretch
+    environment:
+      BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
     steps:
       - run:
