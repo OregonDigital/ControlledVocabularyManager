@@ -24,6 +24,7 @@ jobs:
             sudo cp /opt/phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
 
       - checkout
+      - run: bundle clean --force
       - restore_cache:
           key: gemfile-{{ checksum "Gemfile.lock" }}
       - run:
