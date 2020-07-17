@@ -194,7 +194,7 @@ GEM
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     erubi (1.9.0)
-    etc (1.0.1)
+    etc (1.0.0)
     execjs (2.7.0)
     factory_bot (6.1.0)
       activesupport (>= 5.0.0)
@@ -616,7 +616,7 @@ DEPENDENCIES
   database_cleaner
   devise
   dotenv-rails
-  etc (~> 1.0.0)
+  etc (= 1.0.0)
   factory_bot_rails
   font-awesome-rails
   formulaic
