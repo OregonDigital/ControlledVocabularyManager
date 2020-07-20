@@ -5,16 +5,13 @@ require 'rails_helper'
 RSpec.describe ActiveTriplesAdapter do
   before do
     # Example Resource
-    class ExampleResource < ActiveTriples::Resource
+    example_resource = Class.new(ActiveTriples::Resource) do
       include ActiveTriplesAdapter
       configure repository: :default
       configure type: RDF::URI('http://purl.org/dc/dcam/VocabularyEncodingScheme')
       configure base_uri: 'http://opaquenamespace.org/ns/'
     end
-  end
-
-  after do
-    Object.send(:remove_const, 'ExampleResource')
+    stub_const('ExampleResource', example_resource)
   end
 
   let(:resource) { ExampleResource.new(uri) }
@@ -41,6 +38,7 @@ RSpec.describe ActiveTriplesAdapter do
       it 'is not persisted' do
         expect(resource).not_to be_persisted
       end
+
       it 'has no triples' do
         expect(resource.statements.to_a.length).to eq 1
       end
@@ -75,6 +73,7 @@ RSpec.describe ActiveTriplesAdapter do
       it 'is persisted' do
         expect(resource).to be_persisted
       end
+
       it 'has statements' do
         expect(resource.statements.to_a.length).not_to eq 0
       end

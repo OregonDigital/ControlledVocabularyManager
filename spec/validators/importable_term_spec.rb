@@ -24,6 +24,7 @@ RSpec.describe ImportableTerm do
       validator.validate(list)
       expect(list.errors.size).to be 0
     end
+
     it 'fails the duplicate term' do
       validator.validate(list2)
       expect(list2.errors.messages.to_s).to include('Id already exists')

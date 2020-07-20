@@ -9,7 +9,8 @@ RSpec.describe ControlledVocabManager::IdMinter do
     it 'generates an 8 digit alpha numeric hash' do
       expect(minter.generate_id.length).to eq 8
     end
-    it 'onlies include letters and numbers' do
+
+    it 'only includes letters and numbers' do
       expect(minter.generate_id).not_to include(' ', '_', '$', '&')
     end
   end

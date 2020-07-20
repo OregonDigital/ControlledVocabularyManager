@@ -128,6 +128,7 @@ RSpec.describe ReviewController do
         expect(response).to be_success
         expect(response).to render_template 'edit'
       end
+
       context 'term is not under review' do
         it 'handles it gracefully' do
           get :edit, params: { id: 'foo' }

@@ -24,6 +24,7 @@ RSpec.describe MaybeURI do
       # Sanity check
       expect(described_class.new(fake).value).to eql(fake)
     end
+
     it 'does not convert a uri that has stringy stuff around it' do
       expect(described_class.new(should_be_a_string).value).to eql(should_be_a_string)
     end

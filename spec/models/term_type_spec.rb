@@ -6,9 +6,11 @@ RSpec.describe TermType do
   it 'returns 7 models' do
     expect(described_class.models.length).to eq(7)
   end
+
   it 'returns 7 names' do
     expect(described_class.names.length).to eq(7)
   end
+
   it "shows all models having field 'date'" do
     expect(described_class.models_having_visible_property('date').length).to eq(7)
   end

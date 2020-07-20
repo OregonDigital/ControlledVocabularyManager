@@ -35,11 +35,13 @@ RSpec.describe VocabulariesController do
     it 'is successful' do
       expect(result).to be_success
     end
+
     it 'assigns @vocabulary' do
       assigned = assigns(:vocabulary)
       expect(assigned).to be_kind_of VocabularyForm
       expect(assigned).to be_new_record
     end
+
     it 'renders new' do
       expect(result).to render_template('new')
     end
@@ -58,6 +60,7 @@ RSpec.describe VocabulariesController do
     it 'assigns @term' do
       expect(assigns(:term)).to eq vocabulary_form
     end
+
     it 'renders edit' do
       expect(response).to render_template 'edit'
     end
@@ -104,9 +107,11 @@ RSpec.describe VocabulariesController do
       it 'updates the properties' do
         expect(vocabulary).to have_received(:attributes=).with(comment: [RDF::Literal('Test', language: :en)], id: 'blah', label: [RDF::Literal('Test', language: :en)])
       end
+
       it 'redirects to the index' do
         expect(response).to redirect_to('/vocabularies')
       end
+
       context 'and there are blank fields' do
         let(:params) do
           {
@@ -195,6 +200,7 @@ RSpec.describe VocabulariesController do
       it 'updates the replaced_by property' do
         expect(vocabulary).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
       end
+
       it 'redirects to the index' do
         expect(response).to redirect_to('/vocabularies')
       end
@@ -259,11 +265,13 @@ RSpec.describe VocabulariesController do
 
       expect(response).to be_success
     end
+
     it 'renders index' do
       get :index
 
       expect(response).to render_template 'index'
     end
+
     context 'when not logged in' do
       let(:logged_in) { false }
 
@@ -341,6 +349,7 @@ RSpec.describe VocabulariesController do
       it 'renders new template' do
         expect(response).to render_template('new')
       end
+
       it 'assigns @vocabulary' do
         expect(assigns(:vocabulary)).to eq vocabulary_form
       end

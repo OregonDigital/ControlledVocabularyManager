@@ -51,6 +51,7 @@ RSpec.describe DeprecateVocabularyForm do
       expect(subject).to be_valid
       expect(subject).to be_is_valid
     end
+
     context 'when the term already exists' do
       before do
         id_exists(id)
@@ -74,22 +75,6 @@ RSpec.describe DeprecateVocabularyForm do
     end
 
     context 'when is_replaced_by is blank' do
-      let(:params) do
-        {
-          comment: ['Comment'],
-          label: ['Label'],
-          is_replaced_by: []
-        }
-      end
-
-      it 'is not valid' do
-        expect(subject).not_to be_valid
-        expect(subject).not_to be_is_valid
-        expect(subject.errors[:is_replaced_by]).to include "can't be blank"
-      end
-    end
-
-    context 'when is_replaced_by is invalid' do
       let(:params) do
         {
           comment: ['Comment'],

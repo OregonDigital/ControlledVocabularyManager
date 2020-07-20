@@ -7,6 +7,7 @@ RSpec.describe 'shared/_navbar.html.erb' do
     render
     expect(rendered).to have_link('Vocabularies', href: vocabularies_path)
   end
+
   context 'when logged in' do
     let(:user) { User.create(email: 'blah@blah.com', password: 'admin123', role: 'admin', institution: 'Oregon State University', name: 'Test') }
 

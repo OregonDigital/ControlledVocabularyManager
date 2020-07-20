@@ -47,6 +47,7 @@ RSpec.describe VocabularyForm do
       allow(subject).to receive(:valid?).and_return(true)
       expect(subject).to be_valid
     end
+
     context 'when the term already exists' do
       before do
         id_exists(id)

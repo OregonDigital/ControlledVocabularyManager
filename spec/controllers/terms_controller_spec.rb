@@ -124,6 +124,7 @@ RSpec.describe TermsController do
         expect(assigns(:term)).to eq term_form
         expect(assigns(:vocabulary)).to eq vocabulary
       end
+
       it 'renders new' do
         expect(response).to render_template('new')
       end
@@ -269,8 +270,9 @@ RSpec.describe TermsController do
       end
 
       it 'returns a 404' do
-        expect(post(:create, params: post_params ).code).to eq '404'
+        expect(post(:create, params: post_params).code).to eq '404'
       end
+
       it "doesn't call TermForm" do
         expect(TermForm).not_to receive(:new)
       end
@@ -374,6 +376,7 @@ RSpec.describe TermsController do
       it 'updates the properties' do
         expect(term).to have_received(:attributes=).with(patch_params.except(:language))
       end
+
       it 'redirects to the vocab' do
         expect(response).to redirect_to('/ns/test')
       end
@@ -459,6 +462,7 @@ RSpec.describe TermsController do
         expect(flash[:success]).to include('test/blah has been saved')
         expect(response).to redirect_to('/review')
       end
+
       it 'will put files in the cache dir' do
         expect(File).to exist(Settings.cache_dir + '/ns/test/bla.nt')
         expect(File).to exist(Settings.cache_dir + '/ns/test/bla.jsonld')
@@ -520,6 +524,7 @@ RSpec.describe TermsController do
       it 'updates the is_replaced_by property' do
         expect(term).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
       end
+
       it 'redirects to the vocab' do
         parts = term.id.split('/')
         expect(response).to redirect_to("/ns/#{parts[0]}")
@@ -590,6 +595,7 @@ RSpec.describe TermsController do
           put :cache_update, params: { id: resource.id, term_type: 'Term' }
           expect(File.mtime("#{Settings.cache_dir}/ns/test/bla.nt")).not_to eq(time_old)
         end
+
         it 'redirects to the term page' do
           put :cache_update, params: { id: resource.id, term_type: 'Term' }
           expect(response).to redirect_to("/ns/#{resource.id}")
@@ -610,6 +616,7 @@ RSpec.describe TermsController do
         it 'expires the cache' do
           expect(File).not_to exist(Settings.cache_dir + '/ns/test.nt')
         end
+
         it 'redirects to the term page' do
           expect(response).to redirect_to("/ns/#{resource.id}")
         end

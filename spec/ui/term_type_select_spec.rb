@@ -34,8 +34,8 @@ RSpec.feature "Using the term type SELECT", :js => true do
       find("select#term_type option[value='CorporateName']").select_option
       expect(find("select#term_type option[value='CorporateName']")).to be_selected
     end
-    expect(page).to have_selector("label.term_alternate_name", visible: false)
-    expect(page).to have_selector("div.term_alternate_name", visible: false)
+    expect(page).to have_selector("label.term_alternate_name", visible: :hidden)
+    expect(page).to have_selector("div.term_alternate_name", visible: :hidden)
     FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 end

@@ -27,11 +27,13 @@ RSpec.describe PredicatesController do
     it 'is successful' do
       expect(result).to be_success
     end
+
     it 'assigns @predicate' do
       assigned = assigns(:predicate)
       expect(assigned).to be_kind_of PredicateForm
       expect(assigned).to be_new_record
     end
+
     it 'renders new' do
       expect(result).to render_template('new')
     end
@@ -50,6 +52,7 @@ RSpec.describe PredicatesController do
     it 'assigns @term' do
       expect(assigns(:term)).to eq predicate_form
     end
+
     it 'renders edit' do
       expect(response).to render_template 'edit'
     end
@@ -95,9 +98,11 @@ RSpec.describe PredicatesController do
       it 'updates the properties' do
         expect(predicate).to have_received(:attributes=).with(comment: [RDF::Literal('Test', language: :en)], label: [RDF::Literal('Test', language: :en)]).exactly(1).times
       end
+
       it 'redirects to the predicates index' do
         expect(response).to redirect_to('/predicates')
       end
+
       context 'and there are blank fields' do
         let(:params) do
           {
@@ -183,6 +188,7 @@ RSpec.describe PredicatesController do
       it 'updates the is_replaced_by property' do
         expect(predicate).to have_received(:is_replaced_by=).with(params[:is_replaced_by]).exactly(1).times
       end
+
       it 'redirects to predicates index' do
         expect(response).to redirect_to('/predicates')
       end
@@ -241,11 +247,13 @@ RSpec.describe PredicatesController do
 
       expect(response).to be_success
     end
+
     it 'renders index' do
       get :index
 
       expect(response).to render_template 'index'
     end
+
     context 'when not logged in' do
       let(:logged_in) { false }
 

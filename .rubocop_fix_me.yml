@@ -155,6 +155,7 @@ Metrics/CyclomaticComplexity:
     - 'app/controllers/terms_controller.rb'
     - 'app/controllers/concerns/git_interface.rb'
     - 'app/decorators/sets_attributes.rb'
+    - 'app/services/triplestore_loader.rb'
 
 Style/IdenticalConditionalBranches:
   Exclude:
@@ -372,6 +373,9 @@ RSpec/NamedSubject:
 
 RSpec/SubjectStub:
   Exclude:
+    - 'spec/controllers/predicates_controller_spec.rb'
+    - 'spec/controllers/terms_controller_spec.rb'
+    - 'spec/controllers/vocabularies_controller_spec.rb'
     - 'spec/forms/vocabulary_form_spec.rb'
 
 RSpec/VerifiedDoubles:

@@ -13,6 +13,7 @@ RSpec.describe TermID do
     it 'is not blank' do
       expect(subject_minted.to_s).not_to be_empty
     end
+
     it 'is 8 characters long' do
       expect(subject_minted.to_s.length).to eq 8
     end

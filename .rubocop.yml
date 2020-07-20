@@ -51,7 +51,7 @@ RSpec/MessageSpies:
 RSpec/AnyInstance:
   Enabled: false
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 # FactoryBot 5 will require dynamic definition, so we should allow it.
 # FactoryBot/StaticAttributeDefinedDynamically:
