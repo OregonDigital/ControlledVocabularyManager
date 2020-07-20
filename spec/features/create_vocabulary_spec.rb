@@ -10,6 +10,7 @@ RSpec.describe 'Create and update a Vocabulary', js: true, type: :feature do
   before do
     allow_any_instance_of(AdminController).to receive(:current_user) { user }
     allow(user).to receive(:admin?).and_return(true)
+    allow_any_instance_of(VocabulariesController).to receive(:update_solr_index)
   end
 
   let(:datetime_now) { DateTime.now.strftime('%Y%m%dT%H%M%S') }

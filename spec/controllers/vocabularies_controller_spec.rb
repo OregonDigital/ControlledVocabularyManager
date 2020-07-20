@@ -410,7 +410,7 @@ RSpec.describe VocabulariesController do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge)
         # Solr is not running for tests, we want Sunspot.index! to not fail
-        allow(subject).to receive(:update_solr_index)
+        allow_any_instance_of(described_class).to receive(:update_solr_index)
         get :mark_reviewed, params: { id: params[:id] }
       end
 

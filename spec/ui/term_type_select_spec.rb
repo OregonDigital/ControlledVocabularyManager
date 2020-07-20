@@ -12,6 +12,7 @@ RSpec.feature "Using the term type SELECT", :js => true do
   background do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user1)
     allow(user1).to receive(:admin?).and_return(true)
+    allow_any_instance_of(VocabulariesController).to receive(:update_solr_index)
   end
 
   scenario "hide fields which aren't specifically configured as visible for the model" do
