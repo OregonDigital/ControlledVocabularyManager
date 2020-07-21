@@ -34,6 +34,7 @@ RSpec.describe DeprecateTermForm do
       expect(subject).not_to be_valid
       expect(subject).not_to be_is_valid
     end
+
     context 'when is_replaced_by is blank' do
       it 'is not valid' do
         expect(subject).not_to be_valid

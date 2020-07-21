@@ -27,11 +27,13 @@ RSpec.describe PredicatesController do
     it 'is successful' do
       expect(result).to be_success
     end
+
     it 'assigns @predicate' do
       assigned = assigns(:predicate)
       expect(assigned).to be_kind_of PredicateForm
       expect(assigned).to be_new_record
     end
+
     it 'renders new' do
       expect(result).to render_template('new')
     end
@@ -44,12 +46,13 @@ RSpec.describe PredicatesController do
     before do
       allow_any_instance_of(PredicateFormRepository).to receive(:find).and_return(predicate_form)
       allow(predicate).to receive(:attributes=)
-      get 'edit', id: predicate.id
+      get 'edit', params: { id: predicate.id }
     end
 
     it 'assigns @term' do
       expect(assigns(:term)).to eq predicate_form
     end
+
     it 'renders edit' do
       expect(response).to render_template 'edit'
     end
@@ -89,15 +92,17 @@ RSpec.describe PredicatesController do
 
     context 'when the fields are edited' do
       before do
-        patch :update, id: predicate.id, predicate: params, vocabulary: params
+        patch :update, params: { id: predicate.id, predicate: params, vocabulary: params }
       end
 
       it 'updates the properties' do
         expect(predicate).to have_received(:attributes=).with(comment: [RDF::Literal('Test', language: :en)], label: [RDF::Literal('Test', language: :en)]).exactly(1).times
       end
+
       it 'redirects to the predicates index' do
         expect(response).to redirect_to('/predicates')
       end
+
       context 'and there are blank fields' do
         let(:params) do
           {
@@ -118,7 +123,7 @@ RSpec.describe PredicatesController do
     context 'when index.lock exists and rugged returns false' do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
-        patch :update, id: predicate.id, predicate: params, vocabulary: params
+        patch :update, params: { id: predicate.id, predicate: params, vocabulary: params }
       end
 
       after do
@@ -133,7 +138,7 @@ RSpec.describe PredicatesController do
     context 'when the fields are edited and the check fails' do
       before do
         allow(predicate_form).to receive(:valid?).and_return(false)
-        patch :update, id: predicate.id, predicate: params, vocabulary: params
+        patch :update, params: { id: predicate.id, predicate: params, vocabulary: params }
       end
 
       it 'shows the edit form' do
@@ -177,12 +182,13 @@ RSpec.describe PredicatesController do
 
     context 'when the fields are edited' do
       before do
-        patch :deprecate_only, id: predicate.id, predicate: params, vocabulary: params
+        patch :deprecate_only, params: { id: predicate.id, predicate: params, vocabulary: params }
       end
 
       it 'updates the is_replaced_by property' do
         expect(predicate).to have_received(:is_replaced_by=).with(params[:is_replaced_by]).exactly(1).times
       end
+
       it 'redirects to predicates index' do
         expect(response).to redirect_to('/predicates')
       end
@@ -191,7 +197,7 @@ RSpec.describe PredicatesController do
     context 'when index.lock exists and rugged returns false' do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
-        patch :deprecate_only, id: predicate.id, predicate: params, vocabulary: params
+        patch :deprecate_only, params: { id: predicate.id, predicate: params, vocabulary: params }
       end
 
       after do
@@ -206,7 +212,7 @@ RSpec.describe PredicatesController do
     context 'when the fields are edited and the update fails' do
       before do
         allow(predicate_form).to receive(:is_valid?).and_return(false)
-        patch :deprecate_only, id: predicate.id, predicate: params, vocabulary: params
+        patch :deprecate_only, params: { id: predicate.id, predicate: params, vocabulary: params }
       end
 
       it 'shows the edit form' do
@@ -241,11 +247,13 @@ RSpec.describe PredicatesController do
 
       expect(response).to be_success
     end
+
     it 'renders index' do
       get :index
 
       expect(response).to render_template 'index'
     end
+
     context 'when not logged in' do
       let(:logged_in) { false }
 
@@ -274,7 +282,7 @@ RSpec.describe PredicatesController do
     let(:pred_res) { AddResource.new(pred_mod) }
     let(:predicate) { instance_double('Predicate') }
     let(:predicate_form) { PredicateForm.new(SetsAttributes.new(pred_res), Predicate) }
-    let(:result) { post 'create', predicate: predicate_params, vocabulary: predicate_params }
+    let(:result) { post 'create', params: { predicate: predicate_params, vocabulary: predicate_params } }
 
     before do
       stub_repository
@@ -294,7 +302,7 @@ RSpec.describe PredicatesController do
 
     context 'when all goes well' do
       before do
-        post 'create', predicate: predicate_params, vocabulary: predicate_params
+        post 'create', params: { predicate: predicate_params, vocabulary: predicate_params }
       end
 
       it 'redirects to the index' do
@@ -306,7 +314,7 @@ RSpec.describe PredicatesController do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
         # allow(term_form).to receive(:is_valid?).and_return(true)
-        post 'create', predicate: predicate_params, vocabulary: predicate_params
+        post 'create', params: { predicate: predicate_params, vocabulary: predicate_params }
       end
 
       after do
@@ -348,8 +356,8 @@ RSpec.describe PredicatesController do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge)
         # Solr is not running for tests, we want Sunspot.index! to not fail
-        allow(subject).to receive(:update_solr_index)
-        get :mark_reviewed, id: params[:id]
+        allow_any_instance_of(described_class).to receive(:update_solr_index)
+        get :mark_reviewed, params: { id: params[:id] }
       end
 
       it 'will redirect to review queue if asset is saved' do
@@ -361,7 +369,7 @@ RSpec.describe PredicatesController do
     context 'when an error is raised inside rugged_merge' do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge).and_return(0)
-        get :mark_reviewed, id: params[:id]
+        get :mark_reviewed, params: { id: params[:id] }
       end
 
       it 'shows the flash error' do

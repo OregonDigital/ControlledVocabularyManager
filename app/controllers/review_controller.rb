@@ -3,8 +3,8 @@
 # Review Controller
 class ReviewController < AdminController
   include GitInterface
-  before_filter :require_editor
-  skip_before_filter :require_admin
+  before_action :require_editor
+  skip_before_action :require_admin
 
   def index
     @terms = review_list

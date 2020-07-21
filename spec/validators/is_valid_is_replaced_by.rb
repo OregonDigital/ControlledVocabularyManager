@@ -13,12 +13,14 @@ RSpec.describe IsValidIsReplacedBy do
     validator.validate(record)
     expect(record.errors.size).to be > 0
   end
+
   describe 'a term being deprecated' do
     it 'passes validation when is_replaced_by is valid' do
       record.is_replaced_by = [is_replaced_by]
       validator.validate(record)
       expect(record.errors.size).to be 0
     end
+
     it 'fails validation when is_replaced_by is blank' do
       validator.validate(record)
       expect(record.errors[:is_replaced_by].first).to include("can't be blank")

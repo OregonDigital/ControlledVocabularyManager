@@ -18,9 +18,11 @@ RSpec.describe 'review/index' do
     it 'displays all review terms' do
       expect(rendered).to have_link(resource.first[:label], href: review_term_path(resource.first[:id]))
     end
+
     it 'displays the label of the term' do
       expect(rendered).to have_content('Blah')
     end
+
     it 'displays the author of the vocabulary' do
       expect(rendered).to have_content('MisterEd')
     end

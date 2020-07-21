@@ -3,6 +3,8 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.5-stretch
+    environment:
+      BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
     steps:
       - run:
@@ -25,13 +27,16 @@ jobs:
 
       - checkout
       - restore_cache:
-          key: gemfile-{{ checksum "Gemfile.lock" }}
+          key: v2-gemfile-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Update bundler
+          command: gem install bundler -v 2.0.2
       - run:
           name: Install Ruby Dependencies
           command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
       - save_cache:
-          key: gemfile-{{ checksum "Gemfile.lock" }}
+          key: v2-gemfile-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
             - tmp/zips

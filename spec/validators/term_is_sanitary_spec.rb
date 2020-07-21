@@ -12,6 +12,7 @@ RSpec.describe TermIsSanitary do
     validator.validate(record)
     expect(record.errors.size).to be > 0
   end
+
   describe 'a term with a space in the id' do
     it 'fails validation with an appropriate error' do
       validator.validate(record)

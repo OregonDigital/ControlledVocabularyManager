@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 # Predicates Controller
-class PredicatesController < ApplicationController
+class PredicatesController < AdminController
   delegate :predicate_form_repository, :all_preds_query, to: :injector
   delegate :deprecate_predicate_form_repository, to: :deprecate_injector
-  skip_before_filter :require_admin, only: %i[review_update mark_reviewed]
+  skip_before_action :require_admin, only: %i[review_update mark_reviewed]
 
   include GitInterface
   def index

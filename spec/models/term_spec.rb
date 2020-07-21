@@ -9,9 +9,11 @@ RSpec.describe Term do
   it 'is an AT::Resource' do
     expect(described_class < ActiveTriples::Resource).to be true
   end
+
   it 'instantiates' do
     expect { described_class.new }.not_to raise_error
   end
+
   context 'when it is persisted' do
     before do
       resource.comment = 'This is a comment'
@@ -275,7 +277,7 @@ RSpec.describe Term do
       context "when passing a #{k} type" do
         let(:type) { k.type }
 
-        it "should return the #{k} class" do
+        it "returns the #{k} class" do
           expect(TermType.class_from_types(types)).to eq k
         end
       end

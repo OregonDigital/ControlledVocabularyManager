@@ -35,11 +35,13 @@ RSpec.describe VocabulariesController do
     it 'is successful' do
       expect(result).to be_success
     end
+
     it 'assigns @vocabulary' do
       assigned = assigns(:vocabulary)
       expect(assigned).to be_kind_of VocabularyForm
       expect(assigned).to be_new_record
     end
+
     it 'renders new' do
       expect(result).to render_template('new')
     end
@@ -52,12 +54,13 @@ RSpec.describe VocabulariesController do
     before do
       allow_any_instance_of(VocabularyFormRepository).to receive(:find).and_return(vocabulary_form)
       allow(vocabulary).to receive(:attributes=)
-      get 'edit', id: vocabulary.id
+      get 'edit', params: { id: vocabulary.id }
     end
 
     it 'assigns @term' do
       expect(assigns(:term)).to eq vocabulary_form
     end
+
     it 'renders edit' do
       expect(response).to render_template 'edit'
     end
@@ -98,15 +101,17 @@ RSpec.describe VocabulariesController do
 
     context 'when the fields are edited' do
       before do
-        patch :update, id: vocabulary.id, vocabulary: params, is_replaced_by: ['test']
+        patch :update, params: { id: vocabulary.id, vocabulary: params, is_replaced_by: ['test'] }
       end
 
       it 'updates the properties' do
         expect(vocabulary).to have_received(:attributes=).with(comment: [RDF::Literal('Test', language: :en)], id: 'blah', label: [RDF::Literal('Test', language: :en)])
       end
+
       it 'redirects to the index' do
         expect(response).to redirect_to('/vocabularies')
       end
+
       context 'and there are blank fields' do
         let(:params) do
           {
@@ -127,7 +132,7 @@ RSpec.describe VocabulariesController do
     context 'when index.lock exists and rugged returns false' do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
-        patch :update, id: vocabulary.id, vocabulary: params, is_replaced_by: ['test']
+        patch :update, params: { id: vocabulary.id, vocabulary: params, is_replaced_by: ['test'] }
       end
 
       after do
@@ -142,7 +147,7 @@ RSpec.describe VocabulariesController do
     context 'when the fields are edited and the update fails' do
       before do
         allow(vocabulary_form).to receive(:is_valid?).and_return(false)
-        patch :update, id: vocabulary.id, vocabulary: params, is_replaced_by: ['test']
+        patch :update, params: { id: vocabulary.id, vocabulary: params, is_replaced_by: ['test'] }
       end
 
       it 'shows the edit form' do
@@ -189,12 +194,13 @@ RSpec.describe VocabulariesController do
 
     context 'when the fields are edited' do
       before do
-        patch :deprecate_only, id: vocabulary.id, vocabulary: params, is_replaced_by: ['test']
+        patch :deprecate_only, params: { id: vocabulary.id, vocabulary: params, is_replaced_by: ['test'] }
       end
 
       it 'updates the replaced_by property' do
         expect(vocabulary).to have_received(:is_replaced_by=).with(params[:is_replaced_by])
       end
+
       it 'redirects to the index' do
         expect(response).to redirect_to('/vocabularies')
       end
@@ -203,7 +209,7 @@ RSpec.describe VocabulariesController do
     context 'when index.lock exists and rugged returns false' do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
-        patch :deprecate_only, id: vocabulary.id, vocabulary: params, is_replaced_by: ['test']
+        patch :deprecate_only, params: { id: vocabulary.id, vocabulary: params, is_replaced_by: ['test'] }
       end
 
       after do
@@ -218,7 +224,7 @@ RSpec.describe VocabulariesController do
     context 'when the fields are edited and the update fails' do
       before do
         allow(vocabulary_form).to receive(:is_valid?).and_return(false)
-        patch :deprecate_only, id: vocabulary.id, vocabulary: params, is_replaced_by: ['test']
+        patch :deprecate_only, params: { id: vocabulary.id, vocabulary: params, is_replaced_by: ['test'] }
       end
 
       it 'shows the edit form' do
@@ -259,11 +265,13 @@ RSpec.describe VocabulariesController do
 
       expect(response).to be_success
     end
+
     it 'renders index' do
       get :index
 
       expect(response).to render_template 'index'
     end
+
     context 'when not logged in' do
       let(:logged_in) { false }
 
@@ -292,7 +300,7 @@ RSpec.describe VocabulariesController do
     let(:voc_res) { AddResource.new(voc_mod) }
     let(:vocabulary) { instance_double('Vocabulary') }
     let(:vocabulary_form) { VocabularyForm.new(SetsAttributes.new(voc_res), Vocabulary) }
-    let(:result) { post 'create', vocabulary: vocabulary_params }
+    let(:result) { post 'create', params: { vocabulary: vocabulary_params } }
     let(:save_success) { true }
 
     before do
@@ -324,7 +332,7 @@ RSpec.describe VocabulariesController do
       end
 
       before do
-        post 'create', vocabulary: vocabulary_params
+        post 'create', params: { vocabulary: vocabulary_params }
       end
 
       it 'does not pass them to vocabulary' do
@@ -335,12 +343,13 @@ RSpec.describe VocabulariesController do
     context 'when check fails' do
       before do
         allow(vocabulary_form).to receive(:is_valid?).and_return(false)
-        post 'create', vocabulary: vocabulary_params
+        post 'create', params: { vocabulary: vocabulary_params }
       end
 
       it 'renders new template' do
         expect(response).to render_template('new')
       end
+
       it 'assigns @vocabulary' do
         expect(assigns(:vocabulary)).to eq vocabulary_form
       end
@@ -348,7 +357,7 @@ RSpec.describe VocabulariesController do
 
     context 'when all goes well' do
       before do
-        post 'create', vocabulary: vocabulary_params
+        post 'create', params: { vocabulary: vocabulary_params }
       end
 
       it 'redirects to the index' do
@@ -359,7 +368,7 @@ RSpec.describe VocabulariesController do
     context 'when index.lock exists and rugged returns false' do
       before do
         FileUtils.touch(ControlledVocabularyManager::Application.config.rugged_repo + '/.git/index.lock')
-        post 'create', vocabulary: vocabulary_params
+        post 'create', params: { vocabulary: vocabulary_params }
       end
 
       after do
@@ -401,8 +410,8 @@ RSpec.describe VocabulariesController do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge)
         # Solr is not running for tests, we want Sunspot.index! to not fail
-        allow(subject).to receive(:update_solr_index)
-        get :mark_reviewed, id: params[:id]
+        allow_any_instance_of(described_class).to receive(:update_solr_index)
+        get :mark_reviewed, params: { id: params[:id] }
       end
 
       it 'will redirect to review queue if asset is saved' do
@@ -414,7 +423,7 @@ RSpec.describe VocabulariesController do
     context 'when an error is raised inside rugged_merge' do
       before do
         allow_any_instance_of(GitInterface).to receive(:rugged_merge).and_return(0)
-        get :mark_reviewed, id: params[:id]
+        get :mark_reviewed, params: { id: params[:id] }
       end
 
       it 'shows the flash error' do

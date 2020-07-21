@@ -33,6 +33,7 @@ RSpec.describe TermForm do
     it 'is valid by default' do
       expect(subject).to be_valid
     end
+
     context 'when the id is blank' do
       let(:term) do
         t = Term.new('1/')
@@ -64,6 +65,7 @@ RSpec.describe TermForm do
       it 'is not valid' do
         expect(subject).not_to be_valid
       end
+
       it 'allows multiple messages' do
         subject.valid?
         expect(subject.errors[:id].length).to be > 0

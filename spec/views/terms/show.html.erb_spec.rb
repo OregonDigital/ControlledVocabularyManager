@@ -41,10 +41,12 @@ RSpec.describe 'terms/show' do
       render
       expect(rendered).to have_link 'Create Term', href: '/vocabularies/bla/new'
     end
+
     it 'has a link to edit the vocabulary' do
       render
       expect(rendered).to have_link 'Edit', href: edit_vocabulary_path(id: resource.id)
     end
+
     context 'with children' do
       let(:child) do
         t = Term.new(uri.to_s + '/banana')

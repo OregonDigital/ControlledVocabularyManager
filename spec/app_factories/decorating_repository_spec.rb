@@ -25,6 +25,7 @@ RSpec.describe DecoratingRepository do
     it 'delegates to repository' do
       expect(repository).to have_received(:find).with(id)
     end
+
     it 'decorates it' do
       expect(decorators).to have_received(:new).with(term)
     end

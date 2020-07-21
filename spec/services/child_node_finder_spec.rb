@@ -26,6 +26,7 @@ RSpec.describe ChildNodeFinder do
       expect(result.length).to eq 1
       expect(statements_hash(result.first)).to eq statements_hash(term)
     end
+
     context 'when there are four children' do
       let(:unrelated_term) { repository.new('bla/2') }
       let(:another_term) { repository.new('bla/Foo') }

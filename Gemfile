@@ -1,22 +1,24 @@
 source 'https://rubygems.org'
 
-
-# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.11.1'
+gem 'rails', '~> 5.0'
+gem 'bootsnap'
+gem 'listen'
 gem 'actionpack-page_caching'
+# newer 'etc' tries for 1.1.0 which caused activation problems with bundler since it's a default gem
+gem 'etc', '1.0.0'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.3.13'
 gem 'mysql2', '~> 0.3.13'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 4.0.3'
+gem 'sass-rails'
 # Use Bootstrap
 gem 'bootstrap-sass', '~> 3.4'
 gem 'autoprefixer-rails'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # Use CoffeeScript for .js.coffee assets and views
-gem 'coffee-rails', '~> 4.0.0'
+gem 'coffee-rails', '~> 4.0'
 # See https://github.com/sstephenson/execjs#readme for more supported runtimes
 gem 'mini_racer', platforms: :ruby
 
@@ -73,6 +75,7 @@ gem 'bootstrap-will_paginate'
 
 gem 'rubocop'
 gem 'rubocop-rspec'
+gem 'rubocop-rails'
 
 # Honeycomb
 gem 'sequel'
@@ -81,7 +84,7 @@ gem 'rack-honeycomb', '~> 0.5.0'
 
 group :development do
   gem 'spring-commands-rspec'
-  gem 'web-console', '~> 2.0'
+  gem 'web-console'
   gem 'sunspot_solr'
   gem 'brakeman'
 end
@@ -90,6 +93,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'factory_bot_rails'
   gem 'rspec-rails'
+  gem 'rails-controller-testing'
   # Test Coverage
   gem 'simplecov'
   gem 'capybara-screenshot'
@@ -104,7 +108,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'poltergeist', '~> 1.9.0'
+  gem 'poltergeist'
   gem 'database_cleaner'
   gem 'formulaic'
   gem 'shoulda-matchers'

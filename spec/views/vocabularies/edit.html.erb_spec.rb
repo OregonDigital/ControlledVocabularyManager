@@ -19,12 +19,15 @@ RSpec.describe 'vocabularies/edit' do
   it 'posts to /vocabularies/Creator' do
     expect(rendered).to have_selector("form[action='/vocabularies/Creator'][method='post']")
   end
+
   it 'does not have a _method field' do
     expect(rendered).not_to have_selector("input[name='_method']")
   end
+
   it 'displays the term URI' do
     expect(rendered).to have_content(term.rdf_subject.to_s)
   end
+
   it 'displays the language for a field' do
     expect(rendered).to have_selector('#label_select_0')
   end
@@ -34,6 +37,7 @@ RSpec.describe 'vocabularies/edit' do
       expect(rendered).to have_selector "input[name='vocabulary[#{attribute}][]']"
     end
   end
+
   it 'has an Update Vocabulary button' do
     expect(rendered).to have_button('Update Vocabulary')
   end

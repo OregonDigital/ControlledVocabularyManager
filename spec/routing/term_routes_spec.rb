@@ -6,18 +6,23 @@ RSpec.describe 'routes for Terms' do
   it 'routes /ns/bla/bla to the terms controller' do
     expect(get('/ns/bla/bla')).to route_to('terms#show', id: 'bla/bla')
   end
+
   it 'routes /ns/bla' do
     expect(get('/ns/bla')).to route_to('terms#show', id: 'bla')
   end
+
   it 'routes /terms/bla/deprecate' do
     expect(get('/terms/bla/deprecate')).to route_to('terms#deprecate', id: 'bla')
   end
+
   it 'routes PATCH /ns/bla/bla to the terms controller' do
     expect(patch('/terms/bla/bla')).to route_to('terms#update', id: 'bla/bla')
   end
+
   it 'routes PATCH /ns/bla to the terms controller' do
     expect(patch('/terms/bla')).to route_to('terms#update', id: 'bla')
   end
+
   it 'routes PATCH /ns/bla/deprecate_only to the terms controller' do
     expect(patch('/terms/bla/deprecate_only')).to route_to('terms#deprecate_only', id: 'bla')
   end

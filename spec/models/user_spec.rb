@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) { User.create(user_params) }
+  let(:user) { described_class.create(user_params) }
   let(:user_params) do
     {
       name: 'Test User',
@@ -65,7 +65,7 @@ RSpec.describe User, type: :model do
     end
   end
 
-  context '#administrative' do
+  describe '#administrative' do
     context 'when a user has the admin role' do
       let(:user_params) do
         {
@@ -100,7 +100,7 @@ RSpec.describe User, type: :model do
       end
     end
 
-    context 'when a user has the reviewer role' do
+    context 'when a user has the editor role' do
       let(:user_params) do
         {
           name: 'Test User',

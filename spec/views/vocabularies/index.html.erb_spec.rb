@@ -20,6 +20,7 @@ RSpec.describe 'vocabularies/index.html.erb' do
   it 'displays all vocabularies' do
     expect(rendered).to have_link(vocabulary.rdf_subject.to_s, href: term_path(id: vocabulary.id))
   end
+
   it 'displays the label/title of the vocabulary' do
     expect(rendered).to have_content('Test Vocabulary')
   end

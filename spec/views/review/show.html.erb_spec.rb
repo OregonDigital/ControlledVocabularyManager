@@ -47,6 +47,7 @@ RSpec.describe 'review/show' do
         render
         expect(rendered).to have_link 'Mark as reviewed', href: '/vocabularies/blah/mark'
       end
+
       it 'has a link to edit the vocabulary' do
         render
         expect(rendered).to have_link 'Edit', href: '/review/blah/edit'
@@ -58,6 +59,7 @@ RSpec.describe 'review/show' do
         render
         expect(rendered).not_to have_link 'Mark as reviewed', href: '/vocabularies/blah/mark'
       end
+
       it 'does not have a link to edit the vocabulary' do
         render
         expect(rendered).not_to have_link 'Edit', href: '/review/blah/edit'
@@ -121,7 +123,7 @@ RSpec.describe 'review/show' do
     end
   end
 
-  context 'as a reviewer' do
+  context 'as an editor' do
     before do
       sign_in(user) if user
     end

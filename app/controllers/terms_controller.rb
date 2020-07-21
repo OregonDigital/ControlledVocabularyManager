@@ -7,11 +7,11 @@ class TermsController < AdminController
   rescue_from ActiveTriples::NotFound, with: :render_404
   include GitInterface
 
-  before_filter :skip_render_on_cached_page, only: :show
+  before_action :skip_render_on_cached_page, only: :show
   caches_page :show
-  skip_before_filter :require_admin
-  before_filter :require_editor, except: %i[index show]
-  before_filter :require_admin, only: [:cache]
+  skip_before_action :require_admin
+  before_action :require_editor, except: %i[index show]
+  before_action :require_admin, only: [:cache]
 
   def show
     @term = find_term
@@ -20,8 +20,8 @@ class TermsController < AdminController
     # @term.commit_history = get_history(@term.id)
     respond_to do |format|
       format.html
-      format.nt { render body: @term.full_graph.dump(:ntriples), content_type: Mime::NT }
-      format.jsonld { render body: @term.full_graph.dump(:jsonld, standard_prefixes: true), content_type: Mime::JSONLD }
+      format.nt { render body: @term.full_graph.dump(:ntriples), content_type: Mime[:nt] }
+      format.jsonld { render body: @term.full_graph.dump(:jsonld, standard_prefixes: true), content_type: Mime[:jsonld] }
     end
   end
 

@@ -12,6 +12,7 @@ RSpec.feature "Using the term type SELECT", :js => true do
   background do
     allow_any_instance_of(AdminController).to receive(:current_user).and_return(user1)
     allow(user1).to receive(:admin?).and_return(true)
+    allow_any_instance_of(VocabulariesController).to receive(:update_solr_index)
   end
 
   scenario "hide fields which aren't specifically configured as visible for the model" do
@@ -34,8 +35,8 @@ RSpec.feature "Using the term type SELECT", :js => true do
       find("select#term_type option[value='CorporateName']").select_option
       expect(find("select#term_type option[value='CorporateName']")).to be_selected
     end
-    expect(page).to have_selector("label.term_alternate_name", visible: false)
-    expect(page).to have_selector("div.term_alternate_name", visible: false)
+    expect(page).to have_selector("label.term_alternate_name", visible: :hidden)
+    expect(page).to have_selector("div.term_alternate_name", visible: :hidden)
     FileUtils.rm_rf(ControlledVocabularyManager::Application::config.rugged_repo)
   end
 end
