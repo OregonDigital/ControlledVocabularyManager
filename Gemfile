@@ -9,7 +9,7 @@ gem 'etc', '1.0.0'
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', '~> 1.3.13'
-gem 'mysql2'
+gem 'mysql2', '~> 0.4.0'
 # Use SCSS for stylesheets
 gem 'sass-rails'
 # Use Bootstrap
