@@ -64,7 +64,11 @@ gem 'font-awesome-rails'
 
 gem 'attr_extras'
 
-gem 'capistrano', '~> 2.0'
+gem 'capistrano', '~> 3.0'
+gem 'capistrano-passenger'
+gem 'capistrano-rails'
+gem 'capistrano-rbenv'
+gem 'capistrano-bundler'
 
 gem 'responders', '~> 2.0'
 
