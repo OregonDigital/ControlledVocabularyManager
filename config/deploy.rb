@@ -1,55 +1,43 @@
 require 'yaml'
 config = YAML.load_file('config/config.yml')["deployment"] || {}
 
-require 'bundler/capistrano'
+# config valid for current version and patch releases of Capistrano
+lock "~> 3.14.1"
 
-set :stages, config['stages'] || []
-set :default_stage, config['default_stage'] || (config['stages'] || []).first
-require 'capistrano/ext/multistage'
+set :application, "ControlledVocabManager"
+set :repo_url, config['repository']
 
-set :application, 'ControlledVocabManager'
-set :repository, config['repository']
-set :user, config['user']
-set :default_environment, config['default_environment'] || {}
-default_run_options[:pty] = true
-set :scm, :git
-set :branch, config['branch']
-set :deploy_via, :remote_cache
-set :use_sudo, false
-set :keep_releases, 5
-set :shared_children, shared_children + %w{pids sockets tmp public/uploads jetty}
-set :ssh_options, {:forward_agent => true}
+# Default branch is :master
+# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
-# if you want to clean up old releases on each deploy uncomment this:
-after 'deploy:restart', 'deploy:cleanup'
+# Default deploy_to directory is /var/www/my_app_name
+set :deploy_to, config['deploy_to']
 
-after 'deploy:finalize_update', 'deploy:symlink_config'
-after 'deploy:update_code', 'deploy:migrate'
-after 'deploy:restart', 'deploy:cleanup'
+# Default value for :format is :airbrussh.
+# set :format, :airbrussh
 
+# You can configure the Airbrussh format using :format_options.
+# These are the defaults.
+# set :format_options, command_output: true, log_file: "log/capistrano.log", color: :auto, truncate: :auto
 
-namespace :deploy do
-  desc "Symlinks required configuration files"
-  task :symlink_config, :roles => :app do
-    %w{config.yml god.conf}.each do |config_file|
-      run "ln -nfs #{deploy_to}/shared/config/#{config_file} #{release_path}/config/#{config_file}"
-    end
-    %w{ns}.each do |config_directory|
-      run "ln -nfs #{deploy_to}/shared/public/#{config_directory} #{release_path}/public/#{config_directory}"
-    end
-  end
-  desc "Uploads local config files"
-  task :upload_config, :roles => :app do
-    %w{config.yml god.conf}.each do |config_file|
-      top.run "mkdir -p #{deploy_to}/shared/config"
-      top.upload "config/#{config_file}", "#{deploy_to}/shared/config/#{config_file}", :via => :scp
-    end
-  end
-end
-namespace :rails do
-  desc "Opens up a rails console"
-  task :console, :roles => :app do
-    hostname = find_servers_for_task(current_task).first
-    exec "ssh -l #{user} #{hostname} -t 'source ~/.bash_profile && cd #{deploy_to}/current && export RBENV_VERSION=#{config[rails_env.to_s]['default_environment']['RBENV_VERSION']} && RAILS_ENV=#{rails_env} bundle exec rails c'"
-  end
-end
+# Default value for :pty is false
+set :pty, true
+
+# Default value for :linked_files is []
+append :linked_files, 'config/database.yml', 'config/secrets.yml', 'config/god.conf'
+
+# Default value for linked_dirs is []
+append :linked_dirs, 'log', 'tmp', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'pids', 'public/assets', 'public/uploads'
+
+# Default value for default_env is {}
+set :default_env, config['default_environment'] || {}
+
+# Default value for local_user is ENV['USER']
+# set :local_user, -> { `git config user.name`.chomp }
+set :local_user, config['user']
+
+# Default value for keep_releases is 5
+# set :keep_releases, 5
+
+# Uncomment the following to require manually verifying the host key before first deploy.
+# set :ssh_options, verify_host_key: :secure
