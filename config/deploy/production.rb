@@ -57,25 +57,35 @@ end
 
 namespace :god do
   desc "Reload god config"
-  task :reload, :roles => :app, :except => {:no_release => true} do
-    run "ln -nfs #{god_app_path} #{god_sites_path}/#{application}.conf"
-    sudo "/etc/init.d/god restart"
+  task :reload do
+    on roles(:app), :except => {:no_release => true} do
+      run "ln -nfs #{god_app_path} #{god_sites_path}/#{application}.conf"
+      sudo "/etc/init.d/god restart"
+    end
   end
 
-  task :restart, :roles => :app, :except => {:no_release => true} do
-    run "touch #{shared_path}/tmp/restart.txt"
+  task :restart do
+    on roles(:app), :except => {:no_release => true} do
+      run "touch #{shared_path}/tmp/restart.txt"
+    end
   end
 
-  task :start, :roles => :app do
-    sudo "/etc/init.d/god startapp #{application}"
+  task :start do
+    on roles(:app) do
+      sudo "/etc/init.d/god startapp #{application}"
+    end
   end
 
-  task :stop, :roles => :app do
-    sudo "/etc/init.d/god stopapp #{application}"
+  task :stop do
+    on roles(:app) do
+      sudo "/etc/init.d/god stopapp #{application}"
+    end
   end
 
-  task :status, :roles => :app do
-    sudo "/etc/init.d/god status #{applictaion}"
+  task :status do
+    on roles(:app) do
+      sudo "/etc/init.d/god status #{application}"
+    end
   end
 end
 

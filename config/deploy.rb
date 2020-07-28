@@ -27,7 +27,7 @@ set :pty, true
 append :linked_files, 'config/database.yml', 'config/secrets.yml', 'config/god.conf'
 
 # Default value for linked_dirs is []
-append :linked_dirs, 'log', 'tmp', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system', 'pids', 'public/assets', 'public/uploads'
+append :linked_dirs, 'log', 'tmp', 'public/system', 'pids', 'public/assets', 'public/uploads'
 
 # Default value for default_env is {}
 set :default_env, config['default_environment'] || {}
