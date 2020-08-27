@@ -94,4 +94,9 @@ Rails.application.configure do
 
   # Location of local git repo
   config.rugged_repo = "#{ENV["CVM_OPAQUENAMESPACE_GIT_REPO"] || "git_dev"}"
+
+  # force https for devise logins
+  config.to_prepare { Devise::SessionsController.force_ssl }
+  config.to_prepare { Devise::RegistrationsController.force_ssl }
+  config.to_prepare { Devise::PasswordsController.force_ssl }
 end
