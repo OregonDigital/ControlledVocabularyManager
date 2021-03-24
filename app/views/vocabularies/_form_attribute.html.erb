@@ -4,7 +4,7 @@
       <ul class="listing">
         <li class="field-wrapper">
           <div class="row multi-value-controls">
-            <% if form.object.blacklisted_language_properties.include?(attribute) %>
+            <% if form.object.blocklisted_language_properties.include?(attribute) %>
               <div class="col-sm-12">
                 <% if value.respond_to?(:rdf_label) %>
                   <input type="text" class="form-control string" value="<%= MaybeURI.new(value.rdf_label.first).value %>" name="<%= "vocabulary[#{attribute.to_s}][]" %>" id="<%= "vocabulary_#{attribute.to_s}" %>"/>

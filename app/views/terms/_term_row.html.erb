@@ -2,7 +2,7 @@
 <th scope="row"><a href="<%= @term.term_type.properties[field.to_s].predicate.to_s %>"><%= t(field, scope: 'properties') || field.to_s.titleize %>:</th>
 <td>
   <ul style="list-style: none;">
-    <% if @term.blacklisted_language_properties.include?(field) %>
+    <% if @term.blocklisted_language_properties.include?(field) %>
       <% @term.get_values(field).each do |term| %>
         <!-- This is a temporary fix!!!!!!!!! Since this is an RDF error, the easiest way to fix this issue
           is by checking if a terms value responds to rdf_label. We need to fix this as we are enabling rdf to

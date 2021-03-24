@@ -5,7 +5,7 @@ class SetsAttributes < SimpleDelegator
   def set_attributes(form_params)
     new_hash = {}
     attributes.each_pair do |key, value|
-      if !blacklisted_language_properties.include?(key.to_sym)
+      if !blocklisted_language_properties.include?(key.to_sym)
         value_array = []
         value.each_with_index do |val, index|
           unless form_params['language'].nil?
