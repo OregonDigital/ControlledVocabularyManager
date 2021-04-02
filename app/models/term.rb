@@ -60,7 +60,7 @@ class Term < ActiveTriples::Resource
     :en
   end
 
-  def blacklisted_language_properties
+  def blocklisted_language_properties
     %i[
       id
       issued

@@ -20,7 +20,7 @@ RSpec.describe SetsAttributes do
     stub_repository
     allow(term).to receive(:attributes=)
     allow(term).to receive(:attributes).and_return(test_param)
-    allow(term).to receive(:blacklisted_language_properties).and_return(%i[id issued modified see_also])
+    allow(term).to receive(:blocklisted_language_properties).and_return(%i[id issued modified see_also])
     allow(term).to receive(:uri_fields).and_return(%i[see_also])
     allow(term).to receive(:valid?).and_return(true)
     allow(term).to receive(:parent=)

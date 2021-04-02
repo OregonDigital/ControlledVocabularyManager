@@ -392,7 +392,7 @@ module GitInterface
       results.each do |result|
         # set the language hash with stringified property name (set_languages depends on this)
         # add the array of languages that relate to the object string set below
-        unless term.blacklisted_language_properties.include? k.to_sym
+        unless term.blocklisted_language_properties.include? k.to_sym
           params[:vocabulary][:language] ||= {}
           params[:vocabulary][:language][k.to_s] ||= []
           params[:vocabulary][:language][k.to_s] << result.language.to_s if result.respond_to?(:language)
