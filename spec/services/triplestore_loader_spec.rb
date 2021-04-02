@@ -13,6 +13,7 @@ RSpec.describe TriplestoreLoader do
   end
 
   before(:all) do
+    WebMock.disable_net_connect!(allow_localhost: true)
     File.open('/tmp/test.nt', 'w') do |file|
       file.write('<http://opaquenamespace.org/ns/TESTTEST> <http://purl.org/dc/terms/issued> "2016-08-23"^^<http://www.w3.org/2001/XMLSchema#date> .
 <http://opaquenamespace.org/ns/TESTTEST> <http://purl.org/dc/terms/modified> "2016-08-23"^^<http://www.w3.org/2001/XMLSchema#date> .
