@@ -66,12 +66,16 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          name: Restore bundle from cache
+          keys:
+            - v2-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Update bundler
           command: gem install bundler -v 2.1.4
-      - run:
-          name: Install rubocop
-          command: gem install rubocop
+      #- run:
+      #    name: Install rubocop
+      #    command: gem install rubocop
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
