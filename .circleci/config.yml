@@ -24,7 +24,7 @@ jobs:
             - app/**/*
   bundle:
     docker:
-      - image: circleci/ruby:2.5-stretch-node-browsers
+      - image: circleci/ruby:2.5-stretch
     environment:
       BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
@@ -41,58 +41,53 @@ jobs:
             - v2-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Update bundler
-          command: gem install bundler -v 2.1.4
+          command: gem install bundler -v 2.0.2
       - run:
           name: Install dependencies
-          command: |
-            bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-      - save_cache:
-          name: Save bundle cache
-          key: v2-bundle-{{ checksum "Gemfile.lock" }}
-          paths:
-            - ~/app/vendor/bundle
-      - persist_to_workspace:
-          root: ~/
-          paths:
-            - app/*
-            - app/**/*
-  lint:
-    docker:
-      - image: circleci/ruby:2.5-stretch-node-browsers
-    working_directory: ~/app
-    environment:
-      BUNDLE_PATH: vendor/bundle
-    steps:
-      - attach_workspace:
-          at: ~/
-      - restore_cache:
-          name: Restore bundle from cache
-          keys:
-            - v2-bundle-{{ checksum "Gemfile.lock" }}
-      - run:
-          name: Update bundler
-          command: gem install bundler -v 2.1.4
-      - run:
-          name: Bundle install
           command: |
             bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
+      - save_cache:
+          name: Save bundle cache
+          key: v2-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+            - tmp/zips
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - app/*
+            - app/**/*
+#  lint:
+#    docker:
+#      - image: circleci/ruby:2.5-stretch-node-browsers
+#    working_directory: ~/app
+#    environment:
+#      BUNDLE_PATH: vendor/bundle
+#    steps:
+#      - attach_workspace:
+#          at: ~/
+#      - restore_cache:
+#          name: Restore bundle from cache
+#          keys:
+#            - v2-bundle-{{ checksum "Gemfile.lock" }}
+#      - run:
+#          name: Update bundler
+#          command: gem install bundler -v 2.1.4
+#      - run:
+#          name: Bundle install
+#          command: |
+#            bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+#      - run:
+#          name: Run Rubocop
+#          command: bundle exec rubocop
   test:
     docker:
-      - image: circleci/ruby:2.5-stretch-node-browsers
+      - image: circleci/ruby:2.5-stretch
         environment:
-          CVM_ADAPTER: mysql2
-          CVM_DB: cvm_test
-          CVM_DB_USERNAME: monkeys
-          CVM_DB_PASSWORD: monkeys
-          CVM_DB_HOST: localhost
-          CVM_DB_PORT: 3306
-          HONEYCOMB_DATASET: cvm-test
           HONEYCOMB_DEBUG: 'true'
-          HONEYCOMB_WRITEKEY: buzzzzzzzzzzzzzzzz
-          HONEYCOMB_SERVICE: cvm-test
           RAILS_ENV: test
       - image: circleci/mysql:5.7.22
         environment:
@@ -196,12 +191,13 @@ workflows:
       - bundle:
           requires:
             - checkout_code
-      - lint:
-          requires:
-            - bundle
+#      - lint:
+#          requires:
+#            - bundle
       - test:
           requires:
-            - lint
+#            - lint
+            - bundle
       - build_and_push_beavernetes:
           name: build_and_push_beavernetes
           requires:
