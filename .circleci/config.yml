@@ -25,6 +25,8 @@ jobs:
   bundle:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
+    environment:
+      BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
     steps:
       - attach_workspace:
@@ -44,7 +46,7 @@ jobs:
           name: Install dependencies
           #command: bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
           command: |
-            bundle install --jobs=4 --retry=3 --binstubs
+            bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
             bundle binstubs rubocop --force
       - save_cache:
           name: Save bundle cache
@@ -60,12 +62,17 @@ jobs:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
     working_directory: ~/app
+    environment:
+      BUNDLE_PATH: vendor/bundle
     steps:
       - attach_workspace:
           at: ~/
+      - run:
+          name: Update bundler
+          command: gem install bundler -v 2.1.4
       #- run:
-      #    name: Update bundler
-      #    command: gem install bundler -v 2.1.4 && bundle install --binstubs
+      #    name: Install rubocop binstub
+      #    command: bundle binstubs rubocop --force
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
@@ -73,17 +80,28 @@ jobs:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
         environment:
-          HONEYCOMB_DATASET: api-test
+          BLAZEGRAPH_URL:
+          CVM_ADAPTER: mysql2
+          CVM_DB: cvm_test
+          CVM_DB_USERNAME: monkeys
+          CVM_DB_PASSWORD: monkeys
+          CVM_DB_HOST:
+          CVM_DB_PORT: 3306
+          CVM_SECRET_KEY_BASE:
+          CVM_SOLR_URL: http://localhost:8985/solr/cvm-test
+          CVM_TRIPLESTORE_TYPE: blazegraph
+          CVM_TRIPLESTORE_URL: http://ci-test:8080/bigdata/namespace/kb/sparql
+          HONEYCOMB_DATASET: cvm-test
           HONEYCOMB_DEBUG: 'true'
           HONEYCOMB_WRITEKEY: buzzzzzzzzzzzzzzzz
-          HONEYCOMB_SERVICE: api-test
+          HONEYCOMB_SERVICE: cvm-test
           RAILS_ENV: test
       - image: circleci/mysql:5.7.22
         environment:
           MYSQL_ROOT_PASSWORD: monkeys
           MYSQL_USER: monkeys
           MYSQL_PASSWORD: monkeys
-          MYSQL_DATABASE: api_test
+          MYSQL_DATABASE: cvm_test
     working_directory: ~/app
     steps:
       - attach_workspace:
@@ -146,6 +164,7 @@ jobs:
     environment:
       DOCKER_LOGIN: admin
       DOCKER_PASSWORD: admin
+      RAILS_ENV: production
     working_directory: ~/app
     steps:
       - attach_workspace:
@@ -157,7 +176,8 @@ jobs:
             export DATETIME=$(date "+%Y%m%d%H%M%S")
             echo export TAG="$DATETIME-$GIT_SHORT_HASH" >> $BASH_ENV
             echo export DEPLOYED_VERSION="$DATETIME-$GIT_SHORT_HASH" >> $BASH_ENV
-      - setup_remote_docker
+      - setup_remote_docker:
+          version: 20.10.2
       - docker/check:
           registry: registry.library.oregonstate.edu
       - docker/build:
@@ -187,3 +207,4 @@ workflows:
           requires:
             - test
           repo: cvm_rails
+          environment: production
