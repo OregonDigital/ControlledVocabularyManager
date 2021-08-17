@@ -25,8 +25,6 @@ jobs:
   bundle:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
-    environment:
-      BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
     steps:
       - attach_workspace:
@@ -44,7 +42,8 @@ jobs:
           command: gem install bundler -v 2.1.4
       - run:
           name: Install dependencies
-          command: bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+          #command: bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+          command: bundle install --jobs=4 --retry=3 --binstubs
       - save_cache:
           name: Save bundle cache
           key: v2-bundle-{{ checksum "Gemfile.lock" }}
@@ -58,15 +57,13 @@ jobs:
   lint:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
-    environment:
-      BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
     steps:
       - attach_workspace:
           at: ~/
-      - run:
-          name: Update bundler
-          command: gem install bundler -v 2.1.4 && bundle install --binstubs
+      #- run:
+      #    name: Update bundler
+      #    command: gem install bundler -v 2.1.4 && bundle install --binstubs
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
@@ -106,13 +103,13 @@ jobs:
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
-      - run:
-          name: Update bundler srsly again
-          command: gem install --force bundler
-      - run:
-          name: Bundle update srsly again
-          #command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-          command: bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+      #- run:
+      #    name: Update bundler srsly again
+      #    command: gem install --force bundler
+      #- run:
+      #    name: Bundle update srsly again
+      #    #command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+      #    command: bundle install --without production staging --jobs=4 --retry=3 --binstubs
       #- run:
       #    command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
       - run:
