@@ -83,17 +83,12 @@ jobs:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
         environment:
-          BLAZEGRAPH_URL: http://localhost:8080/blazegraph/namespace/test/sparql
           CVM_ADAPTER: mysql2
           CVM_DB: cvm_test
           CVM_DB_USERNAME: monkeys
           CVM_DB_PASSWORD: monkeys
           CVM_DB_HOST: localhost
           CVM_DB_PORT: 3306
-          CVM_SECRET_KEY_BASE: b41ac9a39cf546d2296e0b467cc32cbc655f016c06def227c32f5a18b4fa2cc570aab24a6d2aeb0efbfbe6532e7c87661143900acb5eb07ab169b58e86f6f33e
-          CVM_SOLR_URL: http://localhost:8985/solr/cvm-test
-          CVM_TRIPLESTORE_TYPE: blazegraph
-          CVM_TRIPLESTORE_URL: http://ci-test:8080/blazegraph/namespace/test/sparql
           HONEYCOMB_DATASET: cvm-test
           HONEYCOMB_DEBUG: 'true'
           HONEYCOMB_WRITEKEY: buzzzzzzzzzzzzzzzz
