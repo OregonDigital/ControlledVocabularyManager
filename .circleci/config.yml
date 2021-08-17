@@ -46,7 +46,6 @@ jobs:
           name: Install dependencies
           command: |
             bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-            #bundle binstubs --path=vendor/bundle rubocop --force
       - save_cache:
           name: Save bundle cache
           key: v2-bundle-{{ checksum "Gemfile.lock" }}
@@ -84,17 +83,17 @@ jobs:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
         environment:
-          BLAZEGRAPH_URL: http://localhost:8080/bigdata/namespace/kb/sparql
+          BLAZEGRAPH_URL: http://localhost:8080/blazegraph/namespace/test/sparql
           CVM_ADAPTER: mysql2
           CVM_DB: cvm_test
           CVM_DB_USERNAME: monkeys
           CVM_DB_PASSWORD: monkeys
           CVM_DB_HOST: localhost
           CVM_DB_PORT: 3306
-          CVM_SECRET_KEY_BASE:
+          CVM_SECRET_KEY_BASE: b41ac9a39cf546d2296e0b467cc32cbc655f016c06def227c32f5a18b4fa2cc570aab24a6d2aeb0efbfbe6532e7c87661143900acb5eb07ab169b58e86f6f33e
           CVM_SOLR_URL: http://localhost:8985/solr/cvm-test
           CVM_TRIPLESTORE_TYPE: blazegraph
-          CVM_TRIPLESTORE_URL: http://ci-test:8080/bigdata/namespace/kb/sparql
+          CVM_TRIPLESTORE_URL: http://ci-test:8080/blazegraph/namespace/test/sparql
           HONEYCOMB_DATASET: cvm-test
           HONEYCOMB_DEBUG: 'true'
           HONEYCOMB_WRITEKEY: buzzzzzzzzzzzzzzzz
@@ -127,12 +126,17 @@ jobs:
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
+      - restore_cache:
+          name: Restore bundle from cache
+          keys:
+            - v2-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Update bundler
           command: gem install bundler -v 2.1.4
       - run:
           name: Bundle update srsly again
-          command: bundle install --without production staging --jobs=4 --retry=3 --binstubs
+          #command: bundle install --without production staging --jobs=4 --retry=3 --binstubs
+          command: bundle install --jobs=4 --retry=3 --binstubs
       - run:
           name: Start blazegraph
           command: bundle exec rake triplestore_adapter:blazegraph:reset
