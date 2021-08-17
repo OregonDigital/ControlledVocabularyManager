@@ -44,7 +44,7 @@ jobs:
           command: gem install bundler -v 2.1.4
       - run:
           name: Install dependencies
-          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+          command: bundle check --path=vendor/bundle && bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
       - save_cache:
           name: Save bundle cache
           key: v2-bundle-{{ checksum "Gemfile.lock" }}
@@ -64,9 +64,9 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/
-      - run:
-          name: Update bundler
-          command: gem install bundler -v 2.1.4 && bundle install --binstubs
+#      - run:
+#          name: Update bundler
+#          command: gem install bundler -v 2.1.4 && bundle install --binstubs
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
@@ -112,8 +112,8 @@ jobs:
       - run:
           name: Bundle update srsly again
           command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-      - run:
-          command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+      #- run:
+      #    command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
       - run:
           name: Start blazegraph
           command: bundle exec rake triplestore_adapter:blazegraph:reset
