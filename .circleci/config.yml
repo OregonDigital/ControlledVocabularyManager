@@ -47,7 +47,7 @@ jobs:
           #command: bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
           command: |
             bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-            bundle binstubs rubocop --force
+            #bundle binstubs rubocop --force
       - save_cache:
           name: Save bundle cache
           key: v2-bundle-{{ checksum "Gemfile.lock" }}
@@ -70,9 +70,9 @@ jobs:
       - run:
           name: Update bundler
           command: gem install bundler -v 2.1.4
-      #- run:
-      #    name: Install rubocop binstub
-      #    command: bundle binstubs rubocop --force
+      - run:
+          name: Install rubocop binstub
+          command: bundle binstubs rubocop --force
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
