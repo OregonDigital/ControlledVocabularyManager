@@ -44,10 +44,9 @@ jobs:
           command: gem install bundler -v 2.1.4
       - run:
           name: Install dependencies
-          #command: bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
           command: |
             bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-            #bundle binstubs rubocop --force
+            bundle binstubs --path=vendor/bundle rubocop --force
       - save_cache:
           name: Save bundle cache
           key: v2-bundle-{{ checksum "Gemfile.lock" }}
@@ -64,15 +63,16 @@ jobs:
     working_directory: ~/app
     environment:
       BUNDLE_PATH: vendor/bundle
+      PATH: vendor/bundle/ruby/2.5.0/bin:$PATH
     steps:
       - attach_workspace:
           at: ~/
-      - run:
-          name: Update bundler
-          command: gem install bundler -v 2.1.4
-      - run:
-          name: Install rubocop binstub
-          command: bundle binstubs rubocop --force
+#      - run:
+#          name: Update bundler
+#          command: gem install bundler -v 2.1.4
+#      - run:
+#          name: Install rubocop binstub
+#          command: bundle binstubs rubocop --force
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
@@ -80,12 +80,12 @@ jobs:
     docker:
       - image: circleci/ruby:2.5-stretch-node-browsers
         environment:
-          BLAZEGRAPH_URL:
+          BLAZEGRAPH_URL: http://localhost:8080/bigdata/namespace/kb/sparql
           CVM_ADAPTER: mysql2
           CVM_DB: cvm_test
           CVM_DB_USERNAME: monkeys
           CVM_DB_PASSWORD: monkeys
-          CVM_DB_HOST:
+          CVM_DB_HOST: localhost
           CVM_DB_PORT: 3306
           CVM_SECRET_KEY_BASE:
           CVM_SOLR_URL: http://localhost:8985/solr/cvm-test
