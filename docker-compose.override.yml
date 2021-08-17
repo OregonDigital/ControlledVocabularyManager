@@ -1,0 +1,21 @@
+# Example for exposing the load balancer for local dev and remote debugging; just copy this to docker-compose.override.yml
+version: '3'
+
+services:
+  lb:
+    expose:
+      - 80
+    ports:
+      - 80:80
+  server:
+    # Uncomment the following line to run the web application ready for a debugger (RubyMine, VSCode) to attach
+    #command: bash -c "rm -f tmp/pids/server.pid && bundle exec rdebug-ide --host 0.0.0.0 --port 1234 -- bin/rails server -p 3000 -b 0.0.0.0"
+    ports:
+      - 3000:3000
+      - 1234:1234
+    expose:
+      - 3000
+      - 1234
+    networks:
+      internal:
+      external:
