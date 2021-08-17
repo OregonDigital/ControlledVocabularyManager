@@ -63,16 +63,15 @@ jobs:
     working_directory: ~/app
     environment:
       BUNDLE_PATH: vendor/bundle
-      PATH: vendor/bundle/ruby/2.5.0/bin:$PATH
     steps:
       - attach_workspace:
           at: ~/
-#      - run:
-#          name: Update bundler
-#          command: gem install bundler -v 2.1.4
-#      - run:
-#          name: Install rubocop binstub
-#          command: bundle binstubs rubocop --force
+      - run:
+          name: Update bundler
+          command: gem install bundler -v 2.1.4
+      - run:
+          name: Install rubocop
+          command: bundle install rubocop
       - run:
           name: Run Rubocop
           command: bundle exec rubocop
@@ -123,15 +122,12 @@ jobs:
       - run:
           name: Wait for DB
           command: dockerize -wait tcp://localhost:3306 -timeout 1m
-      #- run:
-      #    name: Update bundler srsly again
-      #    command: gem install --force bundler
-      #- run:
-      #    name: Bundle update srsly again
-      #    #command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-      #    command: bundle install --without production staging --jobs=4 --retry=3 --binstubs
-      #- run:
-      #    command: bundle check --without production staging --path=vendor/bundle || bundle install --without production staging --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+      - run:
+          name: Update bundler
+          command: gem install bundler -v 2.1.4
+      - run:
+          name: Bundle update srsly again
+          command: bundle install --without production staging --jobs=4 --retry=3 --binstubs
       - run:
           name: Start blazegraph
           command: bundle exec rake triplestore_adapter:blazegraph:reset
