@@ -46,9 +46,9 @@ jobs:
           name: Install dependencies
           command: |
             bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-      - run:
-          name: Run Rubocop
-          command: bundle exec rubocop
+      #- run:
+      #    name: Run Rubocop
+      #    command: bundle exec rubocop
       - save_cache:
           name: Save bundle cache
           key: v2-bundle-{{ checksum "Gemfile.lock" }}
@@ -60,29 +60,6 @@ jobs:
           paths:
             - app/*
             - app/**/*
-#  lint:
-#    docker:
-#      - image: circleci/ruby:2.5-stretch-node-browsers
-#    working_directory: ~/app
-#    environment:
-#      BUNDLE_PATH: vendor/bundle
-#    steps:
-#      - attach_workspace:
-#          at: ~/
-#      - restore_cache:
-#          name: Restore bundle from cache
-#          keys:
-#            - v2-bundle-{{ checksum "Gemfile.lock" }}
-#      - run:
-#          name: Update bundler
-#          command: gem install bundler -v 2.1.4
-#      - run:
-#          name: Bundle install
-#          command: |
-#            bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
-#      - run:
-#          name: Run Rubocop
-#          command: bundle exec rubocop
   test:
     docker:
       - image: circleci/ruby:2.5-stretch
@@ -105,7 +82,6 @@ jobs:
             sudo apt-get update -qq
             sudo apt-get upgrade -qq
             sudo apt-get install -y -f software-properties-common build-essential default-libmysqlclient-dev nodejs make apt-utils nodejs cmake apt-utils openjdk-8-jre-headless ca-certificates-java openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless
-            #sudo update-alternatives --config java
       - run:
           name: phantomjs
           command: |
@@ -125,7 +101,6 @@ jobs:
           command: gem install bundler -v 2.1.4
       - run:
           name: Bundle update srsly again
-          #command: bundle install --without production staging --jobs=4 --retry=3 --binstubs
           command: bundle install --jobs=4 --retry=3 --binstubs
       - run:
           name: Start blazegraph
@@ -191,12 +166,8 @@ workflows:
       - bundle:
           requires:
             - checkout_code
-#      - lint:
-#          requires:
-#            - bundle
       - test:
           requires:
-#            - lint
             - bundle
       - build_and_push_beavernetes:
           name: build_and_push_beavernetes
