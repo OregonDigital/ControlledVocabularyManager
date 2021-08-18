@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '~> 5.0'
+gem 'rake', '>= 13.0.1'
 gem 'bootsnap'
 gem 'listen'
 gem 'actionpack-page_caching'
@@ -82,9 +83,10 @@ gem 'rubocop-rspec'
 gem 'rubocop-rails'
 
 # Honeycomb
-gem 'sequel'
-gem 'honeycomb-beeline'
-gem 'rack-honeycomb', '~> 0.5.0'
+#gem 'sequel'
+gem 'honeycomb-beeline', '>= 2.4.0'
+gem 'libhoney', '>= 1.18.0'
+#gem 'rack-honeycomb', '~> 0.5.0'
 
 group :development do
   gem 'spring-commands-rspec'
