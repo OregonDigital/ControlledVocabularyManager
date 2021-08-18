@@ -14,6 +14,7 @@ RUN apt-get update -qq && apt-get upgrade -y && \
 RUN wget https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2
 RUN tar xvjf phantomjs-2.1.1-linux-x86_64.tar.bz2 -C /usr/local/share/
 RUN ln -sf /usr/local/share/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin
+RUN rm -rf /usr/local/share/phantomjs* phantomjs-2.1.1-linux-x86_64.tar.bz2
 
 RUN mkdir /data
 RUN mkdir /repo
