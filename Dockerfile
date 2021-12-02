@@ -34,7 +34,10 @@ ADD . /data
 
 FROM builder
 
-RUN if [ "${RAILS_ENV}" = "production" ]; then \
-  echo "Precompiling assets with $RAILS_ENV environment"; \
-  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rails assets:precompile; \
-  fi
+#RUN if [ "${RAILS_ENV}" = "production" ]; then \
+#  echo "Precompiling assets with $RAILS_ENV environment"; \
+#  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rails assets:precompile; \
+#  fi
+
+RUN echo "Precompiling assets with $RAILS_ENV environment"; \
+  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rails assets:precompile
