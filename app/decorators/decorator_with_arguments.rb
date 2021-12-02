@@ -3,6 +3,7 @@
 # Abstract Decorator that supports args
 class DecoratorWithArguments
   attr_reader :decorator, :args
+
   def initialize(decorator, *args)
     @decorator = decorator
     @args = args

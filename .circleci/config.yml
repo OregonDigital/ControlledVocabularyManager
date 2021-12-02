@@ -1,22 +1,87 @@
-version: 2
+version: 2.1
+orbs:
+  docker: circleci/docker@1.5.0
 jobs:
-  build:
+  checkout_code:
+    docker:
+      - image: circleci/ruby:2.5
+    working_directory: ~/app
+    steps:
+      - restore_cache:
+          name: Restore code from cache
+          keys:
+            - v1-source-{{ .Branch }}-{{ .Revision }}
+      - checkout
+      - save_cache:
+          name: Save code cache
+          key: v1-source-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - '.git'
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - app/*
+            - app/**/*
+  bundle:
     docker:
       - image: circleci/ruby:2.5-stretch
     environment:
       BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
     steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Update Debian Packages for Building
+          command: |
+            sudo apt-get install -y software-properties-common build-essential make apt-utils cmake nodejs default-libmysqlclient-dev
+      - restore_cache:
+          name: Restore bundle from cache
+          keys:
+            - v2-bundle-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Update bundler
+          command: gem install bundler -v 2.0.2
+      - run:
+          name: Install dependencies
+          command: |
+            bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+      #- run:
+      #    name: Run Rubocop
+      #    command: bundle exec rubocop
+      - save_cache:
+          name: Save bundle cache
+          key: v2-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+            - tmp/zips
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - app/*
+            - app/**/*
+  test:
+    docker:
+      - image: circleci/ruby:2.5-stretch
+        environment:
+          HONEYCOMB_DEBUG: 'true'
+          RAILS_ENV: test
+      - image: circleci/mysql:5.7.22
+        environment:
+          MYSQL_ROOT_PASSWORD: monkeys
+          MYSQL_USER: monkeys
+          MYSQL_PASSWORD: monkeys
+          MYSQL_DATABASE: cvm_test
+    working_directory: ~/app
+    steps:
+      - attach_workspace:
+          at: ~/
       - run:
           name: Update Debian Packages
           command: |
-            sudo apt-get update --fix-missing -qq
+            sudo apt-get update -qq
             sudo apt-get upgrade -qq
-            sudo apt-get install -y -f software-properties-common build-essential default-libmysqlclient-dev nodejs make apt-utils cmake
-            sudo apt-get install -y openjdk-8-jre-headless ca-certificates-java
-            sudo apt-get install -y openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless
-            sudo update-alternatives --config java
-
+            sudo apt-get install -y -f software-properties-common build-essential default-libmysqlclient-dev nodejs make apt-utils nodejs cmake apt-utils openjdk-8-jre-headless ca-certificates-java openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless
       - run:
           name: phantomjs
           command: |
@@ -24,31 +89,25 @@ jobs:
             sudo bzip2 -d /opt/phantomjs/phantomjs-2.1.1-linux-x86_64.tar.bz2
             sudo tar -xvf /opt/phantomjs/phantomjs-2.1.1-linux-x86_64.tar -C /opt/phantomjs
             sudo cp /opt/phantomjs/phantomjs-2.1.1-linux-x86_64/bin/phantomjs /usr/bin/phantomjs
-
-      - checkout
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:3306 -timeout 1m
       - restore_cache:
-          key: v2-gemfile-{{ checksum "Gemfile.lock" }}
+          name: Restore bundle from cache
+          keys:
+            - v2-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Update bundler
-          command: gem install bundler -v 2.0.2
+          command: gem install bundler -v 2.1.4
       - run:
-          name: Install Ruby Dependencies
-          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
-
-      - save_cache:
-          key: v2-gemfile-{{ checksum "Gemfile.lock" }}
-          paths:
-            - vendor/bundle
-            - tmp/zips
-
+          name: Bundle update srsly again
+          command: bundle install --jobs=4 --retry=3 --binstubs
       - run:
           name: Start blazegraph
           command: bundle exec rake triplestore_adapter:blazegraph:reset
-
       - run:
-          name: Create DB
-          command: bundle exec rake db:create db:migrate db:test:prepare
-      - run: bundle exec rubocop
+          name: Create and load MySQL data
+          command: bundle exec rake db:create db:migrate db:test:prepare --trace
       - run:
           name: Run Tests
           command: |
@@ -62,3 +121,57 @@ jobs:
           destination: coverage
       - store_test_results:
           path: /tmp/circle-junit
+  build_and_push_beavernetes:
+    parameters:
+      repo:
+        type: string
+        default: ''
+      environment:
+        type: string
+        default: 'production'
+    executor:
+      name: 'docker/docker'
+    environment:
+      DOCKER_LOGIN: admin
+      DOCKER_PASSWORD: admin
+      RAILS_ENV: production
+    working_directory: ~/app
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Generate deployed version
+          command: |
+            export GIT_SHORT_HASH=$(git rev-parse --short HEAD)
+            export DATETIME=$(date "+%Y%m%d%H%M%S")
+            echo export TAG="$DATETIME-$GIT_SHORT_HASH" >> $BASH_ENV
+            echo export DEPLOYED_VERSION="$DATETIME-$GIT_SHORT_HASH" >> $BASH_ENV
+      - setup_remote_docker:
+          version: 20.10.2
+      - docker/check:
+          registry: registry.library.oregonstate.edu
+      - docker/build:
+          registry: registry.library.oregonstate.edu
+          image: cvm_rails
+          tag: $TAG
+          extra_build_args: --build-arg RAILS_ENV=<< parameters.environment >> --build-arg DEPLOYED_VERSION=$DEPLOYED_VERSION
+      - docker/push:
+          registry: registry.library.oregonstate.edu
+          image: cvm_rails
+          tag: $TAG
+workflows:
+  ci:
+    jobs:
+      - checkout_code
+      - bundle:
+          requires:
+            - checkout_code
+      - test:
+          requires:
+            - bundle
+      - build_and_push_beavernetes:
+          name: build_and_push_beavernetes
+          requires:
+            - test
+          repo: cvm_rails
+          environment: production
