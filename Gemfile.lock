@@ -468,7 +468,7 @@ GEM
       rdf (~> 1.1, >= 1.1.10)
     rdf-xsd (1.99.0)
       rdf (~> 1.99)
-    rdoc (4.3.0)
+    rdoc (6.3.3)
     regexp_parser (2.1.1)
     responders (2.4.1)
       actionpack (>= 4.2.0, < 6.0)
@@ -532,9 +532,8 @@ GEM
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)
-    sdoc (0.4.2)
-      json (~> 1.7, >= 1.7.7)
-      rdoc (~> 4.0)
+    sdoc (2.2.0)
+      rdoc (>= 5.0)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
     simple_form (5.1.0)
@@ -687,7 +686,7 @@ DEPENDENCIES
   rubocop-rspec
   rugged
   sass-rails
-  sdoc (~> 0.4.0)
+  sdoc
   shoulda-matchers
   simple_form
   simplecov
