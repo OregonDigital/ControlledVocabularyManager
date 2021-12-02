@@ -17,6 +17,9 @@ port        ENV.fetch('PORT') { 3000 }
 #
 environment ENV.fetch('RAILS_ENV') { 'development' }
 
+# Specifies the worker timeouts for puma workers
+worker_timeout ENV.fetch('PUMA_WORKER_TIMEOUT') { '120' }
+
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked webserver processes. If using threads and workers together
 # the concurrency of the application would be max `threads` * `workers`.
