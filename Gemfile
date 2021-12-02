@@ -85,8 +85,8 @@ gem 'rubocop-rails'
 
 # Honeycomb
 #gem 'sequel'
-gem 'honeycomb-beeline', '>= 2.4.0'
-gem 'libhoney', '>= 1.18.0'
+gem 'honeycomb-beeline', '>= 2.7.1'
+gem 'libhoney', '>= 1.21.0'
 #gem 'rack-honeycomb', '~> 0.5.0'
 
 group :development do
