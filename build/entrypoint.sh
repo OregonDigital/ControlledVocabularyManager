@@ -36,8 +36,8 @@ echo "Running database migrations"
 ./build/validate_migrated.sh
 
 # Precompile assets
-CVM_SECRET_KEY_BASE=temporary bundle exec rake assets:clobber
-CVM_SECRET_KEY_BASE=temporary bundle exec rake assets:precompile
+#CVM_SECRET_KEY_BASE=temporary bundle exec rake assets:clobber
+SECRET_KEY_BASE=temporary CVM_SECRET_KEY_BASE=temporary bundle exec rake assets:precompile
 
 
 # Submit a marker to honeycomb marking the time the application starts booting
