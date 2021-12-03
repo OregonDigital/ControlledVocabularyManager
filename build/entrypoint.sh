@@ -35,6 +35,9 @@ echo "Building ${RAILS_ENV}"
 echo "Running database migrations"
 ./build/validate_migrated.sh
 
+# Precompile assets
+bundle exec rake assets:precompile
+
 
 # Submit a marker to honeycomb marking the time the application starts booting
 #if [ "${RAILS_ENV}" = 'production' ]; then

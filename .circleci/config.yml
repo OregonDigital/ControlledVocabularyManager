@@ -45,7 +45,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            bundle install --path=vendor/bundle --jobs=4 --retry=3 --binstubs
+            bundle install --path=vendor/bundle --jobs=4 --retry=3
       #- run:
       #    name: Run Rubocop
       #    command: bundle exec rubocop
@@ -101,7 +101,7 @@ jobs:
           command: gem install bundler -v 2.1.4
       - run:
           name: Bundle update srsly again
-          command: bundle install --jobs=4 --retry=3 --binstubs
+          command: bundle install --jobs=4 --retry=3
       - run:
           name: Start blazegraph
           command: bundle exec rake triplestore_adapter:blazegraph:reset
