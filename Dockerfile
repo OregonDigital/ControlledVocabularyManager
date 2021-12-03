@@ -40,4 +40,4 @@ FROM builder
 #  fi
 
 RUN echo "Precompiling assets with $RAILS_ENV environment"; \
-  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rails assets:precompile
+  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rake assets:precompile
