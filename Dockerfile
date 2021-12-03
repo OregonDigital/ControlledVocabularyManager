@@ -7,7 +7,7 @@ ENV LC_ALL C.UTF-8
 RUN gem install bundler
 
 RUN apt-get update -qq && apt-get upgrade -y && \
-  apt-get install -y build-essential libpq-dev mysql-client cmake libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev phantomjs && \
+  apt-get install -y build-essential libpq-dev mysql-client cmake libfreetype6 libfreetype6-dev libfontconfig1 libfontconfig1-dev phantomjs apt-transport-https && \
   apt-get install -y openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless && \
   update-alternatives --config java
 
@@ -46,4 +46,4 @@ FROM builder
 #  fi
 
 RUN echo "Precompiling assets with $RAILS_ENV environment"; \
-  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rails assets:precompile
+  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rake assets:precompile
