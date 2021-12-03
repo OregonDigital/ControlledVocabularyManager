@@ -38,12 +38,12 @@ RUN ./build/install_gems.sh
 
 ADD . /data
 
-FROM builder
+#FROM builder
 
 #RUN if [ "${RAILS_ENV}" = "production" ]; then \
 #  echo "Precompiling assets with $RAILS_ENV environment"; \
 #  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rails assets:precompile; \
 #  fi
 
-RUN echo "Precompiling assets with $RAILS_ENV environment"; \
-  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rake assets:precompile
+#RUN echo "Precompiling assets with $RAILS_ENV environment"; \
+#  RAILS_ENV=$RAILS_ENV SECRET_KEY_BASE=temporary bundle exec rake assets:precompile
