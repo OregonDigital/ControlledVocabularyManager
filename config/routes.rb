@@ -29,6 +29,9 @@ Rails.application.routes.draw do
   post 'predicates/*id/review_update', :to => "predicates#review_update", :as => "review_update_predicate"
   patch 'predicates/*id', :to => "predicates#update", :as => "update_predicate"
 
+  get 'ntriples/*term_id', :to => "ntriple#edit", :as => "edit_ntriples"
+  post 'ntriples/*term_id/update', :to => "ntriple#update", :as => "update_ntriples"
+
   resources :vocabularies, :only => [:index, :new, :create, :edit]
   get '/vocabularies/*vocabulary_id/new', :to => "terms#new", :as => "new_term"
   resources :predicates, :only => [:index, :new, :create, :edit]

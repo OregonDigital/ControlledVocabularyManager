@@ -8,6 +8,11 @@ class PreloadCache
     write("#{Settings.cache_dir}/ns/#{term.id}.jsonld", term.full_graph.dump(:jsonld, standard_prefixes: true))
   end
 
+  def self.write_triples(triples, id)
+    FileUtils.mkdir_p("#{Settings.cache_dir}/ns/#{id}")
+    write("#{Settings.cache_dir}/ns/#{id}.nt", triples)
+  end
+
   private
 
   def self.write(path, content)
