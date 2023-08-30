@@ -95,8 +95,15 @@ def build_graph(args, header_hash)
 
      #Iterate over left over headers and send to methods to build graph
      header_hash.keys.each do |header|
-       send(header.split(":").last, @id, @graph, row[header_hash[header]])
-     end
+       # handle multiple values (object) with || as separator
+       if row[header_hash[header]]&.include? '||'
+         row[header_hash[header]].split('||').each do |val|
+           send(header.split(":").last, @id, @graph, val)
+         end
+       else
+         send(header.split(":").last, @id, @graph, row[header_hash[header]])
+       end
+    end
 
     @graph << RDF::Statement.new(@id, RDF::Vocab::DC.issued, RDF::Literal.new(Date.today))
 
