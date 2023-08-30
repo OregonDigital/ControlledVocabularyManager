@@ -129,7 +129,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.12.2)
-    concurrent-ruby (1.1.9)
+    concurrent-ruby (1.2.2)
     config (3.1.0)
       deep_merge (~> 1.2, >= 1.2.1)
       dry-validation (~> 1.0, >= 1.0.0)
@@ -243,7 +243,7 @@ GEM
       activesupport
       capybara
       i18n
-    globalid (1.0.0)
+    globalid (1.1.0)
       activesupport (>= 5.0)
     grit (2.0.0)
       diff-lcs (>= 1.1.2)
@@ -264,7 +264,7 @@ GEM
     http-cookie (1.0.4)
       domain_name (~> 0.5)
     http-form_data (2.3.0)
-    i18n (1.8.11)
+    i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     iso-639 (0.3.5)
     jbuilder (2.11.3)
@@ -329,7 +329,7 @@ GEM
     mini_portile2 (2.6.1)
     mini_racer (0.4.0)
       libv8-node (~> 15.14.0.0)
-    minitest (5.14.4)
+    minitest (5.19.0)
     msgpack (1.4.2)
     multi_json (1.15.0)
     multipart-post (2.1.1)
@@ -589,7 +589,7 @@ GEM
     turbolinks (5.2.1)
       turbolinks-source (~> 5.2)
     turbolinks-source (5.2.0)
-    tzinfo (1.2.10)
+    tzinfo (1.2.11)
       thread_safe (~> 0.1)
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
