@@ -1,10 +1,10 @@
 version: 2.1
 orbs:
-  docker: circleci/docker@1.5.0
+  docker: cimg/docker@1.5.0
 jobs:
   checkout_code:
     docker:
-      - image: circleci/ruby:2.5
+      - image: cimg/ruby:2.5
     working_directory: ~/app
     steps:
       - restore_cache:
@@ -24,7 +24,7 @@ jobs:
             - app/**/*
   bundle:
     docker:
-      - image: circleci/ruby:2.5-stretch
+      - image: cimg/ruby:2.5-stretch
     environment:
       BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
@@ -62,11 +62,11 @@ jobs:
             - app/**/*
   test:
     docker:
-      - image: circleci/ruby:2.5-stretch
+      - image: cimg/ruby:2.5-stretch
         environment:
           HONEYCOMB_DEBUG: 'true'
           RAILS_ENV: test
-      - image: circleci/mysql:5.7.22
+      - image: cimg/mysql:5.7.22
         environment:
           MYSQL_ROOT_PASSWORD: monkeys
           MYSQL_USER: monkeys
