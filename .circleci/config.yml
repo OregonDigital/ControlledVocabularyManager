@@ -4,7 +4,7 @@ orbs:
 jobs:
   checkout_code:
     docker:
-      - image: cimg/ruby:2.5
+      - image: cimg/ruby:2.5.8
     working_directory: ~/app
     steps:
       - restore_cache:
@@ -24,7 +24,7 @@ jobs:
             - app/**/*
   bundle:
     docker:
-      - image: cimg/ruby:2.5-stretch
+      - image: cimg/ruby:2.5.8
     environment:
       BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
@@ -62,7 +62,7 @@ jobs:
             - app/**/*
   test:
     docker:
-      - image: cimg/ruby:2.5-stretch
+      - image: cimg/ruby:2.5.8
         environment:
           HONEYCOMB_DEBUG: 'true'
           RAILS_ENV: test
