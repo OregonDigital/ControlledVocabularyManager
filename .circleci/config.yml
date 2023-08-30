@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  docker: cimg/docker@1.5.0
+  docker: circleci/docker@2.2.0
 jobs:
   checkout_code:
     docker:
