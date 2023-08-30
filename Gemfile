@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 5.0'
 gem 'rake', '>= 13.0.1'
-gem 'puma', '~> 5.3.2'
+gem 'puma', '~> 5.6.7'
 gem 'bootsnap'
 gem 'listen'
 gem 'actionpack-page_caching'

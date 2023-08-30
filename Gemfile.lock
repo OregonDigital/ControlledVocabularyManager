@@ -339,7 +339,7 @@ GEM
       net-ssh (>= 2.6.5, < 7.0.0)
     net-ssh (6.1.0)
     netrc (0.11.0)
-    nio4r (2.5.8)
+    nio4r (2.5.9)
     nokogiri (1.12.5)
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
@@ -374,7 +374,7 @@ GEM
       pry (~> 0.9)
       slop (~> 3.0)
     public_suffix (4.0.6)
-    puma (5.3.2)
+    puma (5.6.7)
       nio4r (~> 2.0)
     racc (1.6.0)
     rack (2.2.6.3)
@@ -673,7 +673,7 @@ DEPENDENCIES
   pry-git
   pry-rails
   pry-remote
-  puma (~> 5.3.2)
+  puma (~> 5.6.7)
   rails (~> 5.0)
   rails-controller-testing
   rake (>= 13.0.1)
