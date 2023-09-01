@@ -5,6 +5,7 @@ jobs:
   checkout_code:
     docker:
       - image: cimg/ruby:2.5.8
+    resource_class: large
     working_directory: ~/app
     steps:
       - restore_cache:
@@ -22,10 +23,10 @@ jobs:
           paths:
             - app/*
             - app/**/*
-    resource_class: large
   bundle:
     docker:
       - image: cimg/ruby:2.5.8
+    resource_class: large
     environment:
       BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
@@ -75,6 +76,7 @@ jobs:
           MYSQL_USER: monkeys
           MYSQL_PASSWORD: monkeys
           MYSQL_DATABASE: cvm_test
+    resource_class: large
     working_directory: ~/app
     steps:
       - attach_workspace:
