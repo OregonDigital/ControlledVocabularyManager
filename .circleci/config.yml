@@ -1,10 +1,11 @@
 version: 2.1
 orbs:
-  docker: circleci/docker@1.5.0
+  docker: circleci/docker@2.2.0
 jobs:
   checkout_code:
     docker:
-      - image: circleci/ruby:2.5
+      - image: cimg/ruby:2.5.8
+    resource_class: large
     working_directory: ~/app
     steps:
       - restore_cache:
@@ -24,7 +25,8 @@ jobs:
             - app/**/*
   bundle:
     docker:
-      - image: circleci/ruby:2.5-stretch
+      - image: cimg/ruby:2.5.8
+    resource_class: large
     environment:
       BUNDLE_PATH: vendor/bundle
     working_directory: ~/app
@@ -34,7 +36,9 @@ jobs:
       - run:
           name: Update Debian Packages for Building
           command: |
-            sudo apt-get install -y software-properties-common build-essential make apt-utils cmake nodejs default-libmysqlclient-dev
+            sudo apt-get update -qq
+            sudo apt-get upgrade -qq
+            sudo apt-get install -y software-properties-common build-essential make apt-utils cmake nodejs default-libmysqlclient-dev libsqlite3-dev pkg-config
       - restore_cache:
           name: Restore bundle from cache
           keys:
@@ -62,16 +66,17 @@ jobs:
             - app/**/*
   test:
     docker:
-      - image: circleci/ruby:2.5-stretch
+      - image: cimg/ruby:2.5.8
         environment:
           HONEYCOMB_DEBUG: 'true'
           RAILS_ENV: test
-      - image: circleci/mysql:5.7.22
+      - image: cimg/mysql:5.7.36
         environment:
           MYSQL_ROOT_PASSWORD: monkeys
           MYSQL_USER: monkeys
           MYSQL_PASSWORD: monkeys
           MYSQL_DATABASE: cvm_test
+    resource_class: large
     working_directory: ~/app
     steps:
       - attach_workspace:
@@ -81,7 +86,7 @@ jobs:
           command: |
             sudo apt-get update -qq
             sudo apt-get upgrade -qq
-            sudo apt-get install -y -f software-properties-common build-essential default-libmysqlclient-dev nodejs make apt-utils nodejs cmake apt-utils openjdk-8-jre-headless ca-certificates-java openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless
+            sudo apt-get install -y -f software-properties-common build-essential default-libmysqlclient-dev nodejs make cmake apt-utils openjdk-8-jre-headless ca-certificates-java openjdk-8-jre openjdk-8-jdk openjdk-8-jdk-headless
       - run:
           name: phantomjs
           command: |
