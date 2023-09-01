@@ -22,7 +22,7 @@ jobs:
           paths:
             - app/*
             - app/**/*
-    - resource_class: large
+    resource_class: large
   bundle:
     docker:
       - image: cimg/ruby:2.5.8
