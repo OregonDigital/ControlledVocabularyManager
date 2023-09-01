@@ -70,7 +70,7 @@ jobs:
         environment:
           HONEYCOMB_DEBUG: 'true'
           RAILS_ENV: test
-      - image: cimg/mysql:5.7.22
+      - image: cimg/mysql:5.7.36
         environment:
           MYSQL_ROOT_PASSWORD: monkeys
           MYSQL_USER: monkeys
